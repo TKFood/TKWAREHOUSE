@@ -25,13 +25,25 @@ namespace TKWAREHOUSE
         SqlCommand cmd = new SqlCommand();
         DataSet dsPURTD = new DataSet();
         DataSet dsPURTH = new DataSet();
+        DataTable dt = new DataTable();
         int result;
+
 
         public FrmStockBuyIn()
         {
             InitializeComponent();
             comboboxload();
             combobox2load();
+            combobox3load();
+
+            //定義
+            dt.Columns.Add(new DataColumn("TH004", typeof(string)));
+            dt.Columns.Add(new DataColumn("TH005", typeof(string)));
+            dt.Columns.Add(new DataColumn("TH007", typeof(string)));
+            dt.Columns.Add(new DataColumn("TH008", typeof(string)));
+            dt.Columns.Add(new DataColumn("TH009", typeof(string)));
+            dt.Columns.Add(new DataColumn("TH009CH", typeof(string)));
+            dt.Columns.Add(new DataColumn("TH010", typeof(string)));
         }
         #region FUNCTION
         public void comboboxload()
@@ -75,6 +87,26 @@ namespace TKWAREHOUSE
 
         }
 
+        public void combobox3load()
+        {
+
+            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
+            String Sequel = "SELECT MC001,MC002 FROM CMSMC WITH (NOLOCK) ORDER BY MC001";
+            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("MC001", typeof(string));
+            dt.Columns.Add("MC002", typeof(string));
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "MC001";
+            comboBox1.DisplayMember = "MC002";
+            sqlConn.Close();
+
+
+        }
         public void Search()
         {
             try
@@ -132,14 +164,18 @@ namespace TKWAREHOUSE
 
         public void TempAdd()
         {
-            DataTable dt = new DataTable();
+            
             DataRow dr;
-            dt.Columns.Add(new DataColumn("TH004", typeof(string)));
-            dt.Columns.Add(new DataColumn("TH010", typeof(string)));
+            
             //dt.Columns.Add(new DataColumn("TH010", typeof(string)));
             // 加入第一筆銀行資料
             dr = dt.NewRow();
             dr["TH004"] = textBox4.Text.ToString();
+            dr["TH005"] = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+            dr["TH007"] = textBox3.Text.ToString();
+            dr["TH008"] = dataGridView1.CurrentRow.Cells[6].Value.ToString();
+            dr["TH009"] = comboBox1.SelectedValue.ToString();
+            dr["TH009CH"] = comboBox1.Text.ToString();
             dr["TH010"] = textBox2.Text.ToString();
             dt.Rows.Add(dr);
 
@@ -152,6 +188,18 @@ namespace TKWAREHOUSE
             dataGridView2.AutoResizeColumns();
         }
 
+        public void TempUpdate()
+        {           
+            dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH007"] = textBox5.Text.ToString();
+            dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH009"] = comboBox3.SelectedValue.ToString();
+            dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH010"] = textBox6.Text.ToString();
+
+        }
+
+        public void TempDelete()
+        {
+            dt.Rows.RemoveAt(dataGridView2.CurrentCell.RowIndex);
+        }
         #endregion
 
         #region BUTTON
@@ -173,9 +221,30 @@ namespace TKWAREHOUSE
             if(!string.IsNullOrEmpty(dataGridView1.CurrentRow.Cells[1].Value.ToString()))
             {
                 textBox4.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+                
             }
            
         }
+
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(dataGridView2.CurrentRow.Cells[6].Value.ToString()))
+            {
+                textBox6.Text = dataGridView2.CurrentRow.Cells[6].Value.ToString();
+                textBox5.Text = dataGridView2.CurrentRow.Cells[2].Value.ToString();
+                comboBox3.Text = dataGridView2.CurrentRow.Cells[5].Value.ToString();
+            }
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            TempUpdate();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            TempDelete();
+        }
+
 
         #endregion
 

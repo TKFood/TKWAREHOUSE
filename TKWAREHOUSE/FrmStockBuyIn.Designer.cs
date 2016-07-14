@@ -40,7 +40,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -53,6 +52,11 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox4 = new System.Windows.Forms.TextBox();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -76,10 +80,8 @@
             this.tableLayoutPanel1.Controls.Add(this.label2, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.label6, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.label7, 0, 12);
             this.tableLayoutPanel1.Controls.Add(this.label8, 3, 12);
             this.tableLayoutPanel1.Controls.Add(this.label10, 5, 12);
-            this.tableLayoutPanel1.Controls.Add(this.label11, 0, 13);
             this.tableLayoutPanel1.Controls.Add(this.label12, 0, 14);
             this.tableLayoutPanel1.Controls.Add(this.label13, 2, 14);
             this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 2);
@@ -95,6 +97,12 @@
             this.tableLayoutPanel1.Controls.Add(this.label9, 5, 6);
             this.tableLayoutPanel1.Controls.Add(this.comboBox1, 6, 6);
             this.tableLayoutPanel1.Controls.Add(this.button2, 7, 6);
+            this.tableLayoutPanel1.Controls.Add(this.label7, 1, 12);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox3, 6, 12);
+            this.tableLayoutPanel1.Controls.Add(this.textBox5, 4, 12);
+            this.tableLayoutPanel1.Controls.Add(this.textBox6, 2, 12);
+            this.tableLayoutPanel1.Controls.Add(this.button3, 7, 12);
+            this.tableLayoutPanel1.Controls.Add(this.button4, 8, 12);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -197,7 +205,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 369);
+            this.label7.Location = new System.Drawing.Point(90, 369);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(81, 12);
             this.label7.TabIndex = 6;
@@ -236,17 +244,6 @@
             this.label10.TabIndex = 9;
             this.label10.Text = "label10";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label11
-            // 
-            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(3, 399);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(81, 12);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "label11";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label12
             // 
@@ -295,8 +292,10 @@
             this.dataGridView2.ReadOnly = true;
             this.tableLayoutPanel1.SetRowSpan(this.dataGridView2, 4);
             this.dataGridView2.RowTemplate.Height = 24;
+            this.dataGridView2.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView2.Size = new System.Drawing.Size(681, 114);
             this.dataGridView2.TabIndex = 15;
+            this.dataGridView2.SelectionChanged += new System.EventHandler(this.dataGridView2_SelectionChanged);
             // 
             // button1
             // 
@@ -366,6 +365,48 @@
             this.textBox4.Size = new System.Drawing.Size(81, 22);
             this.textBox4.TabIndex = 23;
             // 
+            // comboBox3
+            // 
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(525, 363);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(81, 20);
+            this.comboBox3.TabIndex = 24;
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(351, 363);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(81, 22);
+            this.textBox5.TabIndex = 25;
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(177, 363);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(81, 22);
+            this.textBox6.TabIndex = 26;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(612, 363);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 27;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(699, 363);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 28;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // FrmStockBuyIn
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -395,7 +436,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox comboBox1;
@@ -409,5 +449,10 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
     }
 }
