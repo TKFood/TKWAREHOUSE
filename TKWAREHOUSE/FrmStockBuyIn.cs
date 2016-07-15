@@ -12,6 +12,10 @@ using System.Reflection;
 
 namespace TKWAREHOUSE
 {
+     #region DEFINE
+   
+
+    #endregion
     public partial class FrmStockBuyIn : Form
     {
         SqlConnection sqlConn = new SqlConnection();
@@ -27,6 +31,25 @@ namespace TKWAREHOUSE
         DataSet dsPURTH = new DataSet();
         DataTable dt = new DataTable();
         int result;
+        internal class groupDtInfo
+        {
+            public groupDtInfo()
+            {
+            }
+
+            public decimal Sum { get; set; }
+            public object TH004 { get; set; }
+        }
+
+        internal class PURTDInfo
+        {
+            public PURTDInfo()
+            {
+            }
+
+            public decimal Sum { get; set; }
+            public object TD004 { get; set; }
+        }
 
 
         public FrmStockBuyIn()
@@ -100,9 +123,9 @@ namespace TKWAREHOUSE
             dt.Columns.Add("MC001", typeof(string));
             dt.Columns.Add("MC002", typeof(string));
             da.Fill(dt);
-            comboBox1.DataSource = dt.DefaultView;
-            comboBox1.ValueMember = "MC001";
-            comboBox1.DisplayMember = "MC002";
+            comboBox3.DataSource = dt.DefaultView;
+            comboBox3.ValueMember = "MC001";
+            comboBox3.DisplayMember = "MC002";
             sqlConn.Close();
 
 
@@ -191,7 +214,7 @@ namespace TKWAREHOUSE
         public void TempUpdate()
         {           
             dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH007"] = textBox5.Text.ToString();
-            dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH009"] = comboBox3.SelectedValue.ToString();
+            dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH009"] = comboBox3.Text.ToString();
             dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH010"] = textBox6.Text.ToString();
 
         }
@@ -200,6 +223,93 @@ namespace TKWAREHOUSE
         {
             dt.Rows.RemoveAt(dataGridView2.CurrentCell.RowIndex);
         }
+        public void TempCheck()
+        {
+            string group = "";
+            string group1 = "";
+            DataTable dt2 = new DataTable();
+
+            var result1 = from tab in dt.AsEnumerable()
+                          orderby tab["TH004"]
+                          group tab by tab["TH004"]
+                          into groupDt
+                          select new groupDtInfo()
+                          {
+                              TH004 = groupDt.Key,
+                              Sum = groupDt.Sum((r) => decimal.Parse(r["TH007"].ToString()))
+                          };
+
+            var result2 = from tab in dsPURTD.Tables["TEMPdsPURTD"].AsEnumerable()
+                          orderby tab["TD004"]
+                          group tab by tab["TD004"]
+                          into PURTD
+                          select new PURTDInfo()
+                          {
+                              TD004 = PURTD.Key,
+                              Sum = PURTD.Sum((r) => decimal.Parse(r["TD008"].ToString()))
+                          };
+
+            //foreach (groupDtInfo info in result1)
+            //{
+            //    group = group + string.Format("{0}-{1}", info.TH004, info.Sum) + "\r\n";
+            //}
+
+
+            //foreach (PURTDInfo info2 in result2)
+            //{
+            //    group1 = group1 + string.Format("{0}-{1}", info2.TD004, info2.Sum) + "\r\n";
+            //}
+
+            group = group + "符合數量如下:" + "\r\n";
+            group1 = group1 + "不符合數量如下:" + "\r\n";
+
+
+            //找存在，再判斷採購量是否等罣進貨量
+            foreach (PURTDInfo info2 in result2)
+            {
+                foreach (groupDtInfo info in result1)
+                {
+                    if (info2.TD004.ToString().Equals(info.TH004.ToString()))
+                    {
+                        if (info2.Sum == info.Sum)
+                        {
+                            group = group + string.Format("{0}-{1:N0}", info2.TD004, info2.Sum) + "\r\n";
+                        }
+                        else if (info2.Sum != info.Sum)
+                        {
+                            group1 = group1 + string.Format("{0}-採購量{1:N0}<>進貨量{2:N0} ", info2.TD004, info2.Sum, info.Sum) + "\r\n";
+                        }
+                    }
+
+                }
+            }
+
+            //找不存在的
+            foreach (PURTDInfo info2 in result2)
+            {
+                string NotExists = "N";
+                foreach (groupDtInfo info in result1)
+                {
+                    if (info2.TD004.ToString().Equals(info.TH004.ToString()))
+                    {
+                        NotExists = "Y";
+                    }
+
+                }
+
+                if (NotExists.Equals("N"))
+                {
+                    group1 = group1 + string.Format("{0}-採購量{1:N0}<>進貨量{2:N0} ", info2.TD004, info2.Sum, "0") + "\r\n";
+                }
+            }
+
+
+            textBox9.Text = group.ToString();
+            textBox10.Text = group1.ToString();
+
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -211,6 +321,19 @@ namespace TKWAREHOUSE
         private void button2_Click(object sender, EventArgs e)
         {
             TempAdd();
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            TempUpdate();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            TempDelete();
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            TempCheck();
         }
         #endregion
 
@@ -235,15 +358,8 @@ namespace TKWAREHOUSE
                 comboBox3.Text = dataGridView2.CurrentRow.Cells[5].Value.ToString();
             }
         }
-        private void button3_Click(object sender, EventArgs e)
-        {
-            TempUpdate();
-        }
+       
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            TempDelete();
-        }
 
 
         #endregion
