@@ -31,6 +31,8 @@ namespace TKWAREHOUSE
         DataSet dsPURTH = new DataSet();
         DataTable dt = new DataTable();
         int result;
+        string NowDay;
+
         internal class groupDtInfo
         {
             public groupDtInfo()
@@ -310,6 +312,77 @@ namespace TKWAREHOUSE
 
         }
 
+        public void ADDToERP()
+        {
+            string TH001=null;
+            string TH002 = null;
+
+            if(comboBox2.Text.ToString().Equals("A331"))
+            {
+                TH001 = "A341";
+            }
+            else if (comboBox2.Text.ToString().Equals("A332"))
+            {
+                TH001 = "A343";
+            }
+            else if(comboBox2.Text.ToString().Equals("A333"))
+            {
+                TH001 = "A347";
+            }
+
+            TH002=GetMaxID(TH001);
+            sbSql.Clear();
+            sbSql.Append(" ");
+            sbSql.Append(" INSERT INTO [test].[dbo].[PURTG]");
+            sbSql.Append(" ([COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+            sbSql.Append(" ,[TG001],[TG002],[TG003],[TG004],[TG005],[TG006],[TG007],[TG008],[TG009],[TG010]");
+            sbSql.Append(" ,[TG011],[TG012],[TG013],[TG014],[TG015],[TG016],[TG017],[TG018],[TG019],[TG020]");
+            sbSql.Append(" ,[TG021],[TG022],[TG023],[TG024],[TG025],[TG026],[TG027],[TG028],[TG029],[TG030]");
+            sbSql.Append(" ,[TG031],[TG032],[TG033],[TG034],[TG035],[TG036],[TG037],[TG038],[TG039],[TG040]");
+            sbSql.Append(" ,[TG041],[TG042],[TG043],[TG044],[TG045],[TG046],[TG047],[TG048],[TG049],[TG050]");
+            sbSql.Append(" ,[TG051],[TG052],[TG053],[TG054],[TG055],[TG056],[TG057],[TG058],[TG059],[TG060]");
+            sbSql.Append(" ,[TG061],[TG062],[TG063],[TG064],[TG065],[TG066],[TG067],[TG068],[TG069],[TG070]");
+            sbSql.Append(" ,[TG071],[TG072],[TG073],[TG074],[TG075],[TG076],[TG077],[TG078],[TG079],[TG080])");
+            sbSql.Append(" SELECT  ");
+            sbSql.Append(" PURTC.COMPANY,  PURTC.CREATOR, PURTC.USR_GROUP,PURTC.CREATE_DATE, PURTC.MODIFIER, PURTC.MODI_DATE, PURTC.FLAG, PURTC.CREATE_TIME, PURTC.MODI_TIME, PURTC.TRANS_TYPE, PURTC.TRANS_NAME,PURTC.sync_date, PURTC.sync_time, PURTC.sync_mark, PURTC.sync_count,PURTC.DataUser,PURTC.DataGroup");
+            sbSql.AppendFormat(" , '{0}' AS TG001, '{1}' AS TG002, '{2}' AS TG003, TC010 AS TG004, TC004 AS TG005, '' AS TG006, MA021  AS TG007, '1' AS TG008, MA030  AS TG009, MA044 AS TG010",TH001,TH002, NowDay);
+            sbSql.AppendFormat(" , '{0}' AS TG011, '0' AS TG012, 'N' AS TG013, '{1}' AS TG014, 'N' AS TG015, '0' AS TG016, '0' AS TG017, '0' AS TG018, '0' AS TG019, '0' AS TG020", textBox11.Text.ToString(), NowDay);
+            sbSql.AppendFormat(" ,MA002 AS TG021, MA005 AS TG022, '1' AS TG023, 'N' AS TG024, '0' AS TG025, '0' AS TG026, '{0}' AS TG027, '0' AS TG028, '{1}' AS TG029, '0.05' AS TG030", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker1.Value.ToString("yyyyMMdd").Substring(0,6));
+            sbSql.AppendFormat(" , '0' AS TG031, '0' AS TG032, MA055  AS TG033, '{0}' AS TG034, '{1}' AS TG035, '' AS TG036, '' AS TG037, '0' AS TG038, '0' AS TG039, '0' AS TG040", comboBox2.Text.ToString(), textBox1.Text.ToString());
+            sbSql.Append(" , '0' AS TG041, 'N' AS TG042, 'Y' AS TG043, 'N' AS TG044, '0' AS TG045, '0' AS TG046, '' AS TG047, '' AS TG048, '' AS TG049, '' AS TG050");
+            sbSql.Append(" , NULL AS TG051, NULL AS TG052, NULL AS TG053, NULL AS TG054, NULL AS TG055, NULL AS TG056, NULL AS TG057, NULL AS TG058, NULL AS TG059, NULL AS TG060");
+            sbSql.Append(" , NULL AS TG061, NULL AS TG062, NULL AS TG063, NULL AS TG064, NULL AS TG065, NULL AS TG066, NULL AS TG067, NULL AS TG068, NULL AS TG069, NULL AS TG070");
+            sbSql.Append(" , NULL AS TG071, NULL AS TG072, NULL AS TG073, NULL AS TG074, NULL AS TG075, NULL AS TG076, NULL AS TG077, NULL AS TG078, NULL AS TG079, NULL AS TG080");
+            sbSql.AppendFormat("  FROM TK.dbo.PURTC,TK.dbo.PURMA WHERE TC004=MA001 AND  TC001='{0}' AND TC002='{1}'", comboBox2.Text.ToString(), textBox1.Text.ToString());
+            sbSql.AppendFormat(" ");
+
+        }
+
+        public string GetMaxID(string TG001)
+        {
+            string newid;
+            int countid;
+            NowDay = DateTime.Now.ToString("yyyyMMdd");
+            StringBuilder sbSql=new StringBuilder();
+            sbSql.AppendFormat(@"SELECT( CASE WHEN ISNULL(MAX(TG002),'')='' THEN '0' ELSE  MAX(TG002)  END) AS TG002  FROM PURTG WITH (NOLOCK) WHERE TG003='{0}' AND TG001='{1}' ", NowDay, TG001);
+
+            DataSet dt = new DataSet();
+            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand(sbSql.ToString(), sqlConn);
+
+            sqlConn.Open();
+            adapter = new SqlDataAdapter(cmd);
+            dt.Clear();
+            adapter.Fill(dt);
+
+            newid = dt.Tables[0].Rows[0][0].ToString();
+            countid = Convert.ToInt16(newid.Substring(8, 3));
+            countid = countid + 1;
+            newid = NowDay+countid.ToString().PadLeft(3, '0');
+
+            return newid;
+        }
         #endregion
 
         #region BUTTON
@@ -335,6 +408,11 @@ namespace TKWAREHOUSE
         {
             TempCheck();
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            ADDToERP();
+        }
         #endregion
 
         #region gridview
@@ -358,12 +436,13 @@ namespace TKWAREHOUSE
                 comboBox3.Text = dataGridView2.CurrentRow.Cells[5].Value.ToString();
             }
         }
-       
+
+
 
 
 
         #endregion
 
-
+        
     }
 }

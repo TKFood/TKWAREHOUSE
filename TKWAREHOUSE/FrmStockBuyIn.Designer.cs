@@ -63,6 +63,10 @@
             this.button6 = new System.Windows.Forms.Button();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.textBox9 = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBox11 = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -107,7 +111,6 @@
             this.tableLayoutPanel1.Controls.Add(this.textBox6, 2, 12);
             this.tableLayoutPanel1.Controls.Add(this.button3, 7, 12);
             this.tableLayoutPanel1.Controls.Add(this.button4, 8, 12);
-            this.tableLayoutPanel1.Controls.Add(this.button5, 9, 14);
             this.tableLayoutPanel1.Controls.Add(this.textBox8, 8, 14);
             this.tableLayoutPanel1.Controls.Add(this.label12, 7, 14);
             this.tableLayoutPanel1.Controls.Add(this.textBox7, 6, 14);
@@ -116,6 +119,11 @@
             this.tableLayoutPanel1.Controls.Add(this.textBox10, 2, 13);
             this.tableLayoutPanel1.Controls.Add(this.textBox9, 0, 13);
             this.tableLayoutPanel1.Controls.Add(this.button1, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button5, 9, 14);
+            this.tableLayoutPanel1.Controls.Add(this.label13, 5, 13);
+            this.tableLayoutPanel1.Controls.Add(this.textBox11, 6, 13);
+            this.tableLayoutPanel1.Controls.Add(this.label15, 7, 13);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 8, 13);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -409,14 +417,14 @@
             // 
             // button5
             // 
-            this.button5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button5.ForeColor = System.Drawing.Color.DodgerBlue;
             this.button5.Location = new System.Drawing.Point(786, 423);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(83, 24);
+            this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 29;
             this.button5.Text = "寫入erp";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // textBox8
             // 
@@ -488,6 +496,43 @@
             this.textBox9.Size = new System.Drawing.Size(168, 182);
             this.textBox9.TabIndex = 35;
             // 
+            // label13
+            // 
+            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(489, 399);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(54, 12);
+            this.label13.TabIndex = 37;
+            this.label13.Text = "發票號碼";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox11
+            // 
+            this.textBox11.Location = new System.Drawing.Point(549, 393);
+            this.textBox11.Name = "textBox11";
+            this.textBox11.Size = new System.Drawing.Size(80, 22);
+            this.textBox11.TabIndex = 38;
+            // 
+            // label15
+            // 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(635, 399);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(75, 12);
+            this.label15.TabIndex = 39;
+            this.label15.Text = "發票日期";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePicker1.Location = new System.Drawing.Point(716, 393);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(64, 22);
+            this.dateTimePicker1.TabIndex = 40;
+            // 
             // FrmStockBuyIn
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -541,5 +586,9 @@
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBox11;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }
