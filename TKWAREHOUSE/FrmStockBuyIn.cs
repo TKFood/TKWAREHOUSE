@@ -205,7 +205,7 @@ namespace TKWAREHOUSE
 
         public void TempAdd()
         {
-            if(!string.IsNullOrEmpty(textBox2.Text.ToString())&&!string.IsNullOrEmpty(textBox3.Text.ToString()))
+            if(!string.IsNullOrEmpty(textBox2.Text.ToString())&&!textBox2.Text.ToString().Equals("") && !string.IsNullOrEmpty(textBox3.Text.ToString()) && !textBox3.Text.ToString().Equals(""))
             {
                 DataRow dr;
 
@@ -239,7 +239,7 @@ namespace TKWAREHOUSE
         public void TempUpdate()
         {           
             dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH007"] = textBox5.Text.ToString();
-            dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH009"] = comboBox3.Text.ToString();
+            dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH009"] = comboBox3.SelectedValue.ToString();
             dt.Rows[dataGridView2.CurrentCell.RowIndex]["TH010"] = textBox6.Text.ToString();
 
         }
@@ -368,8 +368,10 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSql.Append(" ");
+                sbSql.AppendFormat("DELETE  [{0}].[dbo].[ZWAREWHOUSEPURTH] WHERE TH001='{1}' AND  TH002='{2}'", NowDB, TH001.ToString(), TH002.ToString());
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
+                    
                     sbSql.AppendFormat(" INSERT INTO [{0}].[dbo].[ZWAREWHOUSEPURTH] ",NowDB);
                     sbSql.Append(" ([TH001],[TH002],[TH003],[TH004],[TH005],[TH007],[TH008],[TH009],[TH009CH],[TH010],[TH018],[TH011],[TH012],[TH013])");
                     sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}')", TH001.ToString(), TH002.ToString(), (i + 1).ToString().PadLeft(4, '0'), dt.Rows[i]["TH004"].ToString(), dt.Rows[i]["TH005"].ToString(), dt.Rows[i]["TH007"].ToString(), dt.Rows[i]["TH008"].ToString(), dt.Rows[i]["TH009"].ToString(), dt.Rows[i]["TH009CH"].ToString(), dt.Rows[i]["TH010"].ToString(), dt.Rows[i]["TH018"].ToString(), dt.Rows[i]["TH011"].ToString(), dt.Rows[i]["TH012"].ToString(), dt.Rows[i]["TH013"].ToString());
