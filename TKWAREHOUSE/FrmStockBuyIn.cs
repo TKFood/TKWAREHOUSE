@@ -574,22 +574,25 @@ namespace TKWAREHOUSE
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            if(!string.IsNullOrEmpty(dataGridView1.CurrentRow.Cells[1].Value.ToString()))
+            var curRow = dataGridView1.CurrentRow;
+            if (curRow != null)
             {
                 textBox4.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
-                
             }
+                       
            
         }
 
         private void dataGridView2_SelectionChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(dataGridView2.CurrentRow.Cells[6].Value.ToString()))
+            var curRow = dataGridView2.CurrentRow;
+            if (curRow != null)
             {
                 textBox6.Text = dataGridView2.CurrentRow.Cells[6].Value.ToString();
                 textBox5.Text = dataGridView2.CurrentRow.Cells[2].Value.ToString();
                 comboBox3.Text = dataGridView2.CurrentRow.Cells[5].Value.ToString();
             }
+          
         }
 
 
