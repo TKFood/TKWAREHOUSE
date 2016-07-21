@@ -458,13 +458,13 @@ namespace TKWAREHOUSE
                 sbSql.Append(" ");
 
                 sbSql.AppendFormat(" UPDATE [{0}].dbo.PURTG SET ",NowDB);
-                sbSql.Append(" TG017=(SELECT SUM(TH045) FROM  [test].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)");
-                sbSql.Append(" ,TG019=(SELECT SUM(TH046) FROM  [test].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)  ");
-                sbSql.Append(" ,TG025=(SELECT SUM(TH007) FROM  [test].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ");
-                sbSql.Append(" ,TG026=(SELECT SUM(TH007) FROM  [test].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)");
-                sbSql.Append(" ,TG031=(SELECT SUM(TH045) FROM  [test].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)");
-                sbSql.Append(" ,TG032=(SELECT SUM(TH046) FROM  [test].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ");
-                sbSql.Append(" ,TG040=(SELECT SUM(TH007) FROM  [test].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ");
+                sbSql.AppendFormat(" TG017=(SELECT SUM(TH045) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
+                sbSql.AppendFormat(" ,TG019=(SELECT SUM(TH046) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)  ", NowDB);
+                sbSql.AppendFormat(" ,TG025=(SELECT SUM(TH007) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
+                sbSql.AppendFormat(" ,TG026=(SELECT SUM(TH007) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
+                sbSql.AppendFormat(" ,TG031=(SELECT SUM(TH045) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
+                sbSql.AppendFormat(" ,TG032=(SELECT SUM(TH046) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
+                sbSql.AppendFormat(" ,TG040=(SELECT SUM(TH007) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
                 sbSql.AppendFormat(" WHERE TG001='{0}' AND TG002='{1}'",TH001,TH002);
 
                 cmd.Connection = sqlConn;
