@@ -359,7 +359,7 @@ namespace TKWAREHOUSE
             try
             {
                 //add ZWAREWHOUSEPURTH
-                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
                 sqlConn = new SqlConnection(connectionString);
 
                 sqlConn.Close();
@@ -368,11 +368,11 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSql.Append(" ");
-                sbSql.AppendFormat("DELETE  [{0}].[dbo].[ZWAREWHOUSEPURTH] WHERE TH001='{1}' AND  TH002='{2}'", NowDB, TH001.ToString(), TH002.ToString());
+                sbSql.AppendFormat("DELETE  [{0}].[dbo].[ZWAREWHOUSEPURTH] WHERE TH001='{1}' AND  TH002='{2}'", sqlConn.Database.ToString(), TH001.ToString(), TH002.ToString());
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     
-                    sbSql.AppendFormat(" INSERT INTO [{0}].[dbo].[ZWAREWHOUSEPURTH] ",NowDB);
+                    sbSql.AppendFormat(" INSERT INTO [{0}].[dbo].[ZWAREWHOUSEPURTH] ", sqlConn.Database.ToString());
                     sbSql.Append(" ([TH001],[TH002],[TH003],[TH004],[TH005],[TH007],[TH008],[TH009],[TH009CH],[TH010],[TH018],[TH011],[TH012],[TH013])");
                     sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}')", TH001.ToString(), TH002.ToString(), (i + 1).ToString().PadLeft(4, '0'), dt.Rows[i]["TH004"].ToString(), dt.Rows[i]["TH005"].ToString(), dt.Rows[i]["TH007"].ToString(), dt.Rows[i]["TH008"].ToString(), dt.Rows[i]["TH009"].ToString(), dt.Rows[i]["TH009CH"].ToString(), dt.Rows[i]["TH010"].ToString(), dt.Rows[i]["TH018"].ToString(), dt.Rows[i]["TH011"].ToString(), dt.Rows[i]["TH012"].ToString(), dt.Rows[i]["TH013"].ToString());
                     sbSql.Append(" ");
@@ -429,7 +429,7 @@ namespace TKWAREHOUSE
                 sbSql.Append(" , NULL AS  [TH071], NULL AS  [TH072], 0 AS  [TH073], 'N' AS  [TH074], NULL AS  [TH075], NULL AS  [TH076], 0 AS  [TH077], '2' AS  [TH078], NULL AS  [TH079], NULL AS  [TH080]");
                 sbSql.Append(" , NULL AS  [TH081], NULL AS  [TH082], NULL AS  [TH083], NULL AS  [TH084], NULL AS  [TH085], NULL AS  [TH086], 'N' AS  [TH087], NULL AS  [TH088], NULL AS  [TH089], NULL AS  [TH090]");
                 sbSql.Append(" , NULL AS  [TH091], 'N' AS  [TH092], NULL AS  [TH093], 0 AS  [TH094], NULL AS  [TH095], NULL AS  [TH096], NULL AS  [TH097], 0 AS  [TH098]");
-                sbSql.AppendFormat(" FROM  [{0}].[dbo].[ZWAREWHOUSEPURTH] ", NowDB);
+                sbSql.AppendFormat(" FROM  [{0}].[dbo].[ZWAREWHOUSEPURTH] ", "TKWAREHOUSE");
                 sbSql.AppendFormat(" WHERE  TH001='{0}' AND TH002='{1}'",TH001,TH002);
                 sbSql.Append(" ");
 
