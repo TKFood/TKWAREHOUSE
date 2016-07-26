@@ -71,5 +71,16 @@ namespace TKWAREHOUSE
         }
 
         #endregion
+
+        #region FUNCTION
+        private void txt_Password_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                LOGIN();
+            }
+        }
+
+        #endregion
     }
 }
