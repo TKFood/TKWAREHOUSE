@@ -262,7 +262,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(132, 22);
             this.textBox1.TabIndex = 17;
-            this.textBox1.Text = "20160422002";
             // 
             // label14
             // 
@@ -534,7 +533,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(79, 24);
             this.button5.TabIndex = 29;
-            this.button5.Text = "寫入erp";
+            this.button5.Text = "產生進貨單";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 

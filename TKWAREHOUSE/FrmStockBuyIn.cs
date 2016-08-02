@@ -162,7 +162,7 @@ namespace TKWAREHOUSE
                     sbSqlQuery.Clear();
 
                     sbSqlQuery.AppendFormat("  WHERE TD001='{0}' AND TD002='{1}' ", comboBox2.Text.ToString(), textBox1.Text.ToString());
-                    sbSql.AppendFormat(@"SELECT TD003,TD004,TD005,TD006,TD007,TD008-(SELECT ISNULL(SUM(TH007),0) FROM [{1}].[dbo].PURTH WITH (NOLOCK) WHERE TH011=TD001 AND TH012=TD002 AND TH013=TD003 ) AS TD008,TD009,TD010,TD001,TD002,TD003 FROM [{2}].[dbo].PURTD WITH (NOLOCK) {0} ", sbSqlQuery.ToString(),NowDB, NowDB);
+                    sbSql.AppendFormat(@"SELECT TD003,TD004,TD005,TD006,TD007,TD008-(SELECT ISNULL(SUM(TH007),0) FROM [{1}].[dbo].PURTH WITH (NOLOCK) WHERE TH011=TD001 AND TH012=TD002 AND TH013=TD003 ) AS TD008,TD009,TD010,TD001,TD002,TD003 FROM [{2}].[dbo].PURTD WITH (NOLOCK) {0} ", sbSqlQuery.ToString(), sqlConn.Database.ToString(), sqlConn.Database.ToString());
 
                     adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
                     sqlCmdBuilder = new SqlCommandBuilder(adapter);
