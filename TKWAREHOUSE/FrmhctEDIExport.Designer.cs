@@ -62,7 +62,7 @@
             this.tableLayoutPanel1.Controls.Add(this.button1, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button2, 8, 11);
+            this.tableLayoutPanel1.Controls.Add(this.button2, 8, 16);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -120,10 +120,10 @@
             this.dataGridView1.EnableHeadersVisualStyles = false;
             this.dataGridView1.Location = new System.Drawing.Point(3, 63);
             this.dataGridView1.Name = "dataGridView1";
-            this.tableLayoutPanel1.SetRowSpan(this.dataGridView1, 8);
+            this.tableLayoutPanel1.SetRowSpan(this.dataGridView1, 14);
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(681, 225);
+            this.dataGridView1.Size = new System.Drawing.Size(698, 417);
             this.dataGridView1.TabIndex = 14;
             // 
             // label14
@@ -167,9 +167,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(632, 333);
+            this.button2.Location = new System.Drawing.Point(632, 486);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(69, 39);
+            this.button2.Size = new System.Drawing.Size(69, 36);
             this.button2.TabIndex = 22;
             this.button2.Text = "匯出";
             this.button2.UseVisualStyleBackColor = true;

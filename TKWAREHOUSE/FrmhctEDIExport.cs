@@ -37,9 +37,18 @@ namespace TKWAREHOUSE
         DataSet ds = new DataSet();
 
         DataTable dt = new DataTable();
-        int result;
-        string NowDay;
-        string NowDB = "test";
+
+        string Id;
+        string Name;
+        string Phone;
+        string Tel;
+        string Addr;
+        string Comment;
+        string GetMoney;
+        string ReceiveDay;
+        string ReceiveTime;
+        string Goods;
+        string weight;
 
         public FrmhctEDIExport()
         {
@@ -60,8 +69,8 @@ namespace TKWAREHOUSE
                     sbSqlQuery.Clear();
 
                     sbSqlQuery.AppendFormat("   TG003>='{0}' AND TG003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-                    sbSql.Append(@" SELECT TG001,TG002,TG003,TG004,TG007,TG008,TG066,TG106,TG110,TG113  ");
-                    sbSql.Append(@" ,CASE WHEN TG111='1' THEN '不分時段' WHEN TG111='2' THEN '早上(09~12點)' WHEN TG111='3' THEN '中午(12~17點)'  WHEN TG111='4' THEN '下午(17~20點)'   WHEN TG111='5' THEN '09點'  WHEN TG111='6' THEN '10點'  WHEN TG111='7' THEN '11點'   WHEN TG111='8' THEN '12點'   WHEN TG111='9' THEN '13點' WHEN TG111='A' THEN '14點' WHEN TG111='B' THEN '15點'  WHEN TG111='C' THEN '16點'  WHEN TG111='D' THEN '17點'  WHEN TG111='E' THEN '18點'  WHEN TG111='F' THEN '19點'  WHEN TG111='G' THEN '20點' END AS TG111 ");
+                    sbSql.Append(@" SELECT TG001,TG002,TG003,TG004,TG007,TG008,TG066,TG106,TG113,TG110  ");
+                    sbSql.Append(@" ,CASE WHEN TG111='1' THEN '' WHEN TG111='2' THEN '09-13' WHEN TG111='3' THEN '13-17'  WHEN TG111='4' THEN '17-20'   WHEN TG111='5' THEN '09'  WHEN TG111='6' THEN '10'  WHEN TG111='7' THEN '11'   WHEN TG111='8' THEN '12'   WHEN TG111='9' THEN '13' WHEN TG111='A' THEN '14' WHEN TG111='B' THEN '15'  WHEN TG111='C' THEN '16'  WHEN TG111='D' THEN '17'  WHEN TG111='E' THEN '18'  WHEN TG111='F' THEN '19'  WHEN TG111='G' THEN '20' END AS TG111 ");
                     sbSql.AppendFormat(@"  FROM [{0}].dbo.COPTG WITH (NOLOCK)  ", sqlConn.Database.ToString());
                     sbSql.AppendFormat(@" WHERE {0} ", sbSqlQuery.ToString());
 
@@ -123,12 +132,24 @@ namespace TKWAREHOUSE
                 ws = wb.CreateSheet("Sheet1");
             }
 
-            ws.CreateRow(0);//第一行為欄位名稱
-            for (int i = 0; i < dt.Columns.Count; i++)
-            {
-                ws.GetRow(0).CreateCell(i).SetCellValue(dt.Columns[i].ColumnName);
-            }
+            ws.CreateRow(0);
+            //第一行為欄位名稱
+            ws.GetRow(0).CreateCell(0).SetCellValue("收貨人代號");
+            ws.GetRow(0).CreateCell(1).SetCellValue("收貨人名稱");
+            ws.GetRow(0).CreateCell(2).SetCellValue("電話1");
+            ws.GetRow(0).CreateCell(3).SetCellValue("電話2");
+            ws.GetRow(0).CreateCell(4).SetCellValue("地址");
+            ws.GetRow(0).CreateCell(5).SetCellValue("備註");
+            ws.GetRow(0).CreateCell(6).SetCellValue("代收貸款");
+            ws.GetRow(0).CreateCell(7).SetCellValue("指定日期");
+            ws.GetRow(0).CreateCell(8).SetCellValue("指定時間");
+            ws.GetRow(0).CreateCell(9).SetCellValue("件數");
+            ws.GetRow(0).CreateCell(10).SetCellValue("重量");
 
+            //for (int i = 0; i < dt.Columns.Count; i++)
+            //{
+            //    ws.GetRow(0).CreateCell(i).SetCellValue(dt.Columns[i].ColumnName);
+            //}
             //for (int i = 0; i < dt.Rows.Count; i++)
             //{
             //    ws.CreateRow(i + 1);
@@ -145,17 +166,50 @@ namespace TKWAREHOUSE
                 ws.CreateRow(j + 1);
                 if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
                 {
-                    ws.GetRow(j + 1).CreateCell(0).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0].ToString());
-                    ws.GetRow(j + 1).CreateCell(1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
-                    ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
-                    ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
-                    ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
-                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString());
-                    ws.GetRow(j + 1).CreateCell(6).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[6].ToString());
-                    ws.GetRow(j + 1).CreateCell(7).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
-                    ws.GetRow(j + 1).CreateCell(8).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[8].ToString());
-                    ws.GetRow(j + 1).CreateCell(9).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[9].ToString());
-                    ws.GetRow(j + 1).CreateCell(10).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[10].ToString());
+
+
+                    Id = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString();
+                    //處理收貨人名稱、地址、電話
+                    String value = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString();
+                    Char delimiter = ',';
+                    String[] substrings = value.Split(delimiter);      
+                    if(substrings.Length>=3)
+                    {
+                        Addr = substrings[0];
+                        Name = substrings[1];
+                        Phone = substrings[2];
+                    }  
+                    else if (substrings.Length == 2)
+                    {
+                        Addr = substrings[0];
+                        Name = substrings[1];
+                    }
+                    else if (substrings.Length == 1)
+                    {
+                        Addr = substrings[0];
+                    }
+
+                    Tel = null;
+                    Comment = null;
+                    GetMoney =((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[8].ToString();
+                    ReceiveDay = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[9].ToString();
+                    ReceiveTime = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[10].ToString();
+                    Goods = null;
+                    weight = null;
+
+                    ws.GetRow(j + 1).CreateCell(0).SetCellValue(Id);
+                    ws.GetRow(j + 1).CreateCell(1).SetCellValue(Name);
+                    ws.GetRow(j + 1).CreateCell(2).SetCellValue(Phone);
+                    ws.GetRow(j + 1).CreateCell(3).SetCellValue(Tel);
+                    ws.GetRow(j + 1).CreateCell(4).SetCellValue(Addr);
+                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(Comment);
+                    ws.GetRow(j + 1).CreateCell(6).SetCellValue(GetMoney);
+                    ws.GetRow(j + 1).CreateCell(7).SetCellValue(ReceiveDay);
+                    ws.GetRow(j + 1).CreateCell(8).SetCellValue(ReceiveTime);
+                    ws.GetRow(j + 1).CreateCell(9).SetCellValue(Goods);
+                    ws.GetRow(j + 1).CreateCell(10).SetCellValue(weight);
+
+
                     j++;
                     //MessageBox.Show("號碼 " + ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0] + ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1] + " 被選取了！");
                 }
