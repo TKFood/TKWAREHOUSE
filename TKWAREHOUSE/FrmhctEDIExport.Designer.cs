@@ -115,7 +115,7 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.tableLayoutPanel1.SetColumnSpan(this.dataGridView1, 9);
+            this.tableLayoutPanel1.SetColumnSpan(this.dataGridView1, 10);
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dataGridView1.EnableHeadersVisualStyles = false;
             this.dataGridView1.Location = new System.Drawing.Point(3, 63);
@@ -123,7 +123,7 @@
             this.tableLayoutPanel1.SetRowSpan(this.dataGridView1, 14);
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(698, 417);
+            this.dataGridView1.Size = new System.Drawing.Size(778, 417);
             this.dataGridView1.TabIndex = 14;
             // 
             // label14
