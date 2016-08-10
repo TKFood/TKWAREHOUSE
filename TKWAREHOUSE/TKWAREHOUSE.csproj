@@ -71,6 +71,12 @@
     <Compile Include="FrmhctEDIExport.Designer.cs">
       <DependentUpon>FrmhctEDIExport.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmINVCheck.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmINVCheck.Designer.cs">
+      <DependentUpon>FrmINVCheck.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +99,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FrmhctEDIExport.resx">
       <DependentUpon>FrmhctEDIExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmINVCheck.resx">
+      <DependentUpon>FrmINVCheck.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
