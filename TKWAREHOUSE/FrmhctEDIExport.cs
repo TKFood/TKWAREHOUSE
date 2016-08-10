@@ -191,11 +191,25 @@ namespace TKWAREHOUSE
                         Addr = substrings[0];
                     }
 
-                    Regex rgx = new Regex("\\d*");
-                    Addr = rgx.Replace(Addr, String.Empty);
+                    //Regex rgx = new Regex("\\d*");
+                    //Addr = rgx.Replace(Addr, String.Empty);
 
                     Tel = null;
-                    Comment = null;
+                    
+                    try
+                    {
+                        if (((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[11].ToString().Substring(0, 1) == "Y")
+                        {
+                            Comment = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[11].ToString();
+                        }
+                    }
+                    catch
+                    {
+                        Comment = null;
+                    }
+
+                                 
+
                     GetMoney =((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[8].ToString();
                     ReceiveDay = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[9].ToString();
                     ReceiveTime = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[10].ToString();
