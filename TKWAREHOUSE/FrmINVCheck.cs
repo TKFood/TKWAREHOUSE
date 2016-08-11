@@ -60,12 +60,12 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
                    
-                sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名' ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量'  ");
+                sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量'  ");
                 sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
                 sbSql.Append(@" WHERE LA001 LIKE '4%' AND (LA009='20001')");
-                sbSql.Append(@" GROUP BY LA001,MB002");
+                sbSql.Append(@" GROUP BY  LA001,MB002,MB003");
                 sbSql.Append(@" HAVING SUM(LA005*LA011)>1");
-                sbSql.Append(@" ORDER BY LA001,MB002");
+                sbSql.Append(@" ORDER BY  LA001,MB002,MB003");
 
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -138,11 +138,14 @@ namespace TKWAREHOUSE
             //第一行為欄位名稱
             ws.CreateRow(1);
             ws.GetRow(1).CreateCell(0).SetCellValue("品名");
-            ws.GetRow(1).CreateCell(1).SetCellValue("數量");
-            ws.GetRow(1).CreateCell(2).SetCellValue("品名");
-            ws.GetRow(1).CreateCell(3).SetCellValue("數量");
-            ws.GetRow(1).CreateCell(4).SetCellValue("品名");
+            ws.GetRow(1).CreateCell(1).SetCellValue("規格");
+            ws.GetRow(1).CreateCell(2).SetCellValue("數量");
+            ws.GetRow(1).CreateCell(3).SetCellValue("品名");
+            ws.GetRow(1).CreateCell(4).SetCellValue("規格");
             ws.GetRow(1).CreateCell(5).SetCellValue("數量");
+            ws.GetRow(1).CreateCell(6).SetCellValue("品名");
+            ws.GetRow(1).CreateCell(7).SetCellValue("規格");
+            ws.GetRow(1).CreateCell(8).SetCellValue("數量");
 
 
             //for (int i = 1; i < dt.Rows.Count; i++)
@@ -163,7 +166,8 @@ namespace TKWAREHOUSE
                 {
                     ws.CreateRow(j + 1);
                     ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(Convert.ToInt16(dt.Rows[i][2].ToString()));
+                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt16(dt.Rows[i][3].ToString()));
 
                     j++;
                 }
@@ -175,11 +179,13 @@ namespace TKWAREHOUSE
                 {
                     ws.CreateRow(j + 1);
                     ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(Convert.ToInt16(dt.Rows[i][2].ToString()));
+                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
                     if ((i + 41) < dt.Rows.Count)
                     {
-                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(dt.Rows[i + 41][1].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(Convert.ToInt16(dt.Rows[i + 41][2].ToString()));
+                        ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
                     }
 
 
@@ -193,13 +199,16 @@ namespace TKWAREHOUSE
                 {
                     ws.CreateRow(j + 1);
                     ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(Convert.ToInt16(dt.Rows[i][2].ToString()));
-                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(dt.Rows[i + 41][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(Convert.ToInt16(dt.Rows[i + 41][2].ToString()));
+                    ws.GetRow(j + 1).CreateCell(k+1).SetCellValue(dt.Rows[i][2].ToString());
+                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
+                    ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
+                    ws.GetRow(j + 1).CreateCell(k+4).SetCellValue(dt.Rows[i + 41][2].ToString());
+                    ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
                     if ((i + 81) < dt.Rows.Count+1)
                     {
-                        ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 81][1].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt16(dt.Rows[i + 81][2].ToString()));
+                        ws.GetRow(j + 1).CreateCell(k + 6).SetCellValue(dt.Rows[i + 81][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 7).SetCellValue(dt.Rows[i + 81][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 8).SetCellValue(Convert.ToInt32(dt.Rows[i + 81][3].ToString()));
                     }
                     j++;
                 }
@@ -210,7 +219,8 @@ namespace TKWAREHOUSE
                 {
                     ws.CreateRow(j + 1);
                     ws.GetRow(j + 1).CreateCell(k).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
+                    ws.GetRow(j + 1).CreateCell(k+1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
+                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
                    
                     j++;
                 }
