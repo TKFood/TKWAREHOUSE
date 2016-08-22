@@ -201,9 +201,12 @@ namespace TKWAREHOUSE
                     ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
                     ws.GetRow(j + 1).CreateCell(k+1).SetCellValue(dt.Rows[i][2].ToString());
                     ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
-                    ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k+4).SetCellValue(dt.Rows[i + 41][2].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
+                    if ((i + 41) < dt.Rows.Count)
+                    {
+                        ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
+                    }
                     if ((i + 81) < dt.Rows.Count)
                     {
                         ws.GetRow(j + 1).CreateCell(k + 6).SetCellValue(dt.Rows[i + 81][1].ToString());
