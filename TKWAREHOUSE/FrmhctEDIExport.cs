@@ -201,6 +201,8 @@ namespace TKWAREHOUSE
                         if (((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[11].ToString().Substring(0, 1) == "Y")
                         {
                             Comment = ((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[11].ToString();
+                            string[] sArray = Comment.Split('N');
+                            Comment = sArray[0].ToString();
                         }
                     }
                     catch
