@@ -1,29 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NPOI;
-using NPOI.HPSF;
-using NPOI.HSSF;
-using NPOI.HSSF.UserModel;
-using NPOI.POIFS;
-using NPOI.Util;
-using NPOI.HSSF.Util;
-using NPOI.HSSF.Extractor;
 using System.IO;
 using System.Data.SqlClient;
 using NPOI.SS.UserModel;
 using System.Configuration;
 using NPOI.XSSF.UserModel;
-using System.Text.RegularExpressions;
 using NPOI.SS.Util;
 
 namespace TKWAREHOUSE
@@ -280,12 +263,16 @@ namespace TKWAREHOUSE
         {
             Search();
         }
-        #endregion
-
         private void button2_Click(object sender, EventArgs e)
         {
             ExcelExport();
         }
+
+        #endregion
+
+
+
+
     }
 
 
