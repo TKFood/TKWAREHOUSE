@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Data.SqlClient;
@@ -11,7 +16,7 @@ using NPOI.SS.Util;
 
 namespace TKWAREHOUSE
 {
-    public partial class FrmINVSTAYOVER : Form
+    public partial class FrmINVCOP : Form
     {
         SqlConnection sqlConn = new SqlConnection();
         SqlCommand sqlComm = new SqlCommand();
@@ -23,80 +28,123 @@ namespace TKWAREHOUSE
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
+        DataSet ds2 = new DataSet();
 
         DataTable dt = new DataTable();
+        DataTable dtTemp = new DataTable();
+        DataColumn column1 = new DataColumn("MD001");
+        DataColumn column2 = new DataColumn("MD003");
+        DataColumn column3 = new DataColumn("NUM");
+        DataColumn column4 = new DataColumn("UNIT");
         string tablename = null;
-        DateTime StayDay;
+        decimal COPNum = 0;
+        double BOMNum = 0;
 
-        public FrmINVSTAYOVER()
+        public FrmINVCOP()
         {
             InitializeComponent();
-            comboboxload();
             dateTimePicker1.Value = DateTime.Now;
+
+            dtTemp.Columns.Add(column1);
+            dtTemp.Columns.Add(column2);
+            dtTemp.Columns.Add(column3);
+            dtTemp.Columns.Add(column4);
+
         }
 
         #region FUNCTION
-        public void comboboxload()
-        {
-
-            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-            sqlConn = new SqlConnection(connectionString);
-            String Sequel = "SELECT MC001,MC001+MC002 AS MC002 FROM CMSMC WITH (NOLOCK) ORDER BY MC001";
-            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
-            DataTable dt = new DataTable();
-            sqlConn.Open();
-
-            dt.Columns.Add("MC001", typeof(string));
-            dt.Columns.Add("MC002", typeof(string));
-            da.Fill(dt);
-            comboBox1.DataSource = dt.DefaultView;
-            comboBox1.ValueMember = "MC001";
-            comboBox1.DisplayMember = "MC002";
-            sqlConn.Close();
-
-            comboBox1.SelectedValue = "20001";
-
-        }
         public void Search()
         {
-            StayDay = dateTimePicker1.Value;
-            StayDay = StayDay.AddDays(-1*Convert.ToDouble(numericUpDown1.Value));
             try
             {
-
                 connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
                 sqlConn = new SqlConnection(connectionString);
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.Append(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別',CMSMC.MC002 AS '庫名',INVMC.MC007 AS '庫存量',INVMC.MC012 AS '最近入庫日',INVMC.MC013 AS '最近出庫日'");
-                sbSql.Append(@" FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC");
-                sbSql.Append(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND  INVMC.MC007>0");
-                sbSql.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )",StayDay.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@" AND INVMC.MC002='{0}'",comboBox1.SelectedValue.ToString());
-                sbSql.Append(@" ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002");
-
-
-                tablename = "TEMPds1";
+                sbSql.Append(@"  SELECT TD004,TD010,MD002,MD004,SUM(CASE WHEN ISNULL(MD004,0)<>0 THEN (TD008+TD024)*MD004 ELSE TD008 END )AS NUM,MC001,MC002,MC004,SUM(CASE WHEN ISNULL(MD004,0)<>0 THEN (TD008+TD024)*MD004 ELSE TD008 END )/MC004 AS BOMNum");
+                sbSql.Append(@"  FROM [TK].dbo.COPTD");
+                sbSql.Append(@"  LEFT JOIN [TK].dbo.INVMD ON TD004=MD001  AND MD002=TD010");
+                sbSql.Append(@"  LEFT JOIN [TK].dbo.BOMMC ON TD004=MC001");
+                sbSql.AppendFormat(@"  WHERE SUBSTRING(TD002,1,8)='{0}' AND TD008>0  AND TD002='20160830001'   ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+                sbSql.Append(@"  GROUP BY TD004,TD010,MD002,MD004,MC001,MC002,MC004");
+                sbSql.Append(@"  ");
+               
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
                 sqlCmdBuilder = new SqlCommandBuilder(adapter);
                 sqlConn.Open();
                 ds.Clear();
-                adapter.Fill(ds, tablename);
+                adapter.Fill(ds, "TEMPds1");
                 sqlConn.Close();
 
 
-                if (ds.Tables[tablename].Rows.Count == 0)
+                if (ds.Tables["TEMPds1"].Rows.Count == 0)
                 {
                     label14.Text = "找不到資料";
                 }
                 else
                 {
-                    label14.Text = "有 " + ds.Tables[tablename].Rows.Count.ToString() + " 筆";
+                    if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                    {
 
-                    dataGridView1.DataSource = ds.Tables[tablename];
+                        for (int i = 0; i < ds.Tables["TEMPds1"].Rows.Count; i++)
+                        {
+
+                            COPNum = Convert.ToDecimal(ds.Tables["TEMPds1"].Rows[i]["NUM"].ToString());
+                            BOMNum = Convert.ToDouble(ds.Tables["TEMPds1"].Rows[i]["BOMNum"].ToString());
+
+                            sbSql.Clear();
+                            sbSqlQuery.Clear();
+
+                            sbSql.Append(@"  WITH TreeNode (MD001,MD002,MD003,MD004,MD006,MD007, Level)");
+                            sbSql.Append(@"  AS");
+                            sbSql.Append(@"  (");
+                            sbSql.Append(@"  SELECT MD001,MD002,MD003,MD004,MD006,MD007, 0 AS Level");
+                            sbSql.Append(@"  FROM [TK].dbo.BOMMD");
+                            sbSql.AppendFormat(@"  WHERE MD001='{0}'", ds.Tables["TEMPds1"].Rows[i]["TD004"].ToString());
+                            sbSql.Append(@"  UNION ALL");
+                            sbSql.Append(@"  SELECT ta.MD001,ta.MD002,ta.MD003,ta.MD004,ta.MD006,ta.MD007 ,Level + 1");
+                            sbSql.Append(@"  FROM [TK].dbo.BOMMD ta");
+                            sbSql.Append(@"  INNER JOIN TreeNode AS tn");
+                            sbSql.Append(@"  ON ta.MD001 = tn.MD003");
+                            sbSql.Append(@"  )");
+                            sbSql.Append(@"  SELECT MD001,MD002,MD003,MD004,MD006,MD007, Level,MB002,MB003 FROM TreeNode,[TK].dbo.INVMB");
+                            sbSql.Append(@"  WHERE MD001=MB001");
+
+                            adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                            sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                            sqlConn.Open();
+                            ds2.Clear();
+                            adapter.Fill(ds2, "TEMPds2");
+                            sqlConn.Close();
+
+                            if (ds2.Tables["TEMPds2"].Rows.Count > 1)
+                            {
+
+                                foreach (DataRow od2 in ds2.Tables["TEMPds2"].Rows)
+                                {
+                                    DataRow row = dtTemp.NewRow();
+                                    row["MD001"] = od2["MD001"].ToString();
+                                    row["MD003"] = od2["MD003"].ToString();
+                                    row["NUM"] = Convert.ToDouble(od2["MD006"].ToString()) * BOMNum;
+                                    row["UNIT"] = od2["MD004"].ToString();
+                                    dtTemp.Rows.Add(row);
+                                }
+
+                            }
+
+                        }
+                        
+                    }
+
+                    //dtTemp = ds.Tables["TEMPds1"];
+                    //dtTemp = ds2.Tables["TEMPds2"];
+                    label14.Text = "有 " + dtTemp.Rows.Count.ToString() + " 筆";
+
+                    dataGridView1.DataSource = dtTemp;
                     dataGridView1.AutoResizeColumns();
                 }
 

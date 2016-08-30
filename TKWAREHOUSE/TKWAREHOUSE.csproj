@@ -77,6 +77,12 @@
     <Compile Include="FrmINVCheck.Designer.cs">
       <DependentUpon>FrmINVCheck.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmINVCOP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmINVCOP.Designer.cs">
+      <DependentUpon>FrmINVCOP.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmINVSTAYOVER.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,6 +114,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmINVCheck.resx">
       <DependentUpon>FrmINVCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmINVCOP.resx">
+      <DependentUpon>FrmINVCOP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmINVSTAYOVER.resx">
       <DependentUpon>FrmINVSTAYOVER.cs</DependentUpon>
