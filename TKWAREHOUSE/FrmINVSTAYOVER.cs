@@ -25,6 +25,7 @@ namespace TKWAREHOUSE
         DataSet ds = new DataSet();
 
         DataTable dt = new DataTable();
+        string tablename = null;
         DateTime StayDay;
 
         public FrmINVSTAYOVER()
@@ -76,25 +77,25 @@ namespace TKWAREHOUSE
                 sbSql.Append(@" ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002");
 
 
-
+                tablename = "TEMPds1";
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
                 sqlCmdBuilder = new SqlCommandBuilder(adapter);
                 sqlConn.Open();
                 ds.Clear();
-                adapter.Fill(ds, "TEMPds");
+                adapter.Fill(ds, tablename);
                 sqlConn.Close();
 
 
-                if (ds.Tables["TEMPds"].Rows.Count == 0)
+                if (ds.Tables[tablename].Rows.Count == 0)
                 {
                     label14.Text = "找不到資料";
                 }
                 else
                 {
-                    label14.Text = "有 " + ds.Tables["TEMPds"].Rows.Count.ToString() + " 筆";
+                    label14.Text = "有 " + ds.Tables[tablename].Rows.Count.ToString() + " 筆";
 
-                    dataGridView1.DataSource = ds.Tables["TEMPds"];
+                    dataGridView1.DataSource = ds.Tables[tablename];
                     dataGridView1.AutoResizeColumns();
                 }
 
@@ -129,7 +130,7 @@ namespace TKWAREHOUSE
             cs.TopBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
 
             Search();
-            dt = ds.Tables["TEMPds"];
+            dt = ds.Tables[tablename];
 
             if (dt.TableName != string.Empty)
             {
@@ -140,9 +141,31 @@ namespace TKWAREHOUSE
                 ws = wb.CreateSheet("Sheet1");
             }
 
-            ws.CreateRow(0);
+            ws.CreateRow(0);//第一行為欄位名稱
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                ws.GetRow(0).CreateCell(i).SetCellValue(dt.Columns[i].ColumnName);
+            }
 
-            
+            int j = 0;
+            if (tablename.Equals("TEMPds1"))
+            {
+                foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+                {
+                    ws.CreateRow(j + 1);
+                    ws.GetRow(j + 1).CreateCell(0).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0].ToString());
+                    ws.GetRow(j + 1).CreateCell(1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
+                    ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
+                    ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
+                    ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
+                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString()));
+                    ws.GetRow(j + 1).CreateCell(6).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[6].ToString());
+                    ws.GetRow(j + 1).CreateCell(7).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
+
+                    j++;
+                }
+            }
+
 
             if (Directory.Exists(@"c:\temp\"))
             {
