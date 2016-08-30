@@ -147,13 +147,14 @@ namespace TKWAREHOUSE
                     // 分組並計算  
 
                     var Query = from p in dtTemp.AsEnumerable()
-                                orderby p["MD003"]
-                                group p by p["MD003"] into g
+                                orderby p.Field<string>("MD003")
+                                group p by new { MD003 = p.Field<string>("MD003") , UNIT = p.Field<string>("UNIT") } into g
                                 select new
                                 {
                                     //MD003 = g.Key,
-                                    MD003 = g.Key,
-                                    NUM = g.Sum(p => Convert.ToDouble(p["NUM"]))
+                                    MD003 = g.Key.MD003,                                    
+                                    NUM = g.Sum(p => Convert.ToDouble(p.Field<string>("NUM"))),
+                                    UNIT = g.Key.UNIT
                                 };
 
 
