@@ -13,6 +13,7 @@ using NPOI.SS.UserModel;
 using System.Configuration;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.Util;
+using System.Reflection;
 
 namespace TKWAREHOUSE
 {
@@ -67,7 +68,7 @@ namespace TKWAREHOUSE
                 sbSql.Append(@"  FROM [TK].dbo.COPTD");
                 sbSql.Append(@"  LEFT JOIN [TK].dbo.INVMD ON TD004=MD001  AND MD002=TD010");
                 sbSql.Append(@"  LEFT JOIN [TK].dbo.BOMMC ON TD004=MC001");
-                sbSql.AppendFormat(@"  WHERE SUBSTRING(TD002,1,8)='{0}' AND TD008>0  AND TD002='20160830001'   ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  WHERE SUBSTRING(TD002,1,8)='{0}' AND TD008>0   ", dateTimePicker1.Value.ToString("yyyyMMdd"));
                 sbSql.Append(@"  GROUP BY TD004,TD010,MD002,MD004,MC001,MC002,MC004");
                 sbSql.Append(@"  ");
                
@@ -129,7 +130,7 @@ namespace TKWAREHOUSE
                                     DataRow row = dtTemp.NewRow();
                                     row["MD001"] = od2["MD001"].ToString();
                                     row["MD003"] = od2["MD003"].ToString();
-                                    row["NUM"] = Convert.ToDouble(od2["MD006"].ToString()) * BOMNum;
+                                    row["NUM"] = Convert.ToDouble(Convert.ToDouble(od2["MD006"].ToString()) * BOMNum);
                                     row["UNIT"] = od2["MD004"].ToString();
                                     dtTemp.Rows.Add(row);
                                 }
@@ -142,9 +143,24 @@ namespace TKWAREHOUSE
 
                     //dtTemp = ds.Tables["TEMPds1"];
                     //dtTemp = ds2.Tables["TEMPds2"];
-                    label14.Text = "有 " + dtTemp.Rows.Count.ToString() + " 筆";
 
-                    dataGridView1.DataSource = dtTemp;
+                    // 分組並計算 
+
+                    var Query = from p in dtTemp.AsEnumerable()
+                                orderby p["MD003"]
+                                group p by p["MD003"] into g
+                                select new
+                                {
+                                    //MD003 = g.Key,
+                                    MD003 = g.Key,
+                                    NUM = g.Sum(p => Convert.ToDouble(p["NUM"]))
+                                };
+
+
+                    
+                    //label14.Text = "有 " + dtTemp2.Rows.Count.ToString() + " 筆";
+
+                    dataGridView1.DataSource = Query.ToList();
                     dataGridView1.AutoResizeColumns();
                 }
 
@@ -159,6 +175,34 @@ namespace TKWAREHOUSE
             }
         }
 
+        static DataTable LinqQueryToDataTable<T>(IEnumerable<T> query)
+        {
+            DataTable tbl = new DataTable();
+            PropertyInfo[] props = null;
+            foreach (T item in query)
+            {
+                if (props == null) //尚未初始化
+                {
+                    Type t = item.GetType();
+                    props = t.GetProperties();
+                    foreach (PropertyInfo pi in props)
+                    {
+                        Type colType = pi.PropertyType;
+                        //針對Nullable<>特別處理
+                        if (colType.IsGenericType
+                            && colType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                            colType = colType.GetGenericArguments()[0];
+                        //建立欄位
+                        tbl.Columns.Add(pi.Name, colType);
+                    }
+                }
+                DataRow row = tbl.NewRow();
+                foreach (PropertyInfo pi in props)
+                    row[pi.Name] = pi.GetValue(item, null) ?? DBNull.Value;
+                tbl.Rows.Add(row);
+            }
+            return tbl;
+        }
         public void ExcelExport()
         {
 
@@ -179,7 +223,7 @@ namespace TKWAREHOUSE
             cs.TopBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
 
             Search();
-            dt = ds.Tables[tablename];
+            dt = dtTemp;
 
             if (dt.TableName != string.Empty)
             {
@@ -197,23 +241,18 @@ namespace TKWAREHOUSE
             }
 
             int j = 0;
-            if (tablename.Equals("TEMPds1"))
+            
+            foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
-                foreach (DataGridViewRow dr in this.dataGridView1.Rows)
-                {
-                    ws.CreateRow(j + 1);
-                    ws.GetRow(j + 1).CreateCell(0).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0].ToString());
-                    ws.GetRow(j + 1).CreateCell(1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
-                    ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
-                    ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
-                    ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
-                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString()));
-                    ws.GetRow(j + 1).CreateCell(6).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[6].ToString());
-                    ws.GetRow(j + 1).CreateCell(7).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
+                ws.CreateRow(j + 1);
+                ws.GetRow(j + 1).CreateCell(0).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0].ToString());
+                ws.GetRow(j + 1).CreateCell(1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
+                ws.GetRow(j + 1).CreateCell(2).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString()));
+                ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
 
-                    j++;
-                }
+                j++;
             }
+            
 
 
             if (Directory.Exists(@"c:\temp\"))
@@ -226,7 +265,7 @@ namespace TKWAREHOUSE
                 Directory.CreateDirectory(@"c:\temp\");
             }
             StringBuilder filename = new StringBuilder();
-            filename.AppendFormat(@"c:\temp\庫存呆滯表{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
+            filename.AppendFormat(@"c:\temp\訂單預計用量{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
 
             FileStream file = new FileStream(filename.ToString(), FileMode.Create);//產生檔案
             wb.Write(file);
