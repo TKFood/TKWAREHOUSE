@@ -144,7 +144,7 @@ namespace TKWAREHOUSE
                     //dtTemp = ds.Tables["TEMPds1"];
                     //dtTemp = ds2.Tables["TEMPds2"];
 
-                    // 分組並計算 
+                    // 分組並計算  
 
                     var Query = from p in dtTemp.AsEnumerable()
                                 orderby p["MD003"]
