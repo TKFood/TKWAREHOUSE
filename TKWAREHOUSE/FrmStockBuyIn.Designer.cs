@@ -104,13 +104,10 @@
             this.tableLayoutPanel1.Controls.Add(this.textBox3, 4, 6);
             this.tableLayoutPanel1.Controls.Add(this.label9, 5, 6);
             this.tableLayoutPanel1.Controls.Add(this.comboBox1, 6, 6);
-            this.tableLayoutPanel1.Controls.Add(this.button2, 7, 6);
             this.tableLayoutPanel1.Controls.Add(this.label7, 1, 12);
             this.tableLayoutPanel1.Controls.Add(this.comboBox3, 6, 12);
             this.tableLayoutPanel1.Controls.Add(this.textBox5, 4, 12);
             this.tableLayoutPanel1.Controls.Add(this.textBox6, 2, 12);
-            this.tableLayoutPanel1.Controls.Add(this.button3, 7, 12);
-            this.tableLayoutPanel1.Controls.Add(this.button4, 8, 12);
             this.tableLayoutPanel1.Controls.Add(this.textBox10, 2, 13);
             this.tableLayoutPanel1.Controls.Add(this.textBox9, 0, 13);
             this.tableLayoutPanel1.Controls.Add(this.button1, 4, 0);
@@ -124,6 +121,9 @@
             this.tableLayoutPanel1.Controls.Add(this.textBox8, 8, 16);
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 8, 15);
             this.tableLayoutPanel1.Controls.Add(this.button5, 9, 15);
+            this.tableLayoutPanel1.Controls.Add(this.button4, 9, 12);
+            this.tableLayoutPanel1.Controls.Add(this.button3, 8, 12);
+            this.tableLayoutPanel1.Controls.Add(this.button2, 8, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -332,17 +332,17 @@
             // 
             // comboBox1
             // 
+            this.tableLayoutPanel1.SetColumnSpan(this.comboBox1, 2);
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(542, 183);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(79, 20);
+            this.comboBox1.Size = new System.Drawing.Size(159, 20);
             this.comboBox1.TabIndex = 13;
             // 
             // button2
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button2.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.button2.Location = new System.Drawing.Point(627, 183);
+            this.button2.Location = new System.Drawing.Point(707, 183);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(74, 24);
             this.button2.TabIndex = 22;
@@ -363,10 +363,11 @@
             // 
             // comboBox3
             // 
+            this.tableLayoutPanel1.SetColumnSpan(this.comboBox3, 2);
             this.comboBox3.FormattingEnabled = true;
             this.comboBox3.Location = new System.Drawing.Point(542, 363);
             this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(79, 20);
+            this.comboBox3.Size = new System.Drawing.Size(159, 20);
             this.comboBox3.TabIndex = 24;
             // 
             // textBox5
@@ -385,9 +386,8 @@
             // 
             // button3
             // 
-            this.button3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button3.ForeColor = System.Drawing.Color.BlueViolet;
-            this.button3.Location = new System.Drawing.Point(627, 363);
+            this.button3.Location = new System.Drawing.Point(707, 363);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(74, 24);
             this.button3.TabIndex = 27;
@@ -397,9 +397,8 @@
             // 
             // button4
             // 
-            this.button4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button4.ForeColor = System.Drawing.Color.Red;
-            this.button4.Location = new System.Drawing.Point(707, 363);
+            this.button4.Location = new System.Drawing.Point(790, 363);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(77, 24);
             this.button4.TabIndex = 28;

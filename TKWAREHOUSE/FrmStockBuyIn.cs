@@ -92,7 +92,7 @@ namespace TKWAREHOUSE
            
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
-            String Sequel = "SELECT MC001,MC002 FROM CMSMC WITH (NOLOCK) ORDER BY MC001";
+            String Sequel = "SELECT MC001,(MC001+MC002) AS MC002 FROM CMSMC WITH (NOLOCK) ORDER BY MC001";
             SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -133,7 +133,7 @@ namespace TKWAREHOUSE
 
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
-            String Sequel = "SELECT MC001,MC002 FROM CMSMC WITH (NOLOCK) ORDER BY MC001";
+            String Sequel = "SELECT MC001,(MC001+MC002) AS MC002 FROM CMSMC WITH (NOLOCK) ORDER BY MC001";
             SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
