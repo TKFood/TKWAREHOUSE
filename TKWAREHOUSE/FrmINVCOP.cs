@@ -30,9 +30,11 @@ namespace TKWAREHOUSE
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
+        DataSet ds3 = new DataSet();
 
         DataTable dt = new DataTable();
         DataTable dtTemp = new DataTable();
+        DataTable dtTemp2 = new DataTable();
         DataColumn column1 = new DataColumn("MD001");
         DataColumn column2 = new DataColumn("MD003");
         DataColumn column3 = new DataColumn("NUM");
@@ -40,22 +42,33 @@ namespace TKWAREHOUSE
         string tablename = null;
         decimal COPNum = 0;
         double BOMNum = 0;
+        double FinalNum = 0;
 
         public FrmINVCOP()
         {
             InitializeComponent();
             dateTimePicker1.Value = DateTime.Now;
 
+
+
             dtTemp.Columns.Add(column1);
             dtTemp.Columns.Add(column2);
             dtTemp.Columns.Add(column3);
             dtTemp.Columns.Add(column4);
+
+            dtTemp2.Columns.Add("品號");
+            dtTemp2.Columns.Add("品名");
+            dtTemp2.Columns.Add("規格");
+            dtTemp2.Columns.Add("預計用量");
+            dtTemp2.Columns.Add("單位");
 
         }
 
         #region FUNCTION
         public void Search()
         {
+            dtTemp.Clear();
+            dtTemp2.Clear();
             try
             {
                 connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
@@ -157,11 +170,52 @@ namespace TKWAREHOUSE
                                     UNIT = g.Key.UNIT
                                 };
 
+                    //var dtQuery=from q in Query.AsEnumerable()
+                    //            orderby q.MD003
+                    //            select new
+                    //            {
+                    //                //MD003 = g.Key,
+                    //                MD003 = q.MD003,
+                    //                NUM = q.NUM,
+                    //                UNIT = q.UNIT
+                    //            };
+
+                    if(Query.Count()>=1)
+                    {
+                        foreach(var c in Query)
+                        {
+                            sbSql.Clear();
+                            sbSqlQuery.Clear();
+
+                            sbSql.AppendFormat(@" SELECT TOP 1 MB001,MB002,MB003 FROM [TK].dbo.INVMB WITH (NOLOCK) WHERE MB001='{0}'  ",c.MD003.ToString());
+
+                            adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                            sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                            sqlConn.Open();
+                            ds3.Clear();
+                            adapter.Fill(ds3, "TEMPds3");
+                            sqlConn.Close();
+
+                            if (ds3.Tables["TEMPds3"].Rows.Count >= 1)
+                            {                               
+                                DataRow row = dtTemp2.NewRow();
+                                row["品號"] = c.MD003;
+                                row["品名"] = ds3.Tables["TEMPds3"].Rows[0]["MB002"].ToString();
+                                row["規格"] = ds3.Tables["TEMPds3"].Rows[0]["MB003"].ToString();
+                                row["預計用量"] = Convert.ToDouble(c.NUM);
+                                row["單位"] = c.UNIT;
+                                dtTemp2.Rows.Add(row);
+                            }
+                        }
+                    }
 
                     
-                    //label14.Text = "有 " + dtTemp2.Rows.Count.ToString() + " 筆";
 
-                    dataGridView1.DataSource = Query.ToList();
+                    //dataGridView1.DataSource = dtQuery.ToList();
+                    label14.Text = "有 " + dtTemp2.Rows.Count.ToString() + " 筆";
+                    dataGridView1.Rows.Clear();
+                    dataGridView1.DataSource = dtTemp2;
                     dataGridView1.AutoResizeColumns();
                 }
 
@@ -224,7 +278,7 @@ namespace TKWAREHOUSE
             cs.TopBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
 
             Search();
-            dt = dtTemp;
+            dt = dtTemp2;
 
             if (dt.TableName != string.Empty)
             {
@@ -242,14 +296,15 @@ namespace TKWAREHOUSE
             }
 
             int j = 0;
-            
+            int k = dataGridView1.Rows.Count;
             foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
                 ws.CreateRow(j + 1);
                 ws.GetRow(j + 1).CreateCell(0).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0].ToString());
                 ws.GetRow(j + 1).CreateCell(1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
-                ws.GetRow(j + 1).CreateCell(2).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString()));
-                ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
+                ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
+                ws.GetRow(j + 1).CreateCell(3).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString()));
+                ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
 
                 j++;
             }
