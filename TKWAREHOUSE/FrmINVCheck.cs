@@ -65,10 +65,19 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
+                
+                if(checkBox1.Checked==true)
+                {
+                    sbSqlQuery.AppendFormat(" AND LA004='{0}'",DateTime.Now.ToString("yyyyMMdd"));
+                }
+                else
+                {
+                    sbSqlQuery.Append(" ");
+                }
                    
                 sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量'  ");
                 sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
-                sbSql.AppendFormat(@" WHERE LA001 LIKE '4%' AND (LA009='{0}')",comboBox1.SelectedValue.ToString());
+                sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}",comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
                 sbSql.Append(@" GROUP BY  LA001,MB002,MB003");
                 sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
                 sbSql.Append(@" ORDER BY  LA001,MB002,MB003");
