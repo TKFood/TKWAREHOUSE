@@ -29,9 +29,32 @@ namespace TKWAREHOUSE
         public FrmINVCheck()
         {
             InitializeComponent();
+            comboboxload();
         }
 
         #region FUNCTION
+        public void comboboxload()
+        {
+
+            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
+            String Sequel = "SELECT MC001,MC001+MC002 AS MC002 FROM CMSMC WITH (NOLOCK) ORDER BY MC001";
+            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("MC001", typeof(string));
+            dt.Columns.Add("MC002", typeof(string));
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "MC001";
+            comboBox1.DisplayMember = "MC002";
+            sqlConn.Close();
+
+            comboBox1.SelectedValue = "20001";
+
+        }
+
         public void Search()
         {
             try
@@ -45,7 +68,7 @@ namespace TKWAREHOUSE
                    
                 sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量'  ");
                 sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
-                sbSql.Append(@" WHERE LA001 LIKE '4%' AND (LA009='20001')");
+                sbSql.AppendFormat(@" WHERE LA001 LIKE '4%' AND (LA009='{0}')",comboBox1.SelectedValue.ToString());
                 sbSql.Append(@" GROUP BY  LA001,MB002,MB003");
                 sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
                 sbSql.Append(@" ORDER BY  LA001,MB002,MB003");
