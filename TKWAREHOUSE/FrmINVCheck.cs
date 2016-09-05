@@ -68,7 +68,8 @@ namespace TKWAREHOUSE
                 
                 if(checkBox1.Checked==true)
                 {
-                    sbSqlQuery.AppendFormat(" AND LA004='{0}'",DateTime.Now.ToString("yyyyMMdd"));
+                    sbSqlQuery.AppendFormat("AND LA001 IN (SELECT LA001 FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA004='{0}')", dateTimePicker1.Value.ToString("yyyyMMdd"));
+                    sbSqlQuery.AppendFormat("  AND LA004<='{0}'", dateTimePicker1.Value.ToString("yyyyMMdd"));
                 }
                 else
                 {
