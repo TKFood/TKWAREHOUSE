@@ -204,6 +204,10 @@ namespace TKWAREHOUSE
                             string[] sArray = Comment.Split('N');
                             Comment = sArray[0].ToString();
                         }
+                        else
+                        {
+                            Comment = null;
+                        }
                     }
                     catch
                     {

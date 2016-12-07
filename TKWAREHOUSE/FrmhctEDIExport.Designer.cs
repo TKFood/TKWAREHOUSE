@@ -108,7 +108,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1070, 794);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1014, 733);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // label1
@@ -202,7 +202,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1070, 794);
+            this.ClientSize = new System.Drawing.Size(1014, 733);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "FrmhctEDIExport";
             this.Text = "FrmhctEDIExport";
