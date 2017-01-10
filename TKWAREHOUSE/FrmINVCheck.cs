@@ -183,7 +183,7 @@ namespace TKWAREHOUSE
                     ws.CreateRow(j + 1);
                     ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
                     ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt16(dt.Rows[i][3].ToString()));
+                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
 
                     j++;
                 }
