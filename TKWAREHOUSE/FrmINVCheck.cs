@@ -23,6 +23,7 @@ namespace TKWAREHOUSE
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
+        DataSet ds2 = new DataSet();
 
         DataTable dt = new DataTable();
 
@@ -65,8 +66,10 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
-                
-                if(checkBox1.Checked==true)
+                ds.Clear();
+
+
+                if (checkBox1.Checked==true)
                 {
                     sbSqlQuery.AppendFormat("AND LA001 IN (SELECT LA001 FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA004='{0}'   AND LA009='{1}')", dateTimePicker1.Value.ToString("yyyyMMdd"), comboBox1.SelectedValue.ToString());
                     sbSqlQuery.AppendFormat("  AND LA004<='{0}'", dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -75,22 +78,53 @@ namespace TKWAREHOUSE
                 {
                     sbSqlQuery.Append(" ");
                 }
-                   
-                sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量'  ");
-                sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
-                sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}",comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
-                sbSql.Append(@" GROUP BY  LA001,MB002,MB003");
-                sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
-                sbSql.Append(@" ORDER BY  LA001,MB002,MB003");
+
+                if (comboBox1.Text.Equals("20006     原料倉"))
+                {
+                    sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ");
+                    sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
+                    sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
+                    sbSql.Append(@" GROUP BY  LA001,MB002,MB003");
+                    sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
+                    sbSql.Append(@" ORDER BY  LA001,MB002,MB003");
+
+                    adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                    sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                    sqlConn.Open();
+                    ds2.Clear();
 
 
-                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    adapter.Fill(ds2, "TEMPds");
 
-                sqlCmdBuilder = new SqlCommandBuilder(adapter);
-                sqlConn.Open();
-                ds.Clear();
-                adapter.Fill(ds, "TEMPds");
-                sqlConn.Close();
+                    sqlConn.Close();
+                    ds = ds2;
+                }
+                else
+                {
+                    sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量'  ");
+                    sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
+                    sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
+                    sbSql.Append(@" GROUP BY  LA001,MB002,MB003");
+                    sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
+                    sbSql.Append(@" ORDER BY  LA001,MB002,MB003");
+
+                    adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                    sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                    sqlConn.Open();
+                    ds.Clear();
+
+
+                    adapter.Fill(ds, "TEMPds");
+
+                    sqlConn.Close();
+
+
+                }
+
+
+                
 
 
                 if (ds.Tables["TEMPds"].Rows.Count == 0)
@@ -100,7 +134,7 @@ namespace TKWAREHOUSE
                 else
                 {
                     label14.Text = "有 " + ds.Tables["TEMPds"].Rows.Count.ToString() + " 筆";
-
+                  
                     dataGridView1.DataSource = ds.Tables["TEMPds"];
                     dataGridView1.AutoResizeColumns();
                 }
@@ -112,7 +146,7 @@ namespace TKWAREHOUSE
             }
             finally
             {
-
+                sqlConn.Close();
             }
         }
 
@@ -173,77 +207,153 @@ namespace TKWAREHOUSE
             //    }
             //}
 
-
-            int j = 1;
-            int k = 0;
-            if (dt.Rows.Count <= 40)
+            if(comboBox1.Text.Equals("20006     原料倉"))
             {
-                for (int i = 0; i < dt.Rows.Count; i++)
+                int j = 1;
+                int k = 0;
+                if (dt.Rows.Count <= 40)
                 {
-                    ws.CreateRow(j + 1);
-                    ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToDouble(dt.Rows[i][3].ToString()));
 
-                    j++;
+                        j++;
+                    }
+
+                }
+                else if (dt.Rows.Count <= 80 && dt.Rows.Count >= 41)
+                {
+                    for (int i = 0; i <= 40; i++)
+                    {
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToDouble(dt.Rows[i][3].ToString()));
+                        if ((i + 41) < dt.Rows.Count)
+                        {
+                            ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToDouble(dt.Rows[i + 41][3].ToString()));
+                        }
+
+
+                        j++;
+                    }
                 }
 
-            }
-            else if (dt.Rows.Count <= 80 && dt.Rows.Count >= 41)
-            {
-                for (int i = 0; i <= 40; i++)
+                else if (dt.Rows.Count <= 120 && dt.Rows.Count >= 81)
                 {
-                    ws.CreateRow(j + 1);
-                    ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
-                    if ((i + 41) < dt.Rows.Count)
+                    for (int i = 0; i <= 40; i++)
                     {
-                        ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToDouble(dt.Rows[i][3].ToString()));
+                        if ((i + 41) < dt.Rows.Count)
+                        {
+                            ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToDouble(dt.Rows[i + 41][3].ToString()));
+                        }
+                        if ((i + 81) < dt.Rows.Count)
+                        {
+                            ws.GetRow(j + 1).CreateCell(k + 6).SetCellValue(dt.Rows[i + 81][1].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 7).SetCellValue(dt.Rows[i + 81][2].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 8).SetCellValue(Convert.ToDouble(dt.Rows[i + 81][3].ToString()));
+                        }
+                        j++;
                     }
-
-
-                    j++;
                 }
-            }
-
-            else if (dt.Rows.Count <= 120 && dt.Rows.Count >= 81)
-            {
-                for (int i = 0; i <= 40; i++)
+                else
                 {
-                    ws.CreateRow(j + 1);
-                    ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k+1).SetCellValue(dt.Rows[i][2].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
-                    if ((i + 41) < dt.Rows.Count)
+                    foreach (DataGridViewRow dr in this.dataGridView1.Rows)
                     {
-                        ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
+
+                        j++;
                     }
-                    if ((i + 81) < dt.Rows.Count)
-                    {
-                        ws.GetRow(j + 1).CreateCell(k + 6).SetCellValue(dt.Rows[i + 81][1].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 7).SetCellValue(dt.Rows[i + 81][2].ToString());
-                        ws.GetRow(j + 1).CreateCell(k + 8).SetCellValue(Convert.ToInt32(dt.Rows[i + 81][3].ToString()));
-                    }
-                    j++;
                 }
             }
             else
             {
-                foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+                int j = 1;
+                int k = 0;
+                if (dt.Rows.Count <= 40)
                 {
-                    ws.CreateRow(j + 1);
-                    ws.GetRow(j + 1).CreateCell(k).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
-                    ws.GetRow(j + 1).CreateCell(k+1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
-                    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
-                   
-                    j++;
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
+
+                        j++;
+                    }
+
+                }
+                else if (dt.Rows.Count <= 80 && dt.Rows.Count >= 41)
+                {
+                    for (int i = 0; i <= 40; i++)
+                    {
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
+                        if ((i + 41) < dt.Rows.Count)
+                        {
+                            ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
+                        }
+
+
+                        j++;
+                    }
+                }
+
+                else if (dt.Rows.Count <= 120 && dt.Rows.Count >= 81)
+                {
+                    for (int i = 0; i <= 40; i++)
+                    {
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(dt.Rows[i][1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(dt.Rows[i][2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(Convert.ToInt32(dt.Rows[i][3].ToString()));
+                        if ((i + 41) < dt.Rows.Count)
+                        {
+                            ws.GetRow(j + 1).CreateCell(k + 3).SetCellValue(dt.Rows[i + 41][1].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 4).SetCellValue(dt.Rows[i + 41][2].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 5).SetCellValue(Convert.ToInt32(dt.Rows[i + 41][3].ToString()));
+                        }
+                        if ((i + 81) < dt.Rows.Count)
+                        {
+                            ws.GetRow(j + 1).CreateCell(k + 6).SetCellValue(dt.Rows[i + 81][1].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 7).SetCellValue(dt.Rows[i + 81][2].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 8).SetCellValue(Convert.ToInt32(dt.Rows[i + 81][3].ToString()));
+                        }
+                        j++;
+                    }
+                }
+                else
+                {
+                    foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+                    {
+                        ws.CreateRow(j + 1);
+                        ws.GetRow(j + 1).CreateCell(k).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
+                        ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
+
+                        j++;
+                    }
                 }
             }
+            
 
             
 
