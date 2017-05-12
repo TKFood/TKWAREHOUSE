@@ -107,6 +107,12 @@
     <Compile Include="FrmParent.Designer.cs">
       <DependentUpon>FrmParent.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmREPORT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmREPORT.Designer.cs">
+      <DependentUpon>FrmREPORT.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmStockBuyIn.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmParent.resx">
       <DependentUpon>FrmParent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmREPORT.resx">
+      <DependentUpon>FrmREPORT.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmStockBuyIn.resx">
       <DependentUpon>FrmStockBuyIn.cs</DependentUpon>
