@@ -85,7 +85,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1012, 733);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1012, 638);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // dataGridView1
@@ -184,7 +184,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1012, 733);
+            this.ClientSize = new System.Drawing.Size(1012, 638);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "FrmINVCheck";
             this.Text = "FrmINVCheck";
