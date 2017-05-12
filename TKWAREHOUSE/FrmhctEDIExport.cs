@@ -148,7 +148,7 @@ namespace TKWAREHOUSE
             {
                 STR.AppendFormat(@"   SELECT  TF001 AS '單別',TF002  AS '單號',TF003  AS '出貨日'");
                 STR.AppendFormat(@"   ,''  AS '收貨人代號',TF006  AS '客戶',TF016  AS '地址',TF006  AS '收貨人' ");
-                STR.AppendFormat(@"   ,''  AS '電話',TF023  AS '代收貸款',TF003  AS '指定日期' ");
+                STR.AppendFormat(@"   ,''  AS '電話',0  AS '代收貸款',TF003  AS '指定日期' ");
                 STR.AppendFormat(@"   ,'' AS '指定時間'");
                 STR.AppendFormat(@"   ,TF014 AS '備註'   ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTF WITH (NOLOCK) ");
@@ -160,6 +160,21 @@ namespace TKWAREHOUSE
 
                 STR.AppendFormat(@"  ");
                 tablename = "TEMPds3";
+            }
+            else if (comboBox1.Text.ToString().Equals("全聯寄售單"))
+            {
+                STR.AppendFormat(@"  SELECT  TA001 AS '單別',TA002  AS '單號',TA014  AS '出貨日' ");
+                STR.AppendFormat(@"  ,''  AS '收貨人代號',TA024  AS '客戶',TA027  AS '地址',TA024  AS '收貨人'  ");
+                STR.AppendFormat(@"   ,TA025  AS '電話',0  AS '代收貸款',TA014  AS '指定日期'");
+                STR.AppendFormat(@"   ,'' AS '指定時間' ");
+                STR.AppendFormat(@"   ,TA030 AS '備註' ");
+                STR.AppendFormat(@"   FROM [TK].dbo.INVTA WITH (NOLOCK) ");
+                STR.AppendFormat(@"   WHERE TA001='A128'");
+                STR.AppendFormat(@"  AND TA014>='{0}' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  ");
+
+                STR.AppendFormat(@"  ");
+                tablename = "TEMPds4";
             }
 
             return STR;
