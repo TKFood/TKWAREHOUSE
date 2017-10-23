@@ -121,6 +121,27 @@ namespace TKWAREHOUSE
                     sqlConn.Close();
                     ds = ds2;
                 }
+                else if (comboBox1.Text.Equals("20005     半成品倉"))
+                {
+                    sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ");
+                    sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
+                    sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
+                    sbSql.Append(@" GROUP BY  LA001,MB002,MB003");
+                    sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
+                    sbSql.Append(@" ORDER BY  LA001,MB002,MB003");
+
+                    adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                    sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                    sqlConn.Open();
+                    ds2.Clear();
+
+
+                    adapter.Fill(ds2, "TEMPds");
+
+                    sqlConn.Close();
+                    ds = ds2;
+                }
                 else
                 {
                     sbSql.Append(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量'  ");
