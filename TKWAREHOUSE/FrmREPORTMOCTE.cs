@@ -76,17 +76,7 @@ namespace TKWAREHOUSE
 
         public void SETFASTREPORT()
         {
-            //string SQL;
-            //report1 = new Report();
-            //report1.Load(@"REPORT\銷售預估.frx");
-
-            //report1.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
-
-            //TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            //SQL = SETFASETSQL();
-            //Table.SelectCommand = SQL;
-            //report1.Preview = previewControl1;
-            //report1.Show();
+           
 
 
         }
