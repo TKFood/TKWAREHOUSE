@@ -26,7 +26,7 @@ using FastReport.Data;
 
 namespace TKWAREHOUSE
 {
-    public partial class FrmREPORTMOCTD : Form
+    public partial class FrmREPORTMOCTE : Form
     {
         SqlConnection sqlConn = new SqlConnection();
         SqlCommand sqlComm = new SqlCommand();
@@ -45,7 +45,7 @@ namespace TKWAREHOUSE
         string SALSESID = null;
         int result;
 
-        public FrmREPORTMOCTD()
+        public FrmREPORTMOCTE()
         {
             InitializeComponent();
             combobox2load();

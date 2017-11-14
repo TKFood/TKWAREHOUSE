@@ -126,11 +126,11 @@
     <Compile Include="FrmREPORT.Designer.cs">
       <DependentUpon>FrmREPORT.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmREPORTMOCTD.cs">
+    <Compile Include="FrmREPORTMOCTE.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmREPORTMOCTD.Designer.cs">
-      <DependentUpon>FrmREPORTMOCTD.cs</DependentUpon>
+    <Compile Include="FrmREPORTMOCTE.Designer.cs">
+      <DependentUpon>FrmREPORTMOCTE.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmStockBuyIn.cs">
       <SubType>Form</SubType>
@@ -164,8 +164,8 @@
     <EmbeddedResource Include="FrmREPORT.resx">
       <DependentUpon>FrmREPORT.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmREPORTMOCTD.resx">
-      <DependentUpon>FrmREPORTMOCTD.cs</DependentUpon>
+    <EmbeddedResource Include="FrmREPORTMOCTE.resx">
+      <DependentUpon>FrmREPORTMOCTE.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmStockBuyIn.resx">
       <DependentUpon>FrmStockBuyIn.cs</DependentUpon>
