@@ -199,8 +199,9 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "原料",
-            "物料"});
-            this.comboBox1.Location = new System.Drawing.Point(123, 8);
+            "物料",
+            "原料+物料"});
+            this.comboBox1.Location = new System.Drawing.Point(123, 10);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 8;
@@ -211,7 +212,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.comboBox2, 2);
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(123, 50);
+            this.comboBox2.Location = new System.Drawing.Point(123, 48);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(234, 24);
             this.comboBox2.TabIndex = 9;

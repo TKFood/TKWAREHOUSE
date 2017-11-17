@@ -124,6 +124,19 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 ");
                 FASTSQL.AppendFormat(@" ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 ");
             }
+            else if (comboBox1.Text.ToString().Equals("原料+物料"))
+            {
+                FASTSQL.AppendFormat(@" SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(TE005) AS TE005,TE010 ");
+                FASTSQL.AppendFormat(@" FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE ");
+                FASTSQL.AppendFormat(@" WHERE MD002 LIKE '新%' ");
+                FASTSQL.AppendFormat(@" AND MD001=TC005 ");
+                FASTSQL.AppendFormat(@" AND TC001=TE001 AND TC002=TE002 ");
+                FASTSQL.AppendFormat(@" AND (TE004 LIKE '1%' OR TE004 LIKE '2%' )");
+                FASTSQL.AppendFormat(@" AND TC003>={0}  AND TC003<={1} ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" AND MD002='{0}' ", comboBox2.Text.ToString());
+                FASTSQL.AppendFormat(@" GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 ");
+                FASTSQL.AppendFormat(@" ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 ");
+            }
 
 
             FASTSQL.AppendFormat(@"  ");
