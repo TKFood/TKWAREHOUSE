@@ -85,7 +85,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
                     sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
                     sbSql.Append(@" GROUP BY  LA001,MB002,MB003,LA016");
-                    sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
+                    sbSql.Append(@" HAVING SUM(LA005*LA011)<>0");
                     sbSql.Append(@" ORDER BY  LA001,MB002,MB003,LA016");
 
                     adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -106,7 +106,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
                     sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
                     sbSql.Append(@" GROUP BY  LA001,MB002,MB003,LA016");
-                    sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
+                    sbSql.Append(@" HAVING SUM(LA005*LA011)<>0");
                     sbSql.Append(@" ORDER BY  LA001,MB002,MB003,LA016");
 
                     adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -127,7 +127,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
                     sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
                     sbSql.Append(@" GROUP BY  LA001,MB002,MB003,LA016");
-                    sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
+                    sbSql.Append(@" HAVING SUM(LA005*LA011)<>0");
                     sbSql.Append(@" ORDER BY  LA001,MB002,MB003,LA016");
 
                     adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -148,7 +148,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
                     sbSql.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
                     sbSql.Append(@" GROUP BY  LA001,MB002,MB003,LA016");
-                    sbSql.Append(@" HAVING SUM(LA005*LA011)>=1");
+                    sbSql.Append(@" HAVING SUM(LA005*LA011)<>0");
                     sbSql.Append(@" ORDER BY  LA001,MB002,MB003,LA016");
 
                     adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
