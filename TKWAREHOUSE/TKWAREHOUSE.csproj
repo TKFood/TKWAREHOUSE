@@ -81,6 +81,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrmhctEDI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmhctEDI.Designer.cs">
+      <DependentUpon>FrmhctEDI.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmhctEDIExport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +149,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FrmhctEDI.resx">
+      <DependentUpon>FrmhctEDI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmhctEDIExport.resx">
       <DependentUpon>FrmhctEDIExport.cs</DependentUpon>
     </EmbeddedResource>
