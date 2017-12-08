@@ -21,6 +21,9 @@ using NPOI.SS.UserModel;
 using System.Configuration;
 using NPOI.XSSF.UserModel;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Web;
+
 
 namespace TKWAREHOUSE
 {
@@ -225,6 +228,68 @@ namespace TKWAREHOUSE
             }           
 
         }
+        public void SEARCHEDI()
+        {
+            comp_addr("");
+        }
+
+        public string[] comp_addr(string addr)
+        {
+            //[0]到著站4碼 [1]到著站簡碼 [2]郵遞區號 [3]到著站中文 [4]配區
+            //需參考 system.web
+            Encoding myEncoding = Encoding.GetEncoding("big5");
+            WebClient client = new WebClient();
+
+            //addr = string.Format("http://is1fax.hct.com.tw:8080/GET_ERSTNO/Addr_Compare.aspx?addr={0}", HttpUtility.UrlEncode(addr, myEncoding));
+
+            addr = string.Format("http://is1fax.hct.com.tw/Webedi_Erstno/Addr_Compare.aspx?USER={0}&GROUP=1&ADDR={1}", HttpUtility.UrlEncode("01634640214", myEncoding), HttpUtility.UrlEncode("高雄市七賢一路311號", myEncoding));
+
+            byte[] bResult = client.DownloadData(addr);
+
+            string result = Encoding.GetEncoding(950).GetString(bResult);
+
+            string content = result;
+            string[] resultString = Regex.Split(content, "<BR>", RegexOptions.IgnoreCase);
+            //foreach (string i in resultString)
+            //{
+            //    MessageBox.Show(i);
+            //}
+
+            string Qsend = resultString[0].ToString();
+            int pos = Qsend.Length-2;
+            string send = Qsend.Substring(Qsend.IndexOf("送貨地址：") + 5, pos);
+            MessageBox.Show(send);
+
+
+            //string send= result.Substring(result.IndexOf("送貨地址：") + 6, startIndex+1);
+            //string erstno_4 = result.Substring(result.IndexOf("到著站四碼：") + 6, 4);
+            //string erstno = result.Substring(result.IndexOf("到著站簡碼：") + 6, 3);
+            //string erstno_name = result.Substring(result.IndexOf("到著站中文：") + 6, 2);
+            //string post = result.Substring(result.IndexOf("郵遞區號：") + 5, 3);            
+            //string diff = result.Substring(result.IndexOf("優勢困難配送： ") + 6, 3);
+
+            //if (erstno_4 == "<BR>")
+            //{
+            //    erstno_4 = "";
+            //}
+            //if (post == "<BR")
+            //{
+            //    post = "";
+
+            //}
+            //string[] strData = new string[6];
+            //strData[0] = send;
+            //strData[1] = erstno_4;
+            //strData[2] = erstno;
+            //strData[3] = erstno_name;
+            //strData[4] = post;
+            //strData[5] = diff;
+
+            //return strData;
+
+            return null;
+
+        }
         #endregion
 
         #region BUTTON
@@ -232,10 +297,14 @@ namespace TKWAREHOUSE
         {
             Search();
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SEARCHEDI();
+        }
 
 
         #endregion
 
-       
+
     }
 }
