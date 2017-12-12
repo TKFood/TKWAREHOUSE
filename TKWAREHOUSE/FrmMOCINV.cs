@@ -38,6 +38,7 @@ namespace TKWAREHOUSE
         DataSet ds = new DataSet();
 
         DataTable dt = new DataTable();
+        string tablename = null;
 
         public FrmMOCINV()
         {
@@ -94,6 +95,81 @@ namespace TKWAREHOUSE
             #endregion
         }
 
+        public void SearchMOC()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(dateTimePicker1.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker2.Value.ToString("yyyyMMdd")))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sbSql.Clear();
+                    sbSqlQuery.Clear();
+                    sbSql = SETsbSql();
+
+
+                    adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder = new SqlCommandBuilder(adapter);
+
+                    sqlConn.Open();
+                    ds.Clear();
+                    adapter.Fill(ds, tablename);
+                    sqlConn.Close();
+
+
+                    if (ds.Tables[tablename].Rows.Count == 0)
+                    {
+                        dataGridView1.DataSource = null;
+                    }
+                    else
+                    {
+                    
+                        dataGridView1.DataSource = ds.Tables[tablename];
+                        dataGridView1.AutoResizeColumns();
+                    }
+                }
+                else
+                {
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public StringBuilder SETsbSql()
+        {
+            StringBuilder STR = new StringBuilder();
+
+            STR.AppendFormat(@"  SELECT TB003 AS '品號',TB012 AS '品名',SUM(TB004) AS 數量");
+            STR.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
+            STR.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
+            STR.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            STR.AppendFormat(@"  AND TB003='101001001'");
+            STR.AppendFormat(@"  GROUP BY TB003,TB012");
+            STR.AppendFormat(@"  ORDER BY TB003,TB012");
+            STR.AppendFormat(@"  ");
+            STR.AppendFormat(@"  ");
+            
+
+
+            STR.AppendFormat(@"  ");
+            tablename = "TEMPds1";
+      
+          
+
+            return STR;
+        }
 
         #endregion
 
@@ -101,5 +177,9 @@ namespace TKWAREHOUSE
 
         #endregion
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SearchMOC();
+        }
     }
 }
