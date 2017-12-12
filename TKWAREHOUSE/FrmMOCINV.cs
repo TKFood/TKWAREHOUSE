@@ -36,6 +36,7 @@ namespace TKWAREHOUSE
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
+        DataSet ds2 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -171,6 +172,71 @@ namespace TKWAREHOUSE
             return STR;
         }
 
+        public void  SearchINV()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(dateTimePicker1.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker2.Value.ToString("yyyyMMdd")))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(@" SELECT LA009 AS '倉庫',LA016  AS '批號',SUM(LA005*LA011)  AS '庫存量' ");
+                    sbSql.AppendFormat(@" FROM INVLA");
+                    sbSql.AppendFormat(@" WHERE LA009='20006'");
+                    sbSql.AppendFormat(@" AND LA001 IN (SELECT TB003");
+                    sbSql.AppendFormat(@" FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
+                    sbSql.AppendFormat(@" WHERE TA001=TB001 AND TA002=TB002");
+                    sbSql.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@" AND TB003='101001001'");
+                    sbSql.AppendFormat(@" GROUP BY TB003");
+                    sbSql.AppendFormat(@" )");
+                    sbSql.AppendFormat(@" GROUP BY LA009,LA016");
+                    sbSql.AppendFormat(@" HAVING  SUM(LA005*LA011)>0");
+                    sbSql.AppendFormat(@" ORDER BY LA009,LA016");
+                    sbSql.AppendFormat(@" ");
+
+
+
+                    adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder = new SqlCommandBuilder(adapter);
+
+                    sqlConn.Open();
+                    ds2.Clear();
+                    adapter.Fill(ds2, tablename);
+                    sqlConn.Close();
+
+
+                    if (ds2.Tables[tablename].Rows.Count == 0)
+                    {
+                        dataGridView2.DataSource = null;
+                    }
+                    else
+                    {
+
+                        dataGridView2.DataSource = ds2.Tables[tablename];
+                        dataGridView2.AutoResizeColumns();
+                    }
+                }
+                else
+                {
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -180,6 +246,11 @@ namespace TKWAREHOUSE
         private void button1_Click(object sender, EventArgs e)
         {
             SearchMOC();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SearchINV();
         }
     }
 }
