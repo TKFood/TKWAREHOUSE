@@ -170,9 +170,10 @@ namespace TKWAREHOUSE
             STR.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             //STR.AppendFormat(@"  AND TB003='101002001'");
             STR.AppendFormat(@"  AND( TB003 LIKE '1%' OR TB003 LIKE '2%')");
+            STR.AppendFormat(@"  AND( TA021 LIKE '02%' OR TA021 LIKE '03%' OR TA021 LIKE '04%' OR TA021 LIKE '09%') ");
             STR.AppendFormat(@"  GROUP BY TB003,TB012");
             STR.AppendFormat(@"  ORDER BY TB003,TB012");
-            STR.AppendFormat(@"  ");
+            
             STR.AppendFormat(@"  ");
             
 
@@ -203,12 +204,14 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@" FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
                     sbSql.AppendFormat(@" WHERE TA001=TB001 AND TA002=TB002");
                     sbSql.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@"  AND( TA021 LIKE '02%' OR TA021 LIKE '03%' OR TA021 LIKE '04%' OR TA021 LIKE '09%') ");
+                    sbSql.AppendFormat(@"  AND( TB003 LIKE '1%' OR TB003 LIKE '2%')");
                     //sbSql.AppendFormat(@" AND TB003='101002001'");
                     sbSql.AppendFormat(@" GROUP BY TB003");
                     sbSql.AppendFormat(@" )");
                     sbSql.AppendFormat(@" GROUP BY LA009,LA001,LA016");
                     sbSql.AppendFormat(@" HAVING  SUM(LA005*LA011)>0");
-                    sbSql.AppendFormat(@" ORDER BY LA009,LA001,LA016");
+                    sbSql.AppendFormat(@" ORDER BY LA001,LA009,LA016");
                     sbSql.AppendFormat(@" ");
 
 
@@ -317,6 +320,8 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@" AND LA001 IN (SELECT TB003");
                     sbSql.AppendFormat(@" FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
                     sbSql.AppendFormat(@" WHERE TA001=TB001 AND TA002=TB002");
+                    sbSql.AppendFormat(@"  AND( TA021 LIKE '02%' OR TA021 LIKE '03%' OR TA021 LIKE '04%' OR TA021 LIKE '09%') ");
+                    sbSql.AppendFormat(@"  AND( TB003 LIKE '1%' OR TB003 LIKE '2%')");
                     sbSql.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                     sbSql.AppendFormat(@" AND TB003='{0}'", MB001);
                     sbSql.AppendFormat(@" GROUP BY TB003");
