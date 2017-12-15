@@ -41,6 +41,7 @@ namespace TKWAREHOUSE
         DataSet ds = new DataSet();
 
         DataTable dt = new DataTable();
+        DataTable ADDDT = new DataTable();
 
         string Id;
         string Name;
@@ -58,13 +59,26 @@ namespace TKWAREHOUSE
         public FrmhctEDI()
         {
             InitializeComponent();
+
+            //送貨地址-到著站四碼-到著站簡碼-到著站中文-郵遞區號-優勢困難配送
+            ADDDT.Columns.AddRange(new DataColumn[7] {
+                 new DataColumn("ID", typeof(string)),
+                 new DataColumn("送貨地址", typeof(string)),
+                 new DataColumn("到著站四碼", typeof(string)),
+                 new DataColumn("到著站簡碼", typeof(string)),
+                 new DataColumn("到著站中文", typeof(string)),
+                 new DataColumn("郵遞區號", typeof(string)),
+                 new DataColumn("優勢困難配送", typeof(string))
+            });
         }
 
         #region FUNCTION
         private void FrmhctEDI_Load(object sender, EventArgs e)
         {
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;      //奇數列顏色
-
+            dataGridView2.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;
+            
+            
             //先建立個 CheckBox 欄
             DataGridViewCheckBoxColumn cbCol = new DataGridViewCheckBoxColumn();
             cbCol.Width = 120;   //設定寬度
@@ -230,19 +244,30 @@ namespace TKWAREHOUSE
         }
         public void SEARCHEDI()
         {
-            comp_addr("");
+            ADDDT.Clear();
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {                
+                if(!string.IsNullOrEmpty(row.Cells["地址"].Value.ToString()))
+                {
+                    comp_addr(row.Cells["地址"].Value.ToString());
+                }
+            }
+
+            if(ADDDT.Rows.Count>=1)
+            {
+                dataGridView2.DataSource = ADDDT;
+            }
         }
 
-        public string[] comp_addr(string addr)
+        public void comp_addr(string addr)
         {
             //[0]到著站4碼 [1]到著站簡碼 [2]郵遞區號 [3]到著站中文 [4]配區
             //需參考 system.web
             Encoding myEncoding = Encoding.GetEncoding("big5");
             WebClient client = new WebClient();
 
-            //addr = string.Format("http://is1fax.hct.com.tw:8080/GET_ERSTNO/Addr_Compare.aspx?addr={0}", HttpUtility.UrlEncode(addr, myEncoding));
-
-            addr = string.Format("http://is1fax.hct.com.tw/Webedi_Erstno/Addr_Compare.aspx?USER={0}&GROUP=1&ADDR={1}", HttpUtility.UrlEncode("01634640214", myEncoding), HttpUtility.UrlEncode("高雄市七賢一路311號", myEncoding));
+            addr = string.Format("http://is1fax.hct.com.tw/Webedi_Erstno/Addr_Compare.aspx?USER={0}&GROUP=1&ADDR={1}", HttpUtility.UrlEncode("01634640214", myEncoding), HttpUtility.UrlEncode(addr, myEncoding));
 
             byte[] bResult = client.DownloadData(addr);
 
@@ -250,44 +275,28 @@ namespace TKWAREHOUSE
 
             string content = result;
             string[] resultString = Regex.Split(content, "<BR>", RegexOptions.IgnoreCase);
-            //foreach (string i in resultString)
-            //{
-            //    MessageBox.Show(i);
-            //}
+            //送貨地址-到著站四碼-到著站簡碼-到著站中文-郵遞區號-優勢困難配送
 
             string Qsend = resultString[0].ToString();
-            int pos = Qsend.Length-2;
-            string send = Qsend.Substring(Qsend.IndexOf("送貨地址：") + 5, pos);
-            MessageBox.Show(send);
+            string send = Qsend.Substring(Qsend.IndexOf("送貨地址：") + 5, Qsend.Length - 5);
+            
+            string Qerstno_4 = resultString[1].ToString();
+            string erstno_4 = result.Substring(result.IndexOf("到著站四碼：") + 6, Qerstno_4.Length - 6);
+
+            string Qerstno = resultString[2].ToString();
+            string erstno = result.Substring(result.IndexOf("到著站簡碼：") + 6, Qerstno.Length -6);
+
+            string Qerstno_name = resultString[3].ToString();
+            string erstno_name = result.Substring(result.IndexOf("到著站中文：") + 6, Qerstno_name.Length -6);
+
+            string Qpost = resultString[4].ToString();
+            string post = result.Substring(result.IndexOf("郵遞區號：") + 5, Qpost.Length -5);
+
+            string Qdiff = resultString[5].ToString();
+            string diff = result.Substring(result.IndexOf("優勢困難配送： ") + 7, Qdiff.Length -7);
 
 
-            //string send= result.Substring(result.IndexOf("送貨地址：") + 6, startIndex+1);
-            //string erstno_4 = result.Substring(result.IndexOf("到著站四碼：") + 6, 4);
-            //string erstno = result.Substring(result.IndexOf("到著站簡碼：") + 6, 3);
-            //string erstno_name = result.Substring(result.IndexOf("到著站中文：") + 6, 2);
-            //string post = result.Substring(result.IndexOf("郵遞區號：") + 5, 3);            
-            //string diff = result.Substring(result.IndexOf("優勢困難配送： ") + 6, 3);
-
-            //if (erstno_4 == "<BR>")
-            //{
-            //    erstno_4 = "";
-            //}
-            //if (post == "<BR")
-            //{
-            //    post = "";
-
-            //}
-            //string[] strData = new string[6];
-            //strData[0] = send;
-            //strData[1] = erstno_4;
-            //strData[2] = erstno;
-            //strData[3] = erstno_name;
-            //strData[4] = post;
-            //strData[5] = diff;
-
-            //return strData;
-
-            return null;
+            ADDDT.Rows.Add(DateTime.Now.ToString("yyyyMMdd"), send, erstno_4, erstno, erstno_name, post, diff);
 
         }
         #endregion
