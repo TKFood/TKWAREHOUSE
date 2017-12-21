@@ -61,11 +61,19 @@ namespace TKWAREHOUSE
             InitializeComponent();
 
             //送貨地址-到著站四碼-到著站簡碼-到著站中文-郵遞區號-優勢困難配送
-            ADDDT.Columns.AddRange(new DataColumn[7] {
-                 new DataColumn("ID", typeof(string)),
-                 new DataColumn("送貨地址", typeof(string)),
-                 new DataColumn("到著站四碼", typeof(string)),
+            ADDDT.Columns.AddRange(new DataColumn[15] {
+                 new DataColumn("日期", typeof(string)),
+                 new DataColumn("出貨單", typeof(string)),
                  new DataColumn("到著站簡碼", typeof(string)),
+                 new DataColumn("貨款", typeof(decimal)),
+                 new DataColumn("重量", typeof(decimal)),
+                 new DataColumn("總件數", typeof(int)),
+                 new DataColumn("收件人", typeof(string)),
+                 new DataColumn("送貨地址", typeof(string)),
+                 new DataColumn("收件人電話1", typeof(string)),
+                 new DataColumn("收件人電話2", typeof(string)),
+                 new DataColumn("備註", typeof(string)),               
+                 new DataColumn("到著站四碼", typeof(string)),
                  new DataColumn("到著站中文", typeof(string)),
                  new DataColumn("郵遞區號", typeof(string)),
                  new DataColumn("優勢困難配送", typeof(string))
@@ -169,7 +177,7 @@ namespace TKWAREHOUSE
             if (comboBox1.Text.ToString().Equals("銷貨單"))
             {
 
-                STR.Append(@" SELECT TG001 AS '銷貨單別',TG002  AS '銷貨單號',TG003  AS '銷貨日',''  AS '收貨人代號',TG007  AS '客戶',TG008  AS '地址',TG066  AS '收貨人' ,TG106  AS '電話',TG113  AS '代收貸款',TG110  AS '指定日期'  ");
+                STR.Append(@" SELECT TG001 AS '單別',TG002  AS '單號',TG003  AS '出貨日',''  AS '收貨人代號',TG007  AS '客戶',TG008  AS '地址',TG066  AS '收貨人' ,TG106  AS '電話',TG113  AS '代收貸款',TG110  AS '指定日期'  ");
                 STR.Append(@" ,CASE WHEN TG111='1' THEN '' WHEN TG111='2' THEN '09-13' WHEN TG111='3' THEN '13-17'  WHEN TG111='4' THEN '17-20'   WHEN TG111='5' THEN '09'  WHEN TG111='6' THEN '10'  WHEN TG111='7' THEN '11'   WHEN TG111='8' THEN '12'   WHEN TG111='9' THEN '13' WHEN TG111='A' THEN '14' WHEN TG111='B' THEN '15'  WHEN TG111='C' THEN '16'  WHEN TG111='D' THEN '17'  WHEN TG111='E' THEN '18'  WHEN TG111='F' THEN '19'  WHEN TG111='G' THEN '20' END AS '指定時間' ");
                 STR.Append(@" ,TG020 AS '備註' ");
                 STR.AppendFormat(@"  FROM [{0}].dbo.COPTG WITH (NOLOCK)  ", sqlConn.Database.ToString());
@@ -250,7 +258,7 @@ namespace TKWAREHOUSE
             {                
                 if(!string.IsNullOrEmpty(row.Cells["地址"].Value.ToString()))
                 {
-                    comp_addr(row.Cells["地址"].Value.ToString());
+                    comp_addr(row.Cells["指定日期"].Value.ToString(), row.Cells["單別"].Value.ToString()+ row.Cells["單號"].Value.ToString(),Convert.ToDecimal (row.Cells["代收貸款"].Value.ToString()), 0, 0, row.Cells["收貨人"].Value.ToString(), row.Cells["地址"].Value.ToString(), row.Cells["電話"].Value.ToString(), null, row.Cells["備註"].Value.ToString());
                 }
             }
 
@@ -260,7 +268,8 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void comp_addr(string addr)
+        
+        public void comp_addr(string SHIPDATE, string SHIPNO,decimal PAY,decimal WEIGHT,int TOTALNUM,string INBOXNAME, string addr,string INBOXTEL1,string INBOXTEL2,string COMMENT)
         {
             //[0]到著站4碼 [1]到著站簡碼 [2]郵遞區號 [3]到著站中文 [4]配區
             //需參考 system.web
@@ -296,9 +305,13 @@ namespace TKWAREHOUSE
             string diff = result.Substring(result.IndexOf("優勢困難配送： ") + 7, Qdiff.Length -7);
 
 
-            ADDDT.Rows.Add(DateTime.Now.ToString("yyyyMMdd"), send, erstno_4, erstno, erstno_name, post, diff);
+            // ADDDT.Rows.Add(DateTime.Now.ToString("yyyyMMdd"), send, erstno_4, erstno, erstno_name, post, diff);
+            ADDDT.Rows.Add(SHIPDATE, SHIPNO, erstno, PAY, WEIGHT, TOTALNUM, INBOXNAME, send, INBOXTEL1, INBOXTEL2, COMMENT, erstno_4, erstno_name, post, diff);
 
-        }
+            //送貨地址-到著站四碼-到著站簡碼-到著站中文-郵遞區號-優勢困難配送
+            
+
+         }
         #endregion
 
         #region BUTTON
