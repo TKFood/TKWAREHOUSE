@@ -308,12 +308,12 @@ namespace TKWAREHOUSE
                             ws.GetRow(j + 1).CreateCell(k + 6).SetCellValue(dt.Rows[i + 41][3].ToString());
                             ws.GetRow(j + 1).CreateCell(k + 7).SetCellValue(Convert.ToDouble(dt.Rows[i + 41][4].ToString()));
                         }
-                        if ((i + 81) < dt.Rows.Count)
+                        if ((i + 82) < dt.Rows.Count)
                         {
-                            ws.GetRow(j + 1).CreateCell(k + 8).SetCellValue(dt.Rows[i + 81][1].ToString());
-                            ws.GetRow(j + 1).CreateCell(k + 9).SetCellValue(dt.Rows[i + 81][2].ToString());
-                            ws.GetRow(j + 1).CreateCell(k + 10).SetCellValue(dt.Rows[i + 41][3].ToString());
-                            ws.GetRow(j + 1).CreateCell(k + 11).SetCellValue(Convert.ToDouble(dt.Rows[i + 81][4].ToString()));
+                            ws.GetRow(j + 1).CreateCell(k + 8).SetCellValue(dt.Rows[i + 82][1].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 9).SetCellValue(dt.Rows[i + 82][2].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 10).SetCellValue(dt.Rows[i + 82][3].ToString());
+                            ws.GetRow(j + 1).CreateCell(k + 11).SetCellValue(Convert.ToDouble(dt.Rows[i + 82][4].ToString()));
                         }
                         j++;
                     }
