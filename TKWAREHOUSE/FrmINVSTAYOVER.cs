@@ -88,7 +88,7 @@ namespace TKWAREHOUSE
                 }
                 else
                 {
-                    sbSql.AppendFormat(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別',CMSMC.MC002 AS '庫名',INVMC.MC007 AS '庫存量',INVMC.MC012 AS '最近入庫日',INVMC.MC013 AS '最近出庫日'");
+                    sbSql.AppendFormat(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別',CMSMC.MC002 AS '庫名',INVMC.MC012 AS '最近入庫日',INVMC.MC013 AS '最近出庫日','' AS '批號',INVMC.MC007 AS '庫存量'");
                     sbSql.AppendFormat(@" FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC");
                     sbSql.AppendFormat(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND  INVMC.MC007>0 ");
                     sbSql.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )", StayDay.ToString("yyyyMMdd"));
@@ -112,11 +112,14 @@ namespace TKWAREHOUSE
                 if (ds.Tables[tablename].Rows.Count == 0)
                 {
                     label14.Text = "找不到資料";
+                    dataGridView1.Rows.Clear();
+                    dataGridView1.DataSource = null;
                 }
                 else
                 {
                     label14.Text = "有 " + ds.Tables[tablename].Rows.Count.ToString() + " 筆";
-
+                    dataGridView1.Rows.Clear();
+                    dataGridView1.DataSource = null;
                     dataGridView1.DataSource = ds.Tables[tablename];
                     dataGridView1.AutoResizeColumns();
                 }
@@ -180,10 +183,10 @@ namespace TKWAREHOUSE
                     ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
                     ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
                     ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
-                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString()));
+                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString());
                     ws.GetRow(j + 1).CreateCell(6).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[6].ToString());
                     ws.GetRow(j + 1).CreateCell(7).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
-
+                    ws.GetRow(j + 1).CreateCell(8).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[8].ToString()));
                     j++;
                 }
             }
