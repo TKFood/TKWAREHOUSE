@@ -64,18 +64,39 @@ namespace TKWAREHOUSE
             try
             {
 
+
                 connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
                 sqlConn = new SqlConnection(connectionString);
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.Append(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別',CMSMC.MC002 AS '庫名',INVMC.MC007 AS '庫存量',INVMC.MC012 AS '最近入庫日',INVMC.MC013 AS '最近出庫日'");
-                sbSql.Append(@" FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC");
-                sbSql.Append(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND  INVMC.MC007>0");
-                sbSql.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )",StayDay.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@" AND INVMC.MC002='{0}'",comboBox1.SelectedValue.ToString());
-                sbSql.Append(@" ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002");
+                if (comboBox1.SelectedValue.ToString().Trim().Equals("20006")|| comboBox1.SelectedValue.ToString().Trim().Equals("20001") || comboBox1.SelectedValue.ToString().Trim().Equals("20005"))
+                {
+                    sbSql.AppendFormat(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別' ,CMSMC.MC002 AS '庫名',INVMC.MC012 AS '最近入庫日' ,INVMC.MC013 AS '最近出庫日' ");
+                    sbSql.AppendFormat(@" ,MF002 AS '批號',SUM(MF008*MF010)  AS '庫存量'");
+                    sbSql.AppendFormat(@"  FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC ,TK.dbo.INVME, TK.dbo.INVMF");
+                    sbSql.AppendFormat(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND MB001=ME001 AND ME001=MF001 AND ME002=MF002 AND MF007=INVMC.MC002");
+                    sbSql.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )", StayDay.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@" AND INVMC.MC002='{0}'", comboBox1.SelectedValue.ToString());
+                    sbSql.AppendFormat(@" GROUP BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002 ,INVMC.MC007 ,INVMC.MC012 ,INVMC.MC013   ,INVMF.MF001,INVMF.MF002     ");
+                    sbSql.AppendFormat(@"  HAVING SUM(MF008*MF010)>0");
+                    sbSql.AppendFormat(@"  ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002      ");
+                    sbSql.AppendFormat(@" ");
+                    sbSql.AppendFormat(@" ");
+                    sbSql.AppendFormat(@" ");
+                }
+                else
+                {
+                    sbSql.AppendFormat(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別',CMSMC.MC002 AS '庫名',INVMC.MC007 AS '庫存量',INVMC.MC012 AS '最近入庫日',INVMC.MC013 AS '最近出庫日'");
+                    sbSql.AppendFormat(@" FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC");
+                    sbSql.AppendFormat(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND  INVMC.MC007>0 ");
+                    sbSql.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )", StayDay.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@" AND INVMC.MC002='{0}'", comboBox1.SelectedValue.ToString());
+                    sbSql.AppendFormat(@" ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002");
+                    sbSql.AppendFormat(@" ");
+                }
+
 
 
                 tablename = "TEMPds1";
