@@ -9,6 +9,7 @@ using System.Configuration;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.Util;
 
+
 namespace TKWAREHOUSE
 {
     public partial class FrmINVSTAYOVER : Form
@@ -23,6 +24,11 @@ namespace TKWAREHOUSE
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
+
+
+        SqlDataAdapter adapterCALENDAR = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilderCALENDAR = new SqlCommandBuilder();
+
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -183,10 +189,10 @@ namespace TKWAREHOUSE
                     ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
                     ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
                     ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
-                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString());
+                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
                     ws.GetRow(j + 1).CreateCell(6).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[6].ToString());
                     ws.GetRow(j + 1).CreateCell(7).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
-                    ws.GetRow(j + 1).CreateCell(8).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[8].ToString()));
+                    ws.GetRow(j + 1).CreateCell(8).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString()));
                     j++;
                 }
             }
@@ -222,7 +228,7 @@ namespace TKWAREHOUSE
 
         }
         #endregion
-
+      
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
