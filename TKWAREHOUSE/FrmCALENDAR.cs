@@ -147,7 +147,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[CALENDAR]");
                 sbSql.AppendFormat(" ([EVENTDATE],[CAR],[EVENT])");
-                sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", dateTimePicker1.Value.ToString("yyyy/MM/dd"), textBox1.Text , textBox2.Text);
+                sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", dateTimePicker1.Value.ToString("yyyy/MM/dd"), comboBox1.Text , textBox2.Text);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
@@ -196,7 +196,7 @@ namespace TKWAREHOUSE
 
 
                 sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[CALENDAR]");
-                sbSql.AppendFormat(" WHERE convert(varchar, [EVENTDATE], 112)='{0}' AND [CAR]='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), textBox1.Text);
+                sbSql.AppendFormat(" WHERE convert(varchar, [EVENTDATE], 112)='{0}' AND [CAR]='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), comboBox1.Text);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 

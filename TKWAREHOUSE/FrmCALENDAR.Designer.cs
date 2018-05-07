@@ -32,13 +32,13 @@
             this.tableLayoutPanel19 = new System.Windows.Forms.TableLayoutPanel();
             this.label58 = new System.Windows.Forms.Label();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.calendar1 = new Calendar.NET.Calendar();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.calendar1 = new Calendar.NET.Calendar();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -79,11 +79,11 @@
             this.tableLayoutPanel19.Controls.Add(this.label58, 0, 0);
             this.tableLayoutPanel19.Controls.Add(this.dateTimePicker1, 1, 0);
             this.tableLayoutPanel19.Controls.Add(this.button2, 1, 1);
-            this.tableLayoutPanel19.Controls.Add(this.textBox1, 3, 0);
             this.tableLayoutPanel19.Controls.Add(this.label1, 2, 0);
             this.tableLayoutPanel19.Controls.Add(this.label2, 4, 0);
             this.tableLayoutPanel19.Controls.Add(this.textBox2, 5, 0);
             this.tableLayoutPanel19.Controls.Add(this.button1, 5, 1);
+            this.tableLayoutPanel19.Controls.Add(this.comboBox1, 3, 0);
             this.tableLayoutPanel19.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel19.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel19.Name = "tableLayoutPanel19";
@@ -115,25 +115,6 @@
             this.dateTimePicker1.Size = new System.Drawing.Size(94, 27);
             this.dateTimePicker1.TabIndex = 1;
             // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(259, 6);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(138, 27);
-            this.textBox1.TabIndex = 6;
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(503, 43);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(310, 34);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "新增派車";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -144,31 +125,6 @@
             this.button2.Text = "刪除";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // calendar1
-            // 
-            this.calendar1.AllowEditingEvents = true;
-            this.calendar1.CalendarDate = new System.DateTime(2018, 2, 23, 15, 15, 15, 0);
-            this.calendar1.CalendarView = Calendar.NET.CalendarViews.Month;
-            this.calendar1.DateHeaderFont = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.calendar1.DayOfWeekFont = new System.Drawing.Font("Arial", 10F);
-            this.calendar1.DaysFont = new System.Drawing.Font("Arial", 10F);
-            this.calendar1.DayViewTimeFont = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.calendar1.DimDisabledEvents = true;
-            this.calendar1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.calendar1.HighlightCurrentDay = true;
-            this.calendar1.LoadPresetHolidays = true;
-            this.calendar1.Location = new System.Drawing.Point(0, 0);
-            this.calendar1.Name = "calendar1";
-            this.calendar1.ShowArrowControls = true;
-            this.calendar1.ShowDashedBorderOnDisabledEvents = true;
-            this.calendar1.ShowDateInHeader = true;
-            this.calendar1.ShowDisabledEvents = false;
-            this.calendar1.ShowEventTooltips = true;
-            this.calendar1.ShowTodayButton = true;
-            this.calendar1.Size = new System.Drawing.Size(980, 612);
-            this.calendar1.TabIndex = 1;
-            this.calendar1.TodayFont = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
             // 
             // label1
             // 
@@ -198,6 +154,56 @@
             this.textBox2.Size = new System.Drawing.Size(310, 27);
             this.textBox2.TabIndex = 9;
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(503, 43);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(310, 34);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "新增派車";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // calendar1
+            // 
+            this.calendar1.AllowEditingEvents = true;
+            this.calendar1.CalendarDate = new System.DateTime(2018, 2, 23, 15, 15, 15, 0);
+            this.calendar1.CalendarView = Calendar.NET.CalendarViews.Month;
+            this.calendar1.DateHeaderFont = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.calendar1.DayOfWeekFont = new System.Drawing.Font("Arial", 10F);
+            this.calendar1.DaysFont = new System.Drawing.Font("Arial", 10F);
+            this.calendar1.DayViewTimeFont = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+            this.calendar1.DimDisabledEvents = true;
+            this.calendar1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.calendar1.HighlightCurrentDay = true;
+            this.calendar1.LoadPresetHolidays = true;
+            this.calendar1.Location = new System.Drawing.Point(0, 0);
+            this.calendar1.Name = "calendar1";
+            this.calendar1.ShowArrowControls = true;
+            this.calendar1.ShowDashedBorderOnDisabledEvents = true;
+            this.calendar1.ShowDateInHeader = true;
+            this.calendar1.ShowDisabledEvents = false;
+            this.calendar1.ShowEventTooltips = true;
+            this.calendar1.ShowTodayButton = true;
+            this.calendar1.Size = new System.Drawing.Size(980, 612);
+            this.calendar1.TabIndex = 1;
+            this.calendar1.TodayFont = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "919",
+            "920",
+            "1092"});
+            this.comboBox1.Location = new System.Drawing.Point(259, 10);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(138, 24);
+            this.comboBox1.TabIndex = 10;
+            this.comboBox1.Text = "919";
+            // 
             // FrmCALENDAR
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -224,12 +230,12 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
         private System.Windows.Forms.Label label58;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private Calendar.NET.Calendar calendar1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
