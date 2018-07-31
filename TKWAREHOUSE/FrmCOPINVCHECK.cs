@@ -79,6 +79,18 @@ namespace TKWAREHOUSE
         public FrmCOPINVCHECK()
         {
             InitializeComponent();
+
+            dtTemp.Columns.Add("品號");
+            dtTemp.Columns.Add("品名");
+            dtTemp.Columns.Add("數量");
+            dtTemp.Columns.Add("單位");
+            //dtTemp.Columns.Add("桶數");
+            dtTemp.Columns.Add("物料倉庫存");
+            dtTemp.Columns.Add("差異數量");
+            dtTemp.Columns.Add("採購數量");
+            dtTemp.Columns.Add("標準批量");
+            dtTemp.Columns.Add("上層標準批量");
+            dtTemp.Columns.Add("標準時間");
         }
 
         #region FUNCTION
@@ -157,7 +169,7 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT 日期,品號,品名,客戶,CONVERT(INT,SUM(訂單數量)) AS 訂單數量,單位 ,單別,單號,序號  ");
+                sbSql.AppendFormat(@"  SELECT 日期,品號,品名,客戶,CONVERT(INT,SUM(訂單數量)) AS 訂單數量,單位 ,單別,單號,序號,規格  ");
                 sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(LA005*LA011),0)) FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA009='20001' AND LA001=品號) AS '成品倉庫存'");
                 sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(LA005*LA011),0)) FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA009='20002' AND LA001=品號) AS '外銷倉庫存'");
                 sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(TA015-TA017-TA018),0)) FROM [TK].dbo.MOCTA  WITH (NOLOCK) WHERE TA011 NOT IN ('Y','y') AND TA006=品號 ) AS '未完成的製令' ");
@@ -181,8 +193,9 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND (TD008-TD009)>0  ");
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
-                //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40109916000740%'  ) ");
-                sbSql.AppendFormat(@"  ) AS TEMP");
+                //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
+                sbSql.AppendFormat(@"  AND ( TC002='20180730004'  ) ");
+                sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
                 sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
                 sbSql.AppendFormat(@"  ");
@@ -236,7 +249,127 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCHCOOKIES()
+        {
+            string MB003 = null;
+            string[] sArray = null;
+            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
 
+            dtTemp.Clear();
+
+            if(dataGridView1.Rows.Count>=1)
+            {
+                for (int i = 0; i < ds.Tables["TEMPds1"].Rows.Count; i++)
+                {
+
+                    COPNum = Convert.ToDecimal(ds.Tables["TEMPds1"].Rows[i]["訂單數量"].ToString());
+                    MB003 = ds.Tables["TEMPds1"].Rows[i]["規格"].ToString();
+                    sArray = MB003.Split('g');
+                    //TOTALCOPNum = Convert.ToDecimal(Convert.ToDecimal(sArray[0].ToString())* COPNum);
+
+                    sbSql.Clear();
+                    sbSqlQuery.Clear();
+
+                    sbSql.AppendFormat(@"  WITH TEMPTABLE (MD001,MD003,MD004,MD006) AS");
+                    sbSql.AppendFormat(@"  (");
+                    sbSql.AppendFormat(@"   SELECT  MD001,MD003,MD004,MD006 FROM [TK].dbo.BOMMD WHERE MD001='{0}'", ds.Tables["TEMPds1"].Rows[i]["品號"].ToString());
+                    sbSql.AppendFormat(@"   UNION ALL");
+                    sbSql.AppendFormat(@"   SELECT A.MD001,A.MD003,A.MD004,A.MD006");
+                    sbSql.AppendFormat(@"   FROM [TK].dbo.BOMMD A");
+                    sbSql.AppendFormat(@"   INNER JOIN TEMPTABLE B on A.MD001=B.MD003");
+                    sbSql.AppendFormat(@"  )");
+                    sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006 ");
+                    sbSql.AppendFormat(@"  ,[INVMB].MB002,CASE WHEN ISNULL(INVMB.MB003,'')=''  THEN '1' ELSE INVMB.MB003 END AS MB003");
+                    sbSql.AppendFormat(@"  ,[PROCESSNUM],[PROCESSTIME]    ");
+                    sbSql.AppendFormat(@"  FROM TEMPTABLE ");
+                    sbSql.AppendFormat(@"  LEFT JOIN [TKMOC].[dbo].[ERPINVMB] ON [ERPINVMB].[MB001]=TEMPTABLE.MD001");
+                    sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.[INVMB] ON [INVMB].MB001=TEMPTABLE.MD003");
+                    sbSql.AppendFormat(@" WHERE  MD003 LIKE '1%'     ");
+                    sbSql.AppendFormat(@"  ORDER BY MD001,MD003");
+                    sbSql.AppendFormat(@"  ");
+
+
+                    adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                    sqlCmdBuilder2 = new SqlCommandBuilder(adapter2);
+                    sqlConn.Open();
+                    ds2.Clear();
+                    adapter2.Fill(ds2, "TEMPds2");
+                    sqlConn.Close();
+
+                    if (ds2.Tables["TEMPds2"].Rows.Count >= 1)
+                    {
+
+                        foreach (DataRow od2 in ds2.Tables["TEMPds2"].Rows)
+                        {
+                            DataRow row = dtTemp.NewRow();
+                            //row["MD001"] = od2["MC001"].ToString();
+
+                            row["品號"] = od2["MD003"].ToString();
+                            row["品名"] = od2["MB002"].ToString();
+                            row["單位"] = od2["MD004"].ToString();
+                            if (!string.IsNullOrEmpty(od2["MB003"].ToString()))
+                            {
+                                COOKIES = Convert.ToDecimal(Regex.Replace(od2["MB003"].ToString(), "[^0-9]", ""));
+                            }
+                            else
+                            {
+                                COOKIES = 1;
+                            }
+                            if (!string.IsNullOrEmpty(od2["MD006"].ToString()))
+                            {
+                                TOTALCOPNum = Convert.ToDecimal(Convert.ToDecimal(od2["MD006"].ToString()) * 1000 * COPNum);
+                            }
+                            else
+                            {
+                                TOTALCOPNum = 1;
+                            }
+                            if (!string.IsNullOrEmpty(od2["MB003"].ToString()))
+                            {
+                                BATCH = Convert.ToDecimal(ds.Tables["TEMPds1"].Rows[i]["標準批量"].ToString());
+                            }
+                            else
+                            {
+                                BATCH = 1;
+                            }
+
+                            row["數量"] = Convert.ToInt32(TOTALCOPNum / COOKIES / BATCH/1000);
+
+                            if (!string.IsNullOrEmpty(od2["PROCESSNUM"].ToString()))
+                            {
+                                if (Convert.ToDecimal(od2["PROCESSNUM"].ToString()) > 0)
+                                {
+                                    MOCBATCH = Convert.ToDecimal(od2["PROCESSNUM"].ToString());
+                                }
+                                else
+                                {
+                                    MOCBATCH = 1;
+                                }
+
+                            }
+                            else
+                            {
+                                MOCBATCH = 1;
+                            }
+                            //row["桶數"] = Convert.ToInt32(TOTALCOPNum / COOKIES / BATCH/ MOCBATCH);
+                            row["標準批量"] = od2["PROCESSNUM"].ToString();
+                            row["標準時間"] = od2["PROCESSTIME"].ToString();
+                            dtTemp.Rows.Add(row);
+                        }
+
+                    }
+
+                }
+            }
+
+            
+
+
+
+            dataGridView2.DataSource = dtTemp;
+            dataGridView2.AutoResizeColumns();
+        }
 
         #endregion
 
@@ -245,8 +378,12 @@ namespace TKWAREHOUSE
         {
             Search();
         }
-
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SEARCHCOOKIES();
+        }
         #endregion
+
 
     }
 }

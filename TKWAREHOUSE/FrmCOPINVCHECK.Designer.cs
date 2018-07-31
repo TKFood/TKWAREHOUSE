@@ -50,6 +50,8 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.button3 = new System.Windows.Forms.Button();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -61,8 +63,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -103,7 +107,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(970, 627);
-            this.splitContainer1.SplitterDistance = 141;
+            this.splitContainer1.SplitterDistance = 128;
             this.splitContainer1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -128,10 +132,11 @@
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.label4, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.numericUpDown2, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 6, 2);
             this.tableLayoutPanel1.Controls.Add(this.checkBox4, 5, 1);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox1, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox2, 4, 2);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox2, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.button3, 4, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -140,7 +145,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(966, 137);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(966, 124);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // checkBox7
@@ -297,9 +302,9 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(723, 91);
+            this.button1.Location = new System.Drawing.Point(243, 85);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(240, 34);
+            this.button1.Size = new System.Drawing.Size(114, 34);
             this.button1.TabIndex = 0;
             this.button1.Text = "查詢";
             this.button1.UseVisualStyleBackColor = true;
@@ -313,7 +318,7 @@
             "已確認",
             "未確認(扣已確認)",
             "全部"});
-            this.comboBox1.Location = new System.Drawing.Point(363, 98);
+            this.comboBox1.Location = new System.Drawing.Point(3, 92);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 48;
@@ -353,8 +358,12 @@
             // splitContainer2.Panel1
             // 
             this.splitContainer2.Panel1.Controls.Add(this.dataGridView1);
-            this.splitContainer2.Size = new System.Drawing.Size(970, 482);
-            this.splitContainer2.SplitterDistance = 179;
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.dataGridView2);
+            this.splitContainer2.Size = new System.Drawing.Size(970, 495);
+            this.splitContainer2.SplitterDistance = 184;
             this.splitContainer2.TabIndex = 0;
             // 
             // dataGridView1
@@ -364,7 +373,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(966, 175);
+            this.dataGridView1.Size = new System.Drawing.Size(966, 180);
             this.dataGridView1.TabIndex = 0;
             // 
             // comboBox2
@@ -374,11 +383,32 @@
             this.comboBox2.Items.AddRange(new object[] {
             "排除已製令",
             "全部"});
-            this.comboBox2.Location = new System.Drawing.Point(483, 96);
+            this.comboBox2.Location = new System.Drawing.Point(123, 90);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(114, 24);
             this.comboBox2.TabIndex = 49;
             this.comboBox2.Text = "排除已製令";
+            // 
+            // button3
+            // 
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.Location = new System.Drawing.Point(483, 86);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(114, 32);
+            this.button3.TabIndex = 50;
+            this.button3.Text = "查詢半成品";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView2.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.RowTemplate.Height = 24;
+            this.dataGridView2.Size = new System.Drawing.Size(966, 303);
+            this.dataGridView2.TabIndex = 0;
             // 
             // FrmCOPINVCHECK
             // 
@@ -401,9 +431,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -432,5 +464,7 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.DataGridView dataGridView2;
     }
 }
