@@ -90,7 +90,7 @@ namespace TKWAREHOUSE
 
             StringBuilder TD001 = new StringBuilder();
             StringBuilder TC027 = new StringBuilder();
-            StringBuilder PALNQUERY = new StringBuilder();
+            StringBuilder QUERY1 = new StringBuilder();
 
             if (checkBox1.Checked == true)
             {
@@ -133,6 +133,18 @@ namespace TKWAREHOUSE
             }
             TC027.AppendFormat("''");
 
+
+            if (comboBox2.Text.ToString().Equals("排除已製令"))
+            {
+                QUERY1.AppendFormat(" AND TC001+TC002 NOT IN (SELECT TA026+TA027 FROM [TK].dbo.MOCTA WITH (NOLOCK) WHERE ISNULL(TA026+TA027,'')<>'') ");
+            }
+            else if (comboBox1.Text.ToString().Equals("全部"))
+            {
+                QUERY1.AppendFormat(" ");
+            }
+
+           
+
             
 
             dtTemp.Clear();
@@ -168,7 +180,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND TC001 IN ({0}) ", TD001.ToString());
                 sbSql.AppendFormat(@"  AND (TD008-TD009)>0  ");
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
-                sbSql.AppendFormat(@"  {0}", PALNQUERY.ToString());
+                sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40109916000740%'  ) ");
                 sbSql.AppendFormat(@"  ) AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
