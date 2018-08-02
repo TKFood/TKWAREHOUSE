@@ -84,13 +84,13 @@ namespace TKWAREHOUSE
             dtTemp.Columns.Add("品名");
             dtTemp.Columns.Add("數量");
             dtTemp.Columns.Add("單位");
-            //dtTemp.Columns.Add("桶數");
-            dtTemp.Columns.Add("物料倉庫存");
-            dtTemp.Columns.Add("差異數量");
-            dtTemp.Columns.Add("採購數量");
-            dtTemp.Columns.Add("標準批量");
-            dtTemp.Columns.Add("上層標準批量");
-            dtTemp.Columns.Add("標準時間");
+            ////dtTemp.Columns.Add("桶數");
+            //dtTemp.Columns.Add("物料倉庫存");
+            //dtTemp.Columns.Add("差異數量");
+            //dtTemp.Columns.Add("採購數量");
+            //dtTemp.Columns.Add("標準批量");
+            //dtTemp.Columns.Add("上層標準批量");
+            //dtTemp.Columns.Add("標準時間");
         }
 
         #region FUNCTION
@@ -194,7 +194,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
-                sbSql.AppendFormat(@"  AND ( TD002='20180708006'  )  AND TD003='0003' ");
+                sbSql.AppendFormat(@"  AND ( TD002='20180708006'  )  AND TD003 IN ('0003','0010') ");
                 sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
                 sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
