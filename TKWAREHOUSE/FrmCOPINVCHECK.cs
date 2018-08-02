@@ -193,8 +193,8 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND (TD008-TD009)>0  ");
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
-                //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
-                sbSql.AppendFormat(@"  AND ( TC002='20180730004'  ) ");
+                sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
+                sbSql.AppendFormat(@"  AND ( TD002='20180708006'  )  AND TD003='0003' ");
                 sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
                 sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
@@ -269,24 +269,21 @@ namespace TKWAREHOUSE
                     //TOTALCOPNum = Convert.ToDecimal(Convert.ToDecimal(sArray[0].ToString())* COPNum);
 
                     sbSql.Clear();
-                    sbSqlQuery.Clear();
-
-                    sbSql.AppendFormat(@"  WITH TEMPTABLE (MD001,MD003,MD004,MD006) AS");
+                    sbSqlQuery.Clear();                    
+                
+                    sbSql.AppendFormat(@"  WITH TEMPTABLE (MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV) AS");
                     sbSql.AppendFormat(@"  (");
-                    sbSql.AppendFormat(@"   SELECT  MD001,MD003,MD004,MD006 FROM [TK].dbo.BOMMD WHERE MD001='{0}'", ds.Tables["TEMPds1"].Rows[i]["品號"].ToString());
-                    sbSql.AppendFormat(@"   UNION ALL");
-                    sbSql.AppendFormat(@"   SELECT A.MD001,A.MD003,A.MD004,A.MD006");
-                    sbSql.AppendFormat(@"   FROM [TK].dbo.BOMMD A");
-                    sbSql.AppendFormat(@"   INNER JOIN TEMPTABLE B on A.MD001=B.MD003");
+                    sbSql.AppendFormat(@"  SELECT  MD001,MD003,MD004,MD006,MD007,MD008,MC004,CONVERT(decimal(18,5),(MD006*(1+MD008)/MD007)/MC004) AS NUM,1 AS LV FROM [TK].dbo.VBOMMD WHERE  MD001='{0}'", ds.Tables["TEMPds1"].Rows[i]["品號"].ToString());
+                    sbSql.AppendFormat(@"  UNION ALL");
+                    sbSql.AppendFormat(@"  SELECT A.MD001,A.MD003,A.MD004,A.MD006,A.MD007,A.MD008,A.MC004,CONVERT(decimal(18,5),(A.MD006*(1+A.MD008)/A.MD007/A.MC004)*(B.NUM)) AS NUM,LV+1");
+                    sbSql.AppendFormat(@"  FROM [TK].dbo.VBOMMD A");
+                    sbSql.AppendFormat(@"  INNER JOIN TEMPTABLE B on A.MD001=B.MD003");
                     sbSql.AppendFormat(@"  )");
-                    sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006 ");
-                    sbSql.AppendFormat(@"  ,[INVMB].MB002,CASE WHEN ISNULL(INVMB.MB003,'')=''  THEN '1' ELSE INVMB.MB003 END AS MB003");
-                    sbSql.AppendFormat(@"  ,[PROCESSNUM],[PROCESSTIME]    ");
+                    sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV,MB002");
                     sbSql.AppendFormat(@"  FROM TEMPTABLE ");
-                    sbSql.AppendFormat(@"  LEFT JOIN [TKMOC].[dbo].[ERPINVMB] ON [ERPINVMB].[MB001]=TEMPTABLE.MD001");
-                    sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.[INVMB] ON [INVMB].MB001=TEMPTABLE.MD003");
-                    sbSql.AppendFormat(@" WHERE  MD003 LIKE '1%'     ");
-                    sbSql.AppendFormat(@"  ORDER BY MD001,MD003");
+                    sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=MD003");
+                    //sbSql.AppendFormat(@"  WHERE  MD003 LIKE '1%' ");
+                    sbSql.AppendFormat(@"  ORDER BY LV,MD001,MD003");
                     sbSql.AppendFormat(@"  ");
 
 
@@ -308,54 +305,12 @@ namespace TKWAREHOUSE
 
                             row["品號"] = od2["MD003"].ToString();
                             row["品名"] = od2["MB002"].ToString();
+                            row["數量"] = Convert.ToDecimal(COPNum) * Convert.ToDecimal(od2["NUM"].ToString());
                             row["單位"] = od2["MD004"].ToString();
-                            if (!string.IsNullOrEmpty(od2["MB003"].ToString()))
-                            {
-                                COOKIES = Convert.ToDecimal(Regex.Replace(od2["MB003"].ToString(), "[^0-9]", ""));
-                            }
-                            else
-                            {
-                                COOKIES = 1;
-                            }
-                            if (!string.IsNullOrEmpty(od2["MD006"].ToString()))
-                            {
-                                TOTALCOPNum = Convert.ToDecimal(Convert.ToDecimal(od2["MD006"].ToString()) * 1000 * COPNum);
-                            }
-                            else
-                            {
-                                TOTALCOPNum = 1;
-                            }
-                            if (!string.IsNullOrEmpty(od2["MB003"].ToString()))
-                            {
-                                BATCH = Convert.ToDecimal(ds.Tables["TEMPds1"].Rows[i]["標準批量"].ToString());
-                            }
-                            else
-                            {
-                                BATCH = 1;
-                            }
-
-                            row["數量"] = Convert.ToInt32(TOTALCOPNum / COOKIES / BATCH/1000);
-
-                            if (!string.IsNullOrEmpty(od2["PROCESSNUM"].ToString()))
-                            {
-                                if (Convert.ToDecimal(od2["PROCESSNUM"].ToString()) > 0)
-                                {
-                                    MOCBATCH = Convert.ToDecimal(od2["PROCESSNUM"].ToString());
-                                }
-                                else
-                                {
-                                    MOCBATCH = 1;
-                                }
-
-                            }
-                            else
-                            {
-                                MOCBATCH = 1;
-                            }
-                            //row["桶數"] = Convert.ToInt32(TOTALCOPNum / COOKIES / BATCH/ MOCBATCH);
-                            row["標準批量"] = od2["PROCESSNUM"].ToString();
-                            row["標準時間"] = od2["PROCESSTIME"].ToString();
+                          
                             dtTemp.Rows.Add(row);
+                           
+                        
                         }
 
                     }
