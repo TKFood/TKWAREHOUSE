@@ -462,85 +462,79 @@ namespace TKWAREHOUSE
         }
 
 
+        public void ExcelExport()
+        {
 
+            string NowDB = "TK";
+            //建立Excel 2003檔案
+            IWorkbook wb = new XSSFWorkbook();
+            ISheet ws;
 
-
-        //public void SEARCHCOOKIES()
-        //{
-        //    string MB003 = null;
-        //    string[] sArray = null;
-        //    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-        //    sqlConn = new SqlConnection(connectionString);
-
-        //    dtTemp.Clear();
-
-        //    if (dataGridView1.Rows.Count>=1)
-        //    {
-        //        for (int i = 0; i < ds.Tables["TEMPds1"].Rows.Count; i++)
-        //        {
-
-        //            COPNum = Convert.ToDecimal(ds.Tables["TEMPds1"].Rows[i]["訂單數量"].ToString());
-        //            MB003 = ds.Tables["TEMPds1"].Rows[i]["規格"].ToString();
-        //            sArray = MB003.Split('g');
-        //            //TOTALCOPNum = Convert.ToDecimal(Convert.ToDecimal(sArray[0].ToString())* COPNum);
-
-        //            sbSql.Clear();
-        //            sbSqlQuery.Clear();                    
-
-        //            sbSql.AppendFormat(@"  WITH TEMPTABLE (MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV) AS");
-        //            sbSql.AppendFormat(@"  (");
-        //            sbSql.AppendFormat(@"  SELECT  MD001,MD003,MD004,MD006,MD007,MD008,MC004,CONVERT(decimal(18,5),(MD006*(1+MD008)/MD007)/MC004) AS NUM,1 AS LV FROM [TK].dbo.VBOMMD WHERE  MD001='{0}'", ds.Tables["TEMPds1"].Rows[i]["品號"].ToString());
-        //            sbSql.AppendFormat(@"  UNION ALL");
-        //            sbSql.AppendFormat(@"  SELECT A.MD001,A.MD003,A.MD004,A.MD006,A.MD007,A.MD008,A.MC004,CONVERT(decimal(18,5),(A.MD006*(1+A.MD008)/A.MD007/A.MC004)*(B.NUM)) AS NUM,LV+1");
-        //            sbSql.AppendFormat(@"  FROM [TK].dbo.VBOMMD A");
-        //            sbSql.AppendFormat(@"  INNER JOIN TEMPTABLE B on A.MD001=B.MD003");
-        //            sbSql.AppendFormat(@"  )");
-        //            sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV,MB002");
-        //            sbSql.AppendFormat(@"  FROM TEMPTABLE ");
-        //            sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=MD003");
-        //            //sbSql.AppendFormat(@"  WHERE  MD003 LIKE '1%' ");
-        //            sbSql.AppendFormat(@"  ORDER BY LV,MD001,MD003");
-        //            sbSql.AppendFormat(@"  ");
-
-
-        //            adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
-
-        //            sqlCmdBuilder2 = new SqlCommandBuilder(adapter2);
-        //            sqlConn.Open();
-        //            ds2.Clear();
-        //            adapter2.Fill(ds2, "TEMPds2");
-        //            sqlConn.Close();
-
-        //            if (ds2.Tables["TEMPds2"].Rows.Count >= 1)
-        //            {
-
-        //                foreach (DataRow od2 in ds2.Tables["TEMPds2"].Rows)
-        //                {
-        //                    DataRow row = dtTemp.NewRow();
-        //                    //row["MD001"] = od2["MC001"].ToString();
-
-        //                    row["品號"] = od2["MD003"].ToString();
-        //                    row["品名"] = od2["MB002"].ToString();
-        //                    row["數量"] = Convert.ToDecimal(COPNum) * Convert.ToDecimal(od2["NUM"].ToString());
-        //                    row["單位"] = od2["MD004"].ToString();
-
-        //                    dtTemp.Rows.Add(row);
-
-
-        //                }
-
-        //            }
-
-        //        }
-        //    }
+            ws = wb.CreateSheet("Sheet1");
+            ws.CreateRow(0);
+            //第一行為欄位名稱
+            ws.GetRow(0).CreateCell(0).SetCellValue("品號");
+            ws.GetRow(0).CreateCell(1).SetCellValue("品名");
+            ws.GetRow(0).CreateCell(2).SetCellValue("規格");
+            ws.GetRow(0).CreateCell(3).SetCellValue("庫存單位");
+            ws.GetRow(0).CreateCell(4).SetCellValue("需求數量");
+            ws.GetRow(0).CreateCell(5).SetCellValue("庫存量");
+            ws.GetRow(0).CreateCell(6).SetCellValue("需求量比較");
+            ws.GetRow(0).CreateCell(7).SetCellValue("預計採購量");
 
 
 
 
+            int j = 0;
+            foreach (DataGridViewRow dr in this.dataGridView2.Rows)
+            {
+                ws.CreateRow(j + 1);
+                ws.GetRow(j + 1).CreateCell(0).SetCellValue(dr.Cells[0].Value.ToString());
+                ws.GetRow(j + 1).CreateCell(1).SetCellValue(dr.Cells[1].Value.ToString());
+                ws.GetRow(j + 1).CreateCell(2).SetCellValue(dr.Cells[2].Value.ToString());
+                ws.GetRow(j + 1).CreateCell(3).SetCellValue(dr.Cells[3].Value.ToString());
+                ws.GetRow(j + 1).CreateCell(4).SetCellValue(dr.Cells[4].Value.ToString());
+                ws.GetRow(j + 1).CreateCell(5).SetCellValue(dr.Cells[5].Value.ToString());
+                ws.GetRow(j + 1).CreateCell(6).SetCellValue(dr.Cells[6].Value.ToString());
+                ws.GetRow(j + 1).CreateCell(7).SetCellValue(dr.Cells[7].Value.ToString());
 
-        //    dataGridView2.DataSource = dtTemp;
-        //    dataGridView2.AutoResizeColumns();
-        //}
+                j++;
+            }
+
+           
+
+
+            if (Directory.Exists(@"c:\temp\"))
+            {
+                //資料夾存在
+            }
+            else
+            {
+                //新增資料夾
+                Directory.CreateDirectory(@"c:\temp\");
+            }
+            StringBuilder filename = new StringBuilder();
+            filename.AppendFormat(@"c:\temp\宅配資料{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
+
+            FileStream file = new FileStream(filename.ToString(), FileMode.Create);//產生檔案
+            wb.Write(file);
+            file.Close();
+
+            MessageBox.Show("匯出完成-EXCEL放在-" + filename.ToString());
+            FileInfo fi = new FileInfo(filename.ToString());
+            if (fi.Exists)
+            {
+                System.Diagnostics.Process.Start(filename.ToString());
+            }
+            else
+            {
+                //file doesn't exist
+            }
+
+
+        }
+
+
 
         #endregion
 
@@ -554,6 +548,11 @@ namespace TKWAREHOUSE
             SETCOPTHGROUPBY();
             //SEARCHCOOKIES();
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+           ExcelExport();
+        }
+
         #endregion
 
 

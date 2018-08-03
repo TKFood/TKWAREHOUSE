@@ -62,8 +62,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer1.Size = new System.Drawing.Size(1013, 638);
-            this.splitContainer1.SplitterDistance = 111;
+            this.splitContainer1.Size = new System.Drawing.Size(1013, 633);
+            this.splitContainer1.SplitterDistance = 110;
             this.splitContainer1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -101,7 +101,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1009, 107);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1009, 106);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // label1
@@ -200,14 +200,14 @@
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1009, 519);
+            this.dataGridView1.Size = new System.Drawing.Size(1009, 515);
             this.dataGridView1.TabIndex = 0;
             // 
             // FrmhctEDIExport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1013, 638);
+            this.ClientSize = new System.Drawing.Size(1013, 633);
             this.Controls.Add(this.splitContainer1);
             this.Name = "FrmhctEDIExport";
             this.Text = "FrmhctEDIExport";
