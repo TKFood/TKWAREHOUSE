@@ -58,29 +58,24 @@ namespace TKWAREHOUSE
         int result;
         string tablename = null;
         decimal COPNum = 0;
-        decimal TOTALCOPNum = 0;
-        double BOMNum = 0;
-        double FinalNum = 0;
-        decimal COOKIES = 1;
-        decimal BATCH = 1;
+     
        
-        string CHECKYN = "N";
-        string CHECKYNMOCPLANWEEKPUR = "N";
-        decimal MOCBATCH = 1;
-        string TD001 = null;
-        string TD002 = null;
-        string TD003 = null;
-        string YEARS;
-        string WEEKS;
-
-        string TA002;
-        string MOCPLANWEEKPURID;
+  
 
 
         public FrmCOPINVCHECK()
         {
             InitializeComponent();
 
+            NEWdtTemp();
+            NEWdtTemp2();
+
+        }
+
+
+        #region FUNCTION
+        public void NEWdtTemp()
+        {
             dtTemp.Columns.Add("品號");
             dtTemp.Columns.Add("品名");
             //dtTemp.Columns.Add("數量");
@@ -89,17 +84,24 @@ namespace TKWAREHOUSE
             DataColumn colDecimal = new DataColumn("數量");
             colDecimal.DataType = System.Type.GetType("System.Decimal");
             dtTemp.Columns.Add(colDecimal);
-
-            ////dtTemp.Columns.Add("桶數");
-            //dtTemp.Columns.Add("物料倉庫存");
-            //dtTemp.Columns.Add("差異數量");
-            //dtTemp.Columns.Add("採購數量");
-            //dtTemp.Columns.Add("標準批量");
-            //dtTemp.Columns.Add("上層標準批量");
-            //dtTemp.Columns.Add("標準時間");
         }
 
-        #region FUNCTION
+        public void NEWdtTemp2()
+        {
+            dtTemp2.Columns.Add("品號");
+            dtTemp2.Columns.Add("品名");
+            //dtTemp.Columns.Add("數量");
+            dtTemp2.Columns.Add("規格");
+            dtTemp2.Columns.Add("庫存單位");
+
+            DataColumn colDecimal = new DataColumn("需求數量");
+            colDecimal.DataType = System.Type.GetType("System.Decimal");
+            dtTemp2.Columns.Add(colDecimal);
+
+            DataColumn colDecimal2 = new DataColumn("庫存量");
+            colDecimal2.DataType = System.Type.GetType("System.Decimal");
+            dtTemp2.Columns.Add(colDecimal2);
+        }
         public void Search()
         {
             DateTime dt = new DateTime();
@@ -215,16 +217,16 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
 
 
-                if (CHECKYN.Equals("N"))
-                {
-                    //建立一個DataGridView的Column物件及其內容
-                    DataGridViewColumn dgvc = new DataGridViewCheckBoxColumn();
-                    dgvc.Width = 40;
-                    dgvc.Name = "選取";
+                //if (CHECKYN.Equals("N"))
+                //{
+                //    //建立一個DataGridView的Column物件及其內容
+                //    DataGridViewColumn dgvc = new DataGridViewCheckBoxColumn();
+                //    dgvc.Width = 40;
+                //    dgvc.Name = "選取";
 
-                    this.dataGridView1.Columns.Insert(0, dgvc);
-                    CHECKYN = "Y";
-                }
+                //    this.dataGridView1.Columns.Insert(0, dgvc);
+                //    CHECKYN = "Y";
+                //}
 
 
                 if (ds.Tables["TEMPds1"].Rows.Count == 0)
@@ -298,7 +300,7 @@ namespace TKWAREHOUSE
                         sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV,MB002");
                         sbSql.AppendFormat(@"  FROM TEMPTABLE ");
                         sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=MD003");
-                        //sbSql.AppendFormat(@"  WHERE  MD003 LIKE '1%' ");
+                        sbSql.AppendFormat(@"  WHERE  (MD003 LIKE '1%') OR  (MD003 LIKE '2%')");
                         sbSql.AppendFormat(@"  ORDER BY LV,MD001,MD003");
                         sbSql.AppendFormat(@"  ");
 
@@ -366,14 +368,75 @@ namespace TKWAREHOUSE
                                 MB001 = m.Key.t1,
                                 SUM = m.Sum(n => n.Field<decimal>("數量"))
                                 
-                            }
-                           
+                            }                           
                             ;
 
-                dataGridView2.DataSource = query.ToList();
-                dataGridView2.AutoResizeColumns();
+                if (query.ToList().Count > 0)
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    dtTemp2.Clear();
+
+                    query.ToList().ForEach(q =>
+                    {
+
+                        string LA001 = q.MB001;
+                        sbSql.Clear();
+                        sbSqlQuery.Clear();
+
+                        sbSql.AppendFormat(@" SELECT LA001 AS '品號',SUM(LA011*LA005) AS '庫存量',MB002 AS '品名',MB003 AS '規格',MB004 AS '庫存單位' ");
+                        sbSql.AppendFormat(@" FROM [TK].dbo.INVLA,[TK].dbo.INVMB ");
+                        sbSql.AppendFormat(@" WHERE LA001=MB001 ");
+                        sbSql.AppendFormat(@" AND LA009 IN ('20004','20006') AND LA001='{0}' ", LA001);
+                        sbSql.AppendFormat(@" GROUP BY LA001,MB002,MB003,MB004 ");
+                        sbSql.AppendFormat(@"  ");
+
+
+                        adapter3 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                        sqlCmdBuilder3= new SqlCommandBuilder(adapter3);
+                        sqlConn.Open();
+                        ds3.Clear();
+                        adapter3.Fill(ds3, "TEMPds3");
+                        sqlConn.Close();
+
+                        if (ds3.Tables["TEMPds3"].Rows.Count >= 1)
+                        {
+
+                            foreach (DataRow od3 in ds3.Tables["TEMPds3"].Rows)
+                            {
+                                DataRow row = dtTemp2.NewRow();
+                                //row["MD001"] = od2["MC001"].ToString();
+
+                                row["品號"] = od3["品號"].ToString();
+                                row["品名"] = od3["品名"].ToString();
+                                row["規格"] = od3["規格"].ToString();
+                                row["庫存單位"] = od3["庫存單位"].ToString();
+                                row["需求數量"] = Convert.ToDecimal(q.SUM.ToString());
+                                row["庫存量"] = Convert.ToDecimal(od3["庫存量"].ToString());
+
+                                dtTemp2.Rows.Add(row);
+                            }
+
+                        }
+
+                    }
+                    );
+                }
+
+
             }
+            //dataGridView2.DataSource = query.ToList();
+            //dataGridView2.AutoResizeColumns();
+
+            dataGridView2.DataSource = dtTemp2;
+            dataGridView2.AutoResizeColumns();
         }
+
+
+
+
 
         //public void SEARCHCOOKIES()
         //{
@@ -396,7 +459,7 @@ namespace TKWAREHOUSE
 
         //            sbSql.Clear();
         //            sbSqlQuery.Clear();                    
-                
+
         //            sbSql.AppendFormat(@"  WITH TEMPTABLE (MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV) AS");
         //            sbSql.AppendFormat(@"  (");
         //            sbSql.AppendFormat(@"  SELECT  MD001,MD003,MD004,MD006,MD007,MD008,MC004,CONVERT(decimal(18,5),(MD006*(1+MD008)/MD007)/MC004) AS NUM,1 AS LV FROM [TK].dbo.VBOMMD WHERE  MD001='{0}'", ds.Tables["TEMPds1"].Rows[i]["品號"].ToString());
@@ -433,10 +496,10 @@ namespace TKWAREHOUSE
         //                    row["品名"] = od2["MB002"].ToString();
         //                    row["數量"] = Convert.ToDecimal(COPNum) * Convert.ToDecimal(od2["NUM"].ToString());
         //                    row["單位"] = od2["MD004"].ToString();
-                          
+
         //                    dtTemp.Rows.Add(row);
-                           
-                        
+
+
         //                }
 
         //            }
@@ -444,7 +507,7 @@ namespace TKWAREHOUSE
         //        }
         //    }
 
-            
+
 
 
 
