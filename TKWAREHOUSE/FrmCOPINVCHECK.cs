@@ -105,6 +105,10 @@ namespace TKWAREHOUSE
             DataColumn colDecimal3 = new DataColumn("需求量比較");
             colDecimal2.DataType = System.Type.GetType("System.Decimal");
             dtTemp2.Columns.Add(colDecimal3);
+
+            DataColumn colDecimal4 = new DataColumn("預計採購量");
+            colDecimal2.DataType = System.Type.GetType("System.Decimal");
+            dtTemp2.Columns.Add(colDecimal4);
         }
         public void Search()
         {
@@ -205,8 +209,8 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND (TD008-TD009)>0  ");
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
-                sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
-                sbSql.AppendFormat(@"  AND ( TD002='20180708006'  ) ");
+                //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
+                //sbSql.AppendFormat(@"  AND ( TD002='20180708006'  ) ");
                 sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
                 sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
@@ -362,6 +366,10 @@ namespace TKWAREHOUSE
 
         public void SETMOCGROUPBY()
         {
+            DateTime dt = DateTime.Now;
+            DateTime dt2 = DateTime.Now;
+            dt2=dt2.AddDays(Convert.ToDouble(numericUpDown2.Value));
+
             if (dtTemp.Rows.Count >= 1)
             {
                 var query = from t in dtTemp.AsEnumerable() 
@@ -390,6 +398,7 @@ namespace TKWAREHOUSE
                         sbSqlQuery.Clear();
 
                         sbSql.AppendFormat(@" SELECT LA001 AS '品號',SUM(LA011*LA005) AS '庫存量',MB002 AS '品名',MB003 AS '規格',MB004 AS '庫存單位' ");
+                        sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TD008),0) FROM [TK].dbo.PURTD WHERE TD004=LA001 AND TD012>='{0}' AND TD012<='{1}') AS '預計採購量' ", dt.ToString("yyyyMMdd"), dt2.ToString("yyyyMMdd"));
                         sbSql.AppendFormat(@" FROM [TK].dbo.INVLA,[TK].dbo.INVMB ");
                         sbSql.AppendFormat(@" WHERE LA001=MB001 ");
                         sbSql.AppendFormat(@" AND LA009 IN ('20004','20006') AND LA001='{0}' ", LA001);
@@ -420,6 +429,7 @@ namespace TKWAREHOUSE
                                 row["需求數量"] = Convert.ToDecimal(q.SUM.ToString());
                                 row["庫存量"] = Convert.ToDecimal(od3["庫存量"].ToString());
                                 row["需求量比較"] =  Convert.ToDecimal(od3["庫存量"].ToString())- Convert.ToDecimal(q.SUM.ToString()) ;
+                                row["預計採購量"] = Convert.ToDecimal(od3["預計採購量"].ToString());
 
                                 dtTemp2.Rows.Add(row);
                             }
