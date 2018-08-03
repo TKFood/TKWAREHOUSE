@@ -101,6 +101,10 @@ namespace TKWAREHOUSE
             DataColumn colDecimal2 = new DataColumn("庫存量");
             colDecimal2.DataType = System.Type.GetType("System.Decimal");
             dtTemp2.Columns.Add(colDecimal2);
+
+            DataColumn colDecimal3 = new DataColumn("需求量比較");
+            colDecimal2.DataType = System.Type.GetType("System.Decimal");
+            dtTemp2.Columns.Add(colDecimal3);
         }
         public void Search()
         {
@@ -415,6 +419,7 @@ namespace TKWAREHOUSE
                                 row["庫存單位"] = od3["庫存單位"].ToString();
                                 row["需求數量"] = Convert.ToDecimal(q.SUM.ToString());
                                 row["庫存量"] = Convert.ToDecimal(od3["庫存量"].ToString());
+                                row["需求量比較"] =  Convert.ToDecimal(od3["庫存量"].ToString())- Convert.ToDecimal(q.SUM.ToString()) ;
 
                                 dtTemp2.Rows.Add(row);
                             }
@@ -432,6 +437,18 @@ namespace TKWAREHOUSE
 
             dataGridView2.DataSource = dtTemp2;
             dataGridView2.AutoResizeColumns();
+
+            //根据列表中数据不同，显示不同颜色背景
+            foreach (DataGridViewRow dgRow in dataGridView2.Rows)
+            {
+                //判断
+                if (Convert.ToDecimal(dgRow.Cells[6].Value) < 0)
+                {
+                    //将这行的背景色设置成红色
+                    dgRow.DefaultCellStyle.BackColor = Color.Red;
+                }
+            }
+
         }
 
 
