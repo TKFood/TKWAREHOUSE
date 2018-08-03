@@ -358,13 +358,17 @@ namespace TKWAREHOUSE
         {
             if (dtTemp.Rows.Count >= 1)
             {
-                var query = from t in dtTemp.AsEnumerable()
+                var query = from t in dtTemp.AsEnumerable() 
                             group t by new { t1 = t.Field<string>("品號") } into m
+                            orderby m.Key.t1
                             select new
                             {
                                 MB001 = m.Key.t1,
                                 SUM = m.Sum(n => n.Field<decimal>("數量"))
-                            };
+                                
+                            }
+                           
+                            ;
 
                 dataGridView2.DataSource = query.ToList();
                 dataGridView2.AutoResizeColumns();
