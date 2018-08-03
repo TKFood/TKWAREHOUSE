@@ -194,7 +194,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
-                sbSql.AppendFormat(@"  AND ( TD002='20180708006'  )  AND TD003 IN ('0003','0010') ");
+                sbSql.AppendFormat(@"  AND ( TD002='20180708006'  ) ");
                 sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
                 sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
@@ -233,7 +233,7 @@ namespace TKWAREHOUSE
                         dataGridView1.DataSource = ds.Tables["TEMPds1"];
                         dataGridView1.AutoResizeColumns();
 
-
+                        SETCOPTHGROUPBY();
                     }
 
                 }
@@ -246,6 +246,25 @@ namespace TKWAREHOUSE
             finally
             {
 
+            }
+        }
+
+        public void SETCOPTHGROUPBY()
+        {
+            var query = from t in ds.Tables["TEMPds1"].AsEnumerable()
+                        group t by new { t1 = t.Field<string>("品號") } into m
+                        select new
+                        {
+                            MB001 = m.Key.t1,
+                            SUM = m.Sum(n => n.Field<int>("訂單數量"))
+                        };
+            if (query.ToList().Count > 0)
+            {
+                query.ToList().ForEach(q =>
+                {
+                    //MessageBox.Show(q.MB001 + "," );
+                    MessageBox.Show(q.MB001 + "," + q.SUM);
+                });
             }
         }
 
