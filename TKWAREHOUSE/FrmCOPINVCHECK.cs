@@ -210,7 +210,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND (TD008-TD009)>0  ");
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
-                //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540746%'  ) ");
+                //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540200%'  ) ");
                 //sbSql.AppendFormat(@"  AND ( TD002='20180708006'  ) ");
                 sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
@@ -309,9 +309,11 @@ namespace TKWAREHOUSE
                         sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV,MB002");
                         sbSql.AppendFormat(@"  FROM TEMPTABLE ");
                         sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=MD003");
+                       
                         sbSql.AppendFormat(@"  WHERE  (MD003 LIKE '1%') OR  (MD003 LIKE '2%')");
+                        //sbSql.AppendFormat(@"  WHERE  MD003='203022061' ");
                         sbSql.AppendFormat(@"  ORDER BY LV,MD001,MD003");
-                        sbSql.AppendFormat(@"  ");
+                        
 
 
                         adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -398,12 +400,12 @@ namespace TKWAREHOUSE
                         sbSql.Clear();
                         sbSqlQuery.Clear();
 
-                        sbSql.AppendFormat(@" SELECT LA001 AS '品號',SUM(LA011*LA005) AS '庫存量',MB002 AS '品名',MB003 AS '規格',MB004 AS '庫存單位' ");
+                        sbSql.AppendFormat(@" SELECT MB001 AS '品號',ISNULL(SUM(LA011*LA005),0) AS '庫存量',MB002 AS '品名',MB003 AS '規格',MB004 AS '庫存單位'   ");
                         sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TD008),0) FROM [TK].dbo.PURTD WHERE TD004=LA001 AND TD012>='{0}' AND TD012<='{1}') AS '預計採購量' ", dt.ToString("yyyyMMdd"), dt2.ToString("yyyyMMdd"));
-                        sbSql.AppendFormat(@" FROM [TK].dbo.INVLA,[TK].dbo.INVMB ");
-                        sbSql.AppendFormat(@" WHERE LA001=MB001 ");
-                        sbSql.AppendFormat(@" AND LA009 IN ('20004','20006') AND LA001='{0}' ", LA001);
-                        sbSql.AppendFormat(@" GROUP BY LA001,MB002,MB003,MB004 ");
+                        sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB   ");
+                        sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVLA ON LA001=MB001 AND  LA009 IN ('20004','20006')");
+                        sbSql.AppendFormat(@" WHERE  MB001='{0}' ", LA001);
+                        sbSql.AppendFormat(@" GROUP BY MB001,LA001,MB002,MB003,MB004 ");
                         sbSql.AppendFormat(@"  ");
 
 
@@ -436,6 +438,8 @@ namespace TKWAREHOUSE
                             }
 
                         }
+
+                        
 
                     }
                     );
