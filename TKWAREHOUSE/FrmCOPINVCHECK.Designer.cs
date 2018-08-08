@@ -260,7 +260,7 @@
             this.numericUpDown1.Size = new System.Drawing.Size(114, 27);
             this.numericUpDown1.TabIndex = 2;
             this.numericUpDown1.Value = new decimal(new int[] {
-            21,
+            30,
             0,
             0,
             0});
@@ -303,7 +303,7 @@
             this.numericUpDown2.Size = new System.Drawing.Size(114, 27);
             this.numericUpDown2.TabIndex = 6;
             this.numericUpDown2.Value = new decimal(new int[] {
-            7,
+            30,
             0,
             0,
             0});
@@ -329,7 +329,7 @@
             "已確認",
             "未確認(扣已確認)",
             "全部"});
-            this.comboBox1.Location = new System.Drawing.Point(3, 90);
+            this.comboBox1.Location = new System.Drawing.Point(3, 88);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 48;
@@ -342,7 +342,7 @@
             this.comboBox2.Items.AddRange(new object[] {
             "排除已製令",
             "全部"});
-            this.comboBox2.Location = new System.Drawing.Point(123, 90);
+            this.comboBox2.Location = new System.Drawing.Point(123, 88);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(114, 24);
             this.comboBox2.TabIndex = 49;
