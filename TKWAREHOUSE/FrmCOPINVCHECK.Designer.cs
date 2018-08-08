@@ -48,13 +48,13 @@
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.button2 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -329,7 +329,7 @@
             "已確認",
             "未確認(扣已確認)",
             "全部"});
-            this.comboBox1.Location = new System.Drawing.Point(3, 88);
+            this.comboBox1.Location = new System.Drawing.Point(3, 90);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 48;
@@ -342,7 +342,7 @@
             this.comboBox2.Items.AddRange(new object[] {
             "排除已製令",
             "全部"});
-            this.comboBox2.Location = new System.Drawing.Point(123, 88);
+            this.comboBox2.Location = new System.Drawing.Point(123, 90);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(114, 24);
             this.comboBox2.TabIndex = 49;
@@ -369,6 +369,17 @@
             this.button3.Text = "查詢原物料";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button2
+            // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button2.Location = new System.Drawing.Point(723, 83);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(240, 34);
+            this.button2.TabIndex = 51;
+            this.button2.Text = "匯出";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // splitContainer2
             // 
@@ -449,17 +460,6 @@
             this.dataGridView3.RowTemplate.Height = 24;
             this.dataGridView3.Size = new System.Drawing.Size(966, 472);
             this.dataGridView3.TabIndex = 1;
-            // 
-            // button2
-            // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(723, 83);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(240, 34);
-            this.button2.TabIndex = 51;
-            this.button2.Text = "匯出";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // FrmCOPINVCHECK
             // 
