@@ -459,8 +459,8 @@ namespace TKWAREHOUSE
                 //判断
                 if (Convert.ToDecimal(dgRow.Cells[6].Value) < 0)
                 {
-                    //将这行的背景色设置成红色
-                    dgRow.DefaultCellStyle.BackColor = Color.Red;
+                    //将这行的背景色设置成Pink
+                    dgRow.DefaultCellStyle.BackColor = Color.Pink;
                 }
             }
 
