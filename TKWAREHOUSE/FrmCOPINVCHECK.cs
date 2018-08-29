@@ -128,7 +128,10 @@ namespace TKWAREHOUSE
             {
                 TD001.AppendFormat("'A222',");
             }
-
+            if (checkBox3.Checked == true)
+            {
+                TD001.AppendFormat("'A228',");
+            }
             if (checkBox4.Checked == true)
             {
                 TD001.AppendFormat("'A225',");
