@@ -210,7 +210,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND (TD004 LIKE '401%' OR TD004 LIKE '402%' OR TD004 LIKE '403%' OR TD004 LIKE '404%' OR TD004 LIKE '405%' OR TD004 LIKE '406%' OR TD004 LIKE '407%'   ) ");
                 sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", DateTime.Now.ToString("yyyyMMdd"), dt.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND TC001 IN ({0}) ", TD001.ToString());
-                sbSql.AppendFormat(@"  AND (TD008-TD009)>0  ");
+                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540200%'  ) ");
