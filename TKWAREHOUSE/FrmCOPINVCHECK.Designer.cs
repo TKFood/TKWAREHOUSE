@@ -50,13 +50,13 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -251,7 +251,7 @@
             this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.numericUpDown1.Location = new System.Drawing.Point(123, 6);
             this.numericUpDown1.Maximum = new decimal(new int[] {
-            30,
+            999,
             0,
             0,
             0});
@@ -294,7 +294,7 @@
             this.numericUpDown2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.numericUpDown2.Location = new System.Drawing.Point(123, 46);
             this.numericUpDown2.Maximum = new decimal(new int[] {
-            30,
+            999,
             0,
             0,
             0});
@@ -333,7 +333,7 @@
             "已確認",
             "未確認(扣已確認)",
             "全部"});
-            this.comboBox1.Location = new System.Drawing.Point(3, 90);
+            this.comboBox1.Location = new System.Drawing.Point(3, 88);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 48;
@@ -346,7 +346,7 @@
             this.comboBox2.Items.AddRange(new object[] {
             "排除已製令",
             "全部"});
-            this.comboBox2.Location = new System.Drawing.Point(123, 90);
+            this.comboBox2.Location = new System.Drawing.Point(123, 88);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(114, 24);
             this.comboBox2.TabIndex = 49;
@@ -397,6 +397,19 @@
             this.checkBox3.TabIndex = 52;
             this.checkBox3.Text = "營銷部訂單";
             this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox8
+            // 
+            this.checkBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox8.AutoSize = true;
+            this.checkBox8.Checked = true;
+            this.checkBox8.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox8.Location = new System.Drawing.Point(723, 50);
+            this.checkBox8.Name = "checkBox8";
+            this.checkBox8.Size = new System.Drawing.Size(240, 20);
+            this.checkBox8.TabIndex = 53;
+            this.checkBox8.Text = "國內訂單(共用性商品)";
+            this.checkBox8.UseVisualStyleBackColor = true;
             // 
             // splitContainer2
             // 
@@ -477,19 +490,6 @@
             this.dataGridView3.RowTemplate.Height = 24;
             this.dataGridView3.Size = new System.Drawing.Size(966, 472);
             this.dataGridView3.TabIndex = 1;
-            // 
-            // checkBox8
-            // 
-            this.checkBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox8.AutoSize = true;
-            this.checkBox8.Checked = true;
-            this.checkBox8.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox8.Location = new System.Drawing.Point(723, 50);
-            this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(240, 20);
-            this.checkBox8.TabIndex = 53;
-            this.checkBox8.Text = "國內訂單(共用性商品)";
-            this.checkBox8.UseVisualStyleBackColor = true;
             // 
             // FrmCOPINVCHECK
             // 
