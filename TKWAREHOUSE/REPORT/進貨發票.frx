@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/06/2018 14:16:20" ReportInfo.Modified="09/06/2018 14:18:52" ReportInfo.CreatorVersion="2016.4.4.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KEWl1CL85wpOq4hdL2YQLX">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT TG001 AS '進貨單單別',TG002 AS '進貨單單號',TG003 AS '進貨日',TG005 AS '廠商'&#13;&#10;,TG011 AS '發票號碼',TG021 AS '廠商名'&#13;&#10;FROM [TK].dbo.PURTG&#13;&#10;WHERE TG003&gt;='20180901' AND TG003&lt;='20180906'&#13;&#10;ORDER BY TG003,TG021,TG011">
+        <Column Name="進貨單單別" DataType="System.String"/>
+        <Column Name="進貨單單號" DataType="System.String"/>
+        <Column Name="進貨日" DataType="System.String"/>
+        <Column Name="廠商" DataType="System.String"/>
+        <Column Name="發票號碼" DataType="System.String"/>
+        <Column Name="廠商名" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="18.9">
+      <TextObject Name="Text1" Width="708.75" Height="18.9" Text="進貨發票" HorzAlign="Center" VertAlign="Center"/>
+    </ReportTitleBand>
+    <ColumnHeaderBand Name="ColumnHeader1" Top="22.75" Width="718.2" Height="18.9">
+      <TextObject Name="Text3" Width="94.5" Height="18.9" Border.Lines="All" Text="進貨日" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="321.3" Width="141.75" Height="18.9" Border.Lines="All" Text="發票號碼" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="94.5" Width="226.8" Height="18.9" Border.Lines="All" Text="廠商名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="463.05" Width="94.5" Height="18.9" Border.Lines="All" Text="進貨單單別" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="557.55" Width="151.2" Height="18.9" Border.Lines="All" Text="進貨單單號" HorzAlign="Center" VertAlign="Center"/>
+    </ColumnHeaderBand>
+    <DataBand Name="Data1" Top="45.49" Width="718.2" Height="18.9" DataSource="Table">
+      <TextObject Name="Text2" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.進貨日]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="321.3" Width="141.75" Height="18.9" Border.Lines="All" Text="[Table.發票號碼]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="94.5" Width="226.8" Height="18.9" Border.Lines="All" Text="[Table.廠商名]" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="463.05" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.進貨單單別]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="557.55" Width="151.2" Height="18.9" Border.Lines="All" Text="[Table.進貨單單號]" HorzAlign="Center" VertAlign="Center"/>
+    </DataBand>
+  </ReportPage>
+</Report>
