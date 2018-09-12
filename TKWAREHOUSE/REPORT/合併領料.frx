@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="09/12/2018 13:59:33" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="09/12/2018 14:14:12" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9LFab5csCQxdOJPpB/lUjQV">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KOnHGVAcZ9oVE6VMaTjPQs">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(TE005) AS TE005 ,TE010&#13;&#10;FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE&#13;&#10;WHERE MD002 LIKE '新%'&#13;&#10;AND MD001=TC005&#13;&#10;AND TC001=TE001 AND TC002=TE002&#13;&#10;AND TE004 LIKE '2%'&#13;&#10;AND TC003&gt;=@P1 AND TC003&lt;=@P2&#13;&#10;AND MD002=@P3&#13;&#10;GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010&#13;&#10;ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010">
         <Column Name="MD002" DataType="System.String"/>
         <Column Name="TE004" DataType="System.String"/>
