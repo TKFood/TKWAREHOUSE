@@ -1,13 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using NPOI;
+using NPOI.HPSF;
+using NPOI.HSSF;
+using NPOI.HSSF.UserModel;
+using NPOI.POIFS;
+using NPOI.Util;
+using NPOI.HSSF.Util;
+using NPOI.HSSF.Extractor;
 using System.IO;
 using System.Data.SqlClient;
 using NPOI.SS.UserModel;
 using System.Configuration;
 using NPOI.XSSF.UserModel;
-using NPOI.SS.Util;
+using System.Text.RegularExpressions;
+using FastReport;
+using FastReport.Data;
 
 
 namespace TKWAREHOUSE
@@ -33,6 +48,8 @@ namespace TKWAREHOUSE
         DataTable dt = new DataTable();
         string tablename = null;
         DateTime StayDay;
+
+        public Report report1 { get; private set; }
 
         public FrmINVSTAYOVER()
         {
@@ -118,16 +135,16 @@ namespace TKWAREHOUSE
                 if (ds.Tables[tablename].Rows.Count == 0)
                 {
                     label14.Text = "找不到資料";
-                    dataGridView1.Rows.Clear();
-                    dataGridView1.DataSource = null;
+                    //dataGridView1.Rows.Clear();
+                    //dataGridView1.DataSource = null;
                 }
                 else
                 {
                     label14.Text = "有 " + ds.Tables[tablename].Rows.Count.ToString() + " 筆";
-                    dataGridView1.Rows.Clear();
-                    dataGridView1.DataSource = null;
-                    dataGridView1.DataSource = ds.Tables[tablename];
-                    dataGridView1.AutoResizeColumns();
+                    //dataGridView1.Rows.Clear();
+                    //dataGridView1.DataSource = null;
+                    //dataGridView1.DataSource = ds.Tables[tablename];
+                    //dataGridView1.AutoResizeColumns();
                 }
 
             }
@@ -141,103 +158,166 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ExcelExport()
+        //public void ExcelExport()
+        //{
+
+        //    string NowDB = "TK";
+        //    //建立Excel 2003檔案
+        //    IWorkbook wb = new XSSFWorkbook();
+        //    ISheet ws;
+
+        //    XSSFCellStyle cs = (XSSFCellStyle)wb.CreateCellStyle();
+        //    //框線樣式及顏色
+        //    cs.BorderBottom = NPOI.SS.UserModel.BorderStyle.Double;
+        //    cs.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+        //    cs.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+        //    cs.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+        //    cs.BottomBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
+        //    cs.LeftBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
+        //    cs.RightBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
+        //    cs.TopBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
+
+        //    Search();
+        //    dt = ds.Tables[tablename];
+
+        //    if (dt.TableName != string.Empty)
+        //    {
+        //        ws = wb.CreateSheet(dt.TableName);
+        //    }
+        //    else
+        //    {
+        //        ws = wb.CreateSheet("Sheet1");
+        //    }
+
+        //    ws.CreateRow(0);//第一行為欄位名稱
+        //    for (int i = 0; i < dt.Columns.Count; i++)
+        //    {
+        //        ws.GetRow(0).CreateCell(i).SetCellValue(dt.Columns[i].ColumnName);
+        //    }
+
+        //    int j = 0;
+        //    if (tablename.Equals("TEMPds1"))
+        //    {
+        //        foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+        //        {
+        //            ws.CreateRow(j + 1);
+        //            ws.GetRow(j + 1).CreateCell(0).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0].ToString());
+        //            ws.GetRow(j + 1).CreateCell(1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
+        //            ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
+        //            ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
+        //            ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
+        //            ws.GetRow(j + 1).CreateCell(5).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
+        //            ws.GetRow(j + 1).CreateCell(6).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[6].ToString());
+        //            ws.GetRow(j + 1).CreateCell(7).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
+        //            ws.GetRow(j + 1).CreateCell(8).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString()));
+        //            j++;
+        //        }
+        //    }
+
+
+        //    if (Directory.Exists(@"c:\temp\"))
+        //    {
+        //        //資料夾存在
+        //    }
+        //    else
+        //    {
+        //        //新增資料夾
+        //        Directory.CreateDirectory(@"c:\temp\");
+        //    }
+        //    StringBuilder filename = new StringBuilder();
+        //    filename.AppendFormat(@"c:\temp\庫存呆滯表{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
+
+        //    FileStream file = new FileStream(filename.ToString(), FileMode.Create);//產生檔案
+        //    wb.Write(file);
+        //    file.Close();
+
+        //    MessageBox.Show("匯出完成-EXCEL放在-" + filename.ToString());
+        //    FileInfo fi = new FileInfo(filename.ToString());
+        //    if (fi.Exists)
+        //    {
+        //        System.Diagnostics.Process.Start(filename.ToString());
+        //    }
+        //    else
+        //    {
+        //        //file doesn't exist
+        //    }
+
+
+        //}
+
+
+        public void SETFASTREPORT()
         {
 
-            string NowDB = "TK";
-            //建立Excel 2003檔案
-            IWorkbook wb = new XSSFWorkbook();
-            ISheet ws;
+            string SQL;
+            report1 = new Report();
+            report1.Load(@"REPORT\庫存呆滯表.frx");
 
-            XSSFCellStyle cs = (XSSFCellStyle)wb.CreateCellStyle();
-            //框線樣式及顏色
-            cs.BorderBottom = NPOI.SS.UserModel.BorderStyle.Double;
-            cs.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            cs.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            cs.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            cs.BottomBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
-            cs.LeftBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
-            cs.RightBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
-            cs.TopBorderColor = NPOI.HSSF.Util.HSSFColor.Grey50Percent.Index;
+            report1.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
 
-            Search();
-            dt = ds.Tables[tablename];
-
-            if (dt.TableName != string.Empty)
-            {
-                ws = wb.CreateSheet(dt.TableName);
-            }
-            else
-            {
-                ws = wb.CreateSheet("Sheet1");
-            }
-
-            ws.CreateRow(0);//第一行為欄位名稱
-            for (int i = 0; i < dt.Columns.Count; i++)
-            {
-                ws.GetRow(0).CreateCell(i).SetCellValue(dt.Columns[i].ColumnName);
-            }
-
-            int j = 0;
-            if (tablename.Equals("TEMPds1"))
-            {
-                foreach (DataGridViewRow dr in this.dataGridView1.Rows)
-                {
-                    ws.CreateRow(j + 1);
-                    ws.GetRow(j + 1).CreateCell(0).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[0].ToString());
-                    ws.GetRow(j + 1).CreateCell(1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
-                    ws.GetRow(j + 1).CreateCell(2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
-                    ws.GetRow(j + 1).CreateCell(3).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[3].ToString());
-                    ws.GetRow(j + 1).CreateCell(4).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[4].ToString());
-                    ws.GetRow(j + 1).CreateCell(5).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
-                    ws.GetRow(j + 1).CreateCell(6).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[6].ToString());
-                    ws.GetRow(j + 1).CreateCell(7).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[7].ToString());
-                    ws.GetRow(j + 1).CreateCell(8).SetCellValue(Convert.ToDouble(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[5].ToString()));
-                    j++;
-                }
-            }
-
-
-            if (Directory.Exists(@"c:\temp\"))
-            {
-                //資料夾存在
-            }
-            else
-            {
-                //新增資料夾
-                Directory.CreateDirectory(@"c:\temp\");
-            }
-            StringBuilder filename = new StringBuilder();
-            filename.AppendFormat(@"c:\temp\庫存呆滯表{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
-
-            FileStream file = new FileStream(filename.ToString(), FileMode.Create);//產生檔案
-            wb.Write(file);
-            file.Close();
-
-            MessageBox.Show("匯出完成-EXCEL放在-" + filename.ToString());
-            FileInfo fi = new FileInfo(filename.ToString());
-            if (fi.Exists)
-            {
-                System.Diagnostics.Process.Start(filename.ToString());
-            }
-            else
-            {
-                //file doesn't exist
-            }
-
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+            SQL = SETFASETSQL();
+            Table.SelectCommand = SQL;
+            report1.Preview = previewControl1;
+            report1.Show();
 
         }
+
+        public string SETFASETSQL()
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+
+
+            if (comboBox1.SelectedValue.ToString().Trim().Equals("20006") || comboBox1.SelectedValue.ToString().Trim().Equals("20001") || comboBox1.SelectedValue.ToString().Trim().Equals("20005"))
+            {
+                FASTSQL.AppendFormat(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別' ,CMSMC.MC002 AS '庫名',INVMC.MC012 AS '最近入庫日' ,INVMC.MC013 AS '最近出庫日' ");
+                FASTSQL.AppendFormat(@" ,MF002 AS '批號',SUM(MF008*MF010)  AS '庫存量'");
+                FASTSQL.AppendFormat(@"  FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC ,TK.dbo.INVME, TK.dbo.INVMF");
+                FASTSQL.AppendFormat(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND MB001=ME001 AND ME001=MF001 AND ME002=MF002 AND MF007=INVMC.MC002");
+                FASTSQL.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )", StayDay.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" AND INVMC.MC002='{0}'", comboBox1.SelectedValue.ToString());
+                FASTSQL.AppendFormat(@" GROUP BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002 ,INVMC.MC007 ,INVMC.MC012 ,INVMC.MC013   ,INVMF.MF001,INVMF.MF002     ");
+                FASTSQL.AppendFormat(@"  HAVING SUM(MF008*MF010)>0");
+                FASTSQL.AppendFormat(@"  ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002      ");
+                FASTSQL.AppendFormat(@" ");
+                FASTSQL.AppendFormat(@" ");
+                FASTSQL.AppendFormat(@" ");
+            }
+            else
+            {
+                FASTSQL.AppendFormat(@" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別',CMSMC.MC002 AS '庫名',INVMC.MC012 AS '最近入庫日',INVMC.MC013 AS '最近出庫日','' AS '批號',INVMC.MC007 AS '庫存量'");
+                FASTSQL.AppendFormat(@" FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC");
+                FASTSQL.AppendFormat(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND  INVMC.MC007>0 ");
+                FASTSQL.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )", StayDay.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" AND INVMC.MC002='{0}'", comboBox1.SelectedValue.ToString());
+                FASTSQL.AppendFormat(@" ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002");
+                FASTSQL.AppendFormat(@" ");
+            }
+
+
+
+
+
+            return FASTSQL.ToString();
+        }
         #endregion
-      
+
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
-            Search();
+            //Search();
+
+            StayDay = dateTimePicker1.Value;
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(numericUpDown1.Value));
+
+            SETFASTREPORT();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ExcelExport();
+            //ExcelExport();
         }
         #endregion
 
