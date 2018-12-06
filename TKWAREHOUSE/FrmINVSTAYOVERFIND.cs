@@ -41,6 +41,7 @@ namespace TKWAREHOUSE
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
+        int result;
         public Report report1 { get; private set; }
 
         public FrmINVSTAYOVERFIND()
@@ -137,11 +138,87 @@ namespace TKWAREHOUSE
 
         public void UPDATEINVSTAYOVER()
         {
+            try
+            {
 
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(" UPDATE  [TKWAREHOUSE].[dbo].[INVSTAYOVER]");
+                sbSql.AppendFormat(" SET [COMMEMT]='{0}'", textBox8.Text);
+                sbSql.AppendFormat(" WHERE CONVERT(NVARCHAR,CHECKDATE,112)='{0}' AND MB001='{1}' AND LOTNO='{2}'", textBox1.Text, textBox3.Text, textBox6.Text);
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
 
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
 
+                    textBox1.Text = row.Cells["檢查日期"].Value.ToString();
+                    textBox2.Text = row.Cells["分類"].Value.ToString();
+                    textBox3.Text = row.Cells["品號"].Value.ToString();
+                    textBox4.Text = row.Cells["品名"].Value.ToString();
+                    textBox5.Text = row.Cells["規格"].Value.ToString();
+                    textBox6.Text = row.Cells["批號"].Value.ToString();
+                    textBox7.Text = row.Cells["庫存數量"].Value.ToString();
+                    textBox8.Text = row.Cells["處理方式"].Value.ToString();
+           
+
+                }
+                else
+                {
+                    textBox1.Text = null;
+                    textBox2.Text = null;
+                    textBox3.Text = null;
+                    textBox4.Text = null;
+                    textBox5.Text = null;
+                    textBox6.Text = null;
+                    textBox7.Text = null;
+                    textBox8.Text = null;
+                   
+
+                }
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -158,9 +235,13 @@ namespace TKWAREHOUSE
         private void button3_Click(object sender, EventArgs e)
         {
             UPDATEINVSTAYOVER();
+
+            SEARCHINVSTAYOVER();
+            MessageBox.Show("完成");
         }
+
         #endregion
 
-
+       
     }
 }
