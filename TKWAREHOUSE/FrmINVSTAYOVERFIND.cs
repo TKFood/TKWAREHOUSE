@@ -74,7 +74,7 @@ namespace TKWAREHOUSE
 
             FASTSQL.AppendFormat(@" SELECT CONVERT(NVARCHAR,[CHECKDATE],112) AS '檢查日期',[KIND] AS '分類',[MB001] AS '品號',[MB002] AS '品名',[MB003] AS '規格',[LOTNO] AS '批號',[NUM] AS '庫存數量',[COMMEMT] AS '處理方式'");
             FASTSQL.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[INVSTAYOVER]");
-            FASTSQL.AppendFormat(@" WHERE [CHECKDATE]='{0}'",dateTimePicker1.Value.ToString("yyyy/MM/dd"));
+            FASTSQL.AppendFormat(@" WHERE [CHECKDATE]>='{0}' AND [CHECKDATE]<='{0}'", dateTimePicker1.Value.ToString("yyyy/MM/dd"), dateTimePicker1.Value.ToString("yyyy/MM/dd"));
             FASTSQL.AppendFormat(@" ORDER BY [KIND],[LOTNO],[MB001]");
             FASTSQL.AppendFormat(@" ");
             

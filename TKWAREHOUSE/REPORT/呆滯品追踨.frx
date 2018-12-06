@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="12/06/2018 10:36:11" ReportInfo.Modified="12/06/2018 11:51:11" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/06/2018 10:36:11" ReportInfo.Modified="12/06/2018 14:11:46" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9Id+wAoTWMsu4nicMg+YeAN">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KoGBTw/tztDeRLhynOEZvI">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT CONVERT(NVARCHAR,[CHECKDATE],112) AS '檢查日期',[KIND] AS '分類',[MB001] AS '品號',[MB002] AS '品名',[MB003] AS '規格',[LOTNO] AS '批號',[NUM] AS '庫存數量',[COMMEMT] AS '處理方式'&#13;&#10;FROM [TKWAREHOUSE].[dbo].[INVSTAYOVER]&#13;&#10;WHERE [CHECKDATE]='2018/12/6'&#13;&#10;ORDER BY [KIND],[LOTNO],[MB001]">
         <Column Name="檢查日期" DataType="System.String"/>
         <Column Name="分類" DataType="System.String"/>
@@ -46,7 +46,7 @@
         <TextObject Name="Text14" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.分類]" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text4" Left="302.4" Width="103.95" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text2" Left="236.25" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.檢查日期]" HorzAlign="Center" VertAlign="Center"/>
-        <DataBand Name="Data2" Top="68.24" Width="718.2" Height="18.9" CanGrow="true" DataSource="Table1">
+        <DataBand Name="Data2" Top="68.24" Width="718.2" Height="18.9" CanGrow="true" DataSource="Table1" PrintIfDatasourceEmpty="true">
           <TextObject Name="Text16" Left="67.11" Width="170.1" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="上次記錄" HorzAlign="Center" VertAlign="Center"/>
           <TextObject Name="Text17" Left="302.4" Width="103.95" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table1.MB001]" HorzAlign="Center" VertAlign="Center"/>
           <TextObject Name="Text18" Left="406.35" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table1.LOTNO]" HorzAlign="Center" VertAlign="Center"/>
