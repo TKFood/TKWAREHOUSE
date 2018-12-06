@@ -134,6 +134,12 @@
     <Compile Include="FrmINVSTAYOVER.Designer.cs">
       <DependentUpon>FrmINVSTAYOVER.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmINVSTAYOVERFIND.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmINVSTAYOVERFIND.Designer.cs">
+      <DependentUpon>FrmINVSTAYOVERFIND.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -201,6 +207,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmINVSTAYOVER.resx">
       <DependentUpon>FrmINVSTAYOVER.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmINVSTAYOVERFIND.resx">
+      <DependentUpon>FrmINVSTAYOVERFIND.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
