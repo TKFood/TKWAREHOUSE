@@ -333,7 +333,7 @@
             "已確認",
             "未確認(扣已確認)",
             "全部"});
-            this.comboBox1.Location = new System.Drawing.Point(3, 88);
+            this.comboBox1.Location = new System.Drawing.Point(3, 90);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 48;
@@ -344,13 +344,13 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Items.AddRange(new object[] {
-            "排除已製令",
-            "全部"});
-            this.comboBox2.Location = new System.Drawing.Point(123, 88);
+            "全部",
+            "排除已製令"});
+            this.comboBox2.Location = new System.Drawing.Point(123, 90);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(114, 24);
             this.comboBox2.TabIndex = 49;
-            this.comboBox2.Text = "排除已製令";
+            this.comboBox2.Text = "全部";
             // 
             // button1
             // 
