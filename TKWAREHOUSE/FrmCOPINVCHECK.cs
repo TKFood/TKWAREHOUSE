@@ -79,6 +79,8 @@ namespace TKWAREHOUSE
         #region FUNCTION
         public void NEWdtTemp()
         {
+            dtTemp.Columns.Add("商品");
+
             dtTemp.Columns.Add("品號");
             dtTemp.Columns.Add("品名");
             //dtTemp.Columns.Add("數量");
@@ -224,7 +226,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540200%'  ) ");
-                sbSql.AppendFormat(@"  AND ( TD002='20181211001'  ) ");
+                //sbSql.AppendFormat(@"  AND ( TD002='20181211001'  ) ");
                 sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
                 sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
@@ -347,6 +349,7 @@ namespace TKWAREHOUSE
                                     DataRow row = dtTemp.NewRow();
                                     //row["MD001"] = od2["MC001"].ToString();
 
+                                    row["商品"] =MB001.ToString();
                                     row["品號"] = od2["MD003"].ToString();
                                     row["品名"] = od2["MB002"].ToString();
                                     row["數量"] = Convert.ToDecimal(COPNum) * Convert.ToDecimal(od2["NUM"].ToString());
@@ -644,7 +647,7 @@ namespace TKWAREHOUSE
             TC027.AppendFormat("''");
 
 
-            QUERY1.AppendFormat(" AND TD004 IN (SELECT [MD001] FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}' ) ", MB001.ToString());
+            QUERY1.AppendFormat(" AND ((TD004 IN (SELECT [MD001] FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}')) OR (TD004 IN (SELECT MD001 FROM [TK].[dbo].[VBOMMD] WHERE MD003 IN (SELECT MD001 FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}' ))) OR (TD004 IN (SELECT MD001 FROM [TK].[dbo].[BOMMD]  WHERE MD003 IN ( SELECT MD001 FROM [TK].[dbo].[BOMMD]  WHERE MD003 IN ( SELECT MD001 FROM [TK].[dbo].[BOMMD] WHERE [MD003]='{0}' ))) ) ) ", MB001.ToString());
             
 
             try
@@ -737,6 +740,7 @@ namespace TKWAREHOUSE
         }
         private void button3_Click(object sender, EventArgs e)
         {
+            Search();
             SETCOPTHGROUPBY();
             //SEARCHCOOKIES();
         }
