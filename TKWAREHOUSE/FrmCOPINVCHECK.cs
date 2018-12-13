@@ -44,6 +44,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
         SqlDataAdapter adapter6 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
+        SqlDataAdapter adapter7= new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -52,6 +54,7 @@ namespace TKWAREHOUSE
         DataSet ds4 = new DataSet();
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
+        DataSet ds7 = new DataSet();
         DataTable dt = new DataTable();
         DataTable dtTemp = new DataTable();
         DataTable dtTemp2 = new DataTable();
@@ -411,7 +414,7 @@ namespace TKWAREHOUSE
                         sbSqlQuery.Clear();
 
                         sbSql.AppendFormat(@" SELECT MB001 AS '品號',ISNULL(SUM(LA011*LA005),0) AS '庫存量',MB002 AS '品名',MB003 AS '規格',MB004 AS '庫存單位'   ");
-                        sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TD008-TD015),0) FROM [TK].dbo.PURTD WHERE TD004=MB001  AND TD016='N' AND TD012<='{0}') AS '預計採購量' ",  dt2.ToString("yyyyMMdd"));
+                        sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TD008-TD015),0) FROM [TK].dbo.PURTD WHERE TD004=MB001 AND TD018='Y' AND TD016='N' AND TD012<='{0}') AS '預計採購量' ",  dt2.ToString("yyyyMMdd"));
                         sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB   ");
                         sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVLA ON LA001=MB001 AND  LA009 IN ('20004','20006')");
                         sbSql.AppendFormat(@" WHERE  MB001='{0}' ", LA001);
@@ -559,8 +562,8 @@ namespace TKWAREHOUSE
                     DataGridViewRow row = dataGridView2.Rows[rowindex];
                     MB001 = row.Cells["品號"].Value.ToString();
 
-                    MessageBox.Show(MB001.ToString());
-
+                    //MessageBox.Show(MB001.ToString());
+                    Search3(MB001.ToString());
                 }
                 else
                 {
@@ -570,6 +573,148 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void Search3(string MB001)
+        {
+            DateTime dt = new DateTime();
+            dt = DateTime.Now;
+            dt = dt.AddDays(Convert.ToDouble(numericUpDown1.Value));
+
+            StringBuilder TD001 = new StringBuilder();
+            StringBuilder TC027 = new StringBuilder();
+            StringBuilder QUERY1 = new StringBuilder();
+
+            if (checkBox1.Checked == true)
+            {
+                TD001.AppendFormat("'A221',");
+            }
+            if (checkBox2.Checked == true)
+            {
+                TD001.AppendFormat("'A222',");
+            }
+            if (checkBox3.Checked == true)
+            {
+                TD001.AppendFormat("'A228',");
+            }
+            if (checkBox4.Checked == true)
+            {
+                TD001.AppendFormat("'A225',");
+            }
+            if (checkBox5.Checked == true)
+            {
+                TD001.AppendFormat("'A226',");
+            }
+            if (checkBox6.Checked == true)
+            {
+                TD001.AppendFormat("'A227',");
+            }
+            if (checkBox7.Checked == true)
+            {
+                TD001.AppendFormat("'A223',");
+            }
+            if (checkBox8.Checked == true)
+            {
+                TD001.AppendFormat("'A229',");
+            }
+            TD001.AppendFormat("''");
+
+            if (comboBox1.Text.ToString().Equals("已確認"))
+            {
+                TC027.AppendFormat(" 'Y',");
+            }
+            else if (comboBox1.Text.ToString().Equals("未確認"))
+            {
+                TC027.AppendFormat(" 'N',");
+            }
+            else if (comboBox1.Text.ToString().Equals("全部"))
+            {
+                TC027.AppendFormat(" 'Y','N', ");
+            }
+            TC027.AppendFormat("''");
+
+
+            QUERY1.AppendFormat(" AND TD004 IN (SELECT [MD001] FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}' ) ", MB001.ToString());
+            
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT 日期,品號,品名,客戶,CONVERT(INT,SUM(訂單數量)) AS 訂單數量,單位 ,單別,單號,序號,規格  ");
+                sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(LA005*LA011),0)) FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA009='20001' AND LA001=品號) AS '成品倉庫存'");
+                sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(LA005*LA011),0)) FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA009='20002' AND LA001=品號) AS '外銷倉庫存'");
+                sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(TA015-TA017-TA018),0)) FROM [TK].dbo.MOCTA  WITH (NOLOCK) WHERE TA011 NOT IN ('Y','y') AND TA006=品號 ) AS '未完成的製令' ");
+                sbSql.AppendFormat(@"  ,(SELECT CONVERT(INT,ISNULL(MC004,0))  FROM [TK].dbo.BOMMC WHERE MC001=品號) AS 標準批量");
+                sbSql.AppendFormat(@"  FROM (");
+                sbSql.AppendFormat(@"  SELECT   TD001 AS '單別',TD002 AS '單號',TD003 AS '序號',TC053  AS '客戶' ,TD013 AS '日期',TD004 AS '品號',TD005 AS '品名',TD006 AS '規格'");
+                sbSql.AppendFormat(@"  ,(CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*MD004 END) AS '訂單數量'");
+                sbSql.AppendFormat(@"  ,MB004 AS '單位'");
+                sbSql.AppendFormat(@"  ,((TD008-TD009)+(TD024-TD025)) AS '訂單量'");
+                sbSql.AppendFormat(@"  ,TD010 AS '訂單單位' ");
+                sbSql.AppendFormat(@"  ,(CASE WHEN ISNULL(MD002,'')<>'' THEN MD002 ELSE TD010 END ) AS '換算單位'");
+                sbSql.AppendFormat(@"  ,(CASE WHEN MD003>0 THEN MD003 ELSE 1 END) AS '分子'");
+                sbSql.AppendFormat(@"  ,(CASE WHEN MD004>0 THEN MD004 ELSE (TD008-TD009) END ) AS '分母'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB,[TK].dbo.COPTC,[TK].dbo.COPTD");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMD ON MD001=TD004 AND TD010=MD002");
+                sbSql.AppendFormat(@"  WHERE TD004=MB001");
+                sbSql.AppendFormat(@"  AND TC001=TD001 AND TC002=TD002");
+                sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
+                sbSql.AppendFormat(@"  AND (TD004 LIKE '401%' OR TD004 LIKE '402%' OR TD004 LIKE '403%' OR TD004 LIKE '404%' OR TD004 LIKE '405%' OR TD004 LIKE '406%' OR TD004 LIKE '407%'   ) ");
+                sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", DateTime.Now.ToString("yyyyMMdd"), dt.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  AND TC001 IN ({0}) ", TD001.ToString());
+                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
+                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
+                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
+                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
+                sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
+                sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
+                //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540200%'  ) ");
+                //sbSql.AppendFormat(@"  AND ( TD002='20180708006'  ) ");
+                sbSql.AppendFormat(@") AS TEMP");
+                sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
+                sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter7 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder7 = new SqlCommandBuilder(adapter7);
+                sqlConn.Open();
+                ds7.Clear();
+                adapter7.Fill(ds7, "TEMPds7");
+                sqlConn.Close();
+
+
+
+                if (ds7.Tables["TEMPds7"].Rows.Count == 0)
+                {
+                    dataGridView4.DataSource = null;
+                }
+                else
+                {
+                    if (ds7.Tables["TEMPds7"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView4.DataSource = ds7.Tables["TEMPds7"];
+                        dataGridView4.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
 
         #endregion
 
