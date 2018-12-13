@@ -548,7 +548,27 @@ namespace TKWAREHOUSE
 
 
         }
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                string MB001=null;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+                    MB001 = row.Cells["品號"].Value.ToString();
 
+                    MessageBox.Show(MB001.ToString());
+
+                }
+                else
+                {
+                    MB001 = null;
+
+                }
+            }
+        }
 
 
         #endregion
@@ -568,8 +588,9 @@ namespace TKWAREHOUSE
            ExcelExport();
         }
 
+
         #endregion
 
-
+       
     }
 }
