@@ -224,7 +224,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540200%'  ) ");
-                //sbSql.AppendFormat(@"  AND ( TD002='20180708006'  ) ");
+                sbSql.AppendFormat(@"  AND ( TD002='20181211001'  ) ");
                 sbSql.AppendFormat(@") AS TEMP");
                 sbSql.AppendFormat(@"  GROUP  BY 客戶,日期,品號,品名,規格,單位,單別,單號,序號");
                 sbSql.AppendFormat(@"  ORDER BY 日期,客戶,品號,品名,規格,單位,單別,單號,序號 ");
@@ -281,102 +281,114 @@ namespace TKWAREHOUSE
 
         public void SETCOPTHGROUPBY()
         {
-            if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+            try
             {
-                var query = from t in ds.Tables["TEMPds1"].AsEnumerable()
-                            group t by new { t1 = t.Field<string>("品號") } into m
-                            select new
-                            {
-                                MB001 = m.Key.t1,
-                                SUM = m.Sum(n => n.Field<int>("訂單數量"))
-                            };
-                if (query.ToList().Count > 0)
+                if (ds.Tables["TEMPds1"].Rows.Count >= 1)
                 {
-                    string MB001 = null;
-                    string MB003 = null;
-                    string[] sArray = null;
-                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-                    sqlConn = new SqlConnection(connectionString);
-
-                    dtTemp.Clear();
-
-                    query.ToList().ForEach(q =>
+                    var query = from t in ds.Tables["TEMPds1"].AsEnumerable()
+                                group t by new { t1 = t.Field<string>("品號") } into m
+                                select new
+                                {
+                                    MB001 = m.Key.t1,
+                                    SUM = m.Sum(n => n.Field<int>("訂單數量"))
+                                };
+                    if (query.ToList().Count > 0)
                     {
+                        string MB001 = null;
+                        string MB003 = null;
+                        string[] sArray = null;
+                        connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                        sqlConn = new SqlConnection(connectionString);
 
-                        COPNum = Convert.ToDecimal(q.SUM);
-                        MB001 = q.MB001.ToString();
-                       
-                        //TOTALCOPNum = Convert.ToDecimal(Convert.ToDecimal(sArray[0].ToString())* COPNum);
+                        dtTemp.Clear();
 
-                        sbSql.Clear();
-                        sbSqlQuery.Clear();
-
-                        sbSql.AppendFormat(@"  WITH TEMPTABLE (MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV) AS");
-                        sbSql.AppendFormat(@"  (");
-                        sbSql.AppendFormat(@"  SELECT  MD001,MD003,MD004,MD006,MD007,MD008,MC004,CONVERT(decimal(18,5),(MD006*(1+MD008)/MD007)/MC004) AS NUM,1 AS LV FROM [TK].dbo.VBOMMD WHERE  MD001='{0}'", MB001);
-                        sbSql.AppendFormat(@"  UNION ALL");
-                        sbSql.AppendFormat(@"  SELECT A.MD001,A.MD003,A.MD004,A.MD006,A.MD007,A.MD008,A.MC004,CONVERT(decimal(18,5),(A.MD006*(1+A.MD008)/A.MD007/A.MC004)*(B.NUM)) AS NUM,LV+1");
-                        sbSql.AppendFormat(@"  FROM [TK].dbo.VBOMMD A");
-                        sbSql.AppendFormat(@"  INNER JOIN TEMPTABLE B on A.MD001=B.MD003");
-                        sbSql.AppendFormat(@"  )");
-                        sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV,MB002");
-                        sbSql.AppendFormat(@"  FROM TEMPTABLE ");
-                        sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=MD003");
-                       
-                        sbSql.AppendFormat(@"  WHERE  (MD003 LIKE '1%') OR  (MD003 LIKE '2%')");
-                        //sbSql.AppendFormat(@"  WHERE  MD003='203022061' ");
-                        sbSql.AppendFormat(@"  ORDER BY LV,MD001,MD003");
-                        
-
-
-                        adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
-
-                        sqlCmdBuilder2 = new SqlCommandBuilder(adapter2);
-                        sqlConn.Open();
-                        ds2.Clear();
-                        adapter2.Fill(ds2, "TEMPds2");
-                        sqlConn.Close();
-
-                        if (ds2.Tables["TEMPds2"].Rows.Count >= 1)
+                        query.ToList().ForEach(q =>
                         {
 
-                            foreach (DataRow od2 in ds2.Tables["TEMPds2"].Rows)
+                            COPNum = Convert.ToDecimal(q.SUM);
+                            MB001 = q.MB001.ToString();
+
+                            //TOTALCOPNum = Convert.ToDecimal(Convert.ToDecimal(sArray[0].ToString())* COPNum);
+
+                            sbSql.Clear();
+                            sbSqlQuery.Clear();
+
+                            sbSql.AppendFormat(@"  WITH TEMPTABLE (MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV) AS");
+                            sbSql.AppendFormat(@"  (");
+                            sbSql.AppendFormat(@"  SELECT  MD001,MD003,MD004,MD006,MD007,MD008,MC004,CONVERT(decimal(18,5),(MD006*(1+MD008)/MD007)/MC004) AS NUM,1 AS LV FROM [TK].dbo.VBOMMD WHERE  MD001='{0}'", MB001);
+                            sbSql.AppendFormat(@"  UNION ALL");
+                            sbSql.AppendFormat(@"  SELECT A.MD001,A.MD003,A.MD004,A.MD006,A.MD007,A.MD008,A.MC004,CONVERT(decimal(18,5),(A.MD006*(1+A.MD008)/A.MD007/A.MC004)*(B.NUM)) AS NUM,LV+1");
+                            sbSql.AppendFormat(@"  FROM [TK].dbo.VBOMMD A");
+                            sbSql.AppendFormat(@"  INNER JOIN TEMPTABLE B on A.MD001=B.MD003");
+                            sbSql.AppendFormat(@"  )");
+                            sbSql.AppendFormat(@"  SELECT MD001,MD003,MD004,MD006,MD007,MD008,MC004,NUM,LV,MB002");
+                            sbSql.AppendFormat(@"  FROM TEMPTABLE ");
+                            sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=MD003");
+
+                            sbSql.AppendFormat(@"  WHERE  (MD003 LIKE '1%') OR  (MD003 LIKE '2%')");
+                            //sbSql.AppendFormat(@"  WHERE  MD003='203022061' ");
+                            sbSql.AppendFormat(@"  ORDER BY LV,MD001,MD003");
+
+
+
+                            adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                            sqlCmdBuilder2 = new SqlCommandBuilder(adapter2);
+                            sqlConn.Open();
+                            ds2.Clear();
+                            adapter2.Fill(ds2, "TEMPds2");
+                            sqlConn.Close();
+
+                            if (ds2.Tables["TEMPds2"].Rows.Count >= 1)
                             {
-                                DataRow row = dtTemp.NewRow();
-                                //row["MD001"] = od2["MC001"].ToString();
 
-                                row["品號"] = od2["MD003"].ToString();
-                                row["品名"] = od2["MB002"].ToString();
-                                row["數量"] = Convert.ToDecimal(COPNum) * Convert.ToDecimal(od2["NUM"].ToString());
-                                row["單位"] = od2["MD004"].ToString();
+                                foreach (DataRow od2 in ds2.Tables["TEMPds2"].Rows)
+                                {
+                                    DataRow row = dtTemp.NewRow();
+                                    //row["MD001"] = od2["MC001"].ToString();
 
-                                dtTemp.Rows.Add(row);
+                                    row["品號"] = od2["MD003"].ToString();
+                                    row["品名"] = od2["MB002"].ToString();
+                                    row["數量"] = Convert.ToDecimal(COPNum) * Convert.ToDecimal(od2["NUM"].ToString());
+                                    row["單位"] = od2["MD004"].ToString();
 
+                                    dtTemp.Rows.Add(row);
+
+
+                                }
 
                             }
 
                         }
-
+                        );
                     }
-                    );
+
+
+
+                    //query.ToList().ForEach(q =>
+                    //{
+                    //    //MessageBox.Show(q.MB001 + "," );
+                    //    MessageBox.Show(q.MB001 + "," + q.SUM);
+                    //});
                 }
-                
-            
 
-                //query.ToList().ForEach(q =>
-                //{
-                //    //MessageBox.Show(q.MB001 + "," );
-                //    MessageBox.Show(q.MB001 + "," + q.SUM);
-                //});
+                if (dtTemp.Rows.Count > 0)
+                {
+                    dataGridView3.DataSource = dtTemp;
+                    dataGridView3.AutoResizeColumns();
+
+                    SETMOCGROUPBY();
+                }
             }
-
-            if(dtTemp.Rows.Count>0)
+            catch
             {
-                dataGridView3.DataSource = dtTemp;
-                dataGridView3.AutoResizeColumns();
 
-                SETMOCGROUPBY();
             }
+            finally
+            {
+
+            }
+           
 
         }
 
