@@ -48,6 +48,10 @@ namespace TKWAREHOUSE
         {
             string EVENT;
             DateTime dtEVENT;
+
+            DateTime STARTTIME = DateTime.Now;
+            STARTTIME = STARTTIME.AddYears(-1);
+
             var ce2 = new CustomEvent();
 
 
@@ -71,7 +75,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  SELECT [EVENTDATE],[CAR],[EVENT]");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[CALENDAR]");
-                sbSql.AppendFormat(@"  WHERE [EVENTDATE]>='{0}'", DateTime.Now.ToString("yyyy") + "0101");
+                sbSql.AppendFormat(@"  WHERE [EVENTDATE]>='{0}'", STARTTIME.ToString("yyyy") + "0101");
                 sbSql.AppendFormat(@"  ORDER BY [EVENTDATE]");
                 sbSql.AppendFormat(@"  ");
 
