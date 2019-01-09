@@ -136,7 +136,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"   ,'' AS '指定時間' ");
                 STR.AppendFormat(@"   ,TA030 AS '備註' ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTA WITH (NOLOCK) ");
-                STR.AppendFormat(@"   WHERE TA001='A124'");
+                STR.AppendFormat(@"   WHERE TA001 IN ('A122','A124') ");
                 STR.AppendFormat(@"  AND TA014>='{0}' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  ");
 
