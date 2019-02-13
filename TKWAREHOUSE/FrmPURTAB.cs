@@ -33,12 +33,15 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder2 = new SqlCommandBuilder();
         SqlDataAdapter adapter3 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
+        SqlDataAdapter adapter4 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
+        DataSet ds4 = new DataSet();
 
         int result;
         string tablename = null;
@@ -46,7 +49,7 @@ namespace TKWAREHOUSE
         string ID;
 
         Thread TD;
-        
+
 
         public FrmPURTAB()
         {
@@ -59,7 +62,7 @@ namespace TKWAREHOUSE
         public void SETGRIDVIEW()
         {
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;      //奇數列顏色
-            
+
 
 
             //先建立個 CheckBox 欄
@@ -71,7 +74,7 @@ namespace TKWAREHOUSE
             cbCol.FalseValue = false;
             dataGridView1.Columns.Insert(0, cbCol);
 
-           
+
             //建立个矩形，等下计算 CheckBox 嵌入 GridView 的位置
             Rectangle rect = dataGridView1.GetCellDisplayRectangle(0, -1, true);
             rect.X = rect.Location.X + rect.Width / 4 - 18;
@@ -112,7 +115,7 @@ namespace TKWAREHOUSE
 
                 SLQURY.Clear();
 
-                if(checkBox1.Checked==true)
+                if (checkBox1.Checked == true)
                 {
                     SLQURY.AppendFormat(@"  AND TA001+TA002 NOT IN (SELECT [MOCTA001]+[MOCTA002] FROM [TKWAREHOUSE].dbo.PURTAB)");
                 }
@@ -120,7 +123,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  SELECT TA001 AS '單別',TA002 AS '單號',TA003 AS '生產日',TA034 AS '品名',TA006 AS '品號',TA015 AS '生產量',TA007 AS '單位'");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.[MOCTA]");
-                sbSql.AppendFormat(@"  WHERE TA003>='{0}' AND TA003<='{1}'",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  WHERE TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  {0}", SLQURY.ToString());
                 sbSql.AppendFormat(@"  ORDER BY TA003,TA034");
                 sbSql.AppendFormat(@"  ");
@@ -142,7 +145,7 @@ namespace TKWAREHOUSE
                 else
                 {
                     if (ds.Tables["TEMPds"].Rows.Count >= 1)
-                    {                       
+                    {
                         dataGridView1.DataSource = ds.Tables["TEMPds"];
 
                         dataGridView1.AutoResizeColumns();
@@ -182,10 +185,10 @@ namespace TKWAREHOUSE
                         sbSql.Clear();
                         sbSql.AppendFormat(@" INSERT INTO [TKWAREHOUSE].[dbo].[PURTAB]");
                         sbSql.AppendFormat(@" ([ID],[IDDATES],[MOCTA001],[MOCTA002],[MOCTA003],[MOCTA006],[MOCTA007],[MOCTA015],[MOCTA034],[PURTA001],[PURTA002])");
-                        sbSql.AppendFormat(@" VALUES ({0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')",textBox1.Text,dateTimePicker3.Value.ToString("yyyyMMdd"), dr.Cells["單別"].Value.ToString(), dr.Cells["單號"].Value.ToString(), dr.Cells["生產日"].Value.ToString(), dr.Cells["品號"].Value.ToString(), dr.Cells["單位"].Value.ToString(), dr.Cells["生產量"].Value.ToString(), dr.Cells["品名"].Value.ToString(),"","");
+                        sbSql.AppendFormat(@" VALUES ({0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')", textBox1.Text, dateTimePicker3.Value.ToString("yyyyMMdd"), dr.Cells["單別"].Value.ToString(), dr.Cells["單號"].Value.ToString(), dr.Cells["生產日"].Value.ToString(), dr.Cells["品號"].Value.ToString(), dr.Cells["單位"].Value.ToString(), dr.Cells["生產量"].Value.ToString(), dr.Cells["品名"].Value.ToString(), "", "");
                         sbSql.AppendFormat(@" ");
-                        
-                   
+
+
                         cmd.Connection = sqlConn;
                         cmd.CommandTimeout = 60;
                         cmd.CommandText = sbSql.ToString();
@@ -228,7 +231,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[IDDATES] AS '請購日'");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB]");
-                sbSql.AppendFormat(@"  WHERE [IDDATES]='{0}'",dateTimePicker3.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  WHERE [IDDATES]='{0}'", dateTimePicker3.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  GROUP BY  [ID],[IDDATES] ");
                 sbSql.AppendFormat(@"  ");
 
@@ -284,7 +287,7 @@ namespace TKWAREHOUSE
                 }
                 else
                 {
-                   
+
                 }
             }
         }
@@ -301,7 +304,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[IDDATES] AS '請購日',[MOCTA001] AS '單別',[MOCTA002] AS '單號',[MOCTA003] AS '生產日',[MOCTA006] AS '品號',[MOCTA007] AS '單位',[MOCTA015] AS '生產量',[MOCTA034] AS '品名'");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB]");
-                sbSql.AppendFormat(@"  WHERE [ID]='{0}'",ID);
+                sbSql.AppendFormat(@"  WHERE [ID]='{0}'", ID);
                 sbSql.AppendFormat(@"  ");
 
                 adapter3 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -341,6 +344,82 @@ namespace TKWAREHOUSE
 
             }
         }
+        public string GETMAXID()
+        {
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(ID),'00000000000') AS ID");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB] ");
+                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
+                sbSql.AppendFormat(@"  WHERE [IDDATES]='{0}'", dateTimePicker3.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter4 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder4 = new SqlCommandBuilder(adapter4);
+                sqlConn.Open();
+                ds4.Clear();
+                adapter4.Fill(ds4, "TEMPds4");
+                sqlConn.Close();
+
+
+                if (ds4.Tables["TEMPds4"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds4.Tables["TEMPds4"].Rows.Count >= 1)
+                    {
+                        ID = SETID(ds4.Tables["TEMPds4"].Rows[0]["ID"].ToString());
+                        return ID;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string  SETID(string ID)
+        {
+            if (ID.Equals("00000000000"))
+            {
+                return dateTimePicker3.Value.ToString("yyyyMMdd") + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(ID.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return dateTimePicker3.Value.ToString("yyyyMMdd") + temp.ToString();
+            }
+        }
+
+        public void SETNULL()
+        {
+            textBox1.Text = null;
+        }
         #endregion
 
         #region BUTTON
@@ -362,9 +441,14 @@ namespace TKWAREHOUSE
         }
         private void button4_Click(object sender, EventArgs e)
         {
+            SETNULL();
             SEARCHPURTAB();
         }
 
+        private void button5_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = GETMAXID();
+        }
         #endregion
 
 
