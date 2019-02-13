@@ -45,8 +45,12 @@ namespace TKWAREHOUSE
 
         int result;
         string tablename = null;
-
         string ID;
+        string MAXID;
+
+        string DELID;
+        string DELMOCTA001;
+        string DELMOCTA002;
 
         Thread TD;
 
@@ -167,7 +171,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADDPURTAB()
+        public void ADDPURTAB(string ID)
         {
             foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
@@ -185,7 +189,7 @@ namespace TKWAREHOUSE
                         sbSql.Clear();
                         sbSql.AppendFormat(@" INSERT INTO [TKWAREHOUSE].[dbo].[PURTAB]");
                         sbSql.AppendFormat(@" ([ID],[IDDATES],[MOCTA001],[MOCTA002],[MOCTA003],[MOCTA006],[MOCTA007],[MOCTA015],[MOCTA034],[PURTA001],[PURTA002])");
-                        sbSql.AppendFormat(@" VALUES ({0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')", textBox1.Text, dateTimePicker3.Value.ToString("yyyyMMdd"), dr.Cells["單別"].Value.ToString(), dr.Cells["單號"].Value.ToString(), dr.Cells["生產日"].Value.ToString(), dr.Cells["品號"].Value.ToString(), dr.Cells["單位"].Value.ToString(), dr.Cells["生產量"].Value.ToString(), dr.Cells["品名"].Value.ToString(), "", "");
+                        sbSql.AppendFormat(@" VALUES ({0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')", ID, dateTimePicker3.Value.ToString("yyyyMMdd"), dr.Cells["單別"].Value.ToString(), dr.Cells["單號"].Value.ToString(), dr.Cells["生產日"].Value.ToString(), dr.Cells["品號"].Value.ToString(), dr.Cells["單位"].Value.ToString(), dr.Cells["生產量"].Value.ToString(), dr.Cells["品名"].Value.ToString(), "", "");
                         sbSql.AppendFormat(@" ");
 
 
@@ -229,10 +233,10 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[IDDATES] AS '請購日'");
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[IDDATES] AS '請購日',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號'");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB]");
                 sbSql.AppendFormat(@"  WHERE [IDDATES]='{0}'", dateTimePicker3.Value.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  GROUP BY  [ID],[IDDATES] ");
+                sbSql.AppendFormat(@"  GROUP BY  [ID],[IDDATES],[PURTA001],[PURTA002] ");
                 sbSql.AppendFormat(@"  ");
 
                 adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -381,8 +385,8 @@ namespace TKWAREHOUSE
                 {
                     if (ds4.Tables["TEMPds4"].Rows.Count >= 1)
                     {
-                        ID = SETID(ds4.Tables["TEMPds4"].Rows[0]["ID"].ToString());
-                        return ID;
+                        MAXID = SETID(ds4.Tables["TEMPds4"].Rows[0]["ID"].ToString());
+                        return MAXID;
 
                     }
                     return null;
@@ -399,16 +403,16 @@ namespace TKWAREHOUSE
             }
         }
 
-        public string  SETID(string ID)
+        public string  SETID(string MAXID)
         {
-            if (ID.Equals("00000000000"))
+            if (MAXID.Equals("00000000000"))
             {
                 return dateTimePicker3.Value.ToString("yyyyMMdd") + "001";
             }
 
             else
             {
-                int serno = Convert.ToInt16(ID.Substring(8, 3));
+                int serno = Convert.ToInt16(MAXID.Substring(8, 3));
                 serno = serno + 1;
                 string temp = serno.ToString();
                 temp = temp.PadLeft(3, '0');
@@ -420,6 +424,74 @@ namespace TKWAREHOUSE
         {
             textBox1.Text = null;
         }
+
+        private void dataGridView3_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView3.CurrentRow != null)
+            {
+                int rowindex = dataGridView3.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView3.Rows[rowindex];
+                    DELID = row.Cells["批號"].Value.ToString();
+                    DELMOCTA001 = row.Cells["單別"].Value.ToString();
+                    DELMOCTA002 = row.Cells["單號"].Value.ToString();
+
+
+                }
+                else
+                {
+                    DELID = null;
+                    DELMOCTA001 = null;
+                    DELMOCTA002 = null;
+                }
+            }
+        }
+
+        public void DELPURTAB()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                sbSql.AppendFormat(@" DELETE [TKWAREHOUSE].[dbo].[PURTAB] WHERE [ID]='{0}' AND [MOCTA001]='{1}' AND [MOCTA002]='{2}'",DELID,DELMOCTA001,DELMOCTA002);
+                sbSql.AppendFormat(@" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+    
         #endregion
 
         #region BUTTON
@@ -430,14 +502,25 @@ namespace TKWAREHOUSE
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ADDPURTAB();
-            SEARCHMOCTA();
-            SEARCHPURTAB();
+            if(!string.IsNullOrEmpty(textBox1.Text))
+            {
+                ADDPURTAB(textBox1.Text);
+                SEARCHMOCTA();
+                SEARCHPURTAB();
+
+                SETNULL();
+            }
+            else
+            {
+                MessageBox.Show("取新批號");
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            ADDPURTAB(ID);
+            SEARCHMOCTA();
+            SEARCHPURTAB2();
         }
         private void button4_Click(object sender, EventArgs e)
         {
@@ -449,8 +532,29 @@ namespace TKWAREHOUSE
         {
             textBox1.Text = GETMAXID();
         }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                DELPURTAB();
+                SEARCHMOCTA();
+                SEARCHPURTAB2();
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
-
+       
     }
 }
