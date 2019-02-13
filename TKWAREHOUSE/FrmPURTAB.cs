@@ -31,14 +31,19 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
         SqlDataAdapter adapter2 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder2 = new SqlCommandBuilder();
+        SqlDataAdapter adapter3 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
+        DataSet ds3 = new DataSet();
 
         int result;
         string tablename = null;
+
+        string ID;
 
         Thread TD;
         
@@ -223,7 +228,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[IDDATES] AS '請購日'");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB]");
-                sbSql.AppendFormat(@"  WHERE [IDDATES]='20190213'");
+                sbSql.AppendFormat(@"  WHERE [IDDATES]='{0}'",dateTimePicker3.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  GROUP BY  [ID],[IDDATES] ");
                 sbSql.AppendFormat(@"  ");
 
@@ -239,6 +244,7 @@ namespace TKWAREHOUSE
                 if (ds2.Tables["TEMPds2"].Rows.Count == 0)
                 {
                     dataGridView2.DataSource = null;
+                    dataGridView3.DataSource = null;
                 }
                 else
                 {
@@ -248,6 +254,77 @@ namespace TKWAREHOUSE
 
                         dataGridView2.AutoResizeColumns();
                         dataGridView2.FirstDisplayedScrollingRowIndex = dataGridView2.RowCount - 1;
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+                    ID = row.Cells["批號"].Value.ToString();
+
+                    SEARCHPURTAB2();
+                }
+                else
+                {
+                   
+                }
+            }
+        }
+
+        public void SEARCHPURTAB2()
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[IDDATES] AS '請購日',[MOCTA001] AS '單別',[MOCTA002] AS '單號',[MOCTA003] AS '生產日',[MOCTA006] AS '品號',[MOCTA007] AS '單位',[MOCTA015] AS '生產量',[MOCTA034] AS '品名'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB]");
+                sbSql.AppendFormat(@"  WHERE [ID]='{0}'",ID);
+                sbSql.AppendFormat(@"  ");
+
+                adapter3 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder3 = new SqlCommandBuilder(adapter3);
+                sqlConn.Open();
+                ds3.Clear();
+                adapter3.Fill(ds3, "TEMPds3");
+                sqlConn.Close();
+
+
+                if (ds3.Tables["TEMPds3"].Rows.Count == 0)
+                {
+                    dataGridView3.DataSource = null;
+                }
+                else
+                {
+                    if (ds3.Tables["TEMPds3"].Rows.Count >= 1)
+                    {
+                        dataGridView3.DataSource = ds3.Tables["TEMPds3"];
+
+                        dataGridView3.AutoResizeColumns();
+                        dataGridView3.FirstDisplayedScrollingRowIndex = dataGridView2.RowCount - 1;
 
 
                     }
@@ -283,6 +360,11 @@ namespace TKWAREHOUSE
         {
 
         }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SEARCHPURTAB();
+        }
+
         #endregion
 
 
