@@ -864,7 +864,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" '{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],{4} [sync_count],", PURTB.TRANS_NAME, PURTB.sync_date, PURTB.sync_time, PURTB.sync_mark, PURTB.sync_count);
             sbSql.AppendFormat(" '{0}' [DataUser],'{1}' [DataGroup],", PURTB.DataUser, PURTB.DataGroup);
             sbSql.AppendFormat(" '{0}' [TB001],'{1}' [TB002],Right('0000' + Cast(ROW_NUMBER() OVER( ORDER BY TB003)  as varchar),4) AS TB003,TB003 AS TB004,MB002 AS TB005,", PURTB.TB001, PURTB.TB002);
-            sbSql.AppendFormat(" MB003 AS TB006,TB007 AS TB007,TB003 AS TB008,SUM(TB004) AS TB009,MB032 AS TB010,");
+            sbSql.AppendFormat(" MB003 AS TB006,TB007 AS TB007,MB017 AS TB008,SUM(TB004) AS TB009,MB032 AS TB010,");
             sbSql.AppendFormat(" '{0}' [TB011],'{1}' [TB012],'{2}' [TB013],SUM(TB004) [TB014],'{3}' [TB015],", PURTB.TB011, PURTB.TB012, PURTB.TB013, PURTB.TB015);
             sbSql.AppendFormat(" '{0}' [TB016],MB050 AS TB017,ROUND((MB050*SUM(TB004)),0) AS TB018,'{1}' [TB019],'{2}' [TB020],", PURTB.TB016, PURTB.TB019, PURTB.TB020);
             sbSql.AppendFormat(" '{0}' [TB021],'{1}' [TB022],'{2}' [TB023],'{3}' [TB024],'{4}' [TB025],", PURTB.TB021, PURTB.TB022, PURTB.TB023, PURTB.TB024, PURTB.TB025);
@@ -889,7 +889,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" WHERE [MOCTB].TB003=[INVMB].MB001");
             sbSql.AppendFormat(" AND TB003 LIKE '2%'");
             sbSql.AppendFormat(" AND TB001+TB002 IN (SELECT MOCTA001+MOCTA002 FROM [TKWAREHOUSE].dbo.[PURTAB] WHERE ID='{0}')",ID);
-            sbSql.AppendFormat(" GROUP BY TB003,MB002,MB003,TB007,TB003,MB032,MB050)");
+            sbSql.AppendFormat(" GROUP BY TB003,MB002,MB003,TB007,MB017,MB032,MB050)");
             
             sbSql.AppendFormat(" ");
             sbSql.AppendFormat(" ");
@@ -904,13 +904,66 @@ namespace TKWAREHOUSE
             if (result == 0)
             {
                 tran.Rollback();    //交易取消
+
+               
             }
             else
             {
                 tran.Commit();      //執行交易  
 
-
+                UPDATEPURTA();
             }
+        }
+
+        public void UPDATEPURTA()
+        {
+            if(!string.IsNullOrEmpty(MOCTA001)&& !string.IsNullOrEmpty(MOCTA002) && !string.IsNullOrEmpty(ID) )
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(" UPDATE [TK].dbo.PURTB");
+                sbSql.AppendFormat(" SET TB017=(SELECT TOP 1 TN008 FROM [TK].dbo.VPURTLMN WHERE  TM004=TB004 AND TL004=TB010 AND TN007<=TB009 ORDER BY TN008),TB018=ROUND((SELECT TOP 1 TN008 FROM [TK].dbo.VPURTLMN WHERE  TM004=TB004 AND TL004=TB010 AND TN007<=TB009 ORDER BY TN008)*TB009,0)");
+                sbSql.AppendFormat(" FROM [TK].dbo.VPURTLMN");
+                sbSql.AppendFormat(" WHERE  TL004=TB010 AND TM004=TB004");
+                sbSql.AppendFormat(" AND TB001='{0}' AND TB002='{1}'", MOCTA001, MOCTA002);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" UPDATE  [TK].dbo.PURTA");
+                sbSql.AppendFormat(" SET TA011=(SELECT SUM(TB009) FROM [TK].dbo.PURTB WHERE PURTA.TA001=PURTB.TB001 AND  PURTA.TA002=PURTB.TB002)");
+                sbSql.AppendFormat(" WHERE TA001='{0}' AND TA002='{1}'", MOCTA001, MOCTA002);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" UPDATE [TKWAREHOUSE].[dbo].[PURTAB]");
+                sbSql.AppendFormat(" SET [PURTA001]='{0}',[PURTA002]='{1}'", MOCTA001, MOCTA002);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
+                sbSql.AppendFormat(" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+
+
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+          
         }
 
         public PURTA SETPURTA()
