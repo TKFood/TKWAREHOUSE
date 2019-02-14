@@ -35,6 +35,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
         SqlDataAdapter adapter4 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
+        SqlDataAdapter adapter5 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -42,6 +44,7 @@ namespace TKWAREHOUSE
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
+        DataSet ds5 = new DataSet();
 
         int result;
         string tablename = null;
@@ -51,6 +54,10 @@ namespace TKWAREHOUSE
         string DELID;
         string DELMOCTA001;
         string DELMOCTA002;
+
+        string MOCTA001;
+        string MOCTA002;
+        string MOCTA003;
 
         Thread TD;
 
@@ -286,7 +293,7 @@ namespace TKWAREHOUSE
                 {
                     DataGridViewRow row = dataGridView2.Rows[rowindex];
                     ID = row.Cells["批號"].Value.ToString();
-
+                    MOCTA003 = row.Cells["請購日"].Value.ToString();
                     SEARCHPURTAB2();
                 }
                 else
@@ -385,7 +392,7 @@ namespace TKWAREHOUSE
                 {
                     if (ds4.Tables["TEMPds4"].Rows.Count >= 1)
                     {
-                        MAXID = SETID(ds4.Tables["TEMPds4"].Rows[0]["ID"].ToString());
+                        MAXID = SETID(ds4.Tables["TEMPds4"].Rows[0]["ID"].ToString(),dateTimePicker3.Value);
                         return MAXID;
 
                     }
@@ -403,11 +410,11 @@ namespace TKWAREHOUSE
             }
         }
 
-        public string  SETID(string MAXID)
+        public string  SETID(string MAXID,DateTime dt)
         {
             if (MAXID.Equals("00000000000"))
             {
-                return dateTimePicker3.Value.ToString("yyyyMMdd") + "001";
+                return dt.ToString("yyyyMMdd") + "001";
             }
 
             else
@@ -416,7 +423,24 @@ namespace TKWAREHOUSE
                 serno = serno + 1;
                 string temp = serno.ToString();
                 temp = temp.PadLeft(3, '0');
-                return dateTimePicker3.Value.ToString("yyyyMMdd") + temp.ToString();
+                return dt.ToString("yyyyMMdd") + temp.ToString();
+            }
+        }
+
+        public string SETIDSTRING(string MAXID, string dt)
+        {
+            if (MAXID.Equals("00000000000"))
+            {
+                return dt + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(MAXID.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return dt + temp.ToString();
             }
         }
 
@@ -492,6 +516,60 @@ namespace TKWAREHOUSE
             }
         }
     
+        public string GETMAXMOCTA002(string MOCTA001)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TA002),'00000000000') AS ID ");
+                sbSql.AppendFormat(@"  FROM [TK].[dbo].[PURTA] ");
+                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
+                sbSql.AppendFormat(@"  WHERE [TA003]='{0}'", MOCTA003);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter5 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder5 = new SqlCommandBuilder(adapter5);
+                sqlConn.Open();
+                ds5.Clear();
+                adapter5.Fill(ds5, "TEMPds5");
+                sqlConn.Close();
+
+
+                if (ds5.Tables["TEMPds5"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds5.Tables["TEMPds5"].Rows.Count >= 1)
+                    {
+                        MAXID = SETIDSTRING(ds5.Tables["TEMPds5"].Rows[0]["ID"].ToString(), MOCTA003);
+                        return MAXID;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+            
+        }
         #endregion
 
         #region BUTTON
@@ -550,7 +628,10 @@ namespace TKWAREHOUSE
 
         private void button7_Click(object sender, EventArgs e)
         {
+            MOCTA001 = "A311";
+            MOCTA002 = GETMAXMOCTA002(MOCTA001);
 
+            //MessageBox.Show(MOCTA002);
         }
 
         #endregion
