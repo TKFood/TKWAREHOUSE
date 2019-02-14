@@ -37,6 +37,10 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
         SqlDataAdapter adapter5 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
+        SqlDataAdapter adapter6 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
+        SqlDataAdapter adapter7 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -45,11 +49,14 @@ namespace TKWAREHOUSE
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
         DataSet ds5 = new DataSet();
+        DataSet ds6 = new DataSet();
+        DataSet ds7 = new DataSet();
 
         int result;
         string tablename = null;
         string ID;
         string MAXID;
+        string SEARCHID;
 
         string DELID;
         string DELMOCTA001;
@@ -1179,9 +1186,138 @@ namespace TKWAREHOUSE
             return PURTB;
         }
 
-       
+
+        public void SEARCHPURTAB3()
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[IDDATES] AS '請購日',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB]");
+                sbSql.AppendFormat(@"  WHERE [IDDATES]='{0}'", dateTimePicker4.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  GROUP BY  [ID],[IDDATES],[PURTA001],[PURTA002] ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter6 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder2 = new SqlCommandBuilder(adapter6);
+                sqlConn.Open();
+                ds6.Clear();
+                adapter6.Fill(ds6, "TEMPds6");
+                sqlConn.Close();
 
 
+                if (ds6.Tables["TEMPds6"].Rows.Count == 0)
+                {
+                    dataGridView4.DataSource = null;
+                    dataGridView5.DataSource = null;
+                }
+                else
+                {
+                    if (ds6.Tables["TEMPds6"].Rows.Count >= 1)
+                    {
+                        dataGridView4.DataSource = ds6.Tables["TEMPds6"];
+
+                        dataGridView4.AutoResizeColumns();
+                        dataGridView4.FirstDisplayedScrollingRowIndex = dataGridView4.RowCount - 1;
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView4.CurrentRow != null)
+            {
+                int rowindex = dataGridView4.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView4.Rows[rowindex];
+                    SEARCHID = row.Cells["批號"].Value.ToString();
+                    
+                    SEARCHMOCTAB();
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        public void SEARCHMOCTAB()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+
+               
+                sbSql.AppendFormat(@"  SELECT TA001 AS '單別',TA002 AS '單號',TA003 AS '生產日',TA034 AS '品名',TA006 AS '品號',TA015 AS '生產量',TA007 AS '生產單位'");
+                sbSql.AppendFormat(@"  ,TB003 AS '材料品號',TB012 AS '材料品名',TB004 AS '需領用量',TB007 AS '領用單位'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
+                sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
+                sbSql.AppendFormat(@"  AND TB001+TB002 IN (SELECT [MOCTA001]+[MOCTA002] FROM [TKWAREHOUSE].[dbo].[PURTAB]WHERE [ID]='{0}')",SEARCHID);
+                sbSql.AppendFormat(@"  AND TB003 LIKE '2%'");
+                sbSql.AppendFormat(@"  ORDER BY TB003,TA001,TA002");
+                sbSql.AppendFormat(@"  ");
+
+                adapter7 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder7 = new SqlCommandBuilder(adapter7);
+                sqlConn.Open();
+                ds7.Clear();
+                adapter7.Fill(ds7, "TEMPds7");
+                sqlConn.Close();
+
+
+                if (ds7.Tables["TEMPds7"].Rows.Count == 0)
+                {
+                    dataGridView5.DataSource = null;
+                    
+                }
+                else
+                {
+                    if (ds7.Tables["TEMPds7"].Rows.Count >= 1)
+                    {
+                        dataGridView5.DataSource = ds7.Tables["TEMPds7"];
+
+                        dataGridView5.AutoResizeColumns();
+                        dataGridView5.FirstDisplayedScrollingRowIndex = dataGridView5.RowCount - 1;
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1249,6 +1385,11 @@ namespace TKWAREHOUSE
 
             //MessageBox.Show(MOCTA002);
         }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            SEARCHPURTAB3();
+        }
+
 
         #endregion
 
