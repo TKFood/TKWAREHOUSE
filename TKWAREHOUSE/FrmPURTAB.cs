@@ -1318,6 +1318,50 @@ namespace TKWAREHOUSE
 
             }
         }
+
+        public void DELPURTAB2(string DELID)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                sbSql.AppendFormat(@" DELETE [TKWAREHOUSE].[dbo].[PURTAB] WHERE [ID]='{0}' ", DELID);
+                sbSql.AppendFormat(@" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1389,10 +1433,28 @@ namespace TKWAREHOUSE
         {
             SEARCHPURTAB3();
         }
+        private void button8_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                if (!string.IsNullOrEmpty(SEARCHID))
+                {
+                    DELPURTAB2(SEARCHID);
+
+                    SEARCHPURTAB3();
+                }
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+
+        }
 
 
         #endregion
 
-       
+
     }
 }
