@@ -41,6 +41,10 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
         SqlDataAdapter adapter7 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
+        SqlDataAdapter adapter8 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
+        SqlDataAdapter adapter9 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -51,6 +55,8 @@ namespace TKWAREHOUSE
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
         DataSet ds7 = new DataSet();
+        DataSet ds8 = new DataSet();
+        DataSet ds9 = new DataSet();
 
         int result;
         string tablename = null;
@@ -1203,25 +1209,25 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  GROUP BY  [ID],[IDDATES],[PURTA001],[PURTA002] ");
                 sbSql.AppendFormat(@"  ");
 
-                adapter6 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                adapter8= new SqlDataAdapter(@"" + sbSql, sqlConn);
 
-                sqlCmdBuilder2 = new SqlCommandBuilder(adapter6);
+                sqlCmdBuilder8 = new SqlCommandBuilder(adapter8);
                 sqlConn.Open();
-                ds6.Clear();
-                adapter6.Fill(ds6, "TEMPds6");
+                ds8.Clear();
+                adapter8.Fill(ds8, "TEMPds8");
                 sqlConn.Close();
 
 
-                if (ds6.Tables["TEMPds6"].Rows.Count == 0)
+                if (ds8.Tables["TEMPds8"].Rows.Count == 0)
                 {
                     dataGridView4.DataSource = null;
                     dataGridView5.DataSource = null;
                 }
                 else
                 {
-                    if (ds6.Tables["TEMPds6"].Rows.Count >= 1)
+                    if (ds8.Tables["TEMPds8"].Rows.Count >= 1)
                     {
-                        dataGridView4.DataSource = ds6.Tables["TEMPds6"];
+                        dataGridView4.DataSource = ds8.Tables["TEMPds8"];
 
                         dataGridView4.AutoResizeColumns();
                         dataGridView4.FirstDisplayedScrollingRowIndex = dataGridView4.RowCount - 1;
@@ -1362,6 +1368,62 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        public void SEARCHPURTAB4()
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[IDDATES] AS '請購日',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[MOCTA001] AS '製令單',[MOCTA002] AS '製令單號',[MOCTA003] AS '生產日',[MOCTA034] AS '產品品名',[MOCTA006] AS '產品品號',[MOCTA015] AS '預計產量',[MOCTA007] AS '單位'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURTAB]");
+                sbSql.AppendFormat(@"  WHERE [MOCTA001]='{0}' AND [MOCTA002]='{1}'",textBox2.Text,textBox3.Text);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter9 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder9 = new SqlCommandBuilder(adapter9);
+                sqlConn.Open();
+                ds9.Clear();
+                adapter9.Fill(ds9, "TEMPds9");
+                sqlConn.Close();
+
+
+                if (ds9.Tables["TEMPds9"].Rows.Count == 0)
+                {
+                    dataGridView4.DataSource = null;
+                    dataGridView5.DataSource = null;
+                }
+                else
+                {
+                    if (ds9.Tables["TEMPds9"].Rows.Count >= 1)
+                    {
+                        dataGridView4.DataSource = ds9.Tables["TEMPds9"];
+
+                        dataGridView4.AutoResizeColumns();
+                        dataGridView4.FirstDisplayedScrollingRowIndex = dataGridView4.RowCount - 1;
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -1452,6 +1514,10 @@ namespace TKWAREHOUSE
 
         }
 
+        private void button10_Click(object sender, EventArgs e)
+        {
+            SEARCHPURTAB4();
+        }
 
         #endregion
 
