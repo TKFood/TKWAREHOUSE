@@ -355,6 +355,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  FROM [TK].dbo.[MOCTA]");
                 sbSql.AppendFormat(@"  WHERE TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  {0}", SLQURY.ToString());
+                sbSql.AppendFormat(@"  AND TA001 NOT IN ('A513') ");
                 sbSql.AppendFormat(@"  ORDER BY TA003,TA034");
                 sbSql.AppendFormat(@"  ");
 
