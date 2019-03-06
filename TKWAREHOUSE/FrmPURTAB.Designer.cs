@@ -93,6 +93,7 @@
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
+            this.button13 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -967,10 +968,12 @@
             this.tableLayoutPanel7.Controls.Add(this.textBox4, 0, 1);
             this.tableLayoutPanel7.Controls.Add(this.textBox5, 1, 1);
             this.tableLayoutPanel7.Controls.Add(this.textBox6, 1, 2);
+            this.tableLayoutPanel7.Controls.Add(this.button13, 1, 4);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel7.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
-            this.tableLayoutPanel7.RowCount = 4;
+            this.tableLayoutPanel7.RowCount = 5;
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
@@ -1036,6 +1039,16 @@
             this.textBox6.Size = new System.Drawing.Size(200, 27);
             this.textBox6.TabIndex = 6;
             this.textBox6.Text = "庫存量足夠，不需請購";
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(123, 163);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(111, 34);
+            this.button13.TabIndex = 7;
+            this.button13.Text = "刪除備註";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // FrmPURTAB
             // 
@@ -1185,5 +1198,6 @@
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.Button button13;
     }
 }

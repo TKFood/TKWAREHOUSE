@@ -1621,6 +1621,53 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        public void DELMOCINVCHECK(string MOCTA001,string MOCTA002)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                sbSql.AppendFormat(@" DELETE [TKWAREHOUSE].[dbo].[MOCINVCHECK] WHERE [MOCTA001]='{0}' AND [MOCTA002]='{1}'", MOCTA001, MOCTA002);
+                sbSql.AppendFormat(@" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
+
         #endregion
 
         #region BUTTON
@@ -1728,6 +1775,24 @@ namespace TKWAREHOUSE
             }
             
         }
+        private void button13_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                if (!string.IsNullOrEmpty(textBox4.Text))
+                {
+                    DELMOCINVCHECK(textBox4.Text,textBox5.Text);
+
+                    SEARCHMOCINVCHECK();
+                }
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+        }
+
 
 
         #endregion
