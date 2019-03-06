@@ -45,6 +45,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
         SqlDataAdapter adapter9 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
+        SqlDataAdapter adapter10 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder10 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -57,6 +59,7 @@ namespace TKWAREHOUSE
         DataSet ds7 = new DataSet();
         DataSet ds8 = new DataSet();
         DataSet ds9 = new DataSet();
+        DataSet ds10 = new DataSet();
 
         int result;
         string tablename = null;
@@ -1425,6 +1428,70 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCHMOCTA2()
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+
+                SLQURY.Clear();
+
+                if (checkBox2.Checked == true)
+                {
+                    SLQURY.AppendFormat(@"  AND TA001+TA002 NOT IN (SELECT [MOCTA001]+[MOCTA002] FROM [TKWAREHOUSE].dbo.PURTAB)");
+                }
+
+
+                sbSql.AppendFormat(@"  SELECT TA001 AS '單別',TA002 AS '單號',TA003 AS '生產日',TA034 AS '品名',TA006 AS '品號',TA015 AS '生產量',TA007 AS '單位'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.[MOCTA]");
+                sbSql.AppendFormat(@"  WHERE TA003>='{0}' AND TA003<='{1}'", dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  {0}", SLQURY.ToString());
+                sbSql.AppendFormat(@"  AND TA001 NOT IN ('A513') ");
+                sbSql.AppendFormat(@"  ORDER BY TA003,TA034");
+                sbSql.AppendFormat(@"  ");
+
+
+                adapter10 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder10 = new SqlCommandBuilder(adapter10);
+                sqlConn.Open();
+                ds10.Clear();
+                adapter10.Fill(ds10, "TEMPds10");
+                sqlConn.Close();
+
+
+                if (ds10.Tables["TEMPds10"].Rows.Count == 0)
+                {
+                    dataGridView6.DataSource = null;
+                }
+                else
+                {
+                    if (ds10.Tables["TEMPds10"].Rows.Count >= 1)
+                    {
+                        dataGridView6.DataSource = ds10.Tables["TEMPds10"];
+
+                        dataGridView6.AutoResizeColumns();
+                        dataGridView6.FirstDisplayedScrollingRowIndex = dataGridView6.RowCount - 1;
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1518,6 +1585,10 @@ namespace TKWAREHOUSE
         private void button10_Click(object sender, EventArgs e)
         {
             SEARCHPURTAB4();
+        }
+        private void button11_Click(object sender, EventArgs e)
+        {
+            SEARCHMOCTA2();
         }
 
         #endregion
