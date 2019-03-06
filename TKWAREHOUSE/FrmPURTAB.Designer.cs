@@ -94,6 +94,7 @@
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.button13 = new System.Windows.Forms.Button();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -849,8 +850,8 @@
             this.tableLayoutPanel6.BackColor = System.Drawing.Color.LightGreen;
             this.tableLayoutPanel6.ColumnCount = 4;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 8.830022F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.16461F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.47737F));
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.28035F));
             this.tableLayoutPanel6.Controls.Add(this.label7, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.dateTimePicker5, 1, 0);
@@ -858,6 +859,7 @@
             this.tableLayoutPanel6.Controls.Add(this.dateTimePicker6, 3, 0);
             this.tableLayoutPanel6.Controls.Add(this.button11, 3, 1);
             this.tableLayoutPanel6.Controls.Add(this.checkBox2, 1, 1);
+            this.tableLayoutPanel6.Controls.Add(this.checkBox3, 2, 1);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -874,7 +876,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(3, 12);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(236, 16);
+            this.label7.Size = new System.Drawing.Size(237, 16);
             this.label7.TabIndex = 0;
             this.label7.Text = "生產日";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -883,16 +885,16 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(487, 12);
+            this.label8.Location = new System.Drawing.Point(442, 12);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(79, 16);
+            this.label8.Size = new System.Drawing.Size(125, 16);
             this.label8.TabIndex = 1;
             this.label8.Text = "~";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(572, 43);
+            this.button11.Location = new System.Drawing.Point(573, 43);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(111, 34);
             this.button11.TabIndex = 2;
@@ -905,7 +907,7 @@
             this.dateTimePicker5.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.dateTimePicker5.CustomFormat = "yyyy/MM/dd";
             this.dateTimePicker5.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker5.Location = new System.Drawing.Point(245, 6);
+            this.dateTimePicker5.Location = new System.Drawing.Point(246, 6);
             this.dateTimePicker5.Name = "dateTimePicker5";
             this.dateTimePicker5.Size = new System.Drawing.Size(107, 27);
             this.dateTimePicker5.TabIndex = 3;
@@ -915,7 +917,7 @@
             this.dateTimePicker6.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.dateTimePicker6.CustomFormat = "yyyy/MM/dd";
             this.dateTimePicker6.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker6.Location = new System.Drawing.Point(572, 6);
+            this.dateTimePicker6.Location = new System.Drawing.Point(573, 6);
             this.dateTimePicker6.Name = "dateTimePicker6";
             this.dateTimePicker6.Size = new System.Drawing.Size(107, 27);
             this.dateTimePicker6.TabIndex = 4;
@@ -926,9 +928,9 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Checked = true;
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(245, 50);
+            this.checkBox2.Location = new System.Drawing.Point(246, 50);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(236, 20);
+            this.checkBox2.Size = new System.Drawing.Size(190, 20);
             this.checkBox2.TabIndex = 5;
             this.checkBox2.Text = "過濾已請購";
             this.checkBox2.UseVisualStyleBackColor = true;
@@ -1049,6 +1051,19 @@
             this.button13.Text = "刪除備註";
             this.button13.UseVisualStyleBackColor = true;
             this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Checked = true;
+            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox3.Location = new System.Drawing.Point(442, 50);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(125, 20);
+            this.checkBox3.TabIndex = 6;
+            this.checkBox3.Text = "過濾已備註";
+            this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // FrmPURTAB
             // 
@@ -1199,5 +1214,6 @@
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.CheckBox checkBox3;
     }
 }
