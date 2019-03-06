@@ -47,6 +47,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
         SqlDataAdapter adapter10 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder10 = new SqlCommandBuilder();
+        SqlDataAdapter adapter11 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder11 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -60,6 +62,7 @@ namespace TKWAREHOUSE
         DataSet ds8 = new DataSet();
         DataSet ds9 = new DataSet();
         DataSet ds10 = new DataSet();
+        DataSet ds11 = new DataSet();
 
         int result;
         string tablename = null;
@@ -1492,6 +1495,132 @@ namespace TKWAREHOUSE
 
             }
         }
+
+        private void dataGridView6_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView6.CurrentRow != null)
+            {
+                int rowindex = dataGridView6.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView6.Rows[rowindex];
+                    textBox4.Text = row.Cells["單別"].Value.ToString();
+                    textBox5.Text = row.Cells["單號"].Value.ToString();
+
+                    if(!string.IsNullOrEmpty(textBox4.Text))
+                    {
+                        SEARCHMOCINVCHECK();
+                    }
+                    
+                }
+                else
+                {
+                    textBox4.Text = null;
+                    textBox5.Text = null;
+                }
+            }
+        }
+
+        public void SEARCHMOCINVCHECK()
+        {
+           
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [MOCTA001] AS '製令',[MOCTA002] AS '單號',[COMMENT] AS '備註'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[MOCINVCHECK]");
+                sbSql.AppendFormat(@"  WHERE [MOCTA001]='{0}' AND [MOCTA002] ='{1}'",textBox4.Text, textBox5.Text);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+
+                adapter11 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder11 = new SqlCommandBuilder(adapter11);
+                sqlConn.Open();
+                ds11.Clear();
+                adapter11.Fill(ds11, "TEMPds11");
+                sqlConn.Close();
+
+
+                if (ds11.Tables["TEMPds11"].Rows.Count == 0)
+                {
+                    dataGridView7.DataSource = null;
+                }
+                else
+                {
+                    if (ds11.Tables["TEMPds11"].Rows.Count >= 1)
+                    {
+                        dataGridView7.DataSource = ds11.Tables["TEMPds11"];
+
+                        dataGridView7.AutoResizeColumns();
+                        dataGridView7.FirstDisplayedScrollingRowIndex = dataGridView7.RowCount - 1;
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void ADDMOCINVCHECK()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+               
+                sbSql.AppendFormat(@" INSERT INTO [TKWAREHOUSE].[dbo].[MOCINVCHECK]");
+                sbSql.AppendFormat(@" ([MOCTA001],[MOCTA002],[COMMENT])");
+                sbSql.AppendFormat(@" VALUES ('{0}','{1}','{2}')",textBox4.Text, textBox5.Text, textBox6.Text);
+                sbSql.AppendFormat(@" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1590,6 +1719,16 @@ namespace TKWAREHOUSE
         {
             SEARCHMOCTA2();
         }
+        private void button12_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox4.Text))
+            {
+                ADDMOCINVCHECK();
+                SEARCHMOCINVCHECK();
+            }
+            
+        }
+
 
         #endregion
 
