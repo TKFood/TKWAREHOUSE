@@ -43,6 +43,7 @@ namespace TKWAREHOUSE
         DataTable dt = new DataTable();
 
         public Report report1 { get; private set; }
+        public Report report2 { get; private set; }
 
         public FrmINVCheck()
         {
@@ -591,6 +592,73 @@ namespace TKWAREHOUSE
 
             return FASTSQL.ToString();
         }
+
+        public void SETFASTREPORT2()
+        {
+            string SQL2;
+            string SQL3;
+            report2 = new Report();
+
+            report2.Load(@"REPORT\每日盤點表-成品-訂單明細.frx");
+
+            report2.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+
+            TableDataSource Table = report2.GetDataSource("Table") as TableDataSource;
+            
+            SQL2 = SETFASETSQL2();
+            Table.SelectCommand = SQL2;
+
+            TableDataSource Table1 = report2.GetDataSource("Table1") as TableDataSource;
+            SQL3 = SETFASETSQL3();
+            Table1.SelectCommand = SQL3;
+            report2.Preview = previewControl2;
+            report2.Show();
+
+        }
+
+        public string SETFASETSQL2()
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            DateTime dt = DateTime.Now;
+            dt = dt.AddMonths(-2);
+
+            FASTSQL.AppendFormat(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號',CAST(SUM(LA005*LA011) AS INT) AS '庫存量'    ");
+            FASTSQL.AppendFormat(@" ,(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}') AS '訂單需求量'", dt.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@" ,(CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}')) AS '需求差異量'", dt.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [TK].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND LA005='1') , '{0}' ) AS '在倉日期'", DateTime.Now.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@" ,DATEDIFF(DAY, '{0}',LA016  )  AS '有效天數'", DateTime.Now.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@" FROM [TK].dbo.INVLA WITH (NOLOCK) ");
+            FASTSQL.AppendFormat(@" LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001  ");
+            FASTSQL.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
+            FASTSQL.AppendFormat(@" AND LA001 LIKE '4%'");
+            FASTSQL.AppendFormat(@" GROUP BY  LA001,MB002,MB003,LA016,MB023,MB198 ");
+            FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
+            FASTSQL.AppendFormat(@" ORDER BY  LA001,MB002,MB003,LA016,MB023,MB198");
+            FASTSQL.AppendFormat(@" ");
+            
+
+            return FASTSQL.ToString();
+        }
+        public string SETFASETSQL3()
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            DateTime dt = DateTime.Now;
+            dt = dt.AddMonths(-2);
+
+            
+            FASTSQL.AppendFormat(@" SELECT MV002 AS '業務員',TC053 AS '客戶',TD013 AS '預交日',NUM AS '訂單需求量',TD010 AS '單位',TC001 AS '訂單',TC002 AS '訂單號',TC004 AS '客戶代號',TD004 AS '品號',TD008 AS '訂單下量',TD009 AS '已出量',TD024 AS '贈品量',TD025 AS '已出贈品',MD004 AS '換算'");
+            FASTSQL.AppendFormat(@" FROM [TK].dbo.VCOPTDINVMD, [TK].dbo.COPTC");
+            FASTSQL.AppendFormat(@" LEFT JOIN [TK].dbo.CMSMV ON MV001=TC006");
+            FASTSQL.AppendFormat(@" WHERE TC001=TD001 AND TC002=TD002");
+            FASTSQL.AppendFormat(@" AND  TD013>='{0}'", dt.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@" ");
+
+            return FASTSQL.ToString();
+        }
         #endregion
 
         #region BUTTON
@@ -604,10 +672,14 @@ namespace TKWAREHOUSE
         {
             //ExcelExport();
         }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT2();
+        }
+
+
 
         #endregion
-
-
 
 
     }
