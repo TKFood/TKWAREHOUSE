@@ -342,6 +342,9 @@ namespace TKWAREHOUSE
         public void SEARCHMOCTA()
         {
             StringBuilder SLQURY = new StringBuilder();
+
+            StringBuilder SLQURY2 = new StringBuilder();
+
             try
             {
                 connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
@@ -355,13 +358,17 @@ namespace TKWAREHOUSE
                 {
                     SLQURY.AppendFormat(@"  AND TA001+TA002 NOT IN (SELECT [MOCTA001]+[MOCTA002] FROM [TKWAREHOUSE].dbo.PURTAB)");
                 }
+                if (checkBox4.Checked == true)
+                {
+                    SLQURY2.AppendFormat(@"  AND TA001 NOT IN ('A513')");
+                }
 
 
                 sbSql.AppendFormat(@"  SELECT TA001 AS '單別',TA002 AS '單號',TA003 AS '生產日',TA034 AS '品名',TA006 AS '品號',TA015 AS '生產量',TA007 AS '單位'");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.[MOCTA]");
                 sbSql.AppendFormat(@"  WHERE TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  {0}", SLQURY.ToString());
-                sbSql.AppendFormat(@"  AND TA001 NOT IN ('A513') ");
+                sbSql.AppendFormat(@"  {0}", SLQURY2.ToString());
                 sbSql.AppendFormat(@"  ORDER BY TA003,TA034");
                 sbSql.AppendFormat(@"  ");
 
