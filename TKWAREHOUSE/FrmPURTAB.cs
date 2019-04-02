@@ -1132,7 +1132,7 @@ namespace TKWAREHOUSE
             PURTB.TB036 = null;
             PURTB.TB037 = null;
             PURTB.TB038 = null;
-            PURTB.TB039 = null;
+            PURTB.TB039 = "N";
             PURTB.TB040 = "0";
             PURTB.TB041 = "0";
             PURTB.TB042 = null;
