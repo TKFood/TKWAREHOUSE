@@ -917,7 +917,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" AND TB003 LIKE '2%'");
             sbSql.AppendFormat(" AND TB001+TB002 IN (SELECT MOCTA001+MOCTA002 FROM [TKWAREHOUSE].dbo.[PURTAB] WHERE ID='{0}')",ID);
             sbSql.AppendFormat(" GROUP BY TB003,MB002,MB003,TB007,MB017,MB032,MB050)");
-            
+          
             sbSql.AppendFormat(" ");
             sbSql.AppendFormat(" ");
 
@@ -955,6 +955,9 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
 
+                //UPDATE TB039='N'
+                sbSql.AppendFormat(" UPDATE  [TK].dbo.PURTB SET TB039='N' WHERE ISNULL(TB039,'')=''");
+                sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" UPDATE [TK].dbo.PURTB");
                 sbSql.AppendFormat(" SET TB017=(SELECT TOP 1 TN008 FROM [TK].dbo.VPURTLMN WHERE  TM004=TB004 AND TL004=TB010 AND TN007<=TB009 ORDER BY TN008),TB018=ROUND((SELECT TOP 1 TN008 FROM [TK].dbo.VPURTLMN WHERE  TM004=TB004 AND TL004=TB010 AND TN007<=TB009 ORDER BY TN008)*TB009,0)");
                 sbSql.AppendFormat(" FROM [TK].dbo.VPURTLMN");
