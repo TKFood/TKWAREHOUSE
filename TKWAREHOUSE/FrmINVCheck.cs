@@ -489,7 +489,11 @@ namespace TKWAREHOUSE
             string SQL;
             report1 = new Report();
 
-            if (comboBox1.Text.Equals("20006     原料倉"))
+            if (comboBox1.Text.Equals("20001     成品倉"))
+            {
+                report1.Load(@"REPORT\每日盤點表-成品.frx");
+            }
+            else if(comboBox1.Text.Equals("20006     原料倉"))
             {
                 report1.Load(@"REPORT\每日盤點表.frx");
             }
@@ -503,10 +507,10 @@ namespace TKWAREHOUSE
             }
             else
             {
-                report1.Load(@"REPORT\每日盤點表-成品.frx");
+                report1.Load(@"REPORT\每日盤點表.frx");
             }
 
-               
+
 
             report1.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
 
@@ -536,7 +540,27 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Append(" ");
             }
 
-            if (comboBox1.Text.Equals("20006     原料倉"))
+            if (comboBox1.Text.Equals("20001     成品倉"))
+            {
+
+                FASTSQL.AppendFormat(@" SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'");
+                FASTSQL.AppendFormat(@" ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'");
+                FASTSQL.AppendFormat(@" ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '批號-1/3效期內的訂單需求量'       ", dt.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '批號-1/3效期內的訂單差異量' ", dt.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [TK].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND LA005='1') , '{0}' ) AS '在倉日期' ", DateTime.Now.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" ,DATEDIFF(DAY, '{0}',LA016  )  AS '有效天數' ", DateTime.Now.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='20190208') AS INT) AS '總訂單需求量' ");
+                FASTSQL.AppendFormat(@" FROM [TK].dbo.INVLA WITH (NOLOCK)  ");
+                FASTSQL.AppendFormat(@" LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   ");
+                FASTSQL.AppendFormat(@" WHERE  (LA009='20001     ')   ");
+                FASTSQL.AppendFormat(@" AND LA001 LIKE '4%' ");
+                FASTSQL.AppendFormat(@" GROUP BY  LA001,MB002,MB003,LA016,MB023,MB198,MB004  ");
+                FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
+                FASTSQL.AppendFormat(@" ORDER BY LA001,MB002,MB003,LA016,MB023,MB198,MB004");
+                FASTSQL.AppendFormat(@" ");
+                FASTSQL.AppendFormat(@" ");
+            }
+            else if (comboBox1.Text.Equals("20006     原料倉"))
             {
                 FASTSQL.AppendFormat(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格' ,LA016 AS '批號' ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ");
                 FASTSQL.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
@@ -569,30 +593,21 @@ namespace TKWAREHOUSE
 
          
             }
-            else 
+            else
             {
-               
-                FASTSQL.AppendFormat(@" SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'");
-                FASTSQL.AppendFormat(@" ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'");
-                FASTSQL.AppendFormat(@" ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '批號-1/3效期內的訂單需求量'       ", dt.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '批號-1/3效期內的訂單差異量' ", dt.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [TK].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND LA005='1') , '{0}' ) AS '在倉日期' ", DateTime.Now.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,DATEDIFF(DAY, '{0}',LA016  )  AS '有效天數' ", DateTime.Now.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='20190208') AS INT) AS '總訂單需求量' ");
-                FASTSQL.AppendFormat(@" FROM [TK].dbo.INVLA WITH (NOLOCK)  ");
-                FASTSQL.AppendFormat(@" LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   ");
-                FASTSQL.AppendFormat(@" WHERE  (LA009='20001     ')   ");
-                FASTSQL.AppendFormat(@" AND LA001 LIKE '4%' ");
-                FASTSQL.AppendFormat(@" GROUP BY  LA001,MB002,MB003,LA016,MB023,MB198,MB004  ");
-                FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
-                FASTSQL.AppendFormat(@" ORDER BY LA001,MB002,MB003,LA016,MB023,MB198,MB004");
-                FASTSQL.AppendFormat(@" ");
-                FASTSQL.AppendFormat(@" ");
+                FASTSQL.AppendFormat(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ");
+                FASTSQL.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
+                FASTSQL.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
+                FASTSQL.AppendFormat(@" GROUP BY  LA001,MB002,MB003,LA016");
+                FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0");
+                FASTSQL.AppendFormat(@" ORDER BY  LA001,MB002,MB003,LA016");
+
+
             }
 
-          
 
-           
+
+
 
             return FASTSQL.ToString();
         }
