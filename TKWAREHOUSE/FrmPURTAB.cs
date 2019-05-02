@@ -764,7 +764,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TA002),'00000000000') AS ID ");
                 sbSql.AppendFormat(@"  FROM [TK].[dbo].[PURTA] ");
                 //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
-                sbSql.AppendFormat(@"  WHERE [TA001]='{0}' AND TA003='{1}'", MOCTA003,dateTimePicker3.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  WHERE [TA003]='{0}'", MOCTA003);
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
