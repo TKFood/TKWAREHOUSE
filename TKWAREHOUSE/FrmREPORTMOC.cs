@@ -99,10 +99,21 @@ namespace TKWAREHOUSE
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
-            
-            
-
-
+            FASTSQL.AppendFormat(@"  SELECT MD002 AS '線別',TA001 AS '製令單別',TA002 AS '製令單號',TA003 AS '開單日期',TA006 AS '產品品號',TA034 AS '產品品名',TA015 AS '預計產量',TA007 AS '單位1',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',TB004 AS '需領用量',MC004 AS '標準批量',ROUND(TA015/MC004,2) AS '總桶數'");
+            FASTSQL.AppendFormat(@"  ,CASE WHEN FLOOR(ROUND(TA015/MC004,2)) = ROUND(TA015/MC004,2) THEN ROUND(TA015/MC004,2) ELSE CASE WHEN (ROUND(TA015/MC004,2)-1)>0 THEN FLOOR(ROUND(TA015/MC004,2)) ELSE 0 END  END AS '整桶數'");
+            FASTSQL.AppendFormat(@"  ,CASE WHEN FLOOR(ROUND(TA015/MC004,2)) != ROUND(TA015/MC004,2) THEN 1 ELSE 0  END AS '最後桶數'");
+            FASTSQL.AppendFormat(@"  ,CASE WHEN FLOOR(ROUND(TA015/MC004,2)) = ROUND(TA015/MC004,2) THEN ROUND(TB004/ROUND(TA015/MC004,2),2) ELSE CASE WHEN (ROUND(TA015/MC004,2)-1)>0 THEN ROUND(TB004/ROUND(TA015/MC004,2),2) ELSE 0 END  END AS '整桶用量'");
+            FASTSQL.AppendFormat(@"  ,TB004-(ROUND(TB004/ROUND(TA015/MC004,2),2)*(CASE WHEN FLOOR(ROUND(TA015/MC004,2)) = ROUND(TA015/MC004,2) THEN ROUND(TA015/MC004,2) ELSE CASE WHEN (ROUND(TA015/MC004,2)-1)>0 THEN FLOOR(ROUND(TA015/MC004,2)) ELSE 0 END  END)) AS '最後桶用量'");
+            FASTSQL.AppendFormat(@"  ,ROUND(TB004/ROUND(TA015/MC004,2),2)  AS '標準用量'");
+            FASTSQL.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB,[TK].dbo.BOMMC,[TK].dbo.CMSMD");
+            FASTSQL.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
+            FASTSQL.AppendFormat(@"  AND TA006=MC001");
+            FASTSQL.AppendFormat(@"  AND TA021=MD001");
+            FASTSQL.AppendFormat(@"  AND TB003 LIKE '1%'");
+            FASTSQL.AppendFormat(@"  AND MD002 ='{0}'",comboBox2.Text.ToString());
+            FASTSQL.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}'",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@"  ORDER BY TA021,TA001,TA002,TB003");
+            FASTSQL.AppendFormat(@"  ");
             FASTSQL.AppendFormat(@"  ");
 
             return FASTSQL.ToString();
