@@ -110,6 +110,7 @@ namespace TKWAREHOUSE
             FASTSQL.AppendFormat(@"  AND TA006=MC001");
             FASTSQL.AppendFormat(@"  AND TA021=MD001");
             FASTSQL.AppendFormat(@"  AND TB003 LIKE '1%'");
+            FASTSQL.AppendFormat(@"  AND TB003 NOT IN ('101001001','101001009')");
             FASTSQL.AppendFormat(@"  AND MD002 ='{0}'",comboBox2.Text.ToString());
             FASTSQL.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}'",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             FASTSQL.AppendFormat(@"  ORDER BY TA021,TA001,TA002,TB003");
