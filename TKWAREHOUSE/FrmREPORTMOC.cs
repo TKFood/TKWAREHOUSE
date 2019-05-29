@@ -46,6 +46,7 @@ namespace TKWAREHOUSE
         int result;
 
         public Report report1 { get; private set; }
+        public Report report2 { get; private set; }
 
         public FrmREPORTMOC()
         {
@@ -120,12 +121,52 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
         }
 
+        public void SETFASTREPORT2()
+        {
+
+            string SQL;
+            report2 = new Report();
+            report2.Load(@"REPORT\製令領用量(特).frx");
+
+            report2.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+
+            TableDataSource Table = report2.GetDataSource("Table") as TableDataSource;
+            SQL = SETFASETSQL2();
+            Table.SelectCommand = SQL;
+            report2.Preview = previewControl2;
+            report2.Show();
+
+        }
+
+        public string SETFASETSQL2()
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            FASTSQL.AppendFormat(@"  SELECT MD002 AS '線別',TA003 AS '開單日期',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',SUM(TB004) AS '需領用量',ROUND(SUM(TB004)/22,0) AS '包數'");
+            FASTSQL.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB,[TK].dbo.BOMMC,[TK].dbo.CMSMD");
+            FASTSQL.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
+            FASTSQL.AppendFormat(@"  AND TA006=MC001");
+            FASTSQL.AppendFormat(@"  AND TA021=MD001");
+            FASTSQL.AppendFormat(@"  AND TB003 LIKE '1%'");
+            FASTSQL.AppendFormat(@"  AND TB003 IN ('101001001','101001009')");
+            FASTSQL.AppendFormat(@"  AND MD002 ='{0}'", comboBox2.Text.ToString());
+            FASTSQL.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@"  GROUP BY MD002,TA003,TB003,TB012,TB007");
+            FASTSQL.AppendFormat(@"  ORDER BY MD002,TA003,TB003,TB012,TB007 ");
+            FASTSQL.AppendFormat(@"  ");
+            FASTSQL.AppendFormat(@"  ");
+
+            return FASTSQL.ToString();
+        }
+
         #endregion
 
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
             SETFASTREPORT();
+            SETFASTREPORT2();
         }
 
         #endregion
