@@ -82,14 +82,18 @@ namespace TKWAREHOUSE
         {
 
             string SQL;
+            string SQL1;
             report1 = new Report();
             report1.Load(@"REPORT\製令領用量.frx");
 
             report1.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+            TableDataSource Table1 = report1.GetDataSource("Table1") as TableDataSource;
             SQL = SETFASETSQL();
+            SQL1 = SETFASETSQL2();
             Table.SelectCommand = SQL;
+            Table1.SelectCommand = SQL1;
             report1.Preview = previewControl1;
             report1.Show();
 
@@ -117,26 +121,12 @@ namespace TKWAREHOUSE
             FASTSQL.AppendFormat(@"  ORDER BY TA021,TA001,TA002,TB003");
             FASTSQL.AppendFormat(@"  ");
             FASTSQL.AppendFormat(@"  ");
+            FASTSQL.AppendFormat(@"  ");
 
             return FASTSQL.ToString();
         }
 
-        public void SETFASTREPORT2()
-        {
-
-            string SQL;
-            report2 = new Report();
-            report2.Load(@"REPORT\製令領用量(特).frx");
-
-            report2.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
-
-            TableDataSource Table = report2.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL2();
-            Table.SelectCommand = SQL;
-            report2.Preview = previewControl2;
-            report2.Show();
-
-        }
+        
 
         public string SETFASETSQL2()
         {
@@ -166,7 +156,7 @@ namespace TKWAREHOUSE
         private void button1_Click(object sender, EventArgs e)
         {
             SETFASTREPORT();
-            SETFASTREPORT2();
+           
         }
 
         #endregion
