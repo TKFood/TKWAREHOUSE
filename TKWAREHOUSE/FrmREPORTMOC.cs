@@ -133,7 +133,7 @@ namespace TKWAREHOUSE
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
-            FASTSQL.AppendFormat(@"  SELECT MD002 AS '線別',TA003 AS '開單日期',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',SUM(TB004) AS '需領用量',ROUND(SUM(TB004)/22,0) AS '包數'");
+            FASTSQL.AppendFormat(@"  SELECT MD002 AS '線別',TA003 AS '開單日期',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',SUM(TB004) AS '需領用量',CEILING(SUM(TB004)/22) AS '包數'");
             FASTSQL.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB,[TK].dbo.BOMMC,[TK].dbo.CMSMD");
             FASTSQL.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
             FASTSQL.AppendFormat(@"  AND TA006=MC001");

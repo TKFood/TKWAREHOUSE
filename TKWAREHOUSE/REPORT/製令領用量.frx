@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="05/28/2019 13:53:54" ReportInfo.Modified="05/29/2019 09:29:47" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/28/2019 13:53:54" ReportInfo.Modified="05/29/2019 10:14:24" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9IRGSAQqJjlu8BwAqyl9L7u">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9IZ8+g8HO33t6UW3pRFJFaI">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="--20190528 查製令用量=桶數+領用量&#13;&#10;SELECT MD002 AS '線別',TA001 AS '製令單別',TA002 AS '製令單號',TA003 AS '開單日期',TA006 AS '產品品號',TA034 AS '產品品名',TA015 AS '預計產量',TA007 AS '單位1',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',TB004 AS '需領用量',MC004 AS '標準批量',ROUND(TA015/MC004,2) AS '總桶數'&#13;&#10;,CASE WHEN FLOOR(ROUND(TA015/MC004,2)) = ROUND(TA015/MC004,2) THEN ROUND(TA015/MC004,2) ELSE CASE WHEN (ROUND(TA015/MC004,2)-1)&gt;0 THEN FLOOR(ROUND(TA015/MC004,2)) ELSE 0 END  END AS '整桶數'&#13;&#10;,CASE WHEN FLOOR(ROUND(TA015/MC004,2)) != ROUND(TA015/MC004,2) THEN 1 ELSE 0  END AS '最後桶數'&#13;&#10;,CASE WHEN FLOOR(ROUND(TA015/MC004,2)) = ROUND(TA015/MC004,2) THEN ROUND(TB004/ROUND(TA015/MC004,2),2) ELSE CASE WHEN (ROUND(TA015/MC004,2)-1)&gt;0 THEN ROUND(TB004/ROUND(TA015/MC004,2),2) ELSE 0 END  END AS '整桶用量'&#13;&#10;,TB004-(ROUND(TB004/ROUND(TA015/MC004,2),2)*(CASE WHEN FLOOR(ROUND(TA015/MC004,2)) = ROUND(TA015/MC004,2) THEN ROUND(TA015/MC004,2) ELSE CASE WHEN (ROUND(TA015/MC004,2)-1)&gt;0 THEN FLOOR(ROUND(TA015/MC004,2)) ELSE 0 END  END)) AS '最後桶用量'&#13;&#10;,ROUND(TB004/ROUND(TA015/MC004,2),2)  AS '標準用量'&#13;&#10;FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB,[TK].dbo.BOMMC,[TK].dbo.CMSMD&#13;&#10;WHERE TA001=TB001 AND TA002=TB002&#13;&#10;AND TA006=MC001&#13;&#10;AND TA021=MD001&#13;&#10;AND TB003 LIKE '1%'&#13;&#10;AND TB003 NOT IN ('101001001','101001009')&#13;&#10;AND TA003&gt;='20190527' AND TA003&lt;='20190528'&#13;&#10;ORDER BY TA021,TA001,TA002,TB003">
         <Column Name="製令單別" DataType="System.String"/>
         <Column Name="製令單號" DataType="System.String"/>
@@ -23,7 +23,7 @@
         <Column Name="單位2" DataType="System.String"/>
         <Column Name="線別" DataType="System.String"/>
       </TableDataSource>
-      <TableDataSource Name="Table1" DataType="System.Int32" Enabled="true" SelectCommand="SELECT MD002 AS '線別',TA003 AS '開單日期',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',SUM(TB004) AS '需領用量',ROUND(SUM(TB004)/22,0) AS '包數'&#13;&#10;FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB,[TK].dbo.BOMMC,[TK].dbo.CMSMD&#13;&#10;WHERE TA001=TB001 AND TA002=TB002&#13;&#10;AND TA006=MC001&#13;&#10;AND TA021=MD001&#13;&#10;AND TB003 LIKE '1%'&#13;&#10;AND TB003 IN ('101001001','101001009')&#13;&#10;AND TA003&gt;='20190527' AND TA003&lt;='20190528'&#13;&#10;GROUP BY MD002,TA003,TB003,TB012,TB007&#13;&#10;ORDER BY MD002,TA003,TB003,TB012,TB007">
+      <TableDataSource Name="Table1" DataType="System.Int32" Enabled="true" SelectCommand="SELECT MD002 AS '線別',TA003 AS '開單日期',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',SUM(TB004) AS '需領用量',CEILING(SUM(TB004)/22) AS '包數',SUM(TB004)/22&#13;&#10;FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB,[TK].dbo.BOMMC,[TK].dbo.CMSMD&#13;&#10;WHERE TA001=TB001 AND TA002=TB002&#13;&#10;AND TA006=MC001&#13;&#10;AND TA021=MD001&#13;&#10;AND TB003 LIKE '1%'&#13;&#10;AND TB003 IN ('101001001','101001009')&#13;&#10;AND TA003&gt;='20190527' AND TA003&lt;='20190528'&#13;&#10;GROUP BY MD002,TA003,TB003,TB012,TB007&#13;&#10;ORDER BY MD002,TA003,TB003,TB012,TB007">
         <Column Name="線別" DataType="System.String"/>
         <Column Name="開單日期" DataType="System.String"/>
         <Column Name="材料品號" DataType="System.String"/>
@@ -31,6 +31,7 @@
         <Column Name="單位2" DataType="System.String"/>
         <Column Name="需領用量" DataType="System.Decimal"/>
         <Column Name="包數" DataType="System.Decimal"/>
+        <Column Name="Column1" DataType="System.Decimal"/>
       </TableDataSource>
     </MsSqlDataConnection>
   </Dictionary>
