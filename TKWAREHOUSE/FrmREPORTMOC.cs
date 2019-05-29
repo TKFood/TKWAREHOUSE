@@ -59,20 +59,20 @@ namespace TKWAREHOUSE
         public void combobox2load()
         {
 
-            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-            sqlConn = new SqlConnection(connectionString);
-            String Sequel = "SELECT MD002,MD001 FROM [TK].dbo.CMSMD WHERE MD002 LIKE '新%' ORDER BY MD001";
-            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
-            DataTable dt = new DataTable();
-            sqlConn.Open();
+            //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            //sqlConn = new SqlConnection(connectionString);
+            //String Sequel = "SELECT MD002,MD001 FROM [TK].dbo.CMSMD WHERE MD002 LIKE '新%' ORDER BY MD001";
+            //SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            //DataTable dt = new DataTable();
+            //sqlConn.Open();
 
-            dt.Columns.Add("MD001", typeof(string));
-            dt.Columns.Add("MD002", typeof(string));
-            da.Fill(dt);
-            comboBox2.DataSource = dt.DefaultView;
-            comboBox2.ValueMember = "MD001";
-            comboBox2.DisplayMember = "MD002";
-            sqlConn.Close();
+            //dt.Columns.Add("MD001", typeof(string));
+            //dt.Columns.Add("MD002", typeof(string));
+            //da.Fill(dt);
+            //comboBox2.DataSource = dt.DefaultView;
+            //comboBox2.ValueMember = "MD001";
+            //comboBox2.DisplayMember = "MD002";
+            //sqlConn.Close();
 
 
 
@@ -116,7 +116,7 @@ namespace TKWAREHOUSE
             FASTSQL.AppendFormat(@"  AND TA021=MD001");
             FASTSQL.AppendFormat(@"  AND TB003 LIKE '1%'");
             FASTSQL.AppendFormat(@"  AND TB003 NOT IN ('101001001','101001009')");
-            FASTSQL.AppendFormat(@"  AND MD002 ='{0}'",comboBox2.Text.ToString());
+            FASTSQL.AppendFormat(@"  AND MD002  IN ('新廠製一組','新廠製二組','新廠製三組(手工)') ");
             FASTSQL.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}'",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             FASTSQL.AppendFormat(@"  ORDER BY TA021,TA001,TA002,TB003");
             FASTSQL.AppendFormat(@"  ");
@@ -140,7 +140,7 @@ namespace TKWAREHOUSE
             FASTSQL.AppendFormat(@"  AND TA021=MD001");
             FASTSQL.AppendFormat(@"  AND TB003 LIKE '1%'");
             FASTSQL.AppendFormat(@"  AND TB003 IN ('101001001','101001009')");
-            FASTSQL.AppendFormat(@"  AND MD002 ='{0}'", comboBox2.Text.ToString());
+            FASTSQL.AppendFormat(@"  AND MD002  IN ('新廠製一組','新廠製二組','新廠製三組(手工)') ");
             FASTSQL.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             FASTSQL.AppendFormat(@"  GROUP BY MD002,TA003,TB003,TB012,TB007");
             FASTSQL.AppendFormat(@"  ORDER BY MD002,TA003,TB003,TB012,TB007 ");
