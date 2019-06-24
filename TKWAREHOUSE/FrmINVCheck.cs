@@ -602,7 +602,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
                 FASTSQL.AppendFormat(@" GROUP BY  LA001,MB002,MB003,LA016");
                 FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0");
-                FASTSQL.AppendFormat(@" ORDER BY  LA001,MB002,MB003,LA016");
+                FASTSQL.AppendFormat(@" ORDER BY  LA001,MB002,MB003,LA016 ");
 
 
             }
