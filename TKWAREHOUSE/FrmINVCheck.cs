@@ -542,24 +542,27 @@ namespace TKWAREHOUSE
 
             if (comboBox1.Text.Equals("20001     成品倉"))
             {
-
+                FASTSQL.AppendFormat(@" SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,在倉日期,有效天數,總訂單需求量,業務");
+                FASTSQL.AppendFormat(@" FROM (");
+                FASTSQL.AppendFormat(@" ");
                 FASTSQL.AppendFormat(@" SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'");
                 FASTSQL.AppendFormat(@" ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'");
-                FASTSQL.AppendFormat(@" ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '批號-1/3效期內的訂單需求量'       ", dt.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '批號-1/3效期內的訂單差異量' ", dt.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'       ", dt.ToString("yyyyMMdd"));
+                FASTSQL.AppendFormat(@" ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' ", dt.ToString("yyyyMMdd"));
                 //FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009) , '{0}' ) AS '在倉日期' ", DateTime.Now.ToString("yyyyMMdd"));
                 //FASTSQL.AppendFormat(@" ,CASE WHEN DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009) , '{0}' )<> NULL THEN DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009) , '{0}' ) ELSE DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016) , '{0}' ) END  AS '在倉日期' ", DateTime.Now.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@" ,ISNULL ( DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009),'{0}'),DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [TK].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND A.LA005='1') ,'{0}') ) AS '在倉日期' " , DateTime.Now.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@", DATEDIFF(DAY, '{0}',LA016  )  AS '有效天數' ", DateTime.Now.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@" ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='20190208') AS INT) AS '總訂單需求量' ");
+                FASTSQL.AppendFormat(@" ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'");
                 FASTSQL.AppendFormat(@" FROM [TK].dbo.INVLA WITH (NOLOCK)  ");
                 FASTSQL.AppendFormat(@" LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   ");
                 FASTSQL.AppendFormat(@" WHERE  (LA009='20001     ')   ");
                 FASTSQL.AppendFormat(@" AND LA001 LIKE '4%' ");
                 FASTSQL.AppendFormat(@" GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    ");
                 FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
-                FASTSQL.AppendFormat(@" ORDER BY LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004  ");
-                FASTSQL.AppendFormat(@" ");
+                FASTSQL.AppendFormat(@" ) AS TEMP");
+                FASTSQL.AppendFormat(@" ORDER BY 在倉日期 DESC");
                 FASTSQL.AppendFormat(@" ");
             }
             else if (comboBox1.Text.Equals("20006     原料倉"))
