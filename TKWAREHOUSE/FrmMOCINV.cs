@@ -170,7 +170,7 @@ namespace TKWAREHOUSE
             STR.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
             STR.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
             STR.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-            STR.AppendFormat(@"  AND TB003 LIKE '201001165 %'  ");
+            //STR.AppendFormat(@"  AND TB003 LIKE '201001165 %'  ");
             STR.AppendFormat(@"  AND( TB003 LIKE '1%' OR TB003 LIKE '2%')");
             STR.AppendFormat(@"  AND( TA021 LIKE '02%' OR TA021 LIKE '03%' OR TA021 LIKE '04%' OR TA021 LIKE '09%') ");
             STR.AppendFormat(@"  GROUP BY TB003,TB012");
@@ -268,6 +268,8 @@ namespace TKWAREHOUSE
                 {
                     string MB001 = row.Cells["品號"].Value.ToString();
                     decimal NUM= Convert.ToDecimal(row.Cells["數量"].Value.ToString());
+
+                    DataSet ds3 = new DataSet();
                     ds3.Clear();
                     ds3 = SearchINVNOW(MB001);
 
