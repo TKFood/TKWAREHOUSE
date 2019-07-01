@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="06/26/2019 17:02:36" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="07/01/2019 14:36:29" ReportInfo.CreatorVersion="2016.4.4.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,7 +45,7 @@ namespace FastReport
 }
 </ScriptText>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9JDfgxWheStXPxSepaYkeh8">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9L8pmAlEpD97hM1+HVIfJ6m">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,在倉日期,有效天數,總訂單需求量,業務&#13;&#10;FROM (&#13;&#10;SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號' &#13;&#10;,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位' &#13;&#10;,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013&gt;='20190424' AND  TD013&lt;=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'        &#13;&#10;,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013&gt;='20190424' AND  TD013&lt;=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量'  &#13;&#10;,ISNULL ( DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009),'20190624'),DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [TK].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND A.LA005='1') ,'20190624') ) AS '在倉日期' &#13;&#10;, DATEDIFF(DAY, '20190624',LA016  )  AS '有效天數'  &#13;&#10;,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013&gt;='20190208') AS INT) AS '總訂單需求量'  &#13;&#10;,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'&#13;&#10;FROM [TK].dbo.INVLA WITH (NOLOCK)   &#13;&#10;LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001    &#13;&#10;WHERE  (LA009='20001     ')    AND LA001 LIKE '4%'  &#13;&#10;GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004     HAVING SUM(LA005*LA011)&lt;&gt;0  &#13;&#10;) AS TEMP&#13;&#10;ORDER BY 在倉日期 DESC&#13;&#10;">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
@@ -90,7 +90,7 @@ namespace FastReport
       <TextObject Name="Text12" Left="708.75" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.效期內的訂單需求量]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text13" Left="784.35" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.效期內的訂單差異量]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text25" Left="1011.15" Width="217.35" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" BeforePrintEvent="Text25_BeforePrint" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="" Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text14" Left="1228.5" Width="122.85" Height="18.9" Border.Lines="All" Text="[Table.業務]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text14" Left="1228.5" Width="122.85" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.業務]" HorzAlign="Center" VertAlign="Center"/>
     </DataBand>
     <PageFooterBand Name="PageFooter1" Top="92.74" Width="1436.4"/>
   </ReportPage>
