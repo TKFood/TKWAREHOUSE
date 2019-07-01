@@ -33,6 +33,8 @@ namespace TKWAREHOUSE
         StringBuilder sbSqlQuery = new StringBuilder();
         SqlDataAdapter adapter = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+        SqlDataAdapter adapter2 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder2 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -168,7 +170,7 @@ namespace TKWAREHOUSE
             STR.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
             STR.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
             STR.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-            //STR.AppendFormat(@"  AND TB003='101002001'");
+            STR.AppendFormat(@"  AND TB003 LIKE '201001165 %'  ");
             STR.AppendFormat(@"  AND( TB003 LIKE '1%' OR TB003 LIKE '2%')");
             STR.AppendFormat(@"  AND( TA021 LIKE '02%' OR TA021 LIKE '03%' OR TA021 LIKE '04%' OR TA021 LIKE '09%') ");
             STR.AppendFormat(@"  GROUP BY TB003,TB012");
@@ -269,7 +271,7 @@ namespace TKWAREHOUSE
                     ds3.Clear();
                     ds3 = SearchINVNOW(MB001);
 
-                    if(ds3.Tables["ds3"].Rows.Count>=1)
+                    if(ds3!=null && ds3.Tables["ds3"].Rows.Count>=1)
                     {
                         int ROWS = ds3.Tables["ds3"].Rows.Count;
                         int NOWROWS = ds3.Tables["ds3"].Rows.Count;
@@ -315,7 +317,7 @@ namespace TKWAREHOUSE
                     sbSql.Clear();
 
                     sbSql.AppendFormat(@" SELECT LA009 AS '倉庫',LA001 AS '品號',LA016  AS '批號',SUM(LA005*LA011)  AS '庫存量'  ");
-                    sbSql.AppendFormat(@" FROM INVLA");
+                    sbSql.AppendFormat(@" FROM [TK].dbo.INVLA ");
                     sbSql.AppendFormat(@" WHERE (LA009='20006' OR LA009='20004')");
                     sbSql.AppendFormat(@" AND LA001 IN (SELECT TB003");
                     sbSql.AppendFormat(@" FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
@@ -333,16 +335,16 @@ namespace TKWAREHOUSE
 
 
 
-                    adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
-                    sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                    adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder2 = new SqlCommandBuilder(adapter2);
 
                     sqlConn.Open();
                     ds3.Clear();
-                    adapter.Fill(ds3, "ds3");
+                    adapter2.Fill(ds3, "ds3");
                     sqlConn.Close();
 
 
-                    if (ds2.Tables[tablename].Rows.Count == 0)
+                    if (ds3.Tables["ds3"].Rows.Count == 0)
                     {
                         return null;
                     }
