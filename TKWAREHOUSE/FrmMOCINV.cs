@@ -52,7 +52,8 @@ namespace TKWAREHOUSE
             InitializeComponent();
 
             
-            ADDDT.Columns.AddRange(new DataColumn[5] {
+            ADDDT.Columns.AddRange(new DataColumn[6] {
+                 new DataColumn("庫別", typeof(string)),
                  new DataColumn("日期", typeof(string)),
                  new DataColumn("品號", typeof(string)),
                  new DataColumn("品名", typeof(string)),
@@ -282,11 +283,11 @@ namespace TKWAREHOUSE
                         {
                             if(Convert.ToDecimal(ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["庫存量"].ToString())>= NUM)
                             {
-                                ADDDT.Rows.Add(ID,row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["批號"].ToString(), NUM);
+                                ADDDT.Rows.Add(ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["庫別"].ToString(), ID,row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["批號"].ToString(), NUM);
                             }
                             else if (Convert.ToDecimal(ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["庫存量"].ToString()) < NUM)
                             {
-                                ADDDT.Rows.Add(ID, row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["批號"].ToString(), Convert.ToDecimal(ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["庫存量"].ToString()));
+                                ADDDT.Rows.Add(ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["庫別"].ToString(), ID, row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["批號"].ToString(), Convert.ToDecimal(ds3.Tables["ds3"].Rows[ROWS - NOWROWS]["庫存量"].ToString()));
                             }
 
                             NUM=NUM- Convert.ToDecimal(ds3.Tables["ds3"].Rows[ROWS- NOWROWS]["庫存量"].ToString());
@@ -318,7 +319,7 @@ namespace TKWAREHOUSE
 
                     sbSql.Clear();
 
-                    sbSql.AppendFormat(@" SELECT LA009 AS '倉庫',LA001 AS '品號',LA016  AS '批號',SUM(LA005*LA011)  AS '庫存量'  ");
+                    sbSql.AppendFormat(@" SELECT LA009 AS '庫別',LA001 AS '品號',LA016  AS '批號',SUM(LA005*LA011)  AS '庫存量'  ");
                     sbSql.AppendFormat(@" FROM [TK].dbo.INVLA ");
                     sbSql.AppendFormat(@" WHERE (LA009='20006' OR LA009='20004')");
                     sbSql.AppendFormat(@" AND LA001 IN (SELECT TB003");
@@ -436,6 +437,11 @@ namespace TKWAREHOUSE
         private void button3_Click(object sender, EventArgs e)
         {
             SearchINVBATCH();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
