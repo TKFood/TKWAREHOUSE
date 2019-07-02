@@ -35,16 +35,23 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
         SqlDataAdapter adapter2 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder2 = new SqlCommandBuilder();
+        SqlDataAdapter adapter3 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
+        SqlDataAdapter adapter4 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
+        DataSet ds4 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
 
         DataTable ADDDT = new DataTable();
+
+        string ID =null;
 
 
         public FrmMOCINV()
@@ -417,12 +424,80 @@ namespace TKWAREHOUSE
                 }
              }
         }
-      
+
+        public string GETMAXID()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                
+                sbSql.AppendFormat(@" SELECT ISNULL(MAX(ID),'00000000000') AS ID ");
+                sbSql.AppendFormat(@" FROM  [TKWAREHOUSE].[dbo].[INVBATCH] ");
+                sbSql.AppendFormat(@" WHERE CONVERT(NVARCHAR,DATES,112)='{0}' ",dateTimePicker3.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+
+                adapter4 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder4 = new SqlCommandBuilder(adapter4);
+                sqlConn.Open();
+                ds4.Clear();
+                adapter4.Fill(ds4, "TEMPds4");
+                sqlConn.Close();
+
+
+                if (ds4.Tables["TEMPds4"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds4.Tables["TEMPds4"].Rows.Count >= 1)
+                    {
+                        ID = SETTID(ds4.Tables["TEMPds4"].Rows[0]["ID"].ToString());
+                        return ID;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string SETTID(string ID)
+        {
+            if (ID.Equals("00000000000"))
+            {
+                return dateTimePicker3.Value.ToString("yyyyMMdd") + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(ID.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return dateTimePicker3.Value.ToString("yyyyMMdd") + temp.ToString();
+            }
+        }
+
         #endregion
 
         #region BUTTON
-
-        #endregion
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -441,7 +516,9 @@ namespace TKWAREHOUSE
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            textBox1.Text = GETMAXID();
         }
+        #endregion
+
     }
 }
