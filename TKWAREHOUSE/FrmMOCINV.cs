@@ -39,12 +39,15 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
         SqlDataAdapter adapter4 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
+        SqlDataAdapter adapter5 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
+        DataSet ds5 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -725,6 +728,7 @@ namespace TKWAREHOUSE
                     else
                     {
                         tran.Commit();      //執行交易  
+                        UPDATEINVTA();
 
                         MessageBox.Show("完成");
                     }
@@ -908,6 +912,111 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCHINVBATCH2()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(dateTimePicker1.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker2.Value.ToString("yyyyMMdd")))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sbSql.Clear();
+                    sbSqlQuery.Clear();
+
+                    sbSql.AppendFormat(@" SELECT [TA001] AS '轉撥單別',[TA002] AS '轉撥單號'");
+                    sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[INVBATCH]");
+                    sbSql.AppendFormat(@" WHERE [DATES]='{0}'",dateTimePicker3.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@" GROUP BY [TA001],[TA002]");
+                    sbSql.AppendFormat(@" ORDER BY [TA001],[TA002]");
+                    sbSql.AppendFormat(@" ");
+
+                    adapter5 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder5 = new SqlCommandBuilder(adapter5);
+
+                    sqlConn.Open();
+                    ds5.Clear();
+                    adapter5.Fill(ds5, "ds5");
+                    sqlConn.Close();
+
+
+                    if (ds5.Tables["ds5"].Rows.Count == 0)
+                    {
+                        dataGridView4.DataSource = null;
+                    }
+                    else
+                    {
+
+                        dataGridView4.DataSource = ds5.Tables["ds5"];
+                        dataGridView1.AutoResizeColumns();
+                    }
+                }
+                else
+                {
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void UPDATEINVTA()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(" UPDATE [TK].dbo.INVTA");
+                sbSql.AppendFormat(" SET TA011=(SELECT SUM(TB007) FROM [TK].dbo.INVTB WHERE TB001=TA001 AND TB002=TA002), TA012=(SELECT SUM(TB011) FROM [TK].dbo.INVTB WHERE TB001=TA001 AND TB002=TA002)");
+                sbSql.AppendFormat(" WHERE TA001='{0}' AND TA002='{1}'",TA001,TA002);
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+
+        }
+    
         #endregion
 
         #region BUTTON
@@ -935,6 +1044,8 @@ namespace TKWAREHOUSE
 
             ADDTOTKWAREHOUSE();           
             ADDINVTATB();
+
+            SEARCHINVBATCH2();
         }
         #endregion
 
