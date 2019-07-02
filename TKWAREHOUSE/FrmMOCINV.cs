@@ -48,6 +48,7 @@ namespace TKWAREHOUSE
 
         DataTable dt = new DataTable();
         string tablename = null;
+        int result;
 
         DataTable ADDDT = new DataTable();
 
@@ -310,8 +311,11 @@ namespace TKWAREHOUSE
                 }
             }
 
-            ADDTOTKWAREHOUSE();
-
+            if (ADDDT.Rows.Count >= 1)
+            {
+                dataGridView3.DataSource = ADDDT;
+            }
+            
 
         }
 
@@ -384,45 +388,61 @@ namespace TKWAREHOUSE
 
         public void ADDTOTKWAREHOUSE()
         {
-            if (ADDDT.Rows.Count >= 1)
+            if (dataGridView3.Rows.Count >= 1)
             {
-                dataGridView3.DataSource = ADDDT;
-
                 try
                 {
                     connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
-                    using (SqlConnection con = new SqlConnection(connectionString))
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    foreach (DataGridViewRow row in dataGridView3.Rows)
                     {
-                        using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
-                        {
-                            //Set the database table name
-                            sqlBulkCopy.DestinationTableName = "[TKWAREHOUSE].[dbo].[INVBATCH]";
-
-                            //[OPTIONAL]: Map the DataTable columns with that of the database table
-                            sqlBulkCopy.ColumnMappings.Add("日期", "ID");
-                            sqlBulkCopy.ColumnMappings.Add("品號", "MB001");
-                            sqlBulkCopy.ColumnMappings.Add("品名", "MB002");
-                            sqlBulkCopy.ColumnMappings.Add("批號", "LOTNO");
-                            sqlBulkCopy.ColumnMappings.Add("數量", "NUM");
-
-
-                            con.Open();
-                            //sqlBulkCopy.WriteToServer(ADDDT);
-                            con.Close();
-
-                            MessageBox.Show("新增完成");
-                        }
+                        sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[INVBATCH]");
+                        sbSql.AppendFormat(" ([ID],[DATES],[WHID],[MB001],[MB002],[LOTNO],[NUM],[TA001],[TA002])");
+                        sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",textBox1.Text,dateTimePicker3.Value.ToString("yyyyMMdd") ,row.Cells["庫別"].Value.ToString(), row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), row.Cells["批號"].Value.ToString(), row.Cells["數量"].Value.ToString(),null,null);
+                        sbSql.AppendFormat(" ");
+                       
                     }
+
+                    
+  
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
                 }
                 catch
                 {
-                    MessageBox.Show("新增錯誤");
-                }
-                finally
-                {
 
                 }
-             }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+
+            }
         }
 
         public string GETMAXID()
@@ -517,6 +537,7 @@ namespace TKWAREHOUSE
         private void button4_Click(object sender, EventArgs e)
         {
             textBox1.Text = GETMAXID();
+            ADDTOTKWAREHOUSE();
         }
         #endregion
 
