@@ -53,7 +53,116 @@ namespace TKWAREHOUSE
         DataTable ADDDT = new DataTable();
 
         string ID =null;
+        string TA001 = "A121";
+        string TA002;
 
+        public class INVTADATA
+        {
+            public string COMPANY;
+            public string CREATOR;
+            public string USR_GROUP;
+            public string CREATE_DATE;
+            public string MODIFIER;
+            public string MODI_DATE;
+            public string FLAG;
+            public string CREATE_TIME;
+            public string MODI_TIME;
+            public string TRANS_TYPE;
+            public string TRANS_NAME;
+            public string sync_date;
+            public string sync_time;
+            public string sync_mark;
+            public string DataUser;
+            public string sync_count;
+            public string DataGroup;
+            public string TA001;
+            public string TA002;
+            public string TA003;
+            public string TA004;
+            public string TA005;
+            public string TA006;
+            public string TA007;
+            public string TA008;
+            public string TA009;
+            public string TA010;
+            public string TA011;
+            public string TA012;
+            public string TA013;
+            public string TA014;
+            public string TA015;
+            public string TA016;
+            public string TA017;
+            public string TA018;
+            public string TA019;
+            public string TA020;
+            public string TA021;
+            public string TA022;
+            public string TA023;
+            public string TA024;
+            public string TA025;
+            public string TA026;
+            public string TA027;
+            public string TA028;
+            public string TA029;
+            public string TA030;
+            public string TA031;
+            public string TA032;
+            public string TA033;
+            public string TA034;
+            public string TA035;
+            public string TA036;
+            public string TA037;
+            public string TA038;
+            public string TA039;
+            public string TA040;
+            public string TA041;
+            public string TA042;
+            public string TA043;
+            public string TA044;
+            public string TA045;
+            public string TA046;
+            public string TA047;
+            public string TA048;
+            public string TA049;
+            public string TA050;
+            public string TA051;
+            public string TA052;
+            public string TA053;
+            public string TA054;
+            public string TA055;
+            public string TA056;
+            public string TA057;
+            public string TA058;
+            public string TA059;
+            public string TA060;
+            public string TA061;
+            public string TA062;
+            public string TA063;
+            public string TA064;
+            public string TA065;
+            public string TA066;
+            public string TA067;
+            public string TA068;
+            public string TA200;
+        }
+
+        public class INVTB
+        {
+            public string COMPANY;
+            public string CREATOR;
+            public string USR_GROUP;
+            public string CREATE_DATE;
+            public string MODIFIER;
+            public string MODI_DATE;
+            public string FLAG;
+            public string CREATE_TIME;
+            public string MODI_TIME;
+            public string TRANS_TYPE;
+            public string TRANS_NAME;
+            public string sync_count;
+            public string DataGroup;
+
+        }
 
         public FrmMOCINV()
         {
@@ -176,7 +285,7 @@ namespace TKWAREHOUSE
             StringBuilder STR = new StringBuilder();
 
             STR.AppendFormat(@"  SELECT TB003 AS '品號',TB012 AS '品名',SUM(TB004) AS 數量");
-            STR.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
+            STR.AppendFormat(@"  FROM [TK].dbo.INVTA,[TK].dbo.MOCTB");
             STR.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
             STR.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             //STR.AppendFormat(@"  AND TB003 LIKE '201001165 %'  ");
@@ -212,7 +321,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@" FROM [TK].dbo.INVLA");
                     sbSql.AppendFormat(@" WHERE (LA009='20006' OR LA009='20004')");
                     sbSql.AppendFormat(@" AND LA001 IN (SELECT TB003");
-                    sbSql.AppendFormat(@" FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
+                    sbSql.AppendFormat(@" FROM [TK].dbo.INVTA,[TK].dbo.MOCTB");
                     sbSql.AppendFormat(@" WHERE TA001=TB001 AND TA002=TB002");
                     sbSql.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                     sbSql.AppendFormat(@"  AND( TA021 LIKE '02%' OR TA021 LIKE '03%' OR TA021 LIKE '04%' OR TA021 LIKE '09%') ");
@@ -334,7 +443,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@" FROM [TK].dbo.INVLA ");
                     sbSql.AppendFormat(@" WHERE (LA009='20006' OR LA009='20004')");
                     sbSql.AppendFormat(@" AND LA001 IN (SELECT TB003");
-                    sbSql.AppendFormat(@" FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
+                    sbSql.AppendFormat(@" FROM [TK].dbo.INVTA,[TK].dbo.MOCTB");
                     sbSql.AppendFormat(@" WHERE TA001=TB001 AND TA002=TB002");
                     sbSql.AppendFormat(@"  AND( TA021 LIKE '02%' OR TA021 LIKE '03%' OR TA021 LIKE '04%' OR TA021 LIKE '09%') ");
                     sbSql.AppendFormat(@"  AND( TB003 LIKE '1%' OR TB003 LIKE '2%')");
@@ -515,9 +624,256 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void ADDINVTATB()
+        {
+            INVTADATA INVTA = new INVTADATA();
+            INVTA = SETINVTA();
+
+            try
+            {
+                //check TA002=2,TA040=2
+                if (INVTA.TA002.Substring(0, 1).Equals("2"))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[INVTA]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME]");
+                    sbSql.AppendFormat(" ,[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TA001],[TA002],[TA003],[TA004],[TA005],[TA006],[TA007],[TA008],[TA009],[TA010]");
+                    sbSql.AppendFormat(" ,[TA011],[TA012],[TA013],[TA014],[TA015],[TA016],[TA017],[TA018],[TA019],[TA020]");
+                    sbSql.AppendFormat(" ,[TA021],[TA022],[TA023],[TA024],[TA025],[TA026],[TA027],[TA028],[TA029],[TA030]");
+                    sbSql.AppendFormat(" ,[TA031],[TA032],[TA033],[TA034],[TA035],[TA036],[TA037],[TA038],[TA039],[TA040]");
+                    sbSql.AppendFormat(" ,[TA041],[TA042],[TA043],[TA044],[TA045],[TA046],[TA047],[TA048],[TA049],[TA050]");
+                    sbSql.AppendFormat(" ,[TA051],[TA052],[TA053],[TA054],[TA055],[TA056],[TA057],[TA058],[TA059],[TA060]");
+                    sbSql.AppendFormat(" ,[TA061],[TA062],[TA063],[TA064],[TA065],[TA066],[TA067],[TA068],[TA200]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" VALUES");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}'", INVTA.COMPANY, INVTA.CREATOR, INVTA.USR_GROUP, INVTA.CREATE_DATE, INVTA.MODIFIER, INVTA.MODI_DATE, INVTA.FLAG, INVTA.CREATE_TIME, INVTA.MODI_TIME, INVTA.TRANS_TYPE, INVTA.TRANS_NAME);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}'", INVTA.sync_date, INVTA.sync_time, INVTA.sync_mark, INVTA.sync_count, INVTA.DataUser, INVTA.DataGroup);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", INVTA.TA001, INVTA.TA002, INVTA.TA003, INVTA.TA004, INVTA.TA005, INVTA.TA006, INVTA.TA007, INVTA.TA008, INVTA.TA009, INVTA.TA010);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", INVTA.TA011, INVTA.TA012, INVTA.TA013, INVTA.TA014, INVTA.TA015, INVTA.TA016, INVTA.TA017, INVTA.TA018, INVTA.TA019, INVTA.TA020);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", INVTA.TA021, INVTA.TA022, INVTA.TA023, INVTA.TA024, INVTA.TA025, INVTA.TA026, INVTA.TA027, INVTA.TA028, INVTA.TA029, INVTA.TA030);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", INVTA.TA031, INVTA.TA032, INVTA.TA033, INVTA.TA034, INVTA.TA035, INVTA.TA036, INVTA.TA037, INVTA.TA038, INVTA.TA039, INVTA.TA040);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", INVTA.TA041, INVTA.TA042, INVTA.TA043, INVTA.TA044, INVTA.TA045, INVTA.TA046, INVTA.TA047, INVTA.TA048, INVTA.TA049, INVTA.TA050);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", INVTA.TA051, INVTA.TA052, INVTA.TA053, INVTA.TA054, INVTA.TA055, INVTA.TA056, INVTA.TA057, INVTA.TA058, INVTA.TA059, INVTA.TA060);
+                    sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}'", INVTA.TA061, INVTA.TA062, INVTA.TA063, INVTA.TA064, INVTA.TA065, INVTA.TA066, INVTA.TA067, INVTA.TA068, INVTA.TA200);
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+                }
+
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+    
+
+        public INVTADATA SETINVTA()
+        {
+            INVTADATA INVTA = new INVTADATA();
+
+            INVTA.COMPANY = "TK";
+            INVTA.CREATOR = "120024";
+            INVTA.USR_GROUP = "103400";
+            INVTA.CREATE_DATE = DateTime.Now.ToString("yyyyMMdd");
+            INVTA.MODIFIER = "120024";
+            INVTA.MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
+            INVTA.FLAG = "0";
+            INVTA.CREATE_TIME = DateTime.Now.ToString("HH:mm:dd");
+            INVTA.MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
+            INVTA.TRANS_TYPE = "P001";
+            INVTA.TRANS_NAME = "INVMI08";
+            INVTA.sync_date = "";
+            INVTA.sync_time = "";
+            INVTA.sync_mark = "";
+            INVTA.sync_count = "0";
+            INVTA.DataUser = "";
+            INVTA.DataGroup = "103400";
+            INVTA.TA001 = "A121";
+            INVTA.TA002 = TA002;
+            INVTA.TA003 = dateTimePicker3.Value.ToString("yyyyMMdd");
+            INVTA.TA004 = "103400";
+            INVTA.TA005 = "";
+            INVTA.TA006 = "N";
+            INVTA.TA007 = "0";
+            INVTA.TA008 = "20";
+            INVTA.TA009 = "12";
+            INVTA.TA010 = "0";
+            INVTA.TA011 = "0";
+            INVTA.TA012 = "0";
+            INVTA.TA013 = "N";            
+            INVTA.TA014 = dateTimePicker3.Value.ToString("yyyyMMdd");
+            INVTA.TA015 = "120024";
+            INVTA.TA016 = "0";
+            INVTA.TA017 = "N";
+            INVTA.TA018 = "";
+            INVTA.TA019 = "0";
+            INVTA.TA020 = "6";
+            INVTA.TA021 = "";
+            INVTA.TA022 = "";
+            INVTA.TA023 = "";
+            INVTA.TA024 = "";
+            INVTA.TA025 = "";
+            INVTA.TA026 = "";
+            INVTA.TA027 = "";
+            INVTA.TA028 = "";
+            INVTA.TA029 = "";
+            INVTA.TA030 = "";
+            INVTA.TA031 = "";
+            INVTA.TA032 = "";
+            INVTA.TA033 = "0";
+            INVTA.TA034 = "0";
+            INVTA.TA035 = "";
+            INVTA.TA036 = "";
+            INVTA.TA037 = "";
+            INVTA.TA038 = "";
+            INVTA.TA039 = "";
+            INVTA.TA040 = "0";
+            INVTA.TA041 = "0";
+            INVTA.TA042 = "0";
+            INVTA.TA043 = "";
+            INVTA.TA044 = "";
+            INVTA.TA045 = "";
+            INVTA.TA046 = "";
+            INVTA.TA047 = "";
+            INVTA.TA049 = "0";
+            INVTA.TA050 = "0";
+            INVTA.TA051 = "";
+            INVTA.TA052 = "";
+            INVTA.TA053 = "";
+            INVTA.TA054 = "";
+            INVTA.TA055 = "0";
+            INVTA.TA056 = "0";
+            INVTA.TA057 = "0";
+            INVTA.TA058 = "0";
+            INVTA.TA059 = "";
+            INVTA.TA060 = "";
+            INVTA.TA061 = "";
+            INVTA.TA062 = "";
+            INVTA.TA063 = "";
+            INVTA.TA064 = "";
+            INVTA.TA065 = "";
+            INVTA.TA066 = "";
+            INVTA.TA067 = "";
+            INVTA.TA068 = "";
+            INVTA.TA200 = "";
+
+
+            return INVTA;
+        }
+        public string GETMAXTA002(string TA001)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TA002),'00000000000') AS TA002");
+                sbSql.AppendFormat(@"  FROM [TK].[dbo].[INVTA] ");
+                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
+                sbSql.AppendFormat(@"  WHERE  TA001='{0}' AND TA003='{1}'", TA001, dateTimePicker3.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter4 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder4 = new SqlCommandBuilder(adapter4);
+                sqlConn.Open();
+                ds4.Clear();
+                adapter4.Fill(ds4, "TEMPds4");
+                sqlConn.Close();
+
+
+                if (ds4.Tables["TEMPds4"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds4.Tables["TEMPds4"].Rows.Count >= 1)
+                    {
+                        TA002 = SETTA002(ds4.Tables["TEMPds4"].Rows[0]["TA002"].ToString());
+                        return TA002;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string SETTA002(string TA002)
+        {
+            if (TA002.Equals("00000000000"))
+            {
+                return dateTimePicker3.Value.ToString("yyyyMMdd") + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(TA002.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return dateTimePicker3.Value.ToString("yyyyMMdd") + temp.ToString();
+            }
+        }
+
         #endregion
 
-        #region BUTTON
+            #region BUTTON
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -536,8 +892,13 @@ namespace TKWAREHOUSE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            textBox1.Text = GETMAXID();
-            ADDTOTKWAREHOUSE();
+            //textBox1.Text = GETMAXID();
+            //ADDTOTKWAREHOUSE();
+            textBox1.Text = "20190702002";
+     
+
+            TA002 = GETMAXTA002(TA001);
+            ADDINVTATB();
         }
         #endregion
 
