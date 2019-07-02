@@ -285,7 +285,7 @@ namespace TKWAREHOUSE
             StringBuilder STR = new StringBuilder();
 
             STR.AppendFormat(@"  SELECT TB003 AS '品號',TB012 AS '品名',SUM(TB004) AS 數量");
-            STR.AppendFormat(@"  FROM [TK].dbo.INVTA,[TK].dbo.MOCTB");
+            STR.AppendFormat(@"  FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB");
             STR.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
             STR.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             //STR.AppendFormat(@"  AND TB003 LIKE '201001165 %'  ");
@@ -514,7 +514,7 @@ namespace TKWAREHOUSE
                     {
                         sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[INVBATCH]");
                         sbSql.AppendFormat(" ([ID],[DATES],[WHID],[MB001],[MB002],[LOTNO],[NUM],[TA001],[TA002])");
-                        sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",textBox1.Text,dateTimePicker3.Value.ToString("yyyyMMdd") ,row.Cells["庫別"].Value.ToString(), row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), row.Cells["批號"].Value.ToString(), row.Cells["數量"].Value.ToString(),null,null);
+                        sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",textBox1.Text,dateTimePicker3.Value.ToString("yyyyMMdd") ,row.Cells["庫別"].Value.ToString(), row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), row.Cells["批號"].Value.ToString(), row.Cells["數量"].Value.ToString(),"A121", textBox1.Text);
                         sbSql.AppendFormat(" ");
                        
                     }
@@ -668,6 +668,43 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}'", INVTA.TA061, INVTA.TA062, INVTA.TA063, INVTA.TA064, INVTA.TA065, INVTA.TA066, INVTA.TA067, INVTA.TA068, INVTA.TA200);
                     sbSql.AppendFormat(" )");
                     sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[INVTB]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME]");
+                    sbSql.AppendFormat(" ,[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TB001],[TB002],[TB003],[TB004],[TB005],[TB006],[TB007],[TB008],[TB009],[TB010]");
+                    sbSql.AppendFormat(" ,[TB011],[TB012],[TB013],[TB014],[TB015],[TB016],[TB017],[TB018],[TB019],[TB020]");
+                    sbSql.AppendFormat(" ,[TB021],[TB022],[TB023],[TB024],[TB025],[TB026],[TB027],[TB028],[TB029],[TB030]");
+                    sbSql.AppendFormat(" ,[TB031],[TB032],[TB033],[TB034],[TB035],[TB036],[TB037],[TB038],[TB039],[TB040]");
+                    sbSql.AppendFormat(" ,[TB041],[TB042],[TB043],[TB044],[TB045],[TB046],[TB047],[TB048],[TB049],[TB050]");
+                    sbSql.AppendFormat(" ,[TB051],[TB052],[TB053],[TB054],[TB055],[TB056],[TB057],[TB058],[TB059],[TB060]");
+                    sbSql.AppendFormat(" ,[TB061],[TB062],[TB063],[TB064],[TB065],[TB066],[TB067],[TB068],[TB069],[TB070]");
+                    sbSql.AppendFormat(" ,[TB071],[TB072],[TB073]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" SELECT");
+                    sbSql.AppendFormat(" '{0}' AS COMPANY,'{1}' AS CREATOR,'{2}' AS USR_GROUP,'{3}' AS CREATE_DATE,'{4}' AS MODIFIER,'{5}' AS MODI_DATE,'{6}' AS FLAG,'{7}' AS CREATE_TIME,'{8}' AS MODI_TIME,'{9}' AS TRANS_TYPE,'{10}' AS TRANS_NAME", INVTA.COMPANY, INVTA.CREATOR, INVTA.USR_GROUP, INVTA.CREATE_DATE, INVTA.MODIFIER, INVTA.MODI_DATE, INVTA.FLAG, INVTA.CREATE_TIME, INVTA.MODI_TIME, INVTA.TRANS_TYPE, INVTA.TRANS_NAME);
+                    sbSql.AppendFormat(" ,'{0}' AS sync_date,'{1}' AS sync_time,'{2}' AS  sync_mark,'{3}' AS sync_count,'{4}' AS DataUser,'{5}' AS DataGroup", INVTA.sync_date, INVTA.sync_time, INVTA.sync_mark, INVTA.sync_count, INVTA.DataUser, INVTA.DataGroup);
+                    sbSql.AppendFormat(" ,TA001 AS TB001,TA002 AS TB002,RIGHT(REPLICATE('0', 4) + CAST( ROW_NUMBER() OVER(ORDER BY TA002) as NVARCHAR), 4)  AS TB003,INVMB.MB001 AS TB004,INVMB.MB002 AS TB005,INVMB.MB003 AS TB006,NUM AS TB007,INVMB.MB004 AS TB008,'0' AS TB009,INVMB.MB065/INVMB.MB064 AS TB010");
+                    sbSql.AppendFormat(" ,INVMB.MB065/INVMB.MB064*NUM AS TB011,WHID AS TB012,'20012' AS TB013,LOTNO AS TB014,CASE WHEN  (SELECT TOP 1 TH036 FROM [TK].dbo.PURTH WHERE TH004=INVMB.MB001 AND TH010=LOTNO)<>NULL THEN (SELECT TOP 1 TH036 FROM [TK].dbo.PURTH WHERE TH004=INVMB.MB001 AND TH010=LOTNO )ELSE (SELECT TOP 1 TG018 FROM [TK].dbo.MOCTG WHERE TG004=INVMB.MB001 AND TG017=LOTNO ) END  AS TB015,CASE WHEN (SELECT TOP 1 TH037 FROM [TK].dbo.PURTH WHERE TH004=INVMB.MB001 AND TH010=LOTNO)<>NULL THEN (SELECT TOP 1 TH037 FROM [TK].dbo.PURTH WHERE TH004=INVMB.MB001 AND TH010=LOTNO) ELSE (SELECT TOP 1 TG018 FROM [TK].dbo.MOCTG WHERE TG004=INVMB.MB001 AND TG017=LOTNO ) END  AS TB016,'' AS TB017,'N' AS TB018,'N' AS TB019,'' AS TB020 ");
+                    sbSql.AppendFormat(" ,'' AS TB021,'0' AS TB022,'' AS TB023,'N' AS TB024,'0' AS TB025,'0' AS TB026,'' AS TB027,'' AS TB028,'' AS TB029,'0' AS TB030");
+                    sbSql.AppendFormat(" ,'0' AS TB031,'' AS TB032,'' AS TB033,'' AS TB034,'' AS TB035,'' AS TB036,'0' AS TB037,'0' AS TB038,'0' AS TB039,'' AS TB040");
+                    sbSql.AppendFormat(" ,'' AS TB041,'' AS TB042,'' AS TB043,'' AS TB044,'0' AS TB045,'' AS TB046,'0' AS TB047,'' AS TB048,'' AS TB049,'0' AS TB050");
+                    sbSql.AppendFormat(" ,'' AS TB051,'N' AS TB052,'' AS TB053,'' AS TB054,'0' AS TB055,'' AS TB056,'' AS TB057,'' AS TB058,'0' AS TB059,'0' AS TB060");
+                    sbSql.AppendFormat(" ,'' AS TB061,'0' AS TB062,'' AS TB063,'0' AS TB064,'0' AS TB065,'0' AS TB066,'0' AS TB067,'' AS TB068,'' AS TB069,'' AS TB070");
+                    sbSql.AppendFormat(" ,'' AS TB071,'' AS TB072,'' AS TB073");
+                    sbSql.AppendFormat(" ,'' AS UDF01,'' AS UDF02,'' AS UDF03,'' AS UDF04,'' AS UDF05,'0' AS UDF06,'0' AS UDF07,'0' AS UDF08,'0' AS UDF09,'0' AS UDF10");
+                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].dbo.INVBATCH,[TK].dbo.INVMB");
+                    sbSql.AppendFormat(" WHERE INVBATCH.MB001=INVMB.MB001");
+                    sbSql.AppendFormat(" AND INVBATCH.TA002='{0}'",TA002);
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
@@ -689,7 +726,7 @@ namespace TKWAREHOUSE
                     {
                         tran.Commit();      //執行交易  
 
-
+                        MessageBox.Show("完成");
                     }
                 }
 
@@ -873,7 +910,7 @@ namespace TKWAREHOUSE
 
         #endregion
 
-            #region BUTTON
+        #region BUTTON
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -892,12 +929,11 @@ namespace TKWAREHOUSE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            //textBox1.Text = GETMAXID();
-            //ADDTOTKWAREHOUSE();
-            textBox1.Text = "20190702002";
-     
-
             TA002 = GETMAXTA002(TA001);
+            textBox1.Text = TA002;
+            //textBox1.Text = "20190702002";
+
+            ADDTOTKWAREHOUSE();           
             ADDINVTATB();
         }
         #endregion
