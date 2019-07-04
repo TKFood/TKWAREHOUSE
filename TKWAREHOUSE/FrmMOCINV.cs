@@ -66,6 +66,9 @@ namespace TKWAREHOUSE
         string TA002;
         string ORIGINTA001 = null;
         string ORIGINTA002 = null;
+        string REDATES = null;
+        string TA001RE = "A121";
+        string TA002RE;
 
         public class INVTADATA
         {
@@ -903,6 +906,7 @@ namespace TKWAREHOUSE
             }
         }
 
+       
         public string SETTA002(string TA002)
         {
             if (TA002.Equals("00000000000"))
@@ -917,6 +921,77 @@ namespace TKWAREHOUSE
                 string temp = serno.ToString();
                 temp = temp.PadLeft(3, '0');
                 return dateTimePicker3.Value.ToString("yyyyMMdd") + temp.ToString();
+            }
+        }
+
+        public string GETMAXTA002RE(string TA001, string REDATES)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TA002),'00000000000') AS TA002");
+                sbSql.AppendFormat(@"  FROM [TK].[dbo].[INVTA] ");
+                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
+                sbSql.AppendFormat(@"  WHERE  TA001='{0}' AND TA003='{1}'", TA001, REDATES);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter4 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder4 = new SqlCommandBuilder(adapter4);
+                sqlConn.Open();
+                ds4.Clear();
+                adapter4.Fill(ds4, "TEMPds4");
+                sqlConn.Close();
+
+
+                if (ds4.Tables["TEMPds4"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds4.Tables["TEMPds4"].Rows.Count >= 1)
+                    {
+                        TA002 = SETTA002RE(ds4.Tables["TEMPds4"].Rows[0]["TA002"].ToString());
+                        return TA002;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string SETTA002RE(string TA002)
+        {
+            if (TA002.Equals("00000000000"))
+            {
+                return REDATES + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(TA002.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return REDATES + temp.ToString();
             }
         }
 
@@ -1270,6 +1345,114 @@ namespace TKWAREHOUSE
 
             }
         }
+
+        public void ADDINVTATBRE()
+        {
+            INVTADATA INVTA = new INVTADATA();
+            INVTA = SETINVTA();
+
+            try
+            {
+                //check TA002=2,TA040=2
+                if (INVTA.TA002.Substring(0, 1).Equals("2"))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[INVTA]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME]");
+                    sbSql.AppendFormat(" ,[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TA001],[TA002],[TA003],[TA004],[TA005],[TA006],[TA007],[TA008],[TA009],[TA010]");
+                    sbSql.AppendFormat(" ,[TA011],[TA012],[TA013],[TA014],[TA015],[TA016],[TA017],[TA018],[TA019],[TA020]");
+                    sbSql.AppendFormat(" ,[TA021],[TA022],[TA023],[TA024],[TA025],[TA026],[TA027],[TA028],[TA029],[TA030]");
+                    sbSql.AppendFormat(" ,[TA031],[TA032],[TA033],[TA034],[TA035],[TA036],[TA037],[TA038],[TA039],[TA040]");
+                    sbSql.AppendFormat(" ,[TA041],[TA042],[TA043],[TA044],[TA045],[TA046],[TA047],[TA048],[TA049],[TA050]");
+                    sbSql.AppendFormat(" ,[TA051],[TA052],[TA053],[TA054],[TA055],[TA056],[TA057],[TA058],[TA059],[TA060]");
+                    sbSql.AppendFormat(" ,[TA061],[TA062],[TA063],[TA064],[TA065],[TA066],[TA067],[TA068],[TA200]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" SELECT ");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME]");
+                    sbSql.AppendFormat(" ,[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,'{0}' AS [TA001],'{1}' AS [TA002],[TA003],[TA004],[TA005],'N' AS [TA006],[TA007],[TA008],[TA009],0 AS [TA010]",TA001RE,TA002RE);
+                    sbSql.AppendFormat(" ,0 AS [TA011],0 AS [TA012],[TA013],[TA014],[TA015],[TA016],[TA017],[TA018],[TA019],[TA020]");
+                    sbSql.AppendFormat(" ,[TA021],[TA022],[TA023],[TA024],[TA025],[TA026],[TA027],[TA028],[TA029],[TA030]");
+                    sbSql.AppendFormat(" ,[TA031],[TA032],[TA033],[TA034],[TA035],[TA036],[TA037],[TA038],[TA039],[TA040]");
+                    sbSql.AppendFormat(" ,[TA041],[TA042],[TA043],[TA044],[TA045],[TA046],[TA047],[TA048],[TA049],[TA050]");
+                    sbSql.AppendFormat(" ,[TA051],[TA052],[TA053],[TA054],[TA055],[TA056],[TA057],[TA058],[TA059],[TA060]");
+                    sbSql.AppendFormat(" ,[TA061],[TA062],[TA063],[TA064],[TA065],[TA066],[TA067],[TA068],[TA200]");                  
+                    sbSql.AppendFormat(" FROM [TK].[dbo].[INVTA]");
+                    sbSql.AppendFormat(" WHERE TA001='{0}' AND TA002='{1}'",ORIGINTA001, ORIGINTA002);
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    //sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[INVTB]");
+                    //sbSql.AppendFormat(" (");
+                    //sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME]");
+                    //sbSql.AppendFormat(" ,[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    //sbSql.AppendFormat(" ,[TB001],[TB002],[TB003],[TB004],[TB005],[TB006],[TB007],[TB008],[TB009],[TB010]");
+                    //sbSql.AppendFormat(" ,[TB011],[TB012],[TB013],[TB014],[TB015],[TB016],[TB017],[TB018],[TB019],[TB020]");
+                    //sbSql.AppendFormat(" ,[TB021],[TB022],[TB023],[TB024],[TB025],[TB026],[TB027],[TB028],[TB029],[TB030]");
+                    //sbSql.AppendFormat(" ,[TB031],[TB032],[TB033],[TB034],[TB035],[TB036],[TB037],[TB038],[TB039],[TB040]");
+                    //sbSql.AppendFormat(" ,[TB041],[TB042],[TB043],[TB044],[TB045],[TB046],[TB047],[TB048],[TB049],[TB050]");
+                    //sbSql.AppendFormat(" ,[TB051],[TB052],[TB053],[TB054],[TB055],[TB056],[TB057],[TB058],[TB059],[TB060]");
+                    //sbSql.AppendFormat(" ,[TB061],[TB062],[TB063],[TB064],[TB065],[TB066],[TB067],[TB068],[TB069],[TB070]");
+                    //sbSql.AppendFormat(" ,[TB071],[TB072],[TB073]");
+                    //sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    //sbSql.AppendFormat(" )");
+
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+                        UPDATEINVTA();
+
+                        MessageBox.Show("完成");
+                    }
+                }
+
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1311,9 +1494,19 @@ namespace TKWAREHOUSE
 
             SEARCHINVBATCHRETURN();
         }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            REDATES = ORIGINTA002.Substring(0, 8);
+            TA002RE=GETMAXTA002RE(ORIGINTA001, REDATES);
+            if(!string.IsNullOrEmpty(TA002RE))
+            {
+                ADDINVTATBRE();
+            }
+            
+        }
 
         #endregion
 
-        
+
     }
 }
