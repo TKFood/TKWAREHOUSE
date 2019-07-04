@@ -45,6 +45,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
         SqlDataAdapter adapter7 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
+        SqlDataAdapter adapter8 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -54,6 +56,7 @@ namespace TKWAREHOUSE
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
         DataSet ds7 = new DataSet();
+        DataSet ds8 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -528,7 +531,7 @@ namespace TKWAREHOUSE
                     {
                         sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[INVBATCH]");
                         sbSql.AppendFormat(" ([ID],[DATES],[WHID],[MB001],[MB002],[LOTNO],[NUM],[TA001],[TA002])");
-                        sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",textBox1.Text,dateTimePicker3.Value.ToString("yyyyMMdd") ,row.Cells["庫別"].Value.ToString(), row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), row.Cells["批號"].Value.ToString(), row.Cells["數量"].Value.ToString(),"A121", textBox1.Text);
+                        sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",textBox1.Text,dateTimePicker3.Value.ToString("yyyyMMdd") ,row.Cells["庫別"].Value.ToString(), row.Cells["品號"].Value.ToString(), row.Cells["品名"].Value.ToString(), row.Cells["批號"].Value.ToString(), row.Cells["數量"].Value.ToString(),TA001, textBox1.Text);
                         sbSql.AppendFormat(" ");
                        
                     }
@@ -1182,6 +1185,8 @@ namespace TKWAREHOUSE
 
                 }
             }
+
+            SEARCHINVBATCHRETURN2();
         }
         public void DELINVBATCHRETURN()
         {
@@ -1199,7 +1204,7 @@ namespace TKWAREHOUSE
                     sbSql.Clear();
 
                     sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[INVBATCHRETURN]");
-                    sbSql.AppendFormat(" WHERE [TA001]='{}' AND [TA002]='{1}'", ORIGINTA001, ORIGINTA002);
+                    sbSql.AppendFormat(" WHERE [TA001]='{0}' AND [TA002]='{1}'", ORIGINTA001, ORIGINTA002);
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
 
@@ -1457,6 +1462,112 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        public void SEARCHINVBATCHRETURN2()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(dateTimePicker1.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker2.Value.ToString("yyyyMMdd")))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sbSql.Clear();
+                    sbSqlQuery.Clear();
+
+                    sbSql.AppendFormat(@" SELECT [TA001RE] AS '回轉撥單別' ,[TA002RE] AS '回轉撥單號',[TA001] AS '原轉撥單別' ,[TA002] AS '原轉撥單號'   ");
+                    sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[INVBATCHRETURN]");
+                    sbSql.AppendFormat(@" WHERE TA001='{0}' AND TA002='{1}' ",ORIGINTA001,ORIGINTA002);
+                    sbSql.AppendFormat(@" GROUP BY  [TA001],[TA002],[TA001RE],[TA002RE] ");
+                    sbSql.AppendFormat(@" ");
+
+                    adapter8 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder8 = new SqlCommandBuilder(adapter8);
+
+                    sqlConn.Open();
+                    ds8.Clear();
+                    adapter8.Fill(ds8, "ds8");
+                    sqlConn.Close();
+
+
+                    if (ds8.Tables["ds8"].Rows.Count == 0)
+                    {
+                        dataGridView7.DataSource = null;
+                    }
+                    else
+                    {
+
+                        dataGridView7.DataSource = ds8.Tables["ds8"];
+                        dataGridView7.AutoResizeColumns();
+                    }
+                }
+                else
+                {
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void UPDATEINVBATCHRETURN()
+        {
+            if (!string.IsNullOrEmpty(ORIGINTA001) && !string.IsNullOrEmpty(ORIGINTA002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" UPDATE [TKWAREHOUSE].[dbo].[INVBATCHRETURN]");
+                    sbSql.AppendFormat(" SET [TA001RE]='{0}',[TA002RE]='{1}'",TA001RE,TA002RE);
+                    sbSql.AppendFormat(" WHERE [TA001]='{0}' AND [TA002]='{1}'",ORIGINTA001,ORIGINTA002);
+                    sbSql.AppendFormat(" ");
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1502,11 +1613,13 @@ namespace TKWAREHOUSE
         {
             REDATES = ORIGINTA002.Substring(0, 8);
             TA002RE=GETMAXTA002RE(ORIGINTA001, REDATES);
-            if(!string.IsNullOrEmpty(TA002RE))
+            UPDATEINVBATCHRETURN();
+
+            if (!string.IsNullOrEmpty(TA002RE))
             {
                 ADDINVTATBRE();                
             }
-            
+            SEARCHINVBATCHRETURN2();
         }
 
         #endregion
