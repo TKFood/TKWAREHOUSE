@@ -662,11 +662,11 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel5.Controls.Add(this.dateTimePicker4, 3, 0);
             this.tableLayoutPanel5.Controls.Add(this.label4, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.label5, 2, 0);
-            this.tableLayoutPanel5.Controls.Add(this.dateTimePicker5, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.button5, 3, 1);
+            this.tableLayoutPanel5.Controls.Add(this.dateTimePicker4, 1, 0);
+            this.tableLayoutPanel5.Controls.Add(this.label5, 2, 0);
+            this.tableLayoutPanel5.Controls.Add(this.dateTimePicker5, 3, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -681,7 +681,7 @@
             this.dateTimePicker4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker4.CustomFormat = "yyyy/MM/dd";
             this.dateTimePicker4.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker4.Location = new System.Drawing.Point(363, 6);
+            this.dateTimePicker4.Location = new System.Drawing.Point(123, 6);
             this.dateTimePicker4.Name = "dateTimePicker4";
             this.dateTimePicker4.Size = new System.Drawing.Size(114, 27);
             this.dateTimePicker4.TabIndex = 3;
@@ -713,7 +713,7 @@
             this.dateTimePicker5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker5.CustomFormat = "yyyy/MM/dd";
             this.dateTimePicker5.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker5.Location = new System.Drawing.Point(123, 6);
+            this.dateTimePicker5.Location = new System.Drawing.Point(363, 6);
             this.dateTimePicker5.Name = "dateTimePicker5";
             this.dateTimePicker5.Size = new System.Drawing.Size(114, 27);
             this.dateTimePicker5.TabIndex = 2;
@@ -727,6 +727,7 @@
             this.button5.TabIndex = 4;
             this.button5.Text = "查詢";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // dataGridView5
             // 

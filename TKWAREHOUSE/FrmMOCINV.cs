@@ -41,6 +41,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
         SqlDataAdapter adapter5 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
+        SqlDataAdapter adapter6 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -48,6 +50,7 @@ namespace TKWAREHOUSE
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
         DataSet ds5 = new DataSet();
+        DataSet ds6 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -1016,7 +1019,74 @@ namespace TKWAREHOUSE
             }
 
         }
-    
+        public void SEARCHINVBATCH3()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(dateTimePicker4.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker5.Value.ToString("yyyyMMdd")))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sbSql.Clear();
+                    sbSqlQuery.Clear();
+                    sbSql = SETsbSqlINVBATCH2();
+
+
+                    adapter6 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder6 = new SqlCommandBuilder(adapter6);
+
+                    sqlConn.Open();
+                    ds6.Clear();
+                    adapter6.Fill(ds6, "ds6");
+                    sqlConn.Close();
+
+
+                    if (ds6.Tables["ds6"].Rows.Count == 0)
+                    {
+                        dataGridView5.DataSource = null;
+                    }
+                    else
+                    {
+
+                        dataGridView5.DataSource = ds6.Tables["ds6"];
+                        dataGridView5.AutoResizeColumns();
+                    }
+                }
+                else
+                {
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public StringBuilder SETsbSqlINVBATCH2()
+        {
+            StringBuilder STR = new StringBuilder();
+
+
+            STR.AppendFormat(@" SELECT [TA001] AS '轉撥單別',[TA002] AS '轉撥單號'");
+            STR.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[INVBATCH]");
+            STR.AppendFormat(@" WHERE SUBSTRING([TA002],1,8)>='{0}' AND SUBSTRING([TA002],1,8)<='{1}'", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
+            STR.AppendFormat(@" GROUP BY [TA001],[TA002]");
+            STR.AppendFormat(@" ORDER BY [TA001],[TA002]");
+            STR.AppendFormat(@" ");
+            STR.AppendFormat(@"  ");
+
+            return STR;
+        }
+
         #endregion
 
         #region BUTTON
@@ -1047,7 +1117,12 @@ namespace TKWAREHOUSE
 
             SEARCHINVBATCH2();
         }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SEARCHINVBATCH3();
+        }
         #endregion
+
 
     }
 }
