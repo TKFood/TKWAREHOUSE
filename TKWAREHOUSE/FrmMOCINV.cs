@@ -739,7 +739,7 @@ namespace TKWAREHOUSE
                     else
                     {
                         tran.Commit();      //執行交易  
-                        UPDATEINVTA();
+                        UPDATEINVTA(TA001,TA002);
 
                         MessageBox.Show("完成");
                     }
@@ -1052,7 +1052,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void UPDATEINVTA()
+        public void UPDATEINVTA(string TA001,string TA002)
         {
             try
             {
@@ -1439,7 +1439,7 @@ namespace TKWAREHOUSE
                     else
                     {
                         tran.Commit();      //執行交易  
-                        UPDATEINVTA();
+                        UPDATEINVTA(TA001RE,TA002RE);
 
                         MessageBox.Show("完成");
                     }
@@ -1504,7 +1504,7 @@ namespace TKWAREHOUSE
             TA002RE=GETMAXTA002RE(ORIGINTA001, REDATES);
             if(!string.IsNullOrEmpty(TA002RE))
             {
-                ADDINVTATBRE();
+                ADDINVTATBRE();                
             }
             
         }
