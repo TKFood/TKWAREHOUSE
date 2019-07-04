@@ -43,6 +43,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
         SqlDataAdapter adapter6 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
+        SqlDataAdapter adapter7 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -51,6 +53,7 @@ namespace TKWAREHOUSE
         DataSet ds4 = new DataSet();
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
+        DataSet ds7 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -61,6 +64,8 @@ namespace TKWAREHOUSE
         string ID =null;
         string TA001 = "A121";
         string TA002;
+        string ORIGINTA001 = null;
+        string ORIGINTA002 = null;
 
         public class INVTADATA
         {
@@ -1030,7 +1035,14 @@ namespace TKWAREHOUSE
 
                     sbSql.Clear();
                     sbSqlQuery.Clear();
-                    sbSql = SETsbSqlINVBATCH2();
+
+                    sbSql.AppendFormat(@" SELECT [TA001] AS '轉撥單別',[TA002] AS '轉撥單號'");
+                    sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[INVBATCH]");
+                    sbSql.AppendFormat(@" WHERE SUBSTRING([TA002],1,8)>='{0}' AND SUBSTRING([TA002],1,8)<='{1}'", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@" GROUP BY [TA001],[TA002]");
+                    sbSql.AppendFormat(@" ORDER BY [TA001],[TA002]");
+                    sbSql.AppendFormat(@" ");
+                    sbSql.AppendFormat(@"  ");
 
 
                     adapter6 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1071,22 +1083,193 @@ namespace TKWAREHOUSE
             }
         }
 
-        public StringBuilder SETsbSqlINVBATCH2()
+    
+
+        private void dataGridView5_SelectionChanged(object sender, EventArgs e)
         {
-            StringBuilder STR = new StringBuilder();
+            ORIGINTA001 = null;
+            ORIGINTA002 = null;
 
+            if (dataGridView5.CurrentRow != null)
+            {
+                int rowindex = dataGridView5.CurrentRow.Index;
+               
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView5.Rows[rowindex];
+                    ORIGINTA001 = row.Cells["轉撥單別"].Value.ToString();
+                    ORIGINTA002 = row.Cells["轉撥單號"].Value.ToString();
+                }
+                else
+                {
+                    ORIGINTA001 = null;
+                    ORIGINTA002 = null;
 
-            STR.AppendFormat(@" SELECT [TA001] AS '轉撥單別',[TA002] AS '轉撥單號'");
-            STR.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[INVBATCH]");
-            STR.AppendFormat(@" WHERE SUBSTRING([TA002],1,8)>='{0}' AND SUBSTRING([TA002],1,8)<='{1}'", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
-            STR.AppendFormat(@" GROUP BY [TA001],[TA002]");
-            STR.AppendFormat(@" ORDER BY [TA001],[TA002]");
-            STR.AppendFormat(@" ");
-            STR.AppendFormat(@"  ");
-
-            return STR;
+                }
+            }
         }
+        public void DELINVBATCHRETURN()
+        {
+            if(!string.IsNullOrEmpty(ORIGINTA001)&& !string.IsNullOrEmpty(ORIGINTA002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
 
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[INVBATCHRETURN]");
+                    sbSql.AppendFormat(" WHERE [TA001]='{}' AND [TA002]='{1}'", ORIGINTA001, ORIGINTA002);
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+           
+        }
+        public void ADDINVBATCHRETURN()
+        {
+            if (!string.IsNullOrEmpty(ORIGINTA001) && !string.IsNullOrEmpty(ORIGINTA002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[INVBATCHRETURN]");
+                    sbSql.AppendFormat(" ([TA001],[TA002],[MB001],[LOTNO],[NUM],[USED],[RETURNED],[TA001RE],[TA002RE])");
+                    sbSql.AppendFormat(" SELECT TA001 AS 'TA001',TA002 AS 'TA002',TB004 AS 'MB001',TB014 AS 'LOTNO',TB007 AS 'NUM'");
+                    sbSql.AppendFormat(" ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE,[TK].dbo.MOCTC WHERE MOCTC.TC001=MOCTE.TE001 AND  MOCTC.TC002=MOCTE.TE002 AND MOCTC.TC003=INVTA.TA003 AND MOCTE.TE004=INVTB.TB004 AND MOCTE.TE010=INVTB.TB014 AND MOCTE.TE001 IN('A541','A542')) AS 'USED'");
+                    sbSql.AppendFormat(" ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE,[TK].dbo.MOCTC WHERE MOCTC.TC001=MOCTE.TE001 AND  MOCTC.TC002=MOCTE.TE002 AND MOCTC.TC003=INVTA.TA003 AND MOCTE.TE004=INVTB.TB004 AND MOCTE.TE010=INVTB.TB014 AND MOCTE.TE001 IN('A561')) AS 'RETURNED'");
+                    sbSql.AppendFormat(" ,NULL AS 'TA001RE',NULL AS 'TA002RE'");
+                    sbSql.AppendFormat(" FROM [TK].dbo.INVTB,[TK].dbo.INVTA");
+                    sbSql.AppendFormat(" WHERE TA001=TB001 AND TA002=TB002 ");
+                    sbSql.AppendFormat(" AND TB001='{0}' AND TB002='{1}'", ORIGINTA001, ORIGINTA002);
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+                
+        }
+        public void SEARCHINVBATCHRETURN()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(dateTimePicker1.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker2.Value.ToString("yyyyMMdd")))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sbSql.Clear();
+                    sbSqlQuery.Clear();
+
+                    sbSql.AppendFormat(@" SELECT [TA001] AS '原轉撥單別' ,[TA002] AS '原轉撥單號' ,[MB001] AS '品號' ,[LOTNO] AS '批號' ,[NUM] AS '轉撥量' ,[USED] AS '領用量' ,[RETURNED] AS '退料量' ,[TA001RE] AS '回轉撥單別' ,[TA002RE] AS '回轉撥單號' ");
+                    sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[INVBATCHRETURN]");
+                    sbSql.AppendFormat(@" WHERE TA001='{0}' AND TA002='{1}' AND (NUM-USED+RETURNED)>0", ORIGINTA001, ORIGINTA002);
+                    sbSql.AppendFormat(@" ");
+                    sbSql.AppendFormat(@" ");
+
+                    adapter7 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder7 = new SqlCommandBuilder(adapter7);
+
+                    sqlConn.Open();
+                    ds7.Clear();
+                    adapter7.Fill(ds7, "ds7");
+                    sqlConn.Close();
+
+
+                    if (ds7.Tables["ds7"].Rows.Count == 0)
+                    {
+                        dataGridView6.DataSource = null;
+                    }
+                    else
+                    {
+
+                        dataGridView6.DataSource = ds7.Tables["ds7"];
+                        dataGridView6.AutoResizeColumns();
+                    }
+                }
+                else
+                {
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1121,8 +1304,16 @@ namespace TKWAREHOUSE
         {
             SEARCHINVBATCH3();
         }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            DELINVBATCHRETURN();
+            ADDINVBATCHRETURN();
+
+            SEARCHINVBATCHRETURN();
+        }
+
         #endregion
 
-
+        
     }
 }
