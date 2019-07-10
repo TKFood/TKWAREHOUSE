@@ -562,7 +562,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    ");
                 FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
                 FASTSQL.AppendFormat(@" ) AS TEMP");
-                FASTSQL.AppendFormat(@" ORDER BY 品號 DESC");
+                FASTSQL.AppendFormat(@" ORDER BY 品號 ");
                 FASTSQL.AppendFormat(@" ");
             }
             else if (comboBox1.Text.Equals("20006     原料倉"))
