@@ -118,8 +118,9 @@ namespace TKWAREHOUSE
         public void Search()
         {
             DateTime dt = new DateTime();
-            dt = DateTime.Now;
-            dt=dt.AddDays(Convert.ToDouble(numericUpDown1.Value));
+            dt = dateTimePicker1.Value;
+            //dt = DateTime.Now;
+            //dt=dt.AddDays(Convert.ToDouble(numericUpDown1.Value));
 
             StringBuilder TD001 = new StringBuilder();
             StringBuilder TC027 = new StringBuilder();
@@ -399,7 +400,8 @@ namespace TKWAREHOUSE
         {
             DateTime dt = DateTime.Now;
             DateTime dt2 = DateTime.Now;
-            dt2=dt2.AddDays(Convert.ToDouble(numericUpDown2.Value));
+            dt2 = dateTimePicker2.Value;
+            //dt2=dt2.AddDays(Convert.ToDouble(numericUpDown2.Value));
 
             if (dtTemp.Rows.Count >= 1)
             {
@@ -591,8 +593,9 @@ namespace TKWAREHOUSE
         public void Search3(string MB001)
         {
             DateTime dt = new DateTime();
-            dt = DateTime.Now;
-            dt = dt.AddDays(Convert.ToDouble(numericUpDown1.Value));
+            dt = dateTimePicker1.Value;
+            //dt = DateTime.Now;
+            //dt = dt.AddDays(Convert.ToDouble(numericUpDown1.Value));
 
             StringBuilder TD001 = new StringBuilder();
             StringBuilder TC027 = new StringBuilder();
