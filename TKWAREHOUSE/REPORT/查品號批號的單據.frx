@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="08/22/2019 10:08:27" ReportInfo.Modified="08/22/2019 10:20:34" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/22/2019 10:08:27" ReportInfo.Modified="08/22/2019 11:40:01" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9IW/jOrjaqX3yhGwc2hj2jP">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT TH004 AS '品號',MB002 AS '品名',TH017 AS '批號',KIND AS '類別',TH001 AS '單別',TH002 AS '單號',TH003 AS '序號'&#13;&#10;FROM (&#13;&#10;SELECT '銷貨' AS 'KIND',TH004,TH017,TH001,TH002,TH003&#13;&#10;FROM [TK].dbo.COPTH&#13;&#10;WHERE TH004='40112510220740' AND TH017='20200504'&#13;&#10;UNION&#13;&#10;SELECT '銷退' AS 'KIND',TJ004,TJ017, TJ001,TJ002,TJ003&#13;&#10;FROM [TK].dbo.COPTJ&#13;&#10;WHERE TJ004='40112510220740' AND TJ014='20200504'&#13;&#10;UNION&#13;&#10;SELECT '進貨' AS 'KIND',TH004,TH010, TH001,TH002,TH003&#13;&#10;FROM [TK].dbo.PURTH&#13;&#10;WHERE TH004='40112510220740' AND TH010='20200504'&#13;&#10;UNION&#13;&#10;SELECT '退貨' AS 'KIND',TJ004,TJ012, TJ001,TJ002,TJ003&#13;&#10;FROM [TK].dbo.PURTJ&#13;&#10;WHERE TJ004='40112510220740' AND TJ012='20200504' &#13;&#10;UNION&#13;&#10;SELECT '轉撥/異動' AS 'KIND',TB004,TB014,  TB001,TB002,TB003&#13;&#10;FROM [TK].dbo.INVTB&#13;&#10;WHERE TB004='40112510220740' AND TB014='20200504' &#13;&#10;UNION&#13;&#10;SELECT '借出' AS 'KIND',TG004,TG017, TG001,TG002,TG003&#13;&#10;FROM [TK].dbo.INVTG&#13;&#10;WHERE TG004='40112510220740' AND TG017='20200504'&#13;&#10;UNION&#13;&#10;SELECT '歸還' AS 'KIND',TI004,TI017, TI001,TI002,TI003&#13;&#10;FROM [TK].dbo.INVTI&#13;&#10;WHERE TI004='40112510220740' AND TI017='20200504'&#13;&#10;) AS TEMP&#13;&#10;LEFT JOIN [TK].dbo.INVMB ON MB001=TH004&#13;&#10;ORDER BY TH001,TH002,TH003">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9LmJtBI8PmrF+lzDKpA2GHh">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT TH004 AS '品號',MB002 AS '品名',TH017 AS '批號',TH008 AS '數量',KIND AS '類別',TH001 AS '單別',TH002 AS '單號',TH003 AS '序號'&#13;&#10;FROM (&#13;&#10;SELECT '銷貨' AS 'KIND',TH004,TH017,TH008,TH001,TH002,TH003 FROM [TK].dbo.COPTH WHERE TH004='40112510220740' AND TH017='20200504'&#13;&#10;UNION&#13;&#10;SELECT '銷退' AS 'KIND',TJ004,TJ017,TJ007, TJ001,TJ002,TJ003 FROM [TK].dbo.COPTJ WHERE TJ004='40112510220740' AND TJ014='20200504'&#13;&#10;UNION&#13;&#10;SELECT '進貨' AS 'KIND',TH004,TH010,TH007, TH001,TH002,TH003 FROM [TK].dbo.PURTH WHERE TH004='40112510220740' AND TH010='20200504'&#13;&#10;UNION&#13;&#10;SELECT '退貨' AS 'KIND',TJ004,TJ012, TJ009,TJ001,TJ002,TJ003  FROM [TK].dbo.PURTJ WHERE TJ004='40112510220740' AND TJ012='20200504'&#13;&#10;UNION&#13;&#10;SELECT '轉撥/異動' AS 'KIND',TB004,TB014, TB007, TB001,TB002,TB003 FROM [TK].dbo.INVTB WHERE TB004='40112510220740' AND TB014='20200504'&#13;&#10;UNION&#13;&#10;SELECT '借出' AS 'KIND',TG004,TG017,TG009, TG001,TG002,TG003 FROM [TK].dbo.INVTG WHERE TG004='40112510220740' AND TG017='20200504'&#13;&#10;UNION&#13;&#10;SELECT '歸還' AS 'KIND',TI004,TI017,TI009, TI001,TI002,TI003 FROM [TK].dbo.INVTI WHERE TI004='40112510220740' AND TI017='20200504'&#13;&#10;) AS TEMP&#13;&#10;LEFT JOIN [TK].dbo.INVMB ON MB001=TH004&#13;&#10;ORDER BY TH001,TH002,TH003">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
         <Column Name="批號" DataType="System.String"/>
@@ -10,27 +10,30 @@
         <Column Name="單別" DataType="System.String"/>
         <Column Name="單號" DataType="System.String"/>
         <Column Name="序號" DataType="System.String"/>
+        <Column Name="數量" DataType="System.Decimal"/>
       </TableDataSource>
     </MsSqlDataConnection>
   </Dictionary>
   <ReportPage Name="Page1">
     <ColumnHeaderBand Name="ColumnHeader1" Width="718.2" Height="18.9">
-      <TextObject Name="Text2" Width="132.3" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text4" Left="132.3" Width="170.1" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text6" Left="302.4" Width="94.5" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text8" Left="396.9" Width="75.6" Height="18.9" Border.Lines="All" Text="類別" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text10" Left="472.5" Width="75.6" Height="18.9" Border.Lines="All" Text="單別" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text12" Left="548.1" Width="94.5" Height="18.9" Border.Lines="All" Text="單號" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text14" Left="642.6" Width="75.6" Height="18.9" Border.Lines="All" Text="序號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text2" Width="103.95" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="103.95" Width="226.8" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="330.75" Width="66.15" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="463.05" Width="75.6" Height="18.9" Border.Lines="All" Text="類別" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="538.65" Width="47.25" Height="18.9" Border.Lines="All" Text="單別" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text12" Left="585.9" Width="85.05" Height="18.9" Border.Lines="All" Text="單號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text14" Left="670.95" Width="47.25" Height="18.9" Border.Lines="All" Text="序號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text16" Left="396.9" Width="66.15" Height="18.9" Border.Lines="All" Text="數量" HorzAlign="Center" VertAlign="Center"/>
     </ColumnHeaderBand>
-    <DataBand Name="Data1" Top="22.75" Width="718.2" Height="18.9" DataSource="Table">
-      <TextObject Name="Text1" Width="132.3" Height="18.9" Border.Lines="All" Text="[Table.品號]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text3" Left="132.3" Width="170.1" Height="18.9" Border.Lines="All" Text="[Table.品名]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text5" Left="302.4" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.批號]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text7" Left="396.9" Width="75.6" Height="18.9" Border.Lines="All" Text="[Table.類別]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text9" Left="472.5" Width="75.6" Height="18.9" Border.Lines="All" Text="[Table.單別]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text11" Left="548.1" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.單號]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text13" Left="642.6" Width="75.6" Height="18.9" Border.Lines="All" Text="[Table.序號]" HorzAlign="Center" VertAlign="Center"/>
+    <DataBand Name="Data1" Top="22.75" Width="718.2" Height="18.9" CanGrow="true" DataSource="Table">
+      <TextObject Name="Text1" Width="103.95" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text3" Left="103.95" Width="226.8" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="330.75" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="463.05" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.類別]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="538.65" Width="47.25" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.單別]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="585.9" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.單號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text13" Left="670.95" Width="47.25" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.序號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text15" Left="396.9" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.數量]" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
     </DataBand>
     <ColumnFooterBand Name="ColumnFooter1" Top="45.49" Width="718.2" Height="37.8"/>
   </ReportPage>
