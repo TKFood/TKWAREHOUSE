@@ -218,7 +218,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND TC001=TD001 AND TC002=TD002");
                 sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
                 sbSql.AppendFormat(@"  AND (TD004 LIKE '401%' OR TD004 LIKE '402%' OR TD004 LIKE '403%' OR TD004 LIKE '404%' OR TD004 LIKE '405%' OR TD004 LIKE '406%' OR TD004 LIKE '407%'   ) ");
-                sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", DateTime.Now.ToString("yyyyMMdd"), dt.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND TC001 IN ({0}) ", TD001.ToString());
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
@@ -431,7 +431,7 @@ namespace TKWAREHOUSE
                         sbSqlQuery.Clear();
 
                         sbSql.AppendFormat(@" SELECT MB001 AS '品號',ISNULL(SUM(LA011*LA005),0) AS '庫存量',MB002 AS '品名',MB003 AS '規格',MB004 AS '庫存單位'   ");
-                        sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TD008-TD015),0) FROM [TK].dbo.PURTD WHERE TD004=MB001 AND TD018='Y' AND TD016='N' AND TD012<='{0}') AS '預計採購量' ",  dt2.ToString("yyyyMMdd"));
+                        sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TD008-TD015),0) FROM [TK].dbo.PURTD WHERE TD004=MB001 AND TD018='Y' AND TD016='N' AND TD012>='{0}' AND TD012<='{1}') AS '預計採購量' ", dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
                         sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB   ");
                         sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVLA ON LA001=MB001 AND  LA009 IN ('20004','20006')");
                         sbSql.AppendFormat(@" WHERE  MB001='{0}' ", LA001);

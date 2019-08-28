@@ -47,6 +47,8 @@
             this.button2 = new System.Windows.Forms.Button();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
@@ -55,8 +57,8 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker3 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker4 = new System.Windows.Forms.DateTimePicker();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -150,7 +152,9 @@
             this.tableLayoutPanel1.Controls.Add(this.checkBox3, 6, 0);
             this.tableLayoutPanel1.Controls.Add(this.checkBox8, 6, 1);
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker3, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker4, 2, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -268,7 +272,7 @@
             "已確認",
             "未確認(扣已確認)",
             "全部"});
-            this.comboBox1.Location = new System.Drawing.Point(3, 88);
+            this.comboBox1.Location = new System.Drawing.Point(3, 90);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 48;
@@ -281,7 +285,7 @@
             this.comboBox2.Items.AddRange(new object[] {
             "全部",
             "排除已製令"});
-            this.comboBox2.Location = new System.Drawing.Point(123, 88);
+            this.comboBox2.Location = new System.Drawing.Point(123, 90);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(114, 24);
             this.comboBox2.TabIndex = 49;
@@ -346,6 +350,24 @@
             this.checkBox8.TabIndex = 53;
             this.checkBox8.Text = "國內訂單(共用性商品)";
             this.checkBox8.UseVisualStyleBackColor = true;
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.CustomFormat = "yyyy/MM/dd";
+            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker1.Location = new System.Drawing.Point(123, 3);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(114, 27);
+            this.dateTimePicker1.TabIndex = 54;
+            // 
+            // dateTimePicker2
+            // 
+            this.dateTimePicker2.CustomFormat = "yyyy/MM/dd";
+            this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker2.Location = new System.Drawing.Point(243, 3);
+            this.dateTimePicker2.Name = "dateTimePicker2";
+            this.dateTimePicker2.Size = new System.Drawing.Size(114, 27);
+            this.dateTimePicker2.TabIndex = 55;
             // 
             // splitContainer2
             // 
@@ -459,23 +481,23 @@
             this.dataGridView3.Size = new System.Drawing.Size(966, 472);
             this.dataGridView3.TabIndex = 1;
             // 
-            // dateTimePicker1
+            // dateTimePicker3
             // 
-            this.dateTimePicker1.CustomFormat = "yyyy/MM/dd";
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker1.Location = new System.Drawing.Point(123, 3);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(114, 27);
-            this.dateTimePicker1.TabIndex = 54;
+            this.dateTimePicker3.CustomFormat = "yyyy/MM/dd";
+            this.dateTimePicker3.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker3.Location = new System.Drawing.Point(123, 43);
+            this.dateTimePicker3.Name = "dateTimePicker3";
+            this.dateTimePicker3.Size = new System.Drawing.Size(114, 27);
+            this.dateTimePicker3.TabIndex = 56;
             // 
-            // dateTimePicker2
+            // dateTimePicker4
             // 
-            this.dateTimePicker2.CustomFormat = "yyyy/MM/dd";
-            this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker2.Location = new System.Drawing.Point(123, 43);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(114, 27);
-            this.dateTimePicker2.TabIndex = 55;
+            this.dateTimePicker4.CustomFormat = "yyyy/MM/dd";
+            this.dateTimePicker4.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker4.Location = new System.Drawing.Point(243, 43);
+            this.dateTimePicker4.Name = "dateTimePicker4";
+            this.dateTimePicker4.Size = new System.Drawing.Size(114, 27);
+            this.dateTimePicker4.TabIndex = 57;
             // 
             // FrmCOPINVCHECK
             // 
@@ -546,5 +568,7 @@
         private System.Windows.Forms.DataGridView dataGridView4;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
+        private System.Windows.Forms.DateTimePicker dateTimePicker3;
+        private System.Windows.Forms.DateTimePicker dateTimePicker4;
     }
 }
