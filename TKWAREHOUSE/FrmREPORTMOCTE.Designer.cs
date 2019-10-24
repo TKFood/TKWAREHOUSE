@@ -60,7 +60,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(984, 761);
+            this.tabControl1.Size = new System.Drawing.Size(984, 665);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -69,7 +69,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(976, 731);
+            this.tabPage1.Size = new System.Drawing.Size(976, 635);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -89,8 +89,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.previewControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(970, 725);
-            this.splitContainer1.SplitterDistance = 174;
+            this.splitContainer1.Size = new System.Drawing.Size(970, 629);
+            this.splitContainer1.SplitterDistance = 164;
             this.splitContainer1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -121,7 +121,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(966, 170);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(966, 160);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -169,7 +169,7 @@
             // 
             this.button1.Location = new System.Drawing.Point(483, 123);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(114, 44);
+            this.button1.Size = new System.Drawing.Size(114, 34);
             this.button1.TabIndex = 3;
             this.button1.Text = "查詢";
             this.button1.UseVisualStyleBackColor = true;
@@ -201,7 +201,7 @@
             "原料",
             "物料",
             "原料+物料"});
-            this.comboBox1.Location = new System.Drawing.Point(123, 8);
+            this.comboBox1.Location = new System.Drawing.Point(123, 10);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 8;
@@ -212,7 +212,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.comboBox2, 2);
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(123, 50);
+            this.comboBox2.Location = new System.Drawing.Point(123, 48);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(234, 24);
             this.comboBox2.TabIndex = 9;
@@ -226,7 +226,7 @@
             this.previewControl1.Name = "previewControl1";
             this.previewControl1.PageOffset = new System.Drawing.Point(10, 10);
             this.previewControl1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.previewControl1.Size = new System.Drawing.Size(966, 543);
+            this.previewControl1.Size = new System.Drawing.Size(966, 457);
             this.previewControl1.TabIndex = 0;
             // 
             // tabPage2
@@ -243,7 +243,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 761);
+            this.ClientSize = new System.Drawing.Size(984, 665);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.Margin = new System.Windows.Forms.Padding(4);
