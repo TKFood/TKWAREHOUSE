@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="10/24/2019 14:06:29" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="10/25/2019 09:02:50" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9IdiBEs80QJ4bBGF0KP5XUV">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 &#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE001='A541' ) AS '領料'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE001='A542' ) AS '補料'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE001='A561' ) AS '退料'&#13;&#10;&#13;&#10;FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]&#13;&#10;WHERE MQ001=TE001&#13;&#10;AND MD002 LIKE '新%' &#13;&#10;AND MD001=TC005 &#13;&#10;AND TC001=TE001 AND TC002=TE002 &#13;&#10;AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '3010000%' AND LEN(TE004)=10))   &#13;&#10;AND TC003&gt;='20190419' AND TC003&lt;='20190419'&#13;&#10;AND MD002='新廠製二組'&#13;&#10;GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 &#13;&#10;ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 ">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9IqG8FvjSNGWm+IRH8vBZAH">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 &#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010  AND TE.TE001='A541' ) AS '領料'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料'&#13;&#10;,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量'&#13;&#10;&#13;&#10;FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]&#13;&#10;WHERE MQ001=TE001&#13;&#10;AND MD002 LIKE '新%' &#13;&#10;AND MD001=TC005 &#13;&#10;AND TC001=TE001 AND TC002=TE002 &#13;&#10;AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '3010000%' AND LEN(TE004)=10))   &#13;&#10;AND TC003&gt;='20191023' AND TC003&lt;='20191023'&#13;&#10;AND MD002='新廠製二組'&#13;&#10;GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 &#13;&#10;ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 ">
         <Column Name="MD002" DataType="System.String"/>
         <Column Name="TE004" DataType="System.String"/>
         <Column Name="TE017" DataType="System.String"/>
@@ -13,15 +13,16 @@
         <Column Name="領料" DataType="System.Decimal"/>
         <Column Name="補料" DataType="System.Decimal"/>
         <Column Name="退料" DataType="System.Decimal"/>
+        <Column Name="庫存量" DataType="System.Decimal"/>
         <CommandParameter Name="P1" DataType="12" DefaultValue="20171114"/>
         <CommandParameter Name="P2" DataType="12" DefaultValue="20171114"/>
         <CommandParameter Name="P3" DataType="12" DefaultValue="新廠製一組"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Total Name="TotalTE005" Expression="[Table.TE005]" Evaluator="Data1" PrintOn="GroupFooter1" ResetOnReprint="true"/>
-    <Total Name="Total領料" Expression="[Table.領料]" Evaluator="Data1"/>
-    <Total Name="Total補料" Expression="[Table.補料]" Evaluator="Data1"/>
-    <Total Name="Total退料" Expression="[Table.退料]" Evaluator="Data1"/>
+    <Total Name="Total領料" Expression="[Table.領料]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="Total補料" Expression="[Table.補料]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="Total退料" Expression="[Table.退料]" Evaluator="Data1" PrintOn="GroupFooter1"/>
   </Dictionary>
   <ReportPage Name="Page1" PaperWidth="215" PaperHeight="280" TopMargin="0">
     <ReportTitleBand Name="ReportTitle1" Width="737.1" Height="18.9">
@@ -38,11 +39,11 @@
       <TextObject Name="Text8" Left="151.2" Top="37.8" Width="37.8" Height="28.35" Border.Lines="All" Text="製令單別" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text10" Left="189" Top="37.8" Width="85.05" Height="28.35" Border.Lines="All" Text="製令單號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text14" Left="274.05" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text18" Left="538.65" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="實發數量" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text18" Left="472.5" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="實發數量" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text20" Left="670.95" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="退料數量" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text19" Left="604.8" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="補料數量" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text40" Left="406.35" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="補料數量" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text41" Left="472.5" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="退料數量" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text41" Left="538.65" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="庫存數量" HorzAlign="Center" VertAlign="Center"/>
     </PageHeaderBand>
     <ColumnHeaderBand Name="ColumnHeader1" Top="92.74" Width="737.1"/>
     <GroupHeaderBand Name="GroupHeader1" Top="96.59" Width="737.1" Condition="[Table.TE004]">
@@ -53,8 +54,8 @@
         <TextObject Name="Text9" Left="189" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.TE012]" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text13" Left="274.05" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.TE010]" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text21" Left="340.2" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.領料]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
-        <TextObject Name="Text22" Left="472.5" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.退料]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
-        <TextObject Name="Text32" Left="538.65" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text22" Left="538.65" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫存量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text32" Left="472.5" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[[Table.領料]+[Table.補料]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text34" Left="604.8" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text35" Left="670.95" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text11" Left="406.35" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.補料]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
@@ -67,7 +68,7 @@
         <TextObject Name="Text29" Left="151.2" Width="37.8" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text30" Left="189" Width="85.05" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text33" Left="406.35" Width="66.15" Height="18.9" Border.Lines="All" Text="[Total補料]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="宋体, 8pt"/>
-        <TextObject Name="Text36" Left="472.5" Width="66.15" Height="18.9" Border.Lines="All" Text="[Total退料]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="宋体, 8pt"/>
+        <TextObject Name="Text36" Left="472.5" Width="66.15" Height="18.9" Border.Lines="All" Text="[[Total領料]+[Total補料]]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="宋体, 8pt"/>
         <TextObject Name="Text37" Left="538.65" Width="66.15" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text42" Left="604.8" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text43" Left="670.95" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
