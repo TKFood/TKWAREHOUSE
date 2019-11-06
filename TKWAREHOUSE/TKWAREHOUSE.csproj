@@ -86,6 +86,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmBacthMOC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBacthMOC.Designer.cs">
+      <DependentUpon>frmBacthMOC.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmCALENDAR.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -208,6 +214,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmBacthMOC.resx">
+      <DependentUpon>frmBacthMOC.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmCALENDAR.resx">
       <DependentUpon>FrmCALENDAR.cs</DependentUpon>
     </EmbeddedResource>
