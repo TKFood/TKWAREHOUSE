@@ -34,12 +34,15 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder2 = new SqlCommandBuilder();
         SqlDataAdapter adapter3 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
+        SqlDataAdapter adapter4 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds1 = new DataSet();
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
+        DataSet ds4 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -120,6 +123,7 @@ namespace TKWAREHOUSE
                     ID = row.Cells["批號"].Value.ToString();
 
                     SEARCHBACTHMOCTA(ID);
+                    SEARCHBACTHMOCTE(ID);
                 }
                 else
                 {
@@ -411,6 +415,118 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCHBACTHMOCTE(string ID)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                
+                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE004] AS '品號',[MB002] AS '品名',[SUMTE005] AS '領用量',[ATE005] AS '實際用量'");
+                sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE] ");
+                sbSql.AppendFormat(@" WHERE [ID] ='{0}' ", ID);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter4 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder4 = new SqlCommandBuilder(adapter4);
+                sqlConn.Open();
+                ds4.Clear();
+                adapter4.Fill(ds4, "ds4");
+                sqlConn.Close();
+
+
+                if (ds4.Tables["ds4"].Rows.Count == 0)
+                {
+                    dataGridView3.DataSource = null;
+                }
+                else
+                {
+                    if (ds4.Tables["ds4"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView3.DataSource = ds4.Tables["ds4"];
+                        dataGridView3.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+
+        }
+
+        public void ADDBACTHMOCTE(string ID)
+        {
+            if (!string.IsNullOrEmpty(ID))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                   
+                    sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
+                    sbSql.AppendFormat(" ([ID],[TE004],[MB002],[SUMTE005],[ATE005])");
+                    sbSql.AppendFormat(" SELECT '{0}',TE004,TE017,SUM(TE005),0", ID);
+                    sbSql.AppendFormat(" FROM [TK].dbo.MOCTE");
+                    sbSql.AppendFormat(" WHERE TE011+TE012 IN (SELECT TA001+TA002 FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] WHERE ID='{0}')",ID);
+                    sbSql.AppendFormat(" AND TE004 LIKE '1%'");
+                    sbSql.AppendFormat(" GROUP BY TE004,TE017");
+                    sbSql.AppendFormat(" ORDER BY TE004,TE017  ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
 
         #endregion
 
@@ -418,6 +534,8 @@ namespace TKWAREHOUSE
         private void button1_Click(object sender, EventArgs e)
         {
             SEARCHBTACHID();
+            SEARCHBACTHMOCTA(textBoxID.Text);
+            SEARCHBACTHMOCTE(textBoxID.Text);
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -439,6 +557,11 @@ namespace TKWAREHOUSE
             SEARCHBACTHMOCTA(textBoxID.Text);
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ADDBACTHMOCTE(textBoxID.Text);
+            SEARCHBACTHMOCTE(textBoxID.Text);
+        }
         #endregion
 
 
