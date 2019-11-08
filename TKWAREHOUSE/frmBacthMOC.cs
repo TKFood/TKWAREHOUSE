@@ -306,7 +306,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADDBACTHMOCTA(string ID)
+        public void ADDBACTHMOCTA(string ID,string TA001,string TA002)
         {
             if (!string.IsNullOrEmpty(ID))
             {
@@ -326,7 +326,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" SELECT '{0}',TA001,TA002,TA006,MB002,TA017,INVMB.UDF07,TA017*INVMB.UDF07",ID);
                     sbSql.AppendFormat(" FROM [TK].dbo.MOCTA,[TK].dbo.INVMB");
                     sbSql.AppendFormat(" WHERE TA006=MB001");
-                    sbSql.AppendFormat(" AND TA001='{0}' AND TA002='{1}'",textBox1.Text,textBox2.Text);
+                    sbSql.AppendFormat(" AND TA001='{0}' AND TA002='{1}'", TA001, TA002);
                     sbSql.AppendFormat(" ");
 
 
@@ -359,9 +359,56 @@ namespace TKWAREHOUSE
                 }
             }
         }
-        public void DELBACTHMOCTA()
+        public void DELBACTHMOCTA(string ID, string TA001, string TA002)
         {
+            if (!string.IsNullOrEmpty(TA001)&& !string.IsNullOrEmpty(TA002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
 
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[BACTHMOCTA]");
+                    sbSql.AppendFormat(" WHERE ID='{0}' AND [TA001]='{1}' AND [TA002]='{2}'",ID,TA001,TA002);
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
         }
 
 
@@ -382,13 +429,14 @@ namespace TKWAREHOUSE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            ADDBACTHMOCTA(textBoxID.Text);
+            ADDBACTHMOCTA(textBoxID.Text, textBox1.Text, textBox2.Text);
             SEARCHBACTHMOCTA(textBoxID.Text);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            DELBACTHMOCTA();
+            DELBACTHMOCTA(textBoxID.Text, textBox1.Text,textBox2.Text);
+            SEARCHBACTHMOCTA(textBoxID.Text);
         }
 
         #endregion
