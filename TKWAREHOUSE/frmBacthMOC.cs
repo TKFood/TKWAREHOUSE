@@ -528,6 +528,82 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void UPDATEBACTHMOCTE(string ID, string TE004,string ATE005)
+        {
+            if (!string.IsNullOrEmpty(ID)&& !string.IsNullOrEmpty(TE004) && !string.IsNullOrEmpty(ATE005))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+
+                    sbSql.AppendFormat(" UPDATE [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
+                    sbSql.AppendFormat(" SET ATE005='{0}'",ATE005);
+                    sbSql.AppendFormat(" WHERE ID='{0}' AND TE004='{1}'",ID,TE004);
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
+
+        private void dataGridView3_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView3.CurrentRow != null)
+            {
+                int rowindex = dataGridView3.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView3.Rows[rowindex];
+                    textBox4.Text = row.Cells["品號"].Value.ToString();
+                   
+                }
+                else
+                {
+                    textBox4.Text = null;
+                    ID = null;
+
+                }
+            }
+        }
+
+        public void SETNULL()
+        {
+            textBox3.Text = null;
+        }
         #endregion
 
         #region BUTTON
@@ -562,8 +638,17 @@ namespace TKWAREHOUSE
             ADDBACTHMOCTE(textBoxID.Text);
             SEARCHBACTHMOCTE(textBoxID.Text);
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            UPDATEBACTHMOCTE(textBoxID.Text,textBox4.Text,textBox3.Text);
+            SEARCHBACTHMOCTE(textBoxID.Text);
+
+            SETNULL();
+        }
+
         #endregion
 
-
+       
     }
 }
