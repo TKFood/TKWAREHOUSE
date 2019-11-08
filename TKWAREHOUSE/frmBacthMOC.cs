@@ -42,6 +42,7 @@ namespace TKWAREHOUSE
         DataSet ds3 = new DataSet();
 
         string ID;
+        string NEWID;
 
         public frmBacthMOC()
         {
@@ -123,6 +124,79 @@ namespace TKWAREHOUSE
             }
         }
 
+        public string GETMAXID()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds2.Clear();
+                               
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(ID),'00000000000') AS ID");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BTACHID]");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[BACTHDATES],112)='{0}'",dateTimePicker1.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+
+
+                adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder2 = new SqlCommandBuilder(adapter2);
+                sqlConn.Open();
+                ds2.Clear();
+                adapter2.Fill(ds2, "ds2");
+                sqlConn.Close();
+
+
+                if (ds2.Tables["ds2"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds2.Tables["ds2"].Rows.Count >= 1)
+                    {
+                        NEWID = SETID(ds2.Tables["ds2"].Rows[0]["ID"].ToString());
+                        return NEWID;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string SETID(string ID)
+        {
+            DateTime dt1 = dateTimePicker1.Value;
+
+            if (ID.Equals("00000000000"))
+            {
+                return dt1.ToString("yyyyMMdd") + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(ID.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return dt1.ToString("yyyyMMdd") + temp.ToString();
+            }
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -130,8 +204,13 @@ namespace TKWAREHOUSE
         {
             SEARCHBTACHID();
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ID=GETMAXID();
+            //MessageBox.Show(ID.ToString());
+        }
         #endregion
 
-       
+
     }
 }
