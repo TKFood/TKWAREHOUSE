@@ -306,6 +306,65 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void ADDBACTHMOCTA(string ID)
+        {
+            if (!string.IsNullOrEmpty(ID))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[BACTHMOCTA]");
+                    sbSql.AppendFormat(" ([ID],[TA001],[TA002],[TA006],[MB002],[TA017],[UDF007],[ATA017])");
+                    sbSql.AppendFormat(" SELECT '{0}',TA001,TA002,TA006,MB002,TA017,INVMB.UDF07,TA017*INVMB.UDF07",ID);
+                    sbSql.AppendFormat(" FROM [TK].dbo.MOCTA,[TK].dbo.INVMB");
+                    sbSql.AppendFormat(" WHERE TA006=MB001");
+                    sbSql.AppendFormat(" AND TA001='{0}' AND TA002='{1}'",textBox1.Text,textBox2.Text);
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
+        public void DELBACTHMOCTA()
+        {
+
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -320,6 +379,18 @@ namespace TKWAREHOUSE
             SEARCHBTACHID();
             //MessageBox.Show(ID.ToString());
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ADDBACTHMOCTA(textBoxID.Text);
+            SEARCHBACTHMOCTA(textBoxID.Text);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            DELBACTHMOCTA();
+        }
+
         #endregion
 
 
