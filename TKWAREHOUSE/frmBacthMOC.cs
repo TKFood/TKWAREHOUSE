@@ -101,7 +101,7 @@ namespace TKWAREHOUSE
             }
             finally
             {
-
+                sqlConn.Close();
             }
 
 
@@ -118,6 +118,8 @@ namespace TKWAREHOUSE
                     DataGridViewRow row = dataGridView1.Rows[rowindex];
                     textBoxID.Text = row.Cells["批號"].Value.ToString();
                     ID = row.Cells["批號"].Value.ToString();
+
+                    SEARCHBACTHMOCTA(ID);
                 }
                 else
                 {
@@ -251,6 +253,59 @@ namespace TKWAREHOUSE
                 }
             }
         }
+        
+        public void SEARCHBACTHMOCTA(string ID)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[TA001] AS '製令',[TA002] AS '製令號',[TA006] AS '品號',[MB002] AS '品名',[TA017] AS '生產量',[UDF007] AS '淨重',[ATA017] AS '總重'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA]");
+                sbSql.AppendFormat(@"  WHERE [ID]='{0}' ", ID);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter3 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder3 = new SqlCommandBuilder(adapter3);
+                sqlConn.Open();
+                ds3.Clear();
+                adapter3.Fill(ds3, "ds3");
+                sqlConn.Close();
+
+
+                if (ds3.Tables["ds3"].Rows.Count == 0)
+                {
+                    dataGridView2.DataSource = null;
+                }
+                else
+                {
+                    if (ds3.Tables["ds3"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView2.DataSource = ds3.Tables["ds3"];
+                        dataGridView2.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         #endregion
 
         #region BUTTON
