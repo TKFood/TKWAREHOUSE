@@ -41,6 +41,10 @@ namespace TKWAREHOUSE
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
 
+        DataTable dt = new DataTable();
+        string tablename = null;
+        int result;
+
         string ID;
         string NEWID;
 
@@ -197,6 +201,56 @@ namespace TKWAREHOUSE
 
         }
 
+        public void ADDBTACHID(string ID)
+        {
+            if(!string.IsNullOrEmpty(ID))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+                    
+                    sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[BTACHID]");
+                    sbSql.AppendFormat(" ([ID],[BACTHDATES])");
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}')",ID,dateTimePicker1.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -207,6 +261,8 @@ namespace TKWAREHOUSE
         private void button2_Click(object sender, EventArgs e)
         {
             ID=GETMAXID();
+            ADDBTACHID(ID);
+            SEARCHBTACHID();
             //MessageBox.Show(ID.ToString());
         }
         #endregion
