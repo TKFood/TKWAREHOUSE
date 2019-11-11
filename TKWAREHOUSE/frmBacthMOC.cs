@@ -36,6 +36,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
         SqlDataAdapter adapter4 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
+        SqlDataAdapter adapter5 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -43,6 +45,7 @@ namespace TKWAREHOUSE
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
+        DataSet ds5 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -92,6 +95,59 @@ namespace TKWAREHOUSE
                         //dataGridView1.Rows.Clear();
                         dataGridView1.DataSource = ds1.Tables["TEMPds1"];
                         dataGridView1.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+
+        }
+
+        public void SEARCHBTACHID2()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',CONVERT(NVARCHAR,[BACTHDATES],112) AS '日期'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BTACHID]");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[BACTHDATES],112)='{0}'", dateTimePicker2.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+
+                adapter5 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder5 = new SqlCommandBuilder(adapter5);
+                sqlConn.Open();
+                ds5.Clear();
+                adapter5.Fill(ds5, "ds5");
+                sqlConn.Close();
+
+
+                if (ds5.Tables["ds5"].Rows.Count == 0)
+                {
+                    dataGridView4.DataSource = null;
+                }
+                else
+                {
+                    if (ds5.Tables["ds5"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView4.DataSource = ds5.Tables["ds5"];
+                        dataGridView4.AutoResizeColumns();
                         //dataGridView1.CurrentCell = dataGridView1[0, rownum];
 
                     }
@@ -646,9 +702,13 @@ namespace TKWAREHOUSE
 
             SETNULL();
         }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            SEARCHBTACHID2();
+        }
 
         #endregion
 
-       
+
     }
 }
