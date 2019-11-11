@@ -52,6 +52,7 @@ namespace TKWAREHOUSE
         int result;
 
         string ID;
+        string ID2;
         string NEWID;
 
         public frmBacthMOC()
@@ -190,6 +191,29 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            textBoxID2.Text = null;
+
+            if (dataGridView4.CurrentRow != null)
+            {
+                int rowindex = dataGridView4.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView4.Rows[rowindex];
+                    textBoxID2.Text = row.Cells["批號"].Value.ToString();
+                    ID2 = row.Cells["批號"].Value.ToString();
+
+                   
+                }
+                else
+                {
+                    textBoxID2.Text = null;
+                    ID2 = null;
+
+                }
+            }
+        }
         public string GETMAXID()
         {
             try
@@ -707,8 +731,9 @@ namespace TKWAREHOUSE
             SEARCHBTACHID2();
         }
 
+
         #endregion
 
-
+     
     }
 }
