@@ -44,6 +44,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
         SqlDataAdapter adapter8 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
+        SqlDataAdapter adapter9 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -55,6 +57,7 @@ namespace TKWAREHOUSE
         DataSet ds6 = new DataSet();
         DataSet ds7 = new DataSet();
         DataSet ds8 = new DataSet();
+        DataSet ds9 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -65,6 +68,8 @@ namespace TKWAREHOUSE
         string NEWID;
         string FEEDTC001;
         string FEEDTC002;
+        string TC004;
+        string TC005;
 
         public class MOCTCDATA
         {
@@ -79,7 +84,11 @@ namespace TKWAREHOUSE
             public string MODI_TIME;
             public string TRANS_TYPE;
             public string TRANS_NAME;
+            public string sync_date;
+            public string sync_time;
+            public string sync_mark;
             public string sync_count;
+            public string DataUser;
             public string DataGroup;
 
             public string TC001;
@@ -634,7 +643,7 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Clear();
                 ds2.Clear();
 
-                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TC002),'00000000000') AS TC002");
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TC002),'0000000000') AS TC002");
                 sbSql.AppendFormat(@"  FROM [TK].[dbo].[MOCTC]");
                 sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'",FEEDTC001, dt);
                 sbSql.AppendFormat(@"  ");
@@ -676,9 +685,9 @@ namespace TKWAREHOUSE
 
         public string SETTC002(string FEEDTC002,string dt)
         {
-            if (FEEDTC002.Equals("00000000000"))
+            if (FEEDTC002.Equals("0000000000"))
             {
-                return dt+ "0001";
+                return dt+ "001";
             }
 
             else
@@ -686,7 +695,7 @@ namespace TKWAREHOUSE
                 int serno = Convert.ToInt16(FEEDTC002.Substring(8, 3));
                 serno = serno + 1;
                 string temp = serno.ToString();
-                temp = temp.PadLeft(4, '0');
+                temp = temp.PadLeft(3, '0');
                 return dt + temp.ToString();
             }
 
@@ -955,6 +964,63 @@ namespace TKWAREHOUSE
 
         }
 
+        public void SEARCHMOCTC(string ID2)
+        {
+            TC004 = null;
+            TC005 = null;
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"  SELECT TOP 1 TC004,TC005");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.MOCTC, [TK].dbo.MOCTE,[TKWAREHOUSE].[dbo].[BACTHMOCTA]");
+                sbSql.AppendFormat(@"  WHERE TC001=TE001 AND TC002=TE002");
+                sbSql.AppendFormat(@"  AND BACTHMOCTA.TA001=TE011 AND BACTHMOCTA.TA002=TE012");
+                sbSql.AppendFormat(@"  AND BACTHMOCTA.ID='{0}'",ID2);
+                sbSql.AppendFormat(@"  ");
+
+
+                adapter9 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder9 = new SqlCommandBuilder(adapter9);
+                sqlConn.Open();
+                ds9.Clear();
+                adapter9.Fill(ds9, "ds9");
+                sqlConn.Close();
+
+
+                if (ds9.Tables["ds9"].Rows.Count == 0)
+                {
+                    TC004 = null;
+                    TC005 = null;
+                }
+                else
+                {
+                    if (ds9.Tables["ds9"].Rows.Count >= 1)
+                    {
+                        TC004 = ds9.Tables["ds9"].Rows[0]["TC004"].ToString();
+                        TC005 = ds9.Tables["ds9"].Rows[0]["TC005"].ToString();
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
         public void ADDBACTHMOCTE(string ID)
         {
             if (!string.IsNullOrEmpty(ID))
@@ -1062,6 +1128,157 @@ namespace TKWAREHOUSE
                     sqlConn.Close();
                 }
             }
+        }
+
+        public void ADDMOCTCMOCTDMOCTE(string ID2, string TC001, string TC002)
+        {
+            SEARCHMOCTC(ID2);
+
+            MOCTCDATA MOCTC = new MOCTCDATA();
+            MOCTC = SETMOCTC(dateTimePicker2.Value,ID2,TC001,TC002,TC004,TC005);
+
+            if (!string.IsNullOrEmpty(ID2) && !string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                   
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[MOCTC]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                    sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TC001],[TC002],[TC003],[TC004],[TC005],[TC006],[TC007],[TC008],[TC009],[TC010]");
+                    sbSql.AppendFormat(" ,[TC011],[TC012],[TC013],[TC014],[TC015],[TC016],[TC017],[TC018],[TC019],[TC020]");
+                    sbSql.AppendFormat(" ,[TC021],[TC022],[TC023],[TC024],[TC025],[TC026],[TC027],[TC028],[TC029],[TC030]");
+                    sbSql.AppendFormat(" ,[TC031],[TC032]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" ,[TC200],[TC201],[TC202]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" VALUES");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", MOCTC.COMPANY, MOCTC.CREATOR, MOCTC.USR_GROUP, MOCTC.CREATE_DATE, MOCTC.MODIFIER, MOCTC.MODI_DATE, MOCTC.FLAG, MOCTC.CREATE_TIME, MOCTC.MODI_TIME, MOCTC.TRANS_TYPE);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',", MOCTC.TRANS_NAME, MOCTC.sync_date, MOCTC.sync_time, MOCTC.sync_mark, MOCTC.sync_count, MOCTC.DataUser, MOCTC.DataGroup);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',{9},", MOCTC.TC001, MOCTC.TC002, MOCTC.TC003, MOCTC.TC004, MOCTC.TC005, MOCTC.TC006, MOCTC.TC007, MOCTC.TC008, MOCTC.TC009, MOCTC.TC010);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',{7},'{8}','{9}',", MOCTC.TC011, MOCTC.TC012, MOCTC.TC013, MOCTC.TC014, MOCTC.TC015, MOCTC.TC016, MOCTC.TC017, MOCTC.TC018, MOCTC.TC019, MOCTC.TC020);
+                    sbSql.AppendFormat(" '{0}',{1},{2},'{3}','{4}','{5}','{6}',{7},'{8}','{9}',", MOCTC.TC021, MOCTC.TC022, MOCTC.TC023, MOCTC.TC024, MOCTC.TC025, MOCTC.TC026, MOCTC.TC027, MOCTC.TC028, MOCTC.TC029, MOCTC.TC030);
+                    sbSql.AppendFormat(" '{0}',{1},", MOCTC.TC031, MOCTC.TC032);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", MOCTC.UDF01, MOCTC.UDF02, MOCTC.UDF03, MOCTC.UDF04, MOCTC.UDF05, MOCTC.UDF06, MOCTC.UDF07, MOCTC.UDF08, MOCTC.UDF09, MOCTC.UDF10);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}'", MOCTC.TC200, MOCTC.TC201, MOCTC.TC202);
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
+
+        public MOCTCDATA SETMOCTC(DateTime dt, string ID2, string TC001, string TC002,string TC004,string TC005)
+        {
+            MOCTCDATA MOCTC = new MOCTCDATA();
+
+            MOCTC.COMPANY = "TK";
+            MOCTC.CREATOR = "120024";
+            MOCTC.USR_GROUP = "103400";
+            MOCTC.CREATE_DATE = dt.ToString("yyyyMMdd");
+            MOCTC.MODIFIER = "120024";
+            MOCTC.MODI_DATE = dt.ToString("yyyyMMdd");
+            MOCTC.FLAG = "0";
+            MOCTC.CREATE_TIME = dt.ToString("HH:mm:dd");
+            MOCTC.MODI_TIME = dt.ToString("HH:mm:dd");
+            MOCTC.TRANS_TYPE = "P003";
+            MOCTC.TRANS_NAME = "MOCMI03";
+            MOCTC.sync_date = null;
+            MOCTC.sync_time = null;
+            MOCTC.sync_mark = null;
+            MOCTC.sync_count = "0";
+            MOCTC.DataUser = null;
+            MOCTC.DataGroup = "103400";
+
+            MOCTC.TC001 = TC001;
+            MOCTC.TC002 = TC002;
+            MOCTC.TC003 = dt.ToString("yyyyMMdd");
+            MOCTC.TC004 = TC004;
+            MOCTC.TC005 = TC005;
+            MOCTC.TC006 = null;
+            MOCTC.TC007 = ID2;
+            MOCTC.TC008 = "54";
+            MOCTC.TC009 = "N";
+            MOCTC.TC010 = "0";
+            MOCTC.TC011 = "N";
+            MOCTC.TC012 = "1";
+            MOCTC.TC013 = "N";
+            MOCTC.TC014 = dt.ToString("yyyyMMdd");
+            MOCTC.TC015 = null;
+            MOCTC.TC016 = "N";
+            MOCTC.TC017 = "N";
+            MOCTC.TC018 = "0";
+            MOCTC.TC019 = null;
+            MOCTC.TC020 = null;
+            MOCTC.TC021 = null;
+            MOCTC.TC022 = "0";
+            MOCTC.TC023 = "0";
+            MOCTC.TC024 = null;
+            MOCTC.TC025 = null;
+            MOCTC.TC026 = null;
+            MOCTC.TC027 = null;
+            MOCTC.TC028 = "0";
+            MOCTC.TC029 = null;
+            MOCTC.TC030 = null;
+            MOCTC.TC031 = null;
+            MOCTC.TC032 = "0";
+            MOCTC.UDF01 = null;
+            MOCTC.UDF02 = null;
+            MOCTC.UDF03 = null;
+            MOCTC.UDF04 = null;
+            MOCTC.UDF05 = null;
+            MOCTC.UDF06 = "0";
+            MOCTC.UDF07 = "0";
+            MOCTC.UDF08 = "0";
+            MOCTC.UDF09 = "0";
+            MOCTC.UDF10 = "0";
+            MOCTC.TC200 = null;
+            MOCTC.TC201 = null;
+            MOCTC.TC202 = null;
+
+            return MOCTC;
         }
 
         public void UPDATEBACTHMOCTE(string ID, string TE004,string ATE005)
@@ -1193,7 +1410,8 @@ namespace TKWAREHOUSE
             FEEDTC001 = textBox5.Text;
             FEEDTC002=GETMAXTC002(FEEDTC001,dateTimePicker2.Value.ToString("yyyyMMdd"));
 
-            ADDBACTHGENMOCTE(ID2, FEEDTC001, FEEDTC002);
+            //ADDBACTHGENMOCTE(ID2, FEEDTC001, FEEDTC002);
+            ADDMOCTCMOCTDMOCTE(ID2, FEEDTC001, FEEDTC002);
 
             SEARCHBACTHGENMOCTE(textBoxID2.Text);
             //MessageBox.Show(FEEDTC001+" "+ FEEDTC002);
