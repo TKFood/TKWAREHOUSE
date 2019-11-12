@@ -1978,7 +1978,7 @@ namespace TKWAREHOUSE
             MOCTE.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTE.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTE.TRANS_TYPE = "P003";
-            MOCTE.TRANS_NAME = "MOCMI03";
+            MOCTE.TRANS_NAME = "MOCMI04";
             MOCTE.sync_date = null;
             MOCTE.sync_time = null;
             MOCTE.sync_mark = null;
@@ -2219,7 +2219,29 @@ namespace TKWAREHOUSE
                 }
             }
         }
+        private void dataGridView9_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox10.Text = null;
+            textBox11.Text = null;
 
+            if (dataGridView9.CurrentRow != null)
+            {
+                int rowindex = dataGridView9.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView9.Rows[rowindex];
+                    textBox10.Text = row.Cells["製令"].Value.ToString();
+                    textBox11.Text = row.Cells["製令號"].Value.ToString();
+
+                }
+                else
+                {
+                    textBox10.Text = null;
+                    textBox11.Text = null;
+
+                }
+            }
+        }
         public void SETNULL()
         {
             textBox3.Text = null;
@@ -2315,12 +2337,18 @@ namespace TKWAREHOUSE
         }
         private void button12_Click(object sender, EventArgs e)
         {
-
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                DELETEBACTHGENMOCTE(textBoxID3.Text, textBox10.Text, textBox11.Text);
+                SEARCHBACTHGENMOCTE2(textBoxID3.Text);
+            }
         }
+
 
 
         #endregion
 
-
+     
     }
 }
