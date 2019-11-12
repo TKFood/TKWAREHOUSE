@@ -95,7 +95,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.dateTimePicker3 = new System.Windows.Forms.DateTimePicker();
             this.button9 = new System.Windows.Forms.Button();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBoxID3 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.dataGridView7 = new System.Windows.Forms.DataGridView();
             this.dataGridView8 = new System.Windows.Forms.DataGridView();
@@ -107,6 +107,9 @@
             this.button11 = new System.Windows.Forms.Button();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.textBox9 = new System.Windows.Forms.TextBox();
+            this.button12 = new System.Windows.Forms.Button();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.textBox11 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -974,8 +977,9 @@
             this.tableLayoutPanel6.Controls.Add(this.label10, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.dateTimePicker3, 1, 0);
             this.tableLayoutPanel6.Controls.Add(this.button9, 1, 1);
-            this.tableLayoutPanel6.Controls.Add(this.textBox6, 1, 3);
+            this.tableLayoutPanel6.Controls.Add(this.textBoxID3, 1, 3);
             this.tableLayoutPanel6.Controls.Add(this.label11, 0, 3);
+            this.tableLayoutPanel6.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -1022,15 +1026,16 @@
             this.button9.TabIndex = 2;
             this.button9.Text = "查詢";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
-            // textBox6
+            // textBoxID3
             // 
-            this.textBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox6.Location = new System.Drawing.Point(75, 135);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(154, 27);
-            this.textBox6.TabIndex = 7;
+            this.textBoxID3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxID3.Location = new System.Drawing.Point(75, 135);
+            this.textBoxID3.Name = "textBoxID3";
+            this.textBoxID3.ReadOnly = true;
+            this.textBoxID3.Size = new System.Drawing.Size(154, 27);
+            this.textBoxID3.TabIndex = 7;
             // 
             // label11
             // 
@@ -1051,12 +1056,14 @@
             dataGridViewCellStyle7.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.dataGridView7.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
             this.dataGridView7.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView7.Cursor = System.Windows.Forms.Cursors.Default;
             this.dataGridView7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView7.Location = new System.Drawing.Point(0, 0);
             this.dataGridView7.Name = "dataGridView7";
             this.dataGridView7.RowTemplate.Height = 24;
             this.dataGridView7.Size = new System.Drawing.Size(232, 446);
             this.dataGridView7.TabIndex = 4;
+            this.dataGridView7.SelectionChanged += new System.EventHandler(this.dataGridView7_SelectionChanged);
             // 
             // dataGridView8
             // 
@@ -1092,9 +1099,12 @@
             this.tableLayoutPanel7.ColumnCount = 2;
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 229F));
+            this.tableLayoutPanel7.Controls.Add(this.textBox10, 0, 3);
             this.tableLayoutPanel7.Controls.Add(this.button10, 1, 1);
             this.tableLayoutPanel7.Controls.Add(this.label12, 0, 0);
             this.tableLayoutPanel7.Controls.Add(this.textBox7, 1, 0);
+            this.tableLayoutPanel7.Controls.Add(this.button12, 1, 2);
+            this.tableLayoutPanel7.Controls.Add(this.textBox11, 1, 3);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel7.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
@@ -1169,6 +1179,34 @@
             this.textBox9.ReadOnly = true;
             this.textBox9.Size = new System.Drawing.Size(223, 27);
             this.textBox9.TabIndex = 12;
+            // 
+            // button12
+            // 
+            this.button12.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button12.Location = new System.Drawing.Point(88, 83);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(172, 30);
+            this.button12.TabIndex = 11;
+            this.button12.Text = "刪除補料重做";
+            this.button12.UseVisualStyleBackColor = true;
+            // 
+            // textBox10
+            // 
+            this.textBox10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox10.Location = new System.Drawing.Point(3, 181);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
+            this.textBox10.Size = new System.Drawing.Size(79, 27);
+            this.textBox10.TabIndex = 12;
+            // 
+            // textBox11
+            // 
+            this.textBox11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox11.Location = new System.Drawing.Point(88, 181);
+            this.textBox11.Name = "textBox11";
+            this.textBox11.ReadOnly = true;
+            this.textBox11.Size = new System.Drawing.Size(240, 27);
+            this.textBox11.TabIndex = 13;
             // 
             // frmBacthMOC
             // 
@@ -1323,7 +1361,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.DateTimePicker dateTimePicker3;
         private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox textBoxID3;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.DataGridView dataGridView7;
         private System.Windows.Forms.DataGridView dataGridView8;
@@ -1335,5 +1373,8 @@
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.TextBox textBox11;
     }
 }

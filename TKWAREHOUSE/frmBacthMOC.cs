@@ -46,6 +46,12 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
         SqlDataAdapter adapter9 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
+        SqlDataAdapter adapter10 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder10 = new SqlCommandBuilder();
+        SqlDataAdapter adapter11 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder11 = new SqlCommandBuilder();
+        SqlDataAdapter adapter12 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder12 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -58,6 +64,9 @@ namespace TKWAREHOUSE
         DataSet ds7 = new DataSet();
         DataSet ds8 = new DataSet();
         DataSet ds9 = new DataSet();
+        DataSet ds10 = new DataSet();
+        DataSet ds11 = new DataSet();
+        DataSet ds12 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -65,6 +74,7 @@ namespace TKWAREHOUSE
 
         string ID;
         string ID2;
+        string ID3;
         string NEWID;
         string FEEDTC001;
         string FEEDTC002;
@@ -401,6 +411,58 @@ namespace TKWAREHOUSE
 
 
         }
+        public void SEARCHBTACHID3()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',CONVERT(NVARCHAR,[BACTHDATES],112) AS '日期'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BTACHID]");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[BACTHDATES],112)='{0}'", dateTimePicker3.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+
+                adapter10 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder10 = new SqlCommandBuilder(adapter10);
+                sqlConn.Open();
+                ds10.Clear();
+                adapter10.Fill(ds10, "ds10");
+                sqlConn.Close();
+
+
+                if (ds10.Tables["ds10"].Rows.Count == 0)
+                {
+                    dataGridView7.DataSource = null;
+                }
+                else
+                {
+                    if (ds10.Tables["ds10"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView7.DataSource = ds10.Tables["ds10"];
+                        dataGridView7.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+
+        }
 
         public void SEARCHBTACHMOCTE(string ID2)
         {
@@ -464,6 +526,68 @@ namespace TKWAREHOUSE
 
         }
 
+        public void SEARCHBTACHMOCTE2(string ID3)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [BACTHMOCTE].[ID] AS '批號',[BACTHMOCTE].[TE004] AS '領料品號',[BACTHMOCTE].[MB002] AS '領料品名'");
+                sbSql.AppendFormat(@"  ,MOCTE.TE005 AS '第一次領料量',MOCTE.TE010 AS '第一次領料批號'");
+                sbSql.AppendFormat(@"  ,ROUND((([ATE005]-[SUMTE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3) AS '預計退料量'");
+                sbSql.AppendFormat(@"  ,[TA001] AS '製令',[TA002] AS '製令號',[TA006] AS '品號',[BACTHMOCTA].[MB002] AS '品名',[TA017] AS '生產量',[UDF007] AS '單位',[ATA017] AS '總重g'");
+                sbSql.AppendFormat(@"  ,(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID]) AS '分攤總重'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE],[TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTE");
+                sbSql.AppendFormat(@"  WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]");
+                sbSql.AppendFormat(@"  AND TE011=[TA001] AND TE012=[TA002] AND [BACTHMOCTE].[TE004]= MOCTE.[TE004]");
+                sbSql.AppendFormat(@"  AND ([ATE005]-[SUMTE005])<0");
+                sbSql.AppendFormat(@"  AND MOCTE.TE001='A541'");
+                sbSql.AppendFormat(@"  AND [BACTHMOCTE].[ID]='{0}'", ID3);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter11 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder11 = new SqlCommandBuilder(adapter11);
+                sqlConn.Open();
+                ds11.Clear();
+                adapter11.Fill(ds11, "ds11");
+                sqlConn.Close();
+
+
+                if (ds11.Tables["ds11"].Rows.Count == 0)
+                {
+                    dataGridView8.DataSource = null;
+                }
+                else
+                {
+                    if (ds11.Tables["ds11"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView8.DataSource = ds11.Tables["ds11"];
+                        dataGridView8.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+
+        }
+
         public void SEARCHBACTHGENMOCTE(string ID2)
         {
             try
@@ -477,6 +601,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '製令',[TE002] AS '製令號' ");
                 sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
                 sbSql.AppendFormat(@" WHERE [ID]='{0}' ",ID2);
+                sbSql.AppendFormat(@" [TE001]='A542' ");
                 sbSql.AppendFormat(@"  ");
 
                 adapter8 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -499,6 +624,60 @@ namespace TKWAREHOUSE
                         //dataGridView1.Rows.Clear();
                         dataGridView6.DataSource = ds8.Tables["ds8"];
                         dataGridView6.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+
+        }
+
+        public void SEARCHBACTHGENMOCTE2(string ID3)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '製令',[TE002] AS '製令號' ");
+                sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
+                sbSql.AppendFormat(@" WHERE [ID]='{0}' ", ID3);
+                sbSql.AppendFormat(@" [TE001]='A561' ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter12 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder12 = new SqlCommandBuilder(adapter12);
+                sqlConn.Open();
+                ds12.Clear();
+                adapter12.Fill(ds12, "ds12");
+                sqlConn.Close();
+
+
+                if (ds12.Tables["ds12"].Rows.Count == 0)
+                {
+                    dataGridView9.DataSource = null;
+                }
+                else
+                {
+                    if (ds12.Tables["ds12"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView9.DataSource = ds12.Tables["ds12"];
+                        dataGridView9.AutoResizeColumns();
                         //dataGridView1.CurrentCell = dataGridView1[0, rownum];
 
                     }
@@ -1649,10 +1828,37 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void dataGridView7_SelectionChanged(object sender, EventArgs e)
+        {
+            textBoxID3.Text = null;
+
+            if (dataGridView7.CurrentRow != null)
+            {
+                int rowindex = dataGridView7.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView7.Rows[rowindex];
+                    textBoxID3.Text = row.Cells["批號"].Value.ToString();
+                    ID3 = row.Cells["批號"].Value.ToString();
+
+                    SEARCHBTACHMOCTE2(ID3);
+                    SEARCHBACTHGENMOCTE2(ID3);
+                }
+                else
+                {
+                    textBoxID3.Text = null;
+                    ID3 = null;
+
+                }
+            }
+        }
+
         public void SETNULL()
         {
             textBox3.Text = null;
         }
+
+
         #endregion
 
         #region BUTTON
@@ -1723,6 +1929,13 @@ namespace TKWAREHOUSE
             }
                
         }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            SEARCHBTACHID3();
+            SEARCHBTACHMOCTE2(textBoxID3.Text);
+            SEARCHBACTHGENMOCTE2(textBoxID3.Text);
+        }
+
 
 
         #endregion
