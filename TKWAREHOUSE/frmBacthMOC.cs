@@ -1013,6 +1013,57 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void ADDBACTHGENMOCTE(string ID2,string TC001,string TC002)
+        {
+            if (!string.IsNullOrEmpty(ID2)&& !string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[BACTHGENMOCTE]");
+                    sbSql.AppendFormat(" ([ID],[TE001],[TE002])");
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')",ID2,TC001,TC002);
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
+
         public void UPDATEBACTHMOCTE(string ID, string TE004,string ATE005)
         {
             if (!string.IsNullOrEmpty(ID)&& !string.IsNullOrEmpty(TE004) && !string.IsNullOrEmpty(ATE005))
@@ -1142,7 +1193,10 @@ namespace TKWAREHOUSE
             FEEDTC001 = textBox5.Text;
             FEEDTC002=GETMAXTC002(FEEDTC001,dateTimePicker2.Value.ToString("yyyyMMdd"));
 
-            MessageBox.Show(FEEDTC001+" "+ FEEDTC002);
+            ADDBACTHGENMOCTE(ID2, FEEDTC001, FEEDTC002);
+
+            SEARCHBACTHGENMOCTE(textBoxID2.Text);
+            //MessageBox.Show(FEEDTC001+" "+ FEEDTC002);
         }
 
 
