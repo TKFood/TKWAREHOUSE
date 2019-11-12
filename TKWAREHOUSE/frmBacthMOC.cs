@@ -601,7 +601,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '製令',[TE002] AS '製令號' ");
                 sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
                 sbSql.AppendFormat(@" WHERE [ID]='{0}' ",ID2);
-                sbSql.AppendFormat(@" [TE001]='A542' ");
+                sbSql.AppendFormat(@" AND [TE001]='A542' ");
                 sbSql.AppendFormat(@"  ");
 
                 adapter8 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -655,7 +655,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '製令',[TE002] AS '製令號' ");
                 sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
                 sbSql.AppendFormat(@" WHERE [ID]='{0}' ", ID3);
-                sbSql.AppendFormat(@" [TE001]='A561' ");
+                sbSql.AppendFormat(@" AND [TE001]='A561' ");
                 sbSql.AppendFormat(@"  ");
 
                 adapter12 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1266,9 +1266,9 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADDBACTHGENMOCTE(string ID2,string TC001,string TC002)
+        public void ADDBACTHGENMOCTE(string ID,string TC001,string TC002)
         {
-            if (!string.IsNullOrEmpty(ID2)&& !string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
+            if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
             {
                 try
                 {
@@ -1283,7 +1283,7 @@ namespace TKWAREHOUSE
 
                     sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[BACTHGENMOCTE]");
                     sbSql.AppendFormat(" ([ID],[TE001],[TE002])");
-                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')",ID2,TC001,TC002);
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", ID, TC001,TC002);
                     sbSql.AppendFormat(" ");
 
 
@@ -1936,10 +1936,20 @@ namespace TKWAREHOUSE
             SEARCHBACTHGENMOCTE2(textBoxID3.Text);
         }
 
+        private void button10_Click(object sender, EventArgs e)
+        {
+            FEEDTC001 = textBox7.Text;
+            FEEDTC002 = GETMAXTC002(FEEDTC001, dateTimePicker3.Value.ToString("yyyyMMdd"));
+
+            ADDBACTHGENMOCTE(ID3, FEEDTC001, FEEDTC002);
+            //ADDMOCTCMOCTDMOCTE(ID2, FEEDTC001, FEEDTC002);
+
+            SEARCHBACTHGENMOCTE2(textBoxID3.Text);
+        }
 
 
         #endregion
 
-       
+
     }
 }
