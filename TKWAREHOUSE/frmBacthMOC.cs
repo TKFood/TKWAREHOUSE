@@ -42,6 +42,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
         SqlDataAdapter adapter7 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
+        SqlDataAdapter adapter8 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -52,6 +54,7 @@ namespace TKWAREHOUSE
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
         DataSet ds7 = new DataSet();
+        DataSet ds8 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -443,6 +446,60 @@ namespace TKWAREHOUSE
 
 
         }
+
+        public void SEARCHBACTHGENMOCTE(string ID2)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '製令',[TE002] AS '製令號' ");
+                sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
+                sbSql.AppendFormat(@" WHERE [ID]='{0}' ",ID2);
+                sbSql.AppendFormat(@"  ");
+
+                adapter8 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder8 = new SqlCommandBuilder(adapter8);
+                sqlConn.Open();
+                ds8.Clear();
+                adapter8.Fill(ds8, "ds8");
+                sqlConn.Close();
+
+
+                if (ds8.Tables["ds8"].Rows.Count == 0)
+                {
+                    dataGridView6.DataSource = null;
+                }
+                else
+                {
+                    if (ds8.Tables["ds8"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView6.DataSource = ds8.Tables["ds8"];
+                        dataGridView6.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+
+        }
+
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             textBoxID.Text = null;           
@@ -482,6 +539,7 @@ namespace TKWAREHOUSE
                     ID2 = row.Cells["批號"].Value.ToString();
 
                     SEARCHBTACHMOCTE(ID2);
+                    SEARCHBACTHGENMOCTE(ID2);
                 }
                 else
                 {
@@ -1076,6 +1134,8 @@ namespace TKWAREHOUSE
         private void button7_Click(object sender, EventArgs e)
         {
             SEARCHBTACHID2();
+            SEARCHBTACHMOCTE(textBoxID2.Text);
+            SEARCHBACTHGENMOCTE(textBoxID2.Text);
         }
         private void button8_Click(object sender, EventArgs e)
         {
