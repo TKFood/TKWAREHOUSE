@@ -1504,6 +1504,55 @@ namespace TKWAREHOUSE
 
             return MOCTE;
         }
+
+        public void DELETEBACTHGENMOCTE(string ID2,string TC001,string TC002)
+        {
+            if (!string.IsNullOrEmpty(ID2) && !string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+                  
+                    sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[BACTHGENMOCTE]");
+                    sbSql.AppendFormat(" WHERE [ID]='{0}' AND [TE001]='{1}' AND [TE002]='{2}'",ID2,TC001,TC002);
+                    sbSql.AppendFormat(" ");
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
         public void UPDATEBACTHMOCTE(string ID, string TE004,string ATE005)
         {
             if (!string.IsNullOrEmpty(ID)&& !string.IsNullOrEmpty(TE004) && !string.IsNullOrEmpty(ATE005))
@@ -1576,6 +1625,30 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void dataGridView6_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox8.Text = null;
+            textBox9.Text = null;
+
+            if (dataGridView6.CurrentRow != null)
+            {
+                int rowindex = dataGridView6.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView6.Rows[rowindex];
+                    textBox8.Text = row.Cells["製令"].Value.ToString();
+                    textBox9.Text = row.Cells["製令號"].Value.ToString();
+
+                }
+                else
+                {
+                    textBox8.Text = null;
+                    textBox9.Text = null;
+
+                }
+            }
+        }
+
         public void SETNULL()
         {
             textBox3.Text = null;
@@ -1633,16 +1706,27 @@ namespace TKWAREHOUSE
             FEEDTC001 = textBox5.Text;
             FEEDTC002=GETMAXTC002(FEEDTC001,dateTimePicker2.Value.ToString("yyyyMMdd"));
 
-            //ADDBACTHGENMOCTE(ID2, FEEDTC001, FEEDTC002);
+            ADDBACTHGENMOCTE(ID2, FEEDTC001, FEEDTC002);
             ADDMOCTCMOCTDMOCTE(ID2, FEEDTC001, FEEDTC002);
 
             SEARCHBACTHGENMOCTE(textBoxID2.Text);
             //MessageBox.Show(FEEDTC001+" "+ FEEDTC002);
         }
 
+        private void button11_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                DELETEBACTHGENMOCTE(textBoxID2.Text, textBox8.Text, textBox9.Text);
+                SEARCHBACTHGENMOCTE(textBoxID2.Text);
+            }
+               
+        }
+
 
         #endregion
 
-
+       
     }
 }
