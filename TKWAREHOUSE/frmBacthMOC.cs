@@ -1148,6 +1148,9 @@ namespace TKWAREHOUSE
             MOCTDDATA MOCTD = new MOCTDDATA();
             MOCTD = SETMOCTD(dateTimePicker2.Value, ID2, TC001, TC002);
 
+            MOCTEDATA MOCTE = new MOCTEDATA();
+            MOCTE = SETMOCTE(dateTimePicker2.Value, ID2, TC001, TC002);
+
             if (!string.IsNullOrEmpty(ID2) && !string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
             {
                 try
@@ -1208,9 +1211,36 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" WHERE ID='{0}'",ID2);
                     sbSql.AppendFormat(" )");
                     sbSql.AppendFormat(" ");
-                    sbSql.AppendFormat(" ");
-                    sbSql.AppendFormat(" ");
-                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[MOCTE]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                    sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TE001],[TE002],[TE003],[TE004],[TE005],[TE006],[TE007],[TE008],[TE009],[TE010]");
+                    sbSql.AppendFormat(" ,[TE011],[TE012],[TE013],[TE014],[TE015],[TE016],[TE017],[TE018],[TE019],[TE020]");
+                    sbSql.AppendFormat(" ,[TE021],[TE022],[TE023],[TE024],[TE025],[TE026],[TE027],[TE028],[TE029],[TE030]");
+                    sbSql.AppendFormat(" ,[TE031],[TE032],[TE033],[TE034],[TE035],[TE036],[TE037],[TE038],[TE039],[TE040]");
+                    sbSql.AppendFormat(" ,[TE500],[TE501],[TE502],[TE503],[TE504],[TE505],[TE506],[TE507],[TE508]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" ,[TE200],[TE201]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" SELECT ");
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", MOCTD.COMPANY, MOCTD.CREATOR, MOCTD.USR_GROUP, MOCTD.CREATE_DATE, MOCTD.MODIFIER, MOCTD.MODI_DATE, MOCTD.FLAG, MOCTD.CREATE_TIME, MOCTD.MODI_TIME, MOCTD.TRANS_TYPE);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',", MOCTD.TRANS_NAME, MOCTD.sync_date, MOCTD.sync_time, MOCTD.sync_mark, MOCTD.sync_count, MOCTD.DataUser, MOCTD.DataGroup);
+                    sbSql.AppendFormat(" '{0}','{1}',RIGHT(REPLICATE('0',4) + CAST(ROW_NUMBER() OVER(ORDER BY MOCTE.TE003)  as NVARCHAR),4) [TE003],[BACTHMOCTE].[TE004],ROUND((([ATE005]-[SUMTE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3) [TE005],[MOCTE].[TE006],[MOCTE].[TE007],[MOCTE].[TE008],[MOCTE].[TE009],MOCTE.TE010",MOCTE.TE001, MOCTE.TE002);
+                    sbSql.AppendFormat(" ,[TA001] [TE011],[TA002] AS [TE012],'' [TE013],[TE014],[TE015],[TE016],[TE017],[TE018],[TE019],[TE020]");
+                    sbSql.AppendFormat(" ,[TE021],[TE022],[TE023],[TE024],[TE025],[TE026],[TE027],[TE028],[TE029],[TE030]");
+                    sbSql.AppendFormat(" ,[TE031],[TE032],[TE033],[TE034],[TE035],[TE036],[TE037],[TE038],[TE039],[TE040]");
+                    sbSql.AppendFormat(" ,[TE500],[TE501],[TE502],[TE503],[TE504],[TE505],[TE506],[TE507],[TE508]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" ,[TE200],[TE201]");
+                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE],[TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTE");
+                    sbSql.AppendFormat(" WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]");
+                    sbSql.AppendFormat(" AND TE011=[TA001] AND TE012=[TA002] AND [BACTHMOCTE].[TE004]= MOCTE.[TE004]");
+                    sbSql.AppendFormat(" AND ([ATE005]-[SUMTE005])>0");
+                    sbSql.AppendFormat(" AND MOCTE.TE001='A541'");
+                    sbSql.AppendFormat(" AND [BACTHMOCTE].[ID]='{0}'",ID2);
+                    sbSql.AppendFormat(" )");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
@@ -1386,6 +1416,93 @@ namespace TKWAREHOUSE
             MOCTD.UDF10 = "0";
 
             return MOCTD;
+        }
+
+        public MOCTEDATA SETMOCTE(DateTime dt, string ID2, string TC001, string TC002)
+        {
+            MOCTEDATA MOCTE = new MOCTEDATA();
+
+            MOCTE.COMPANY = "TK";
+            MOCTE.CREATOR = "120024";
+            MOCTE.USR_GROUP = "103400";
+            MOCTE.CREATE_DATE = dt.ToString("yyyyMMdd");
+            MOCTE.MODIFIER = "120024";
+            MOCTE.MODI_DATE = dt.ToString("yyyyMMdd");
+            MOCTE.FLAG = "0";
+            MOCTE.CREATE_TIME = dt.ToString("HH:mm:dd");
+            MOCTE.MODI_TIME = dt.ToString("HH:mm:dd");
+            MOCTE.TRANS_TYPE = "P003";
+            MOCTE.TRANS_NAME = "MOCMI03";
+            MOCTE.sync_date = null;
+            MOCTE.sync_time = null;
+            MOCTE.sync_mark = null;
+            MOCTE.sync_count = "0";
+            MOCTE.DataUser = null;
+            MOCTE.DataGroup = "103400";
+
+            MOCTE.TE001 = TC001; 
+            MOCTE.TE002 = TC002;
+            MOCTE.TE003 = null;
+            MOCTE.TE004 = null;
+            MOCTE.TE005 = null;
+            MOCTE.TE006 = null;
+            MOCTE.TE007 = null;
+            MOCTE.TE008 = null;
+            MOCTE.TE009 = "****";
+            MOCTE.TE010 = null;
+            MOCTE.TE011 = null;
+            MOCTE.TE012 = null;
+            MOCTE.TE013 = null;
+            MOCTE.TE014 = null;
+            MOCTE.TE015 = null;
+            MOCTE.TE016 = "1";
+            MOCTE.TE017 = null;
+            MOCTE.TE018 = null;
+            MOCTE.TE019 = null;
+            MOCTE.TE020 = null;
+            MOCTE.TE021 = null;
+            MOCTE.TE022 = null;
+            MOCTE.TE023 = null;
+            MOCTE.TE024 = null;
+            MOCTE.TE025 = null;
+            MOCTE.TE026 = null;
+            MOCTE.TE027 = null;
+            MOCTE.TE028 = null;
+            MOCTE.TE029 = null;
+            MOCTE.TE030 = null;
+            MOCTE.TE031 = null;
+            MOCTE.TE032 = null;
+            MOCTE.TE033 = null;
+            MOCTE.TE034 = null;
+            MOCTE.TE035 = null;
+            MOCTE.TE036 = null;
+            MOCTE.TE037 = null;
+            MOCTE.TE038 = null;
+            MOCTE.TE039 = null;
+            MOCTE.TE040 = null;
+            MOCTE.TE500 = null;
+            MOCTE.TE501 = null;
+            MOCTE.TE502 = null;
+            MOCTE.TE503 = null;
+            MOCTE.TE504 = null;
+            MOCTE.TE505 = null;
+            MOCTE.TE506 = null;
+            MOCTE.TE507 = null;
+            MOCTE.TE508 = null;
+            MOCTE.UDF01 = null;
+            MOCTE.UDF02 = null;
+            MOCTE.UDF03 = null;
+            MOCTE.UDF04 = null;
+            MOCTE.UDF05 = null;
+            MOCTE.UDF06 = null;
+            MOCTE.UDF07 = null;
+            MOCTE.UDF08 = null;
+            MOCTE.UDF09 = null;
+            MOCTE.UDF10 = null;
+            MOCTE.TE200 = null;
+            MOCTE.TE201 = null;
+
+            return MOCTE;
         }
         public void UPDATEBACTHMOCTE(string ID, string TE004,string ATE005)
         {
