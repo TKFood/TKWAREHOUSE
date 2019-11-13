@@ -505,15 +505,16 @@
             // 
             this.splitContainer4.Panel2.Controls.Add(this.dataGridView3);
             this.splitContainer4.Size = new System.Drawing.Size(763, 455);
-            this.splitContainer4.SplitterDistance = 295;
+            this.splitContainer4.SplitterDistance = 266;
             this.splitContainer4.TabIndex = 0;
             // 
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.BackColor = System.Drawing.Color.LightGreen;
-            this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 191F));
+            this.tableLayoutPanel3.ColumnCount = 3;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 66F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel3.Controls.Add(this.button6, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.button3, 1, 5);
             this.tableLayoutPanel3.Controls.Add(this.textBox3, 1, 4);
@@ -534,15 +535,15 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(291, 451);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(262, 451);
             this.tableLayoutPanel3.TabIndex = 3;
             // 
             // button6
             // 
             this.button6.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button6.Location = new System.Drawing.Point(103, 43);
+            this.button6.Location = new System.Drawing.Point(69, 43);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(185, 30);
+            this.button6.Size = new System.Drawing.Size(174, 30);
             this.button6.TabIndex = 7;
             this.button6.Text = "帶入製令的領料單";
             this.button6.UseVisualStyleBackColor = true;
@@ -551,9 +552,9 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button3.Location = new System.Drawing.Point(103, 203);
+            this.button3.Location = new System.Drawing.Point(69, 203);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(185, 30);
+            this.button3.Size = new System.Drawing.Size(174, 30);
             this.button3.TabIndex = 3;
             this.button3.Text = "更新實際用量";
             this.button3.UseVisualStyleBackColor = true;
@@ -561,10 +562,10 @@
             // 
             // textBox3
             // 
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(103, 166);
+            this.textBox3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBox3.Location = new System.Drawing.Point(69, 166);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(185, 27);
+            this.textBox3.Size = new System.Drawing.Size(174, 27);
             this.textBox3.TabIndex = 6;
             // 
             // label5
@@ -574,18 +575,18 @@
             this.label5.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label5.Location = new System.Drawing.Point(3, 172);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(94, 16);
+            this.label5.Size = new System.Drawing.Size(60, 16);
             this.label5.TabIndex = 4;
             this.label5.Text = "數量";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // textBox4
             // 
-            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox4.Location = new System.Drawing.Point(103, 126);
+            this.textBox4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBox4.Location = new System.Drawing.Point(69, 126);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(185, 27);
+            this.textBox4.Size = new System.Drawing.Size(174, 27);
             this.textBox4.TabIndex = 5;
             // 
             // label4
@@ -595,7 +596,7 @@
             this.label4.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label4.Location = new System.Drawing.Point(3, 132);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(94, 16);
+            this.label4.Size = new System.Drawing.Size(60, 16);
             this.label4.TabIndex = 0;
             this.label4.Text = "品號";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -611,7 +612,7 @@
             this.dataGridView3.Location = new System.Drawing.Point(0, 0);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowTemplate.Height = 24;
-            this.dataGridView3.Size = new System.Drawing.Size(460, 451);
+            this.dataGridView3.Size = new System.Drawing.Size(489, 451);
             this.dataGridView3.TabIndex = 3;
             this.dataGridView3.SelectionChanged += new System.EventHandler(this.dataGridView3_SelectionChanged);
             // 

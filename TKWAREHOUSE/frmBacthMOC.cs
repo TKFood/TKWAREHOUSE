@@ -1226,12 +1226,12 @@ namespace TKWAREHOUSE
                    
                     sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
                     sbSql.AppendFormat(" ([ID],[TE004],[MB002],[SUMTE005],[ATE005])");
-                    sbSql.AppendFormat(" SELECT '{0}',TE004,TE017,SUM(TE005),0", ID);
-                    sbSql.AppendFormat(" FROM [TK].dbo.MOCTE");
-                    sbSql.AppendFormat(" WHERE TE011+TE012 IN (SELECT TA001+TA002 FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] WHERE ID='{0}')",ID);
-                    sbSql.AppendFormat(" AND TE004 LIKE '1%'");
-                    sbSql.AppendFormat(" GROUP BY TE004,TE017");
-                    sbSql.AppendFormat(" ORDER BY TE004,TE017  ");
+                    sbSql.AppendFormat(" SELECT '{0}',TB003,TB012,SUM(TB004),0", ID);
+                    sbSql.AppendFormat(" FROM [TK].dbo.MOCTB");
+                    sbSql.AppendFormat(" WHERE TB001+TB002 IN (SELECT TA001+TA002 FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] WHERE ID='{0}')", ID);
+                    sbSql.AppendFormat(" AND (TB003 LIKE '1%' OR TB003 LIKE '3010000204%' OR TB003 LIKE '3010000302%') ");
+                    sbSql.AppendFormat(" GROUP BY TB003,TB012  ");
+                    sbSql.AppendFormat(" ORDER BY TB003,TB012    ");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
 
