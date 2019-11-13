@@ -80,6 +80,8 @@ namespace TKWAREHOUSE
         string FEEDTC002;
         string TC004;
         string TC005;
+        string DELETETA001;
+        string DELETETA002;
 
         public class MOCTCDATA
         {
@@ -2244,12 +2246,41 @@ namespace TKWAREHOUSE
                 }
             }
         }
+
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            DELETETA001 = null;
+            DELETETA002= null;
+
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+                    DELETETA001 = row.Cells["製令"].Value.ToString();
+                    DELETETA002 = row.Cells["製令號"].Value.ToString();
+
+                }
+                else
+                {
+                    DELETETA001 = null;
+                    DELETETA002 = null;
+
+                }
+            }
+        }
         public void SETNULL()
         {
             textBox3.Text = null;
         }
+        public void SETNULL2()
+        {
+            textBox1.Text = null;
+            textBox2.Text = null;
+        }
 
-
+       
         #endregion
 
         #region BUTTON
@@ -2271,11 +2302,13 @@ namespace TKWAREHOUSE
         {
             ADDBACTHMOCTA(textBoxID.Text, textBox1.Text, textBox2.Text);
             SEARCHBACTHMOCTA(textBoxID.Text);
+
+            SETNULL2();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            DELBACTHMOCTA(textBoxID.Text, textBox1.Text,textBox2.Text);
+            DELBACTHMOCTA(textBoxID.Text, DELETETA001, DELETETA002);
             SEARCHBACTHMOCTA(textBoxID.Text);
         }
 
@@ -2349,8 +2382,9 @@ namespace TKWAREHOUSE
 
 
 
+
         #endregion
 
-     
+      
     }
 }
