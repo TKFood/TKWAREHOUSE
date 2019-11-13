@@ -598,7 +598,7 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '製令',[TE002] AS '製令號' ");
+                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '領料',[TE002] AS '領料號' ");
                 sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
                 sbSql.AppendFormat(@" WHERE [ID]='{0}' ",ID2);
                 sbSql.AppendFormat(@" AND [TE001]='A542' ");
@@ -652,7 +652,7 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '製令',[TE002] AS '製令號' ");
+                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '退料',[TE002] AS '退料號' ");
                 sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
                 sbSql.AppendFormat(@" WHERE [ID]='{0}' ", ID3);
                 sbSql.AppendFormat(@" AND [TE001]='A561' ");
@@ -1107,7 +1107,7 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Clear();
 
                 
-                sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE004] AS '品號',[MB002] AS '品名',[SUMTE005] AS '領用量',[ATE005] AS '實際用量'");
+                sbSql.AppendFormat(@" SELECT [TE004] AS '品號',[MB002] AS '品名',[SUMTE005] AS '領用量',[ATE005] AS '實際用量',[ID] AS '批號'");
                 sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE] ");
                 sbSql.AppendFormat(@" WHERE [ID] ='{0}' ", ID);
                 sbSql.AppendFormat(@"  ");
@@ -1226,8 +1226,10 @@ namespace TKWAREHOUSE
                    
                     sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
                     sbSql.AppendFormat(" ([ID],[TE004],[MB002],[SUMTE005],[ATE005])");
-                    sbSql.AppendFormat(" SELECT '{0}',TB003,TB012,SUM(TB004),0", ID);
+                    sbSql.AppendFormat(" SELECT '{0}',TB003,TB012,ISNULL(SUM(LA011*LA005*-1),0),0", ID);
                     sbSql.AppendFormat(" FROM [TK].dbo.MOCTB");
+                    sbSql.AppendFormat(" LEFT JOIN [TK].dbo.MOCTE ON TE004=TB003 AND TE011=TB001 AND TE012=TB002 AND TE019='Y'");
+                    sbSql.AppendFormat(" LEFT JOIN [TK].dbo.INVLA ON LA006=TE001 AND LA007=TE002 AND LA008=TE003");
                     sbSql.AppendFormat(" WHERE TB001+TB002 IN (SELECT TA001+TA002 FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] WHERE ID='{0}')", ID);
                     sbSql.AppendFormat(" AND (TB003 LIKE '1%' OR TB003 LIKE '3010000204%' OR TB003 LIKE '3010000302%') ");
                     sbSql.AppendFormat(" GROUP BY TB003,TB012  ");
@@ -2182,8 +2184,8 @@ namespace TKWAREHOUSE
                 if (rowindex >= 0)
                 {
                     DataGridViewRow row = dataGridView6.Rows[rowindex];
-                    textBox8.Text = row.Cells["製令"].Value.ToString();
-                    textBox9.Text = row.Cells["製令號"].Value.ToString();
+                    textBox8.Text = row.Cells["領料"].Value.ToString();
+                    textBox9.Text = row.Cells["領料號"].Value.ToString();
 
                 }
                 else
@@ -2230,8 +2232,8 @@ namespace TKWAREHOUSE
                 if (rowindex >= 0)
                 {
                     DataGridViewRow row = dataGridView9.Rows[rowindex];
-                    textBox10.Text = row.Cells["製令"].Value.ToString();
-                    textBox11.Text = row.Cells["製令號"].Value.ToString();
+                    textBox10.Text = row.Cells["退料"].Value.ToString();
+                    textBox11.Text = row.Cells["退料號"].Value.ToString();
 
                 }
                 else
