@@ -1236,7 +1236,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" LEFT JOIN [TK].dbo.MOCTE ON TE004=TB003 AND TE011=TB001 AND TE012=TB002 AND TE019='Y'");
                     sbSql.AppendFormat(" LEFT JOIN [TK].dbo.INVLA ON LA006=TE001 AND LA007=TE002 AND LA008=TE003");
                     sbSql.AppendFormat(" WHERE TB001+TB002 IN (SELECT TA001+TA002 FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] WHERE ID='{0}')", ID);
-                    sbSql.AppendFormat(" AND (TB003 LIKE '1%' OR TB003 LIKE '3010000204%' OR TB003 LIKE '3010000302%') ");
+                    sbSql.AppendFormat(" AND (TB003 LIKE '1%' OR TB003 LIKE '301%') ");
                     sbSql.AppendFormat(" GROUP BY TB003,TB012  ");
                     sbSql.AppendFormat(" ORDER BY TB003,TB012    ");
                     sbSql.AppendFormat(" ");
@@ -1610,7 +1610,7 @@ namespace TKWAREHOUSE
             MOCTC.CREATE_DATE = dt.ToString("yyyyMMdd");
             MOCTC.MODIFIER = "120024";
             MOCTC.MODI_DATE = dt.ToString("yyyyMMdd");
-            MOCTC.FLAG = "0";
+            MOCTC.FLAG = "1";
             MOCTC.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTC.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTC.TRANS_TYPE = "P003";
@@ -1681,7 +1681,7 @@ namespace TKWAREHOUSE
             MOCTD.CREATE_DATE = dt.ToString("yyyyMMdd");
             MOCTD.MODIFIER = "120024";
             MOCTD.MODI_DATE = dt.ToString("yyyyMMdd");
-            MOCTD.FLAG = "0";
+            MOCTD.FLAG = "1";
             MOCTD.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTD.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTD.TRANS_TYPE = "P003";
@@ -1752,7 +1752,7 @@ namespace TKWAREHOUSE
             MOCTE.CREATE_DATE = dt.ToString("yyyyMMdd");
             MOCTE.MODIFIER = "120024";
             MOCTE.MODI_DATE = dt.ToString("yyyyMMdd");
-            MOCTE.FLAG = "0";
+            MOCTE.FLAG = "1";
             MOCTE.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTE.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTE.TRANS_TYPE = "P003";
@@ -1839,7 +1839,7 @@ namespace TKWAREHOUSE
             MOCTC.CREATE_DATE = dt.ToString("yyyyMMdd");
             MOCTC.MODIFIER = "120024";
             MOCTC.MODI_DATE = dt.ToString("yyyyMMdd");
-            MOCTC.FLAG = "0";
+            MOCTC.FLAG = "1";
             MOCTC.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTC.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTC.TRANS_TYPE = "P003";
@@ -1910,7 +1910,7 @@ namespace TKWAREHOUSE
             MOCTD.CREATE_DATE = dt.ToString("yyyyMMdd");
             MOCTD.MODIFIER = "120024";
             MOCTD.MODI_DATE = dt.ToString("yyyyMMdd");
-            MOCTD.FLAG = "0";
+            MOCTD.FLAG = "1";
             MOCTD.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTD.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTD.TRANS_TYPE = "P003";
@@ -1981,7 +1981,7 @@ namespace TKWAREHOUSE
             MOCTE.CREATE_DATE = dt.ToString("yyyyMMdd");
             MOCTE.MODIFIER = "120024";
             MOCTE.MODI_DATE = dt.ToString("yyyyMMdd");
-            MOCTE.FLAG = "0";
+            MOCTE.FLAG = "1";
             MOCTE.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTE.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTE.TRANS_TYPE = "P003";
