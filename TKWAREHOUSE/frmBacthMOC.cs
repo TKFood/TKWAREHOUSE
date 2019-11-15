@@ -1566,7 +1566,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.MOCTE ON TE011=TB001 AND TE012=TB002 AND TB003=TE004 AND TE001='A541'");
                     sbSql.AppendFormat(" WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]  AND TB001=[TA001] AND TB002=[TA002]");
                     sbSql.AppendFormat(" AND [BACTHMOCTE].[TE004]= TB003 ");
-                    sbSql.AppendFormat(" AAND ([BACTHMOCTE].TE010=MOCTE.TE010 OR [BACTHMOCTE].[TE004] LIKE '301%') ");
+                    sbSql.AppendFormat(" AND ([BACTHMOCTE].TE010=MOCTE.TE010 OR [BACTHMOCTE].[TE004] LIKE '301%') ");
                     sbSql.AppendFormat(" AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))<0");
                     sbSql.AppendFormat(" AND [BACTHMOCTE].[ID]='{0}'", ID3);
                     sbSql.AppendFormat(" )");
