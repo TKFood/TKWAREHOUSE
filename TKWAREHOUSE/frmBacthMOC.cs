@@ -488,7 +488,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND [BACTHMOCTE].[TE004]= TB003  ");
                 sbSql.AppendFormat(@"  AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0");
                 sbSql.AppendFormat(@"  AND [BACTHMOCTE].[ID]='{0}'", ID2);
-                sbSql.AppendFormat(@"  ORDER BY [BACTHMOCTE].[TE004]  ");
+                sbSql.AppendFormat(@"  ORDER BY TB001,TB002,[BACTHMOCTE].[TE004]      ");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -552,7 +552,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND [BACTHMOCTE].[TE004]= TB003  ");
                 sbSql.AppendFormat(@"  AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))<0");
                 sbSql.AppendFormat(@"  AND [BACTHMOCTE].[ID]='{0}'", ID3);
-                sbSql.AppendFormat(@"  ORDER BY [BACTHMOCTE].[TE004]  ");
+                sbSql.AppendFormat(@"  ORDER BY TB001,TB002,[BACTHMOCTE].[TE004]      ");
                 sbSql.AppendFormat(@"  ");
 
                 adapter11 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1416,23 +1416,22 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" '{0}','{1}',RIGHT(REPLICATE('0',4) + CAST(ROW_NUMBER() OVER(ORDER BY TB001,TB002,TB003)  as NVARCHAR),4) [TE003],[BACTHMOCTE].[TE004],(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) [TE005],MB004 [TE006],'' [TE007],MB017 [TE008],'****' [TE009],[BACTHMOCTE].TE010 TE010  ", MOCTE.TE001, MOCTE.TE002);
                     sbSql.AppendFormat(" ,[TA001] [TE011],[TA002] AS [TE012],'' [TE013],'' [TE014],'' [TE015],'1' [TE016],INVMB.MB002 [TE017],MB004 [TE018],'N' [TE019],'' [TE020] ");
                     sbSql.AppendFormat(" ,0 [TE021] ,'' [TE022],'N' [TE023],'' [TE024],0 [TE025],'2' [TE026],'' [TE027],'****' [TE028],'' [TE029],0 [TE030] ");
-                    sbSql.AppendFormat(" ,0 [TE031],0 [TE032],0 [TE033],'' [TE034],'' [TE035],0 [TE036],0 [TE037],'' [TE038],'' [TE039], MOCTE.[TE040] ");
+                    sbSql.AppendFormat(" ,0 [TE031],0 [TE032],0 [TE033],'' [TE034],'' [TE035],0 [TE036],0 [TE037],'' [TE038],'' [TE039],(SELECT TOP 1 [TE040]  FROM [TK].dbo.MOCTE WHERE TE011=TB001 AND TE012=TB002 AND TB003=TE004 AND MOCTE.TE001='A541' ) [TE040] ");
                     sbSql.AppendFormat(" ,'' [TE500],'' [TE501],'' [TE502],'' [TE503],0 [TE504],'' [TE505],'' [TE506],'' [TE507],0 [TE508] ");
                     sbSql.AppendFormat(" ,'' [UDF01],'' [UDF02],'' [UDF03],'' [UDF04],'' [UDF05],0 [UDF06],0 [UDF07],0 [UDF08],0 [UDF09],0 [UDF10] ");
                     sbSql.AppendFormat(" ,0 [TE200],'N' [TE201] ");
-                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
+                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTB,[TKWAREHOUSE].[dbo].[BACTHMOCTE]");
                     sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.INVMB ON MB001=[BACTHMOCTE].TE004");
-                    sbSql.AppendFormat(" ,[TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTB  ");
-                    sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.MOCTE ON TE011=TB001 AND TE012=TB002 AND TB003=TE004 AND TE001='A541'");
                     sbSql.AppendFormat(" WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]  AND TB001=[TA001] AND TB002=[TA002]");
                     sbSql.AppendFormat(" AND [BACTHMOCTE].[TE004]= TB003 ");
-                    sbSql.AppendFormat(" AND ([BACTHMOCTE].TE010=MOCTE.TE010 OR [BACTHMOCTE].[TE004] LIKE '301%')");
                     sbSql.AppendFormat(" AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0");
                     sbSql.AppendFormat(" AND [BACTHMOCTE].[ID]='{0}'",ID2);
                     sbSql.AppendFormat(" )");
                     sbSql.AppendFormat(" ORDER BY TA001,TA002,TE004");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
+
+                    //sbSql.AppendFormat(" AND ([BACTHMOCTE].TE010=MOCTE.TE010 OR [BACTHMOCTE].[TE004] LIKE '301%')");
 
                     cmd.Connection = sqlConn;
                     cmd.CommandTimeout = 60;
@@ -1556,14 +1555,12 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" '{0}','{1}',RIGHT(REPLICATE('0',4) + CAST(ROW_NUMBER() OVER(ORDER BY TB001,TB002,TB003)  as NVARCHAR),4) [TE003],[BACTHMOCTE].[TE004],(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))*-1 [TE005],MB004 [TE006],'' [TE007],MB017 [TE008],'****' [TE009],[BACTHMOCTE].TE010 TE010   ", MOCTE.TE001, MOCTE.TE002);
                     sbSql.AppendFormat(" ,[TA001] [TE011],[TA002] AS [TE012],'' [TE013],'' [TE014],'' [TE015],'1' [TE016],INVMB.MB002 [TE017],MB004 [TE018],'N' [TE019],'' [TE020] ");
                     sbSql.AppendFormat(" ,0 [TE021] ,'' [TE022],'N' [TE023],'' [TE024],0 [TE025],'2' [TE026],'' [TE027],'****' [TE028],'' [TE029],0 [TE030] ");
-                    sbSql.AppendFormat(" ,0 [TE031],0 [TE032],0 [TE033],'' [TE034],'' [TE035],0 [TE036],0 [TE037],'' [TE038],'' [TE039], MOCTE.[TE040] ");
+                    sbSql.AppendFormat(" ,0 [TE031],0 [TE032],0 [TE033],'' [TE034],'' [TE035],0 [TE036],0 [TE037],'' [TE038],'' [TE039],(SELECT TOP 1 [TE040]  FROM [TK].dbo.MOCTE WHERE TE011=TB001 AND TE012=TB002 AND TB003=TE004 AND MOCTE.TE001='A541' ) [TE040] ");
                     sbSql.AppendFormat(" ,'' [TE500],'' [TE501],'' [TE502],'' [TE503],0 [TE504],'' [TE505],'' [TE506],'' [TE507],0 [TE508] ");
                     sbSql.AppendFormat(" ,'' [UDF01],'' [UDF02],'' [UDF03],'' [UDF04],'' [UDF05],0 [UDF06],0 [UDF07],0 [UDF08],0 [UDF09],0 [UDF10] ");
                     sbSql.AppendFormat(" ,0 [TE200],'N' [TE201] ");
-                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
-                    sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.INVMB ON MB001=[BACTHMOCTE].TE004");
-                    sbSql.AppendFormat(" ,[TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTB  ");
-                    sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.MOCTE ON TE011=TB001 AND TE012=TB002 AND TB003=TE004 AND TE001='A541'");
+                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTB, [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
+                    sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.INVMB ON MB001=[BACTHMOCTE].TE004");               
                     sbSql.AppendFormat(" WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]  AND TB001=[TA001] AND TB002=[TA002]");
                     sbSql.AppendFormat(" AND [BACTHMOCTE].[TE004]= TB003 ");
                     
