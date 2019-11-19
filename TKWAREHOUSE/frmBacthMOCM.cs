@@ -482,8 +482,8 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  SELECT [BACTHMOCTEM].[ID] AS '批號',[BACTHMOCTEM].[TE004] AS '領料品號',[BACTHMOCTEM].[MB002] AS '領料品名'     ");
                 sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE TE001='A541' AND TE011=TB001 AND TE012=TB002 AND TE004=TB003 ) AS '第一次領料量'  ");
                 sbSql.AppendFormat(@"  ,TE010 AS '第一次領料批號'   ");
-                sbSql.AppendFormat(@"  ,ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTA WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),2) AS '分攤用量'    ");
-                sbSql.AppendFormat(@"  ,(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTA WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),2)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) AS '預計補料量'    ");
+                sbSql.AppendFormat(@"  ,ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTA WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3) AS '分攤用量'    ");
+                sbSql.AppendFormat(@"  ,(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTA WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) AS '預計補料量'    ");
                 sbSql.AppendFormat(@"  ,[TA001] AS '製令',[TA002] AS '製令號',[TA006] AS '品號',[BACTHMOCTAM].[MB002] AS '品名',[TA017] AS '生產量',[UDF007] AS '單位',[ATA017] AS '總重g'    ");
                 sbSql.AppendFormat(@"  ,(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID]) AS '分攤總重'    ");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BACTHMOCTEM],[TKWAREHOUSE].[dbo].[BACTHMOCTAM],[TK].dbo.MOCTB  ");
@@ -1428,7 +1428,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.INVMB ON MB001=[BACTHMOCTEM].TE004");
                     sbSql.AppendFormat(" WHERE [BACTHMOCTEM].[ID]=[BACTHMOCTAM].[ID]  AND TB001=[TA001] AND TB002=[TA002]");
                     sbSql.AppendFormat(" AND [BACTHMOCTEM].[TE004]= TB003 ");
-                    sbSql.AppendFormat(" AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),2)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0");
+                    sbSql.AppendFormat(" AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0");
                     sbSql.AppendFormat(" AND [BACTHMOCTEM].[ID]='{0}'", ID2);
                     sbSql.AppendFormat(" )");
                     sbSql.AppendFormat(" ORDER BY TA001,TA002,TE004");                  
