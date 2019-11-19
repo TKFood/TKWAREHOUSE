@@ -1026,6 +1026,7 @@
             this.button9.TabIndex = 2;
             this.button9.Text = "查詢";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // textBoxID3
             // 
@@ -1063,7 +1064,7 @@
             this.dataGridView7.RowTemplate.Height = 24;
             this.dataGridView7.Size = new System.Drawing.Size(232, 446);
             this.dataGridView7.TabIndex = 4;
-            this.dataGridView7.SelectionChanged += new System.EventHandler(this.dataGridView6_SelectionChanged);
+            this.dataGridView7.SelectionChanged += new System.EventHandler(this.dataGridView7_SelectionChanged);
             // 
             // splitContainer11
             // 

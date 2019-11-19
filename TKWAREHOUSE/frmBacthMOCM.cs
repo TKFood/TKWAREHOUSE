@@ -427,7 +427,7 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  SELECT [ID] AS '批號',CONVERT(NVARCHAR,[BACTHDATES],112) AS '日期'");
-                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BTACHID]");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BTACHIDM]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[BACTHDATES],112)='{0}'", dateTimePicker3.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ");
 
@@ -544,19 +544,19 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [BACTHMOCTE].[ID] AS '批號',[BACTHMOCTE].[TE004] AS '領料品號',[BACTHMOCTE].[MB002] AS '領料品名'  ");
+                sbSql.AppendFormat(@"  SELECT [BACTHMOCTEM].[ID] AS '批號',[BACTHMOCTEM].[TE004] AS '領料品號',[BACTHMOCTEM].[MB002] AS '領料品名'  ");
                 sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE TE001='A541' AND TE011=TB001 AND TE012=TB002 AND TE004=TB003 ) AS '第一次領料量'");
                 sbSql.AppendFormat(@"  ,TE010 AS '第一次領料批號'  ");
-                sbSql.AppendFormat(@"  ,ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3) AS '分攤用量'  ");
-                sbSql.AppendFormat(@"  ,(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) AS '預計退料量'  ");
-                sbSql.AppendFormat(@"  ,[TA001] AS '製令',[TA002] AS '製令號',[TA006] AS '品號',[BACTHMOCTA].[MB002] AS '品名',[TA017] AS '生產量',[UDF007] AS '單位',[ATA017] AS '總重g'  ");
-                sbSql.AppendFormat(@"  ,(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID]) AS '分攤總重'  ");
-                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE],[TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTB");
-                sbSql.AppendFormat(@"  WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]  AND TB001=[TA001] AND TB002=[TA002] ");
-                sbSql.AppendFormat(@"  AND [BACTHMOCTE].[TE004]= TB003  ");
-                sbSql.AppendFormat(@"  AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))<0");
-                sbSql.AppendFormat(@"  AND [BACTHMOCTE].[ID]='{0}'", ID3);
-                sbSql.AppendFormat(@"  ORDER BY TB001,TB002,[BACTHMOCTE].[TE004]      ");
+                sbSql.AppendFormat(@"  ,ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3) AS '分攤用量'  ");
+                sbSql.AppendFormat(@"  ,(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) AS '預計退料量'  ");
+                sbSql.AppendFormat(@"  ,[TA001] AS '製令',[TA002] AS '製令號',[TA006] AS '品號',[BACTHMOCTAM].[MB002] AS '品名',[TA017] AS '生產量',[UDF007] AS '單位',[ATA017] AS '總重g'  ");
+                sbSql.AppendFormat(@"  ,(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID]) AS '分攤總重'  ");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BACTHMOCTEM],[TKWAREHOUSE].[dbo].[BACTHMOCTAM],[TK].dbo.MOCTB");
+                sbSql.AppendFormat(@"  WHERE [BACTHMOCTEM].[ID]=[BACTHMOCTAM].[ID]  AND TB001=[TA001] AND TB002=[TA002] ");
+                sbSql.AppendFormat(@"  AND [BACTHMOCTEM].[TE004]= TB003  ");
+                sbSql.AppendFormat(@"  AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))<0");
+                sbSql.AppendFormat(@"  AND [BACTHMOCTEM].[ID]='{0}'", ID3);
+                sbSql.AppendFormat(@"  ORDER BY TB001,TB002,[BACTHMOCTEM].[TE004]      ");
                 sbSql.AppendFormat(@"  ");
 
                 adapter11 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -662,7 +662,7 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '退料',[TE002] AS '退料號' ");
-                sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
+                sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTEM] ");
                 sbSql.AppendFormat(@" WHERE [ID]='{0}' ", ID3);
                 sbSql.AppendFormat(@" AND [TE001]='A561' ");
                 sbSql.AppendFormat(@"  ");
@@ -2211,7 +2211,27 @@ namespace TKWAREHOUSE
 
         private void dataGridView7_SelectionChanged(object sender, EventArgs e)
         {
+            textBoxID3.Text = null;
 
+            if (dataGridView7.CurrentRow != null)
+            {
+                int rowindex = dataGridView7.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView7.Rows[rowindex];
+                    textBoxID3.Text = row.Cells["批號"].Value.ToString();
+                    ID3 = row.Cells["批號"].Value.ToString();
+
+                    SEARCHBTACHMOCTE2(ID3);
+                    SEARCHBACTHGENMOCTE2(ID3);
+                }
+                else
+                {
+                    textBoxID3.Text = null;
+                    ID3 = null;
+
+                }
+            }
         }
         private void dataGridView9_SelectionChanged(object sender, EventArgs e)
         {
@@ -2340,6 +2360,12 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            SEARCHBTACHID3();
+            SEARCHBTACHMOCTE2(textBoxID3.Text);
+            SEARCHBACTHGENMOCTE2(textBoxID3.Text);
+        }
         #endregion
 
 
