@@ -92,6 +92,12 @@
     <Compile Include="frmBacthMOC.Designer.cs">
       <DependentUpon>frmBacthMOC.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmBacthMOCM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBacthMOCM.Designer.cs">
+      <DependentUpon>frmBacthMOCM.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmCALENDAR.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -216,6 +222,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmBacthMOC.resx">
       <DependentUpon>frmBacthMOC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBacthMOCM.resx">
+      <DependentUpon>frmBacthMOCM.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmCALENDAR.resx">
       <DependentUpon>FrmCALENDAR.cs</DependentUpon>
