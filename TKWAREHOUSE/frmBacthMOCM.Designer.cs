@@ -725,6 +725,7 @@
             this.button7.TabIndex = 2;
             this.button7.Text = "查詢";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // textBoxID2
             // 
@@ -859,6 +860,7 @@
             this.button8.TabIndex = 2;
             this.button8.Text = "產生補料單";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // label9
             // 
@@ -891,6 +893,7 @@
             this.button11.TabIndex = 10;
             this.button11.Text = "刪除補料重做";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // textBox9
             // 
@@ -915,7 +918,7 @@
             this.dataGridView6.RowTemplate.Height = 24;
             this.dataGridView6.Size = new System.Drawing.Size(405, 200);
             this.dataGridView6.TabIndex = 3;
-            this.dataGridView6.SelectionChanged += new System.EventHandler(this.dataGridView7_SelectionChanged);
+            this.dataGridView6.SelectionChanged += new System.EventHandler(this.dataGridView6_SelectionChanged);
             // 
             // tabPage3
             // 

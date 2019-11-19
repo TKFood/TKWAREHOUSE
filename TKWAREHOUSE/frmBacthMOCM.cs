@@ -375,7 +375,7 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  SELECT [ID] AS '批號',CONVERT(NVARCHAR,[BACTHDATES],112) AS '日期'");
-                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BTACHID]");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BTACHIDM]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[BACTHDATES],112)='{0}'", dateTimePicker2.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ");
 
@@ -479,19 +479,20 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [BACTHMOCTE].[ID] AS '批號',[BACTHMOCTE].[TE004] AS '領料品號',[BACTHMOCTE].[MB002] AS '領料品名'  ");
-                sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE TE001='A541' AND TE011=TB001 AND TE012=TB002 AND TE004=TB003 ) AS '第一次領料量'");
-                sbSql.AppendFormat(@"  ,TE010 AS '第一次領料批號'  ");
-                sbSql.AppendFormat(@"  ,ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3) AS '分攤用量'  ");
-                sbSql.AppendFormat(@"  ,(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) AS '預計補料量'  ");
-                sbSql.AppendFormat(@"  ,[TA001] AS '製令',[TA002] AS '製令號',[TA006] AS '品號',[BACTHMOCTA].[MB002] AS '品名',[TA017] AS '生產量',[UDF007] AS '單位',[ATA017] AS '總重g'  ");
-                sbSql.AppendFormat(@"  ,(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID]) AS '分攤總重'  ");
-                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BACTHMOCTE],[TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTB");
-                sbSql.AppendFormat(@"  WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]  AND TB001=[TA001] AND TB002=[TA002] ");
-                sbSql.AppendFormat(@"  AND [BACTHMOCTE].[TE004]= TB003  ");
-                sbSql.AppendFormat(@"  AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0");
-                sbSql.AppendFormat(@"  AND [BACTHMOCTE].[ID]='{0}'", ID2);
-                sbSql.AppendFormat(@"  ORDER BY TB001,TB002,[BACTHMOCTE].[TE004]      ");
+                sbSql.AppendFormat(@"  SELECT [BACTHMOCTEM].[ID] AS '批號',[BACTHMOCTEM].[TE004] AS '領料品號',[BACTHMOCTEM].[MB002] AS '領料品名'     ");
+                sbSql.AppendFormat(@"  ,(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE TE001='A541' AND TE011=TB001 AND TE012=TB002 AND TE004=TB003 ) AS '第一次領料量'  ");
+                sbSql.AppendFormat(@"  ,TE010 AS '第一次領料批號'   ");
+                sbSql.AppendFormat(@"  ,ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTA WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),2) AS '分攤用量'    ");
+                sbSql.AppendFormat(@"  ,(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTA WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),2)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) AS '預計補料量'    ");
+                sbSql.AppendFormat(@"  ,[TA001] AS '製令',[TA002] AS '製令號',[TA006] AS '品號',[BACTHMOCTAM].[MB002] AS '品名',[TA017] AS '生產量',[UDF007] AS '單位',[ATA017] AS '總重g'    ");
+                sbSql.AppendFormat(@"  ,(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID]) AS '分攤總重'    ");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[BACTHMOCTEM],[TKWAREHOUSE].[dbo].[BACTHMOCTAM],[TK].dbo.MOCTB  ");
+                sbSql.AppendFormat(@"  WHERE [BACTHMOCTEM].[ID]=[BACTHMOCTAM].[ID]  ");
+                sbSql.AppendFormat(@"  AND TB001=[TA001] AND TB002=[TA002]  ");
+                sbSql.AppendFormat(@"  AND [BACTHMOCTEM].[TE004]= TB003 ");
+                sbSql.AppendFormat(@"  AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0 ");
+                sbSql.AppendFormat(@"  AND [BACTHMOCTEM].[ID]='{0}'", ID2);
+                sbSql.AppendFormat(@"  ORDER BY TB001,TB002,[BACTHMOCTEM].[TE004]      ");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -607,7 +608,7 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@" SELECT [ID] AS '批號',[TE001] AS '領料',[TE002] AS '領料號' ");
-                sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTE] ");
+                sbSql.AppendFormat(@" FROM [TKWAREHOUSE].[dbo].[BACTHGENMOCTEM] ");
                 sbSql.AppendFormat(@" WHERE [ID]='{0}' ", ID2);
                 sbSql.AppendFormat(@" AND [TE001]='A542' ");
                 sbSql.AppendFormat(@"  ");
@@ -1291,7 +1292,7 @@ namespace TKWAREHOUSE
 
                     sbSql.Clear();
 
-                    sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[BACTHGENMOCTE]");
+                    sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[BACTHGENMOCTEM]");
                     sbSql.AppendFormat(" ([ID],[TE001],[TE002])");
                     sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", ID, TC001, TC002);
                     sbSql.AppendFormat(" ");
@@ -1416,21 +1417,21 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(" SELECT ");
                     sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", MOCTD.COMPANY, MOCTD.CREATOR, MOCTD.USR_GROUP, MOCTD.CREATE_DATE, MOCTD.MODIFIER, MOCTD.MODI_DATE, MOCTD.FLAG, MOCTD.CREATE_TIME, MOCTD.MODI_TIME, MOCTD.TRANS_TYPE);
                     sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',", MOCTD.TRANS_NAME, MOCTD.sync_date, MOCTD.sync_time, MOCTD.sync_mark, MOCTD.sync_count, MOCTD.DataUser, MOCTD.DataGroup);
-                    sbSql.AppendFormat(" '{0}','{1}',RIGHT(REPLICATE('0',4) + CAST(ROW_NUMBER() OVER(ORDER BY TB001,TB002,TB003)  as NVARCHAR),4) [TE003],[BACTHMOCTE].[TE004],(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) [TE005],MB004 [TE006],'' [TE007],MB017 [TE008],'****' [TE009],[BACTHMOCTE].TE010 TE010  ", MOCTE.TE001, MOCTE.TE002);
+                    sbSql.AppendFormat(" '{0}','{1}',RIGHT(REPLICATE('0',4) + CAST(ROW_NUMBER() OVER(ORDER BY TB001,TB002,TB003)  as NVARCHAR),4) [TE003],[BACTHMOCTEM].[TE004],(ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 )) [TE005],MB004 [TE006],'' [TE007],MB017 [TE008],'****' [TE009],[BACTHMOCTEM].TE010 TE010  ", MOCTE.TE001, MOCTE.TE002);
                     sbSql.AppendFormat(" ,[TA001] [TE011],[TA002] AS [TE012],'' [TE013],'' [TE014],'' [TE015],'1' [TE016],INVMB.MB002 [TE017],MB004 [TE018],'N' [TE019],'' [TE020] ");
                     sbSql.AppendFormat(" ,0 [TE021] ,'' [TE022],'N' [TE023],'' [TE024],0 [TE025],'2' [TE026],'' [TE027],'****' [TE028],'' [TE029],0 [TE030] ");
                     sbSql.AppendFormat(" ,0 [TE031],0 [TE032],0 [TE033],'' [TE034],'' [TE035],0 [TE036],0 [TE037],'' [TE038],'' [TE039],(SELECT TOP 1 [TE040]  FROM [TK].dbo.MOCTE WHERE TE011=TB001 AND TE012=TB002 AND TB003=TE004 AND MOCTE.TE001='A541' ) [TE040] ");
                     sbSql.AppendFormat(" ,'' [TE500],'' [TE501],'' [TE502],'' [TE503],0 [TE504],'' [TE505],'' [TE506],'' [TE507],0 [TE508] ");
                     sbSql.AppendFormat(" ,'' [UDF01],'' [UDF02],'' [UDF03],'' [UDF04],'' [UDF05],0 [UDF06],0 [UDF07],0 [UDF08],0 [UDF09],0 [UDF10] ");
                     sbSql.AppendFormat(" ,0 [TE200],'N' [TE201] ");
-                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA],[TK].dbo.MOCTB,[TKWAREHOUSE].[dbo].[BACTHMOCTE]");
-                    sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.INVMB ON MB001=[BACTHMOCTE].TE004");
-                    sbSql.AppendFormat(" WHERE [BACTHMOCTE].[ID]=[BACTHMOCTA].[ID]  AND TB001=[TA001] AND TB002=[TA002]");
-                    sbSql.AppendFormat(" AND [BACTHMOCTE].[TE004]= TB003 ");
-                    sbSql.AppendFormat(" AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] BACTHMOCTA WHERE BACTHMOCTA.ID=[BACTHMOCTE].[ID])),3)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0");
-                    sbSql.AppendFormat(" AND [BACTHMOCTE].[ID]='{0}'", ID2);
+                    sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM],[TK].dbo.MOCTB,[TKWAREHOUSE].[dbo].[BACTHMOCTEM]");
+                    sbSql.AppendFormat(" LEFT JOIN  [TK].dbo.INVMB ON MB001=[BACTHMOCTEM].TE004");
+                    sbSql.AppendFormat(" WHERE [BACTHMOCTEM].[ID]=[BACTHMOCTAM].[ID]  AND TB001=[TA001] AND TB002=[TA002]");
+                    sbSql.AppendFormat(" AND [BACTHMOCTEM].[TE004]= TB003 ");
+                    sbSql.AppendFormat(" AND (ROUND((([ATE005])*[ATA017]/(SELECT SUM(ATA017) FROM [TKWAREHOUSE].[dbo].[BACTHMOCTAM] BACTHMOCTAM WHERE BACTHMOCTAM.ID=[BACTHMOCTEM].[ID])),2)-(SELECT ISNULL(SUM(TE005),0)  FROM [TK].dbo.MOCTE WHERE  TE011=TB001 AND TE012=TB002 AND TE004=TB003 ))>0");
+                    sbSql.AppendFormat(" AND [BACTHMOCTEM].[ID]='{0}'", ID2);
                     sbSql.AppendFormat(" )");
-                    sbSql.AppendFormat(" ORDER BY TA001,TA002,TE004");
+                    sbSql.AppendFormat(" ORDER BY TA001,TA002,TE004");                  
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
 
@@ -2079,7 +2080,7 @@ namespace TKWAREHOUSE
 
                     sbSql.Clear();
 
-                    sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[BACTHGENMOCTE]");
+                    sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[BACTHGENMOCTEM]");
                     sbSql.AppendFormat(" WHERE [ID]='{0}' AND [TE001]='{1}' AND [TE002]='{2}'", ID2, TC001, TC002);
                     sbSql.AppendFormat(" ");
 
@@ -2210,27 +2211,7 @@ namespace TKWAREHOUSE
 
         private void dataGridView7_SelectionChanged(object sender, EventArgs e)
         {
-            textBoxID3.Text = null;
 
-            if (dataGridView7.CurrentRow != null)
-            {
-                int rowindex = dataGridView7.CurrentRow.Index;
-                if (rowindex >= 0)
-                {
-                    DataGridViewRow row = dataGridView7.Rows[rowindex];
-                    textBoxID3.Text = row.Cells["批號"].Value.ToString();
-                    ID3 = row.Cells["批號"].Value.ToString();
-
-                    SEARCHBTACHMOCTE2(ID3);
-                    SEARCHBACTHGENMOCTE2(ID3);
-                }
-                else
-                {
-                    textBoxID3.Text = null;
-                    ID3 = null;
-
-                }
-            }
         }
         private void dataGridView9_SelectionChanged(object sender, EventArgs e)
         {
@@ -2330,6 +2311,33 @@ namespace TKWAREHOUSE
             SEARCHBACTHMOCTE(textBoxID.Text);
 
             SETNULL();
+        }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            SEARCHBTACHID2();
+            SEARCHBTACHMOCTE(textBoxID2.Text);
+            SEARCHBACTHGENMOCTE(textBoxID2.Text);
+        }
+        private void button8_Click(object sender, EventArgs e)
+        {
+            FEEDTC001 = textBox5.Text;
+            FEEDTC002 = GETMAXTC002(FEEDTC001, dateTimePicker2.Value.ToString("yyyyMMdd"));
+
+            ADDBACTHGENMOCTE(ID2, FEEDTC001, FEEDTC002);
+            ADDMOCTCMOCTDMOCTE(ID2, FEEDTC001, FEEDTC002);
+
+            SEARCHBACTHGENMOCTE(textBoxID2.Text);
+            //MessageBox.Show(FEEDTC001+" "+ FEEDTC002);
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                DELETEBACTHGENMOCTE(textBoxID2.Text, textBox8.Text, textBox9.Text);
+                SEARCHBACTHGENMOCTE(textBoxID2.Text);
+            }
         }
 
         #endregion
