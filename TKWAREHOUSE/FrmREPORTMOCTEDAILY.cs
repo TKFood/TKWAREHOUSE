@@ -75,7 +75,7 @@ namespace TKWAREHOUSE
             StringBuilder STRQUERY = new StringBuilder();
 
             FASTSQL.AppendFormat(@"  SELECT TC003 AS '日期',TE004 AS '品號',TE017 AS '品名',SUM(MQ010*TE005)*-1 AS '總領退量',TE006 AS '單位'");
-            FASTSQL.AppendFormat(@"  ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA001=TE004 AND LA009 IN ('20004','20006')) AS '庫存量'");
+            FASTSQL.AppendFormat(@"  ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA001=TE004 AND LA009 IN ('20004','20006') AND LA004<='{0}') AS '庫存量'", dateTimePicker3.Value.ToString("yyyyMMdd"));
             FASTSQL.AppendFormat(@"  FROM  [TK].dbo.CMSMQ,[TK].dbo.MOCTC,[TK].dbo.MOCTE");
             FASTSQL.AppendFormat(@"  WHERE TC001=TE001 AND TC002=TE002 AND MQ001=TC001");
             FASTSQL.AppendFormat(@"  AND (TE004 LIKE '1%' OR TE004 LIKE '2%' )");
