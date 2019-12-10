@@ -558,7 +558,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" FROM [TK].dbo.INVLA WITH (NOLOCK)  ");
                 FASTSQL.AppendFormat(@" LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   ");
                 FASTSQL.AppendFormat(@" WHERE  (LA009='20001     ')   ");
-                FASTSQL.AppendFormat(@" AND LA001 LIKE '4%' ");
+                FASTSQL.AppendFormat(@" AND (LA001 LIKE '4%' OR LA001 LIKE '5%')");
                 FASTSQL.AppendFormat(@" GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    ");
                 FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
                 FASTSQL.AppendFormat(@" ) AS TEMP");
