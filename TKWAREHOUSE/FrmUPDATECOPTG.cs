@@ -173,7 +173,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"  LEFT JOIN [TK].dbo.PURMA ON  TG112=MA001");
                 STR.AppendFormat(@"  WHERE TG003>='{0}' AND TG003<='{1}'",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  AND ISNULL(TG112,'')=''");
-                STR.AppendFormat(@"  ");
+                STR.AppendFormat(@"  ORDER BY TG001,TG002");
                 STR.AppendFormat(@"  ");
             }
             else if (comboBox1.Text.ToString().Equals("全部"))
@@ -183,7 +183,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"  FROM [TK].dbo.COPTG");
                 STR.AppendFormat(@"  LEFT JOIN [TK].dbo.PURMA ON  TG112=MA001");
                 STR.AppendFormat(@"  WHERE TG003>='{0}' AND TG003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-
+                STR.AppendFormat(@"  ORDER BY TG001,TG002");
                 STR.AppendFormat(@"  ");
                 STR.AppendFormat(@"  ");
 
