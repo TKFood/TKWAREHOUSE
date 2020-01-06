@@ -31,12 +31,14 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
         SqlDataAdapter adapter2 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder2 = new SqlCommandBuilder();
+        SqlDataAdapter adapter3 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds1 = new DataSet();
         DataSet ds2 = new DataSet();
-       
+        DataSet ds3 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -142,6 +144,7 @@ namespace TKWAREHOUSE
                     {
                         dataGridView1.DataSource = ds1.Tables["ds1"];
                         dataGridView1.AutoResizeColumns();
+                        
                     }
                 }
                 else
@@ -194,6 +197,73 @@ namespace TKWAREHOUSE
         }
 
 
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+
+                    SearchCOPTH(row.Cells["銷貨單"].Value.ToString(), row.Cells["銷貨單號"].Value.ToString());
+                }
+            }
+        }
+        public void SearchCOPTH(string TG001,string TG002)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            try
+            {
+                if (!string.IsNullOrEmpty(TG001) || !string.IsNullOrEmpty(TG002))
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(@" SELECT TH004 AS '品號',TH005 AS '品名',TH006 AS '規格',TH008 AS '數量',TH009 AS '單位',TH017 AS '批號',TH001 AS '銷貨單',TH002 AS '銷貨單號',TH003 AS '銷貨序號'");
+                    sbSql.AppendFormat(@" FROM [TK].dbo.COPTH");
+                    sbSql.AppendFormat(@" WHERE TH001='{0}' AND TH002='{1}'",TG001,TG002);
+                    sbSql.AppendFormat(@" ORDER BY TH001,TH002,TH003");
+                    sbSql.AppendFormat(@" ");
+
+                    adapter3 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    sqlCmdBuilder3 = new SqlCommandBuilder(adapter3);
+
+                    sqlConn.Open();
+                    ds3.Clear();
+                    adapter3.Fill(ds3, "ds3");
+                    sqlConn.Close();
+
+
+                    if (ds3.Tables["ds3"].Rows.Count == 0)
+                    {
+                        dataGridView2.DataSource = null;
+                    }
+                    else if (ds3.Tables["ds3"].Rows.Count >= 1)
+                    {
+                        dataGridView2.DataSource = ds3.Tables["ds3"];
+                        dataGridView2.AutoResizeColumns();
+                    }
+                }
+                else
+                {
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         public void UPDATECOPTG()
         {
             StringBuilder TG001TG002 = new StringBuilder();
@@ -281,8 +351,9 @@ namespace TKWAREHOUSE
             Search();
         }
 
+
         #endregion
 
-
+      
     }
 }
