@@ -45,6 +45,8 @@ namespace TKWAREHOUSE
         public FrmUPDATECOPTG()
         {
             InitializeComponent();
+
+            comboboxload2();
         }
 
         private void FrmUPDATECOPTG_Load(object sender, EventArgs e)
@@ -90,7 +92,26 @@ namespace TKWAREHOUSE
 
         }
         #region FUNCTION
+        public void comboboxload2()
+        {
+            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
+            String Sequel = "SELECT MA001,MA002 FROM [TK].dbo.PURMA WHERE MA001 LIKE '8%' ORDER BY MA001";
+            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
 
+            dt.Columns.Add("MA001", typeof(string));
+            dt.Columns.Add("MA002", typeof(string));
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "MA001";
+            comboBox2.DisplayMember = "MA002";
+            sqlConn.Close();
+
+            comboBox2.SelectedValue = "8000001 ";
+
+        }
         public void Search()
         {
             try
