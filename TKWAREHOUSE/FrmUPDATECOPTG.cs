@@ -172,6 +172,27 @@ namespace TKWAREHOUSE
             return STR;
         }
 
+
+        public void UPDATECOPTG()
+        {
+            StringBuilder TG001TG002 = new StringBuilder();
+            TG001TG002.Clear();
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[0];
+                if (chk.Value == chk.TrueValue)
+                {
+                    TG001TG002.AppendFormat(@"'{0}',", row.Cells["銷貨單"].Value.ToString() + row.Cells["銷貨單號"].Value.ToString());
+
+                    //MessageBox.Show(row.Cells["銷貨單"].Value.ToString()+ row.Cells["銷貨單號"].Value.ToString());
+                }
+            }
+
+            TG001TG002.AppendFormat(@"''");
+
+            //MessageBox.Show(TG001TG002.ToString());
+        }
         #endregion
 
         #region BUTTON
@@ -179,9 +200,13 @@ namespace TKWAREHOUSE
         {
             Search();
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            UPDATECOPTG();
+        }
 
         #endregion
 
-      
+
     }
 }
