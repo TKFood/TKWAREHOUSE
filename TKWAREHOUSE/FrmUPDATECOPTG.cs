@@ -104,7 +104,6 @@ namespace TKWAREHOUSE
                     sbSqlQuery.Clear();
                     sbSql = SETsbSql();
 
-
                     adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
                     sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
 
@@ -148,17 +147,24 @@ namespace TKWAREHOUSE
 
             if (comboBox1.Text.ToString().Equals("未指定"))
             {
+                STR.AppendFormat(@"  SELECT TG001 AS '銷貨單',TG002 AS '銷貨單號',TG007 AS '客戶',TG112 AS '貨運廠商',MA002 AS '貨運廠商名'");
+                STR.AppendFormat(@"  FROM [TK].dbo.COPTG");
+                STR.AppendFormat(@"  LEFT JOIN [TK].dbo.PURMA ON  TG112=MA001");
+                STR.AppendFormat(@"  WHERE TG003>='{0}' AND TG003<='{1}'",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  AND ISNULL(TG112,'')=''");
                 STR.AppendFormat(@"  ");
                 STR.AppendFormat(@"  ");
-                STR.AppendFormat(@"  ");
-                
             }
-            else if (comboBox1.Text.ToString().Equals("已指定"))
+            else if (comboBox1.Text.ToString().Equals("全部"))
             {
-                
+
+                STR.AppendFormat(@"  SELECT TG001 AS '銷貨單',TG002 AS '銷貨單號',TG007 AS '客戶',TG112 AS '貨運廠商',MA002 AS '貨運廠商名'");
+                STR.AppendFormat(@"  FROM [TK].dbo.COPTG");
+                STR.AppendFormat(@"  LEFT JOIN [TK].dbo.PURMA ON  TG112=MA001");
+                STR.AppendFormat(@"  WHERE TG003>='{0}' AND TG003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+
                 STR.AppendFormat(@"  ");
                 STR.AppendFormat(@"  ");
-                STR.AppendFormat(@"  ");               
 
             }
          
