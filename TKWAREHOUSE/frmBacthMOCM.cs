@@ -512,6 +512,8 @@ namespace TKWAREHOUSE
                 if (ds6.Tables["ds6"].Rows.Count == 0)
                 {
                     dataGridView5.DataSource = null;
+
+                    MessageBox.Show("已無資料");
                 }
                 else
                 {
@@ -578,6 +580,8 @@ namespace TKWAREHOUSE
                 if (ds11.Tables["ds11"].Rows.Count == 0)
                 {
                     dataGridView8.DataSource = null;
+
+                    MessageBox.Show("已無資料");
                 }
                 else
                 {
@@ -750,7 +754,6 @@ namespace TKWAREHOUSE
                     textBoxID2.Text = row.Cells["批號"].Value.ToString();
                     ID2 = row.Cells["批號"].Value.ToString();
 
-                    SEARCHBTACHMOCTE(ID2);
                     SEARCHBACTHGENMOCTE(ID2);
                 }
                 else
@@ -2229,7 +2232,7 @@ namespace TKWAREHOUSE
                     textBoxID3.Text = row.Cells["批號"].Value.ToString();
                     ID3 = row.Cells["批號"].Value.ToString();
 
-                    SEARCHBTACHMOCTE2(ID3);
+                  
                     SEARCHBACTHGENMOCTE2(ID3);
                 }
                 else
@@ -2342,7 +2345,7 @@ namespace TKWAREHOUSE
         private void button7_Click(object sender, EventArgs e)
         {
             SEARCHBTACHID2();
-            SEARCHBTACHMOCTE(textBoxID2.Text);
+            //SEARCHBTACHMOCTE(textBoxID2.Text);
             SEARCHBACTHGENMOCTE(textBoxID2.Text);
         }
         private void button8_Click(object sender, EventArgs e)
@@ -2370,7 +2373,7 @@ namespace TKWAREHOUSE
         private void button9_Click(object sender, EventArgs e)
         {
             SEARCHBTACHID3();
-            SEARCHBTACHMOCTE2(textBoxID3.Text);
+            //SEARCHBTACHMOCTE2(textBoxID3.Text);
             SEARCHBACTHGENMOCTE2(textBoxID3.Text);
         }
 
@@ -2395,6 +2398,23 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void button13_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(ID2))
+            {
+                SEARCHBTACHMOCTE(ID2);              
+            }
+        
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(ID3))
+            {
+                SEARCHBTACHMOCTE2(ID3);
+            }
+               
+        }
         #endregion
 
 
