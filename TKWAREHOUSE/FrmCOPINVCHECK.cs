@@ -126,39 +126,7 @@ namespace TKWAREHOUSE
             StringBuilder TC027 = new StringBuilder();
             StringBuilder QUERY1 = new StringBuilder();
 
-            if (checkBox1.Checked == true)
-            {
-                TD001.AppendFormat("'A221',");
-            }
-            if (checkBox2.Checked == true)
-            {
-                TD001.AppendFormat("'A222',");
-            }
-            if (checkBox3.Checked == true)
-            {
-                TD001.AppendFormat("'A228',");
-            }
-            if (checkBox4.Checked == true)
-            {
-                TD001.AppendFormat("'A225',");
-            }
-            if (checkBox5.Checked == true)
-            {
-                TD001.AppendFormat("'A226',");
-            }
-            if (checkBox6.Checked == true)
-            {
-                TD001.AppendFormat("'A227',");
-            }
-            if (checkBox7.Checked == true)
-            {
-                TD001.AppendFormat("'A223',");
-            }
-            if (checkBox8.Checked == true)
-            {
-                TD001.AppendFormat("'A229',");
-            }
-            TD001.AppendFormat("''");
+            
 
             if (comboBox1.Text.ToString().Equals("已確認"))
             {
@@ -177,7 +145,7 @@ namespace TKWAREHOUSE
 
             if (comboBox2.Text.ToString().Equals("排除已製令"))
             {
-                QUERY1.AppendFormat(" AND TC001+TC002 NOT IN (SELECT TA026+TA027 FROM [TK].dbo.MOCTA WITH (NOLOCK) WHERE ISNULL(TA026+TA027,'')<>'') ");
+                QUERY1.AppendFormat(" AND TD001+TD002+TD003 NOT IN (SELECT TA026+TA027+TA027 FROM [TK].dbo.MOCTA WITH (NOLOCK) WHERE ISNULL(TA026+TA027,'')<>'') ");
             }
             else if (comboBox1.Text.ToString().Equals("全部"))
             {
@@ -219,11 +187,8 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
                 sbSql.AppendFormat(@"  AND (TD004 LIKE '401%' OR TD004 LIKE '402%' OR TD004 LIKE '403%' OR TD004 LIKE '404%' OR TD004 LIKE '405%' OR TD004 LIKE '406%' OR TD004 LIKE '407%'   ) ");
                 sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  AND TC001 IN ({0}) ", TD001.ToString());
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
-                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
-                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
-                sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
+    
                 sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
                 sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540200%'  ) ");
@@ -601,39 +566,7 @@ namespace TKWAREHOUSE
             StringBuilder TC027 = new StringBuilder();
             StringBuilder QUERY1 = new StringBuilder();
 
-            if (checkBox1.Checked == true)
-            {
-                TD001.AppendFormat("'A221',");
-            }
-            if (checkBox2.Checked == true)
-            {
-                TD001.AppendFormat("'A222',");
-            }
-            if (checkBox3.Checked == true)
-            {
-                TD001.AppendFormat("'A228',");
-            }
-            if (checkBox4.Checked == true)
-            {
-                TD001.AppendFormat("'A225',");
-            }
-            if (checkBox5.Checked == true)
-            {
-                TD001.AppendFormat("'A226',");
-            }
-            if (checkBox6.Checked == true)
-            {
-                TD001.AppendFormat("'A227',");
-            }
-            if (checkBox7.Checked == true)
-            {
-                TD001.AppendFormat("'A223',");
-            }
-            if (checkBox8.Checked == true)
-            {
-                TD001.AppendFormat("'A229',");
-            }
-            TD001.AppendFormat("''");
+           
 
             if (comboBox1.Text.ToString().Equals("已確認"))
             {
@@ -682,7 +615,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
                 sbSql.AppendFormat(@"  AND (TD004 LIKE '401%' OR TD004 LIKE '402%' OR TD004 LIKE '403%' OR TD004 LIKE '404%' OR TD004 LIKE '405%' OR TD004 LIKE '406%' OR TD004 LIKE '407%'   ) ");
                 sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", DateTime.Now.ToString("yyyyMMdd"), dt.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  AND TC001 IN ({0}) ", TD001.ToString());
+    
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
