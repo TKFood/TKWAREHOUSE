@@ -313,7 +313,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  WHERE TD004=MB001");
                 sbSql.AppendFormat(@"  AND TC001=TD001 AND TC002=TD002");
                 sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
-                sbSql.AppendFormat(@"  AND (TD004 LIKE '401%' OR TD004 LIKE '402%' OR TD004 LIKE '403%' OR TD004 LIKE '404%' OR TD004 LIKE '405%' OR TD004 LIKE '406%' OR TD004 LIKE '407%'   ) ");
+
                 sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
 
@@ -1091,7 +1091,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  WHERE TD004=MB001");
                 sbSql.AppendFormat(@"  AND TC001=TD001 AND TC002=TD002");
                 sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
-                sbSql.AppendFormat(@"  AND (TD004 LIKE '401%' OR TD004 LIKE '402%' OR TD004 LIKE '403%' OR TD004 LIKE '404%' OR TD004 LIKE '405%' OR TD004 LIKE '406%' OR TD004 LIKE '407%'   ) ");
+                
                 sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
                
