@@ -914,7 +914,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" {0} [UDF07],{1}[UDF08],{2} [UDF09],{3} [UDF10]", PURTB.UDF07, PURTB.UDF08, PURTB.UDF09, PURTB.UDF10);
             sbSql.AppendFormat(" FROM [TK].dbo.[MOCTB],[TK].dbo.[INVMB]");
             sbSql.AppendFormat(" WHERE [MOCTB].TB003=[INVMB].MB001");
-            sbSql.AppendFormat(" AND TB003 LIKE '2%'");
+            sbSql.AppendFormat(" AND (TB003 LIKE '1%' OR TB003 LIKE '2%')");
             sbSql.AppendFormat(" AND TB001+TB002 IN (SELECT MOCTA001+MOCTA002 FROM [TKWAREHOUSE].dbo.[PURTAB] WHERE ID='{0}')",ID);
             sbSql.AppendFormat(" GROUP BY TB003,MB002,MB003,TB007,MB017,MB032,MB050)");
           

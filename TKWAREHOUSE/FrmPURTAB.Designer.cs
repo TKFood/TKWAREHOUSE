@@ -39,6 +39,7 @@
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -95,7 +96,6 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.button13 = new System.Windows.Forms.Button();
             this.dataGridView7 = new System.Windows.Forms.DataGridView();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -169,7 +169,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(984, 761);
+            this.tabControl1.Size = new System.Drawing.Size(984, 655);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -178,7 +178,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(976, 731);
+            this.tabPage1.Size = new System.Drawing.Size(976, 625);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -197,7 +197,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(970, 725);
+            this.splitContainer1.Size = new System.Drawing.Size(970, 619);
             this.splitContainer1.SplitterDistance = 457;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -216,8 +216,8 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer3.Size = new System.Drawing.Size(457, 725);
-            this.splitContainer3.SplitterDistance = 184;
+            this.splitContainer3.Size = new System.Drawing.Size(457, 619);
+            this.splitContainer3.SplitterDistance = 157;
             this.splitContainer3.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -243,7 +243,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(453, 180);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(453, 153);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -311,6 +311,19 @@
             this.checkBox1.Text = "過濾已請購";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // checkBox4
+            // 
+            this.checkBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Checked = true;
+            this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox4.Location = new System.Drawing.Point(116, 130);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(107, 20);
+            this.checkBox4.TabIndex = 6;
+            this.checkBox4.Text = "過濾A513";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
@@ -319,7 +332,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(453, 533);
+            this.dataGridView1.Size = new System.Drawing.Size(453, 454);
             this.dataGridView1.TabIndex = 0;
             // 
             // splitContainer2
@@ -336,7 +349,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer4);
-            this.splitContainer2.Size = new System.Drawing.Size(509, 725);
+            this.splitContainer2.Size = new System.Drawing.Size(509, 619);
             this.splitContainer2.SplitterDistance = 101;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -362,12 +375,12 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(97, 721);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(97, 615);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(3, 219);
+            this.button2.Location = new System.Drawing.Point(3, 186);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(91, 34);
             this.button2.TabIndex = 3;
@@ -390,8 +403,8 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.splitContainer5);
-            this.splitContainer4.Size = new System.Drawing.Size(404, 725);
-            this.splitContainer4.SplitterDistance = 156;
+            this.splitContainer4.Size = new System.Drawing.Size(404, 619);
+            this.splitContainer4.SplitterDistance = 133;
             this.splitContainer4.TabIndex = 0;
             // 
             // tableLayoutPanel3
@@ -417,7 +430,7 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(400, 152);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(400, 129);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
             // dateTimePicker3
@@ -425,7 +438,7 @@
             this.dateTimePicker3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker3.CustomFormat = "yyyy/MM/dd";
             this.dateTimePicker3.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker3.Location = new System.Drawing.Point(203, 5);
+            this.dateTimePicker3.Location = new System.Drawing.Point(203, 3);
             this.dateTimePicker3.Name = "dateTimePicker3";
             this.dateTimePicker3.Size = new System.Drawing.Size(194, 27);
             this.dateTimePicker3.TabIndex = 4;
@@ -434,7 +447,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 11);
+            this.label4.Location = new System.Drawing.Point(3, 8);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(194, 16);
             this.label4.TabIndex = 5;
@@ -445,7 +458,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 125);
+            this.label3.Location = new System.Drawing.Point(3, 104);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(194, 16);
             this.label3.TabIndex = 1;
@@ -455,7 +468,7 @@
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(203, 119);
+            this.textBox1.Location = new System.Drawing.Point(203, 99);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(194, 27);
@@ -463,9 +476,9 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(3, 79);
+            this.button5.Location = new System.Drawing.Point(3, 67);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(180, 32);
+            this.button5.Size = new System.Drawing.Size(180, 26);
             this.button5.TabIndex = 8;
             this.button5.Text = "取新批號";
             this.button5.UseVisualStyleBackColor = true;
@@ -474,9 +487,9 @@
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(203, 41);
+            this.button4.Location = new System.Drawing.Point(203, 35);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(194, 32);
+            this.button4.Size = new System.Drawing.Size(194, 26);
             this.button4.TabIndex = 7;
             this.button4.Text = "查詢批號";
             this.button4.UseVisualStyleBackColor = true;
@@ -497,8 +510,8 @@
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.splitContainer6);
-            this.splitContainer5.Size = new System.Drawing.Size(404, 565);
-            this.splitContainer5.SplitterDistance = 235;
+            this.splitContainer5.Size = new System.Drawing.Size(404, 482);
+            this.splitContainer5.SplitterDistance = 200;
             this.splitContainer5.TabIndex = 0;
             // 
             // dataGridView2
@@ -509,7 +522,7 @@
             this.dataGridView2.Location = new System.Drawing.Point(0, 0);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(400, 231);
+            this.dataGridView2.Size = new System.Drawing.Size(400, 196);
             this.dataGridView2.TabIndex = 1;
             this.dataGridView2.SelectionChanged += new System.EventHandler(this.dataGridView2_SelectionChanged);
             // 
@@ -528,8 +541,8 @@
             // splitContainer6.Panel2
             // 
             this.splitContainer6.Panel2.Controls.Add(this.dataGridView3);
-            this.splitContainer6.Size = new System.Drawing.Size(404, 326);
-            this.splitContainer6.SplitterDistance = 92;
+            this.splitContainer6.Size = new System.Drawing.Size(404, 278);
+            this.splitContainer6.SplitterDistance = 78;
             this.splitContainer6.TabIndex = 0;
             // 
             // tableLayoutPanel4
@@ -548,15 +561,15 @@
             this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(400, 88);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(400, 74);
             this.tableLayoutPanel4.TabIndex = 1;
             // 
             // button6
             // 
             this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button6.Location = new System.Drawing.Point(136, 5);
+            this.button6.Location = new System.Drawing.Point(136, 3);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(127, 34);
+            this.button6.Size = new System.Drawing.Size(127, 31);
             this.button6.TabIndex = 5;
             this.button6.Text = "單身移除";
             this.button6.UseVisualStyleBackColor = true;
@@ -565,9 +578,9 @@
             // button7
             // 
             this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button7.Location = new System.Drawing.Point(269, 49);
+            this.button7.Location = new System.Drawing.Point(269, 40);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(128, 34);
+            this.button7.Size = new System.Drawing.Size(128, 31);
             this.button7.TabIndex = 6;
             this.button7.Text = "轉請購單";
             this.button7.UseVisualStyleBackColor = true;
@@ -576,9 +589,9 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(3, 5);
+            this.button3.Location = new System.Drawing.Point(3, 3);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(127, 34);
+            this.button3.Size = new System.Drawing.Size(127, 31);
             this.button3.TabIndex = 4;
             this.button3.Text = "單身新增";
             this.button3.UseVisualStyleBackColor = true;
@@ -592,7 +605,7 @@
             this.dataGridView3.Location = new System.Drawing.Point(0, 0);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowTemplate.Height = 24;
-            this.dataGridView3.Size = new System.Drawing.Size(400, 226);
+            this.dataGridView3.Size = new System.Drawing.Size(400, 192);
             this.dataGridView3.TabIndex = 1;
             this.dataGridView3.SelectionChanged += new System.EventHandler(this.dataGridView3_SelectionChanged);
             // 
@@ -1068,24 +1081,11 @@
             this.dataGridView7.Size = new System.Drawing.Size(326, 405);
             this.dataGridView7.TabIndex = 1;
             // 
-            // checkBox4
-            // 
-            this.checkBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Checked = true;
-            this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox4.Location = new System.Drawing.Point(116, 140);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(107, 20);
-            this.checkBox4.TabIndex = 6;
-            this.checkBox4.Text = "過濾A513";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            // 
             // FrmPURTAB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 761);
+            this.ClientSize = new System.Drawing.Size(984, 655);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.Margin = new System.Windows.Forms.Padding(4);
