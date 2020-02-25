@@ -104,6 +104,12 @@
     <Compile Include="FrmCALENDAR.Designer.cs">
       <DependentUpon>FrmCALENDAR.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmCALENDERPUR.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmCALENDERPUR.Designer.cs">
+      <DependentUpon>FrmCALENDERPUR.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmCOPINVCHECK.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -240,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmCALENDAR.resx">
       <DependentUpon>FrmCALENDAR.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmCALENDERPUR.resx">
+      <DependentUpon>FrmCALENDERPUR.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmCOPINVCHECK.resx">
       <DependentUpon>FrmCOPINVCHECK.cs</DependentUpon>
