@@ -110,7 +110,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" AND MD002 LIKE '新%'  ");
                 FASTSQL.AppendFormat(@" AND MD001=TC005 ");
                 FASTSQL.AppendFormat(@" AND TC001=TE001 AND TC002=TE002 ");
-                FASTSQL.AppendFormat(@" AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '3010000%' AND LEN(TE004)=10))   ");
+                FASTSQL.AppendFormat(@" AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '301%' AND LEN(TE004)=10))   ");
                 FASTSQL.AppendFormat(@" AND TC003>={0}  AND TC003<={1} ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@" AND MD002='{0}' ", comboBox2.Text.ToString());
                 FASTSQL.AppendFormat(@" GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 ");
@@ -150,7 +150,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" AND MD002 LIKE '新%'  ");
                 FASTSQL.AppendFormat(@" AND MD001=TC005 ");
                 FASTSQL.AppendFormat(@" AND TC001=TE001 AND TC002=TE002 ");
-                FASTSQL.AppendFormat(@" AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '3010000%' AND LEN(TE004)=10))");
+                FASTSQL.AppendFormat(@" AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '301%' AND LEN(TE004)=10))");
                 FASTSQL.AppendFormat(@" AND TC003>={0}  AND TC003<={1} ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@" AND MD002='{0}' ", comboBox2.Text.ToString());
                 FASTSQL.AppendFormat(@" GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 ");
