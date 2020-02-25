@@ -1240,27 +1240,31 @@ namespace TKWAREHOUSE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if(rowIndexDG3 == -1)
-            {
-                SEARCHDG3(textBox1.Text.Trim(), 0);
-            }
-            else
-            {
-                SEARCHDG3(textBox1.Text.Trim(), rowIndexDG3 + 1);
-            }
-            
+            SEARCHDG3(textBox1.Text.Trim(), 0);
+
+            //if(rowIndexDG3 == -1)
+            //{
+            //    SEARCHDG3(textBox1.Text.Trim(), 0);
+            //}
+            //else
+            //{
+            //    SEARCHDG3(textBox1.Text.Trim(), rowIndexDG3 + 1);
+            //}
+
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            if (rowIndexDG5 == -1)
-            {
-                SEARCHDG5(textBox1.Text.Trim(), 0);
-            }
-            else
-            {
-                SEARCHDG5(textBox1.Text.Trim(), rowIndexDG5 + 1);
-            }
+            SEARCHDG5(textBox1.Text.Trim(), 0);
+
+            //if (rowIndexDG5 == -1)
+            //{
+            //    SEARCHDG5(textBox1.Text.Trim(), 0);
+            //}
+            //else
+            //{
+            //    SEARCHDG5(textBox1.Text.Trim(), rowIndexDG5 + 1);
+            //}
         }
 
         #endregion

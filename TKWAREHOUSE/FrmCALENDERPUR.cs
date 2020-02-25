@@ -115,6 +115,12 @@ namespace TKWAREHOUSE
                             };
 
                             calendar1.AddEvent(ce2);
+
+                            
+                            //calendar1.HighlightCurrentDay = true;
+                            //calendar1.AutoSize = true;
+                            //calendar1.AutoScroll = true;
+
                         }
 
 
