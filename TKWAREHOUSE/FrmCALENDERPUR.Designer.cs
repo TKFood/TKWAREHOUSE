@@ -101,6 +101,8 @@
             // calendar1
             // 
             this.calendar1.AllowEditingEvents = true;
+            this.calendar1.AutoScroll = true;
+            this.calendar1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.calendar1.CalendarDate = new System.DateTime(2018, 2, 23, 15, 15, 15, 0);
             this.calendar1.CalendarView = Calendar.NET.CalendarViews.Month;
             this.calendar1.DateHeaderFont = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);

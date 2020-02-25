@@ -56,7 +56,8 @@ namespace TKWAREHOUSE
 
 
             calendar1.RemoveAllEvents();
-            calendar1.CalendarDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            //calendar1.CalendarDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            calendar1.CalendarDate = new DateTime(dateTimePicker1.Value.Year, dateTimePicker1.Value.Month, DateTime.Now.Day, 0, 0, 0);
             calendar1.CalendarView = CalendarViews.Month;
             //calendar1.CalendarView = CalendarViews.Day;
             calendar1.AllowEditingEvents = false;
