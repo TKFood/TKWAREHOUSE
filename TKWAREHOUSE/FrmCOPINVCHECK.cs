@@ -61,9 +61,9 @@ namespace TKWAREHOUSE
         int result;
         string tablename = null;
         decimal COPNum = 0;
-     
-       
-  
+
+        int rowIndex = -1;
+
 
 
         public FrmCOPINVCHECK()
@@ -1141,6 +1141,49 @@ namespace TKWAREHOUSE
 
             }
         }
+
+        public void SEARCHDG3(string SEARCHSTRING, int INDEX)
+        {
+            String searchValue = SEARCHSTRING;
+            rowIndex = INDEX;
+
+            for (int i = INDEX; i < dataGridView3.Rows.Count; i++)
+            {
+                if (dataGridView3.Rows[i].Cells[0].Value.ToString().Contains(searchValue))
+                {
+                    rowIndex = i;
+
+                    dataGridView3.CurrentRow.Selected = false;
+                    dataGridView3.Rows[i].Selected = true;
+                    int index = rowIndex;
+                    dataGridView3.FirstDisplayedScrollingRowIndex = index;
+
+                    break;
+                }
+
+            }
+            //String searchValue = SEARCHSTRING;
+            //rowIndex = INDEX;
+            //foreach (DataGridViewRow row in dataGridView3.Rows)
+            //{
+            //    if (row.Cells[0].Value != null) // Need to check for null if new row is exposed
+            //    {
+            //        if (row.Cells[0].Value.ToString().Contains(searchValue))
+            //        {
+            //            rowIndex = row.Index;
+
+            //            dataGridView3.CurrentRow.Selected = false;
+            //            dataGridView3.Rows[row.Index].Selected = true;
+            //            int index = rowIndex;
+            //            dataGridView3.FirstDisplayedScrollingRowIndex = index;
+
+            //            break;
+            //        }
+            //    }
+            //}
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -1164,9 +1207,27 @@ namespace TKWAREHOUSE
             Search2();
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if(rowIndex == -1)
+            {
+                SEARCHDG3(textBox1.Text.Trim(), 0);
+            }
+            else
+            {
+                SEARCHDG3(textBox1.Text.Trim(), rowIndex+1);
+            }
+            
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+        }
 
         #endregion
 
-        
+
+
     }
 }
