@@ -62,7 +62,8 @@ namespace TKWAREHOUSE
         string tablename = null;
         decimal COPNum = 0;
 
-        int rowIndex = -1;
+        int rowIndexDG3 = -1;
+        int rowIndexDG5 = -1;
 
 
 
@@ -1145,45 +1146,75 @@ namespace TKWAREHOUSE
         public void SEARCHDG3(string SEARCHSTRING, int INDEX)
         {
             String searchValue = SEARCHSTRING;
-            rowIndex = INDEX;
-
+            rowIndexDG3 = INDEX;
             for (int i = INDEX; i < dataGridView3.Rows.Count; i++)
             {
                 if (dataGridView3.Rows[i].Cells[0].Value.ToString().Contains(searchValue))
                 {
-                    rowIndex = i;
+                    rowIndexDG3 = i;
 
                     dataGridView3.CurrentRow.Selected = false;
                     dataGridView3.Rows[i].Selected = true;
-                    int index = rowIndex;
+                    int index = rowIndexDG3;
                     dataGridView3.FirstDisplayedScrollingRowIndex = index;
 
                     break;
                 }
+                if (dataGridView3.Rows[i].Cells[1].Value.ToString().Contains(searchValue))
+                {
+                    rowIndexDG3 = i;
 
+                    dataGridView3.CurrentRow.Selected = false;
+                    dataGridView3.Rows[i].Selected = true;
+                    int index = rowIndexDG3;
+                    dataGridView3.FirstDisplayedScrollingRowIndex = index;
+
+                    break;
+                }
             }
-            //String searchValue = SEARCHSTRING;
-            //rowIndex = INDEX;
-            //foreach (DataGridViewRow row in dataGridView3.Rows)
-            //{
-            //    if (row.Cells[0].Value != null) // Need to check for null if new row is exposed
-            //    {
-            //        if (row.Cells[0].Value.ToString().Contains(searchValue))
-            //        {
-            //            rowIndex = row.Index;
-
-            //            dataGridView3.CurrentRow.Selected = false;
-            //            dataGridView3.Rows[row.Index].Selected = true;
-            //            int index = rowIndex;
-            //            dataGridView3.FirstDisplayedScrollingRowIndex = index;
-
-            //            break;
-            //        }
-            //    }
-            //}
         }
 
+        public void SEARCHDG5(string SEARCHSTRING, int INDEX)
+        {
+            String searchValue = SEARCHSTRING;
+            rowIndexDG5 = INDEX;
+            for (int i = INDEX; i < dataGridView5.Rows.Count; i++)
+            {
+                if (dataGridView5.Rows[i].Cells[1].Value.ToString().Contains(searchValue))
+                {
+                    rowIndexDG5 = i;
 
+                    dataGridView5.CurrentRow.Selected = false;
+                    dataGridView5.Rows[i].Selected = true;
+                    int index = rowIndexDG5;
+                    dataGridView5.FirstDisplayedScrollingRowIndex = index;
+
+                    break;
+                }
+                if (dataGridView5.Rows[i].Cells[2].Value.ToString().Contains(searchValue))
+                {
+                    rowIndexDG5 = i;
+
+                    dataGridView5.CurrentRow.Selected = false;
+                    dataGridView5.Rows[i].Selected = true;
+                    int index = rowIndexDG5;
+                    dataGridView5.FirstDisplayedScrollingRowIndex = index;
+
+                    break;
+                }
+                if (dataGridView5.Rows[i].Cells[3].Value.ToString().Contains(searchValue))
+                {
+                    rowIndexDG5 = i;
+
+                    dataGridView5.CurrentRow.Selected = false;
+                    dataGridView5.Rows[i].Selected = true;
+                    int index = rowIndexDG5;
+                    dataGridView5.FirstDisplayedScrollingRowIndex = index;
+
+                    break;
+                }
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1209,20 +1240,27 @@ namespace TKWAREHOUSE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if(rowIndex == -1)
+            if(rowIndexDG3 == -1)
             {
                 SEARCHDG3(textBox1.Text.Trim(), 0);
             }
             else
             {
-                SEARCHDG3(textBox1.Text.Trim(), rowIndex+1);
+                SEARCHDG3(textBox1.Text.Trim(), rowIndexDG3 + 1);
             }
             
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            if (rowIndexDG5 == -1)
+            {
+                SEARCHDG5(textBox1.Text.Trim(), 0);
+            }
+            else
+            {
+                SEARCHDG5(textBox1.Text.Trim(), rowIndexDG5 + 1);
+            }
         }
 
         #endregion
