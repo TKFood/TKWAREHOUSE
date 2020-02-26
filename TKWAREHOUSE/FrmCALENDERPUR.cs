@@ -203,7 +203,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@"  FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA ");
                 FASTSQL.AppendFormat(@"  WHERE TC001=TD001 AND TC002=TD002");
                 FASTSQL.AppendFormat(@"  AND MA001=TC004");
-                FASTSQL.AppendFormat(@"  AND TD012>='20200226' AND TD012<='2020031'");
+                FASTSQL.AppendFormat(@"  AND TD012>='{0}' AND TD012<='{1}'", dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@"  AND TD018='Y'");
                 FASTSQL.AppendFormat(@"  ORDER BY TD012,TD001,TD002,TD003");
                 FASTSQL.AppendFormat(@"  ");
@@ -220,7 +220,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@"  FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA ");
                 FASTSQL.AppendFormat(@"  WHERE TC001=TD001 AND TC002=TD002");
                 FASTSQL.AppendFormat(@"  AND MA001=TC004");
-                FASTSQL.AppendFormat(@"  AND TD012>='20200226' AND TD012<='2020031'");
+                FASTSQL.AppendFormat(@"  AND TD012>='{0}' AND TD012<='{1}'",dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@"  AND TD018='Y'");
                 FASTSQL.AppendFormat(@"  AND TD005 LIKE '%{0}%'",textBox1.Text.Trim());
                 FASTSQL.AppendFormat(@"  ORDER BY TD012,TD001,TD002,TD003");
@@ -326,8 +326,16 @@ namespace TKWAREHOUSE
 
                 StringBuilder SB = new StringBuilder();
 
-               
-
+                sbSql.AppendFormat(@"  SELECT TD012 AS '預交日','廠商-'+MA002+' 品號-'+TD004+ ' 品名-'+TD005+' 規格-'+TD006+' 採購量-'+CONVERT(nvarchar,TD008)+' 已交量-'+CONVERT(nvarchar,TD015)+' 單位-'+TD009 AS '備註' ");
+                sbSql.AppendFormat(@"   ,'採購單別-'+TD001+'-'+TD002+'-'+TD003 +' 請購單別-'+TD026+'-'+TD027+'-'+TD028  AS '單別'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA ");
+                sbSql.AppendFormat(@"  WHERE TC001=TD001 AND TC002=TD002");
+                sbSql.AppendFormat(@"  AND MA001=TC004");
+                sbSql.AppendFormat(@"  AND TD012>='{0}' AND TD012<='{1}'",sdt.ToString("yyyyMMdd"), edt.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  AND TD018='Y'");                
+                sbSql.AppendFormat(@"  ORDER BY TD012,TD001,TD002,TD003");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
                 adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
