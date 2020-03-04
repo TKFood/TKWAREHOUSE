@@ -1247,6 +1247,18 @@ namespace TKWAREHOUSE
                 }
             }
         }
+
+        private void dateTimePicker5_ValueChanged(object sender, EventArgs e)
+        {
+            dateTimePicker7.Value = dateTimePicker5.Value;
+        }
+
+        private void dateTimePicker6_ValueChanged(object sender, EventArgs e)
+        {
+            dateTimePicker8.Value = dateTimePicker6.Value;
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -1299,9 +1311,10 @@ namespace TKWAREHOUSE
             }
         }
 
+
+
         #endregion
 
-
-
+      
     }
 }
