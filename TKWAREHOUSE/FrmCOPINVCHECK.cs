@@ -1147,8 +1147,12 @@ namespace TKWAREHOUSE
         {
             String searchValue = SEARCHSTRING;
             rowIndexDG3 = INDEX;
+            int ROWS = 0;
+
             for (int i = INDEX; i < dataGridView3.Rows.Count; i++)
             {
+                ROWS = i;
+
                 if (dataGridView3.Rows[i].Cells[0].Value.ToString().Contains(searchValue))
                 {
                     rowIndexDG3 = i;
@@ -1172,14 +1176,30 @@ namespace TKWAREHOUSE
                     break;
                 }
             }
+
+           if(ROWS== dataGridView3.Rows.Count-1)
+            {
+                if (MessageBox.Show("已查到最後一筆，是否從頭開始?", "已查到最後一筆，是否從頭開始?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    SEARCHDG3(textBox1.Text.Trim(), 0);
+                }
+                else
+                {
+                    
+                }
+            }
         }
 
         public void SEARCHDG5(string SEARCHSTRING, int INDEX)
         {
             String searchValue = SEARCHSTRING;
             rowIndexDG5 = INDEX;
+            int ROWS = 0;
+
             for (int i = INDEX; i < dataGridView5.Rows.Count; i++)
             {
+                ROWS = i;
+
                 if (dataGridView5.Rows[i].Cells[1].Value.ToString().Contains(searchValue))
                 {
                     rowIndexDG5 = i;
@@ -1214,6 +1234,18 @@ namespace TKWAREHOUSE
                     break;
                 }
             }
+
+            if (ROWS == dataGridView5.Rows.Count - 1)
+            {
+                if (MessageBox.Show("已查到最後一筆，是否從頭開始?", "已查到最後一筆，是否從頭開始?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    SEARCHDG5(textBox1.Text.Trim(), 0);
+                }
+                else
+                {
+
+                }
+            }
         }
         #endregion
 
@@ -1240,31 +1272,31 @@ namespace TKWAREHOUSE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            SEARCHDG3(textBox1.Text.Trim(), 0);
+            //SEARCHDG3(textBox1.Text.Trim(), 0);
 
-            //if(rowIndexDG3 == -1)
-            //{
-            //    SEARCHDG3(textBox1.Text.Trim(), 0);
-            //}
-            //else
-            //{
-            //    SEARCHDG3(textBox1.Text.Trim(), rowIndexDG3 + 1);
-            //}
+            if (rowIndexDG3 == -1)
+            {
+                SEARCHDG3(textBox1.Text.Trim(), 0);
+            }
+            else
+            {
+                SEARCHDG3(textBox1.Text.Trim(), rowIndexDG3 + 1);
+            }
 
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            SEARCHDG5(textBox1.Text.Trim(), 0);
+            //SEARCHDG5(textBox1.Text.Trim(), 0);
 
-            //if (rowIndexDG5 == -1)
-            //{
-            //    SEARCHDG5(textBox1.Text.Trim(), 0);
-            //}
-            //else
-            //{
-            //    SEARCHDG5(textBox1.Text.Trim(), rowIndexDG5 + 1);
-            //}
+            if (rowIndexDG5 == -1)
+            {
+                SEARCHDG5(textBox1.Text.Trim(), 0);
+            }
+            else
+            {
+                SEARCHDG5(textBox1.Text.Trim(), rowIndexDG5 + 1);
+            }
         }
 
         #endregion
