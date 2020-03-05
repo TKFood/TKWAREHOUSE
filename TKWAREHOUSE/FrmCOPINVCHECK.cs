@@ -1062,7 +1062,7 @@ namespace TKWAREHOUSE
             TC027.AppendFormat("''");
 
 
-            QUERY1.AppendFormat(" AND ((TD004 IN (SELECT [MD001] FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}')) OR (TD004 IN (SELECT MD001 FROM [TK].[dbo].[VBOMMD] WHERE MD003 IN (SELECT MD001 FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}' ))) OR (TD004 IN (SELECT MD001 FROM [TK].[dbo].[BOMMD]  WHERE MD003 IN ( SELECT MD001 FROM [TK].[dbo].[BOMMD]  WHERE MD003 IN ( SELECT MD001 FROM [TK].[dbo].[BOMMD] WHERE [MD003]='{0}' ))) ) ) ", MB001.Trim().ToString());
+            //QUERY1.AppendFormat(" AND ((TD004 IN (SELECT [MD001] FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}')) OR (TD004 IN (SELECT MD001 FROM [TK].[dbo].[VBOMMD] WHERE MD003 IN (SELECT MD001 FROM [TK].[dbo].[VBOMMD] WHERE [MD003]='{0}' ))) OR (TD004 IN (SELECT MD001 FROM [TK].[dbo].[BOMMD]  WHERE MD003 IN ( SELECT MD001 FROM [TK].[dbo].[BOMMD]  WHERE MD003 IN ( SELECT MD001 FROM [TK].[dbo].[BOMMD] WHERE [MD003]='{0}' ))) ) ) ", MB001.Trim().ToString());
 
 
             try
@@ -1073,22 +1073,35 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT 日期,品號,品名,客戶,CONVERT(INT,SUM(訂單數量)) AS 訂單數量,單位 ,單別,單號,序號,規格  ");
+                sbSql.AppendFormat(@"  SELECT SUM(NUNC) AS '預計用量',日期,品號,品名,客戶,CONVERT(INT,SUM(訂單數量)) AS 訂單數量,單位 ,單別,單號,序號,規格  ");
                 sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(LA005*LA011),0)) FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA009='20001' AND LA001=品號) AS '成品倉庫存'");
                 sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(LA005*LA011),0)) FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA009='20002' AND LA001=品號) AS '外銷倉庫存'");
                 sbSql.AppendFormat(@"   ,(SELECT CONVERT(INT,ISNULL(SUM(TA015-TA017-TA018),0)) FROM [TK].dbo.MOCTA  WITH (NOLOCK) WHERE TA011 NOT IN ('Y','y') AND  TA026=單別 AND TA027=單號 AND TA028=序號 AND TA009>='{0}' AND TA009<='{1}') AS '未完成的製令' ", dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ,(SELECT CONVERT(INT,ISNULL(MC004,0))  FROM [TK].dbo.BOMMC WHERE MC001=品號) AS 標準批量");
                 sbSql.AppendFormat(@"  FROM (");
                 sbSql.AppendFormat(@"  SELECT   TD001 AS '單別',TD002 AS '單號',TD003 AS '序號',TC053  AS '客戶' ,TD013 AS '日期',TD004 AS '品號',TD005 AS '品名',TD006 AS '規格'");
-                sbSql.AppendFormat(@"  ,(CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*MD004 END) AS '訂單數量'");
+                sbSql.AppendFormat(@"  ,(CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END) AS '訂單數量'");
                 sbSql.AppendFormat(@"  ,MB004 AS '單位'");
                 sbSql.AppendFormat(@"  ,((TD008-TD009)+(TD024-TD025)) AS '訂單量'");
                 sbSql.AppendFormat(@"  ,TD010 AS '訂單單位' ");
-                sbSql.AppendFormat(@"  ,(CASE WHEN ISNULL(MD002,'')<>'' THEN MD002 ELSE TD010 END ) AS '換算單位'");
-                sbSql.AppendFormat(@"  ,(CASE WHEN MD003>0 THEN MD003 ELSE 1 END) AS '分子'");
-                sbSql.AppendFormat(@"  ,(CASE WHEN MD004>0 THEN MD004 ELSE (TD008-TD009) END ) AS '分母'");
+                sbSql.AppendFormat(@"  ,(CASE WHEN ISNULL(INVMD.MD002,'')<>'' THEN INVMD.MD002 ELSE TD010 END ) AS '換算單位'");
+                sbSql.AppendFormat(@"  ,(CASE WHEN INVMD.MD003>0 THEN INVMD.MD003 ELSE 1 END) AS '分子'");
+                sbSql.AppendFormat(@"  ,(CASE WHEN INVMD.MD004>0 THEN INVMD.MD004 ELSE (TD008-TD009) END ) AS '分母'");
+                sbSql.AppendFormat(@"  ,BOMMD.MD001 AS 'MD001A',BOMMD.MD003 AS 'MD003A',BOMMD.MD006 AS 'MD006A',BOMMD.MD007 AS 'MD007A',BOMMD.MD008 AS 'MD008A',BOMMC.MC004 AS 'MC004A'");
+                sbSql.AppendFormat(@"  ,BOMMD2.MD001 AS 'MD001B',BOMMD2.MD003 AS 'MD003B',ISNULL(BOMMD2.MD006,1) AS 'MD006B',ISNULL(BOMMD2.MD007,1) AS 'MD007B',ISNULL(BOMMD2.MD008,0) AS 'MD008B',ISNULL(BOMMC2.MC004,1) AS 'MC004B'");
+                sbSql.AppendFormat(@"  ,BOMMD3.MD001 AS 'MD001C',BOMMD3.MD003 AS 'MD003C',ISNULL(BOMMD3.MD006,1) AS 'MD006C',ISNULL(BOMMD3.MD007,1) AS 'MD007C',ISNULL(BOMMD3.MD008,0) AS 'MD008C',ISNULL(BOMMC3.MC004,1) AS 'MC004C'");
+                sbSql.AppendFormat(@"  ,((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007 AS 'NUNA'");
+                sbSql.AppendFormat(@"  ,(((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007)/ISNULL(BOMMC2.MC004,1)*ISNULL(BOMMD2.MD006,1)*(1+ISNULL(BOMMD2.MD008,0))/ISNULL(BOMMD2.MD007,1) AS 'NUNB'");
+                sbSql.AppendFormat(@"  ,((((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007)/ISNULL(BOMMC2.MC004,1)*ISNULL(BOMMD2.MD006,1)*(1+ISNULL(BOMMD2.MD008,0))/ISNULL(BOMMD2.MD007,1))/ISNULL(BOMMC3.MC004,1)*ISNULL(BOMMD3.MD006,1)*(1+ISNULL(BOMMD3.MD008,0))/ISNULL(BOMMD3.MD007,1)  AS 'NUNC'");
+                sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB,[TK].dbo.COPTC,[TK].dbo.COPTD");
                 sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMD ON MD001=TD004 AND TD010=MD002");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMD ON BOMMD.MD001=TD004 ");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMC ON BOMMC.MC001=TD004");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMD  BOMMD2 ON BOMMD2.MD001=BOMMD.MD003");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMC  BOMMC2 ON BOMMC2.MC001=BOMMD.MD003");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMD  BOMMD3 ON BOMMD3.MD001=BOMMD2.MD003");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMC  BOMMC3 ON BOMMC3.MC001=BOMMD2.MD003");
                 sbSql.AppendFormat(@"  WHERE TD004=MB001");
                 sbSql.AppendFormat(@"  AND TC001=TD001 AND TC002=TD002");
                 sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
@@ -1096,8 +1109,9 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
                
-                sbSql.AppendFormat(@" AND TC027 IN ({0})  ", TC027.ToString());
-                sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
+                sbSql.AppendFormat(@"  AND TC027 IN ({0})  ", TC027.ToString());
+                sbSql.AppendFormat(@"  AND (BOMMD.MD003='{0}' OR BOMMD2.MD003='{0}' OR BOMMD3.MD003='{0}')", MB001.Trim().ToString());
+                //sbSql.AppendFormat(@"  {0}", QUERY1.ToString());
                 //sbSql.AppendFormat(@"  AND ( TD004 LIKE '40102910540200%'  ) ");
                 //sbSql.AppendFormat(@"  AND ( TD002='20180708006'  ) ");
                 sbSql.AppendFormat(@") AS TEMP");
