@@ -302,19 +302,21 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  ,(SELECT CONVERT(INT,ISNULL(MC004,0))  FROM [TK].dbo.BOMMC WHERE MC001=品號) AS 標準批量");
                 sbSql.AppendFormat(@"  FROM (");
                 sbSql.AppendFormat(@"  SELECT   TD001 AS '單別',TD002 AS '單號',TD003 AS '序號',TC053  AS '客戶' ,TD013 AS '日期',TD004 AS '品號',TD005 AS '品名',TD006 AS '規格'");
-                sbSql.AppendFormat(@"  ,(CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*MD004 END) AS '訂單數量'");
+                sbSql.AppendFormat(@"  ,((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END)-ISNULL(MOCTA.TA017,0)) AS '訂單數量'");
                 sbSql.AppendFormat(@"  ,MB004 AS '單位'");
                 sbSql.AppendFormat(@"  ,((TD008-TD009)+(TD024-TD025)) AS '訂單量'");
                 sbSql.AppendFormat(@"  ,TD010 AS '訂單單位' ");
                 sbSql.AppendFormat(@"  ,(CASE WHEN ISNULL(MD002,'')<>'' THEN MD002 ELSE TD010 END ) AS '換算單位'");
                 sbSql.AppendFormat(@"  ,(CASE WHEN MD003>0 THEN MD003 ELSE 1 END) AS '分子'");
                 sbSql.AppendFormat(@"  ,(CASE WHEN MD004>0 THEN MD004 ELSE (TD008-TD009) END ) AS '分母'");
+                sbSql.AppendFormat(@"  ,ISNULL(MOCTA.TA017,0) AS TA017");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB,[TK].dbo.COPTC,[TK].dbo.COPTD");
                 sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMD ON MD001=TD004 AND TD010=MD002");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.MOCTA ON TA026=TD001 AND TA027=TD002 AND TD028=TD003 AND TA006=TD004");
                 sbSql.AppendFormat(@"  WHERE TD004=MB001");
                 sbSql.AppendFormat(@"  AND TC001=TD001 AND TC002=TD002");
                 sbSql.AppendFormat(@"  AND TD004 LIKE '4%'");
-
+                sbSql.AppendFormat(@" ");
                 sbSql.AppendFormat(@"  AND TD013>='{0}' AND TD013<='{1}'", dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND ((TD008-TD009)+(TD024-TD025))>0   ");
 
@@ -1090,12 +1092,13 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  ,BOMMD.MD001 AS 'MD001A',BOMMD.MD003 AS 'MD003A',BOMMD.MD006 AS 'MD006A',BOMMD.MD007 AS 'MD007A',BOMMD.MD008 AS 'MD008A',BOMMC.MC004 AS 'MC004A'");
                 sbSql.AppendFormat(@"  ,BOMMD2.MD001 AS 'MD001B',BOMMD2.MD003 AS 'MD003B',ISNULL(BOMMD2.MD006,1) AS 'MD006B',ISNULL(BOMMD2.MD007,1) AS 'MD007B',ISNULL(BOMMD2.MD008,0) AS 'MD008B',ISNULL(BOMMC2.MC004,1) AS 'MC004B'");
                 sbSql.AppendFormat(@"  ,BOMMD3.MD001 AS 'MD001C',BOMMD3.MD003 AS 'MD003C',ISNULL(BOMMD3.MD006,1) AS 'MD006C',ISNULL(BOMMD3.MD007,1) AS 'MD007C',ISNULL(BOMMD3.MD008,0) AS 'MD008C',ISNULL(BOMMC3.MC004,1) AS 'MC004C'");
-                sbSql.AppendFormat(@"  ,((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007 AS 'NUNA'");
-                sbSql.AppendFormat(@"  ,(((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007)/ISNULL(BOMMC2.MC004,1)*ISNULL(BOMMD2.MD006,1)*(1+ISNULL(BOMMD2.MD008,0))/ISNULL(BOMMD2.MD007,1) AS 'NUNB'");
-                sbSql.AppendFormat(@"  ,((((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007)/ISNULL(BOMMC2.MC004,1)*ISNULL(BOMMD2.MD006,1)*(1+ISNULL(BOMMD2.MD008,0))/ISNULL(BOMMD2.MD007,1))/ISNULL(BOMMC3.MC004,1)*ISNULL(BOMMD3.MD006,1)*(1+ISNULL(BOMMD3.MD008,0))/ISNULL(BOMMD3.MD007,1)  AS 'NUNC'");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB,[TK].dbo.COPTC,[TK].dbo.COPTD");
+                sbSql.AppendFormat(@"  ,(((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END)-ISNULL(MOCTA.TA017,0)))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007 AS 'NUNA'");
+                sbSql.AppendFormat(@"  ,((((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END)-ISNULL(MOCTA.TA017,0)))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007)/ISNULL(BOMMC2.MC004,1)*ISNULL(BOMMD2.MD006,1)*(1+ISNULL(BOMMD2.MD008,0))/ISNULL(BOMMD2.MD007,1) AS 'NUNB'");
+                sbSql.AppendFormat(@"  ,(((((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END)-ISNULL(MOCTA.TA017,0)))/BOMMC.MC004*(BOMMD.MD006*(1+BOMMD.MD008))/BOMMD.MD007)/ISNULL(BOMMC2.MC004,1)*ISNULL(BOMMD2.MD006,1)*(1+ISNULL(BOMMD2.MD008,0))/ISNULL(BOMMD2.MD007,1))/ISNULL(BOMMC3.MC004,1)*ISNULL(BOMMD3.MD006,1)*(1+ISNULL(BOMMD3.MD008,0))/ISNULL(BOMMD3.MD007,1)  AS 'NUNC'");
+                sbSql.AppendFormat(@"  ,ISNULL(MOCTA.TA017,0) AS TA017");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.INVMB,[TK].dbo.COPTC,[TK].dbo.COPTD");                
                 sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMD ON MD001=TD004 AND TD010=MD002");
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.MOCTA ON TA026=TD001 AND TA027=TD002 AND TD028=TD003 AND TA006=TD004");
                 sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMD ON BOMMD.MD001=TD004 ");
                 sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMC ON BOMMC.MC001=TD004");
                 sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.BOMMD  BOMMD2 ON BOMMD2.MD001=BOMMD.MD003");
