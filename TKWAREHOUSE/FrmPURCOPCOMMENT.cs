@@ -61,7 +61,61 @@ namespace TKWAREHOUSE
         }
 
         #region FUNCTION
+        private void FrmPURCOPCOMMENT_Load(object sender, EventArgs e)
+        {
+            SETGRIDVIEW();
+        }
 
+        public void SETGRIDVIEW()
+        {
+            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;      //奇數列顏色
+            dataGridView2.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;
+            dataGridView3.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;
+            dataGridView4.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;
+
+
+            //先建立個 CheckBox 欄
+            DataGridViewCheckBoxColumn cbCol = new DataGridViewCheckBoxColumn();
+            cbCol.Width = 120;   //設定寬度
+            cbCol.HeaderText = "　全選";
+            cbCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;   //置中
+            cbCol.TrueValue = true;
+            cbCol.FalseValue = false;
+            dataGridView3.Columns.Insert(0, cbCol);
+
+            #region 建立全选 CheckBox
+
+            //建立个矩形，等下计算 CheckBox 嵌入 GridView 的位置
+            Rectangle rect = dataGridView3.GetCellDisplayRectangle(0, -1, true);
+            rect.X = rect.Location.X + rect.Width / 4 - 18;
+            rect.Y = rect.Location.Y + (rect.Height / 2 - 9);
+
+            CheckBox cbHeader = new CheckBox();
+            cbHeader.Name = "checkboxHeader";
+            cbHeader.Size = new Size(18, 18);
+            cbHeader.Location = rect.Location;
+
+            //全选要设定的事件
+            cbHeader.CheckedChanged += new EventHandler(cbHeader_CheckedChanged);
+
+            //将 CheckBox 加入到 dataGridView
+            dataGridView3.Controls.Add(cbHeader);
+
+
+            #endregion
+        }
+
+        private void cbHeader_CheckedChanged(object sender, EventArgs e)
+        {
+            dataGridView1.EndEdit();
+
+            foreach (DataGridViewRow dr in dataGridView1.Rows)
+            {
+                dr.Cells[0].Value = ((CheckBox)dataGridView1.Controls.Find("checkboxHeader", true)[0]).Checked;
+
+            }
+
+        }
         public void Search()
         {
             try
@@ -146,11 +200,11 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
-                
+
                 sbSql.AppendFormat(@"  SELECT [COPTC001] AS '訂單單別',[COPTC002] AS '訂單單號',[COMMENT] AS '備註',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[ID] ");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
                 sbSql.AppendFormat(@"  WHERE [PURTA001]='{0}' AND [PURTA002]='{1}' ",PURTA001,PURTA002);
-                sbSql.AppendFormat(@"  ORDER BY [ID] ");
+                sbSql.AppendFormat(@"  ORDER BY [ID]");
                 sbSql.AppendFormat(@"  ");
 
                 adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -188,6 +242,56 @@ namespace TKWAREHOUSE
 
         }
 
+        public void Search3()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT TC001 AS '訂單單別',TC002 AS '訂單單號',MV002  AS '業務',TC053 AS '客戶'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.COPTC,[TK].dbo.CMSMV");
+                sbSql.AppendFormat(@"  WHERE TC003>='{0}' AND TC003<='{1}'", dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  AND TC006=MV001");
+                sbSql.AppendFormat(@"  ORDER BY TC001,TC002");
+                sbSql.AppendFormat(@"  ");
+
+                adapter3 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder2 = new SqlCommandBuilder(adapter3);
+                sqlConn.Open();
+                ds3.Clear();
+                adapter3.Fill(ds3, "ds3");
+                sqlConn.Close();
+
+
+                if (ds3.Tables["ds3"].Rows.Count == 0)
+                {
+                    dataGridView3.DataSource = null;
+                }
+                else
+                {
+                    if (ds3.Tables["ds3"].Rows.Count >= 1)
+                    {
+                        dataGridView3.DataSource = ds3.Tables["ds3"];
+                        dataGridView3.AutoResizeColumns();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
 
         #endregion
 
@@ -197,8 +301,13 @@ namespace TKWAREHOUSE
         {
             Search();
         }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Search3();
+        }
+
         #endregion
 
-      
+
     }
 }

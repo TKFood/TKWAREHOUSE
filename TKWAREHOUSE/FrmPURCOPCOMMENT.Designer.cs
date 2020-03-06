@@ -340,6 +340,7 @@
             this.button1.TabIndex = 51;
             this.button1.Text = "查詢訂單";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // dateTimePicker3
             // 
@@ -503,6 +504,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FrmPURCOPCOMMENT";
             this.Text = "FrmPURCOPCOMMENT";
+            this.Load += new System.EventHandler(this.FrmPURCOPCOMMENT_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
