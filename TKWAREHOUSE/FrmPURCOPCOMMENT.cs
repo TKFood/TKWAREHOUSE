@@ -308,7 +308,7 @@ namespace TKWAREHOUSE
                 DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[0];
                 if (chk.Value == chk.TrueValue)
                 {
-                    ADDDT.Rows.Add(row.Cells["訂單單別"].Value.ToString(), row.Cells["訂單單號"].Value.ToString());
+                    ADDDTROWS(row.Cells["訂單單別"].Value.ToString(), row.Cells["訂單單號"].Value.ToString());
                 }
                               
             }
@@ -317,6 +317,25 @@ namespace TKWAREHOUSE
             {
                 dataGridView4.DataSource = ADDDT;
             }
+        }
+
+        public void ADDDTROWS(string TC001,string TC002)
+        {
+            if(ADDDT.Rows.Count>0)
+            {
+                foreach (DataRow dr in ADDDT.Rows)
+                {
+                    if (!dr[0].ToString().Equals(TC001) && !dr[1].ToString().Equals(TC002))
+                    {
+                        ADDDT.Rows.Add(TC001, TC002);
+                    }
+                }
+            }
+            else
+            {
+                ADDDT.Rows.Add(TC001, TC002);
+            }
+            
         }
         public void CLEARCOP()
         {
