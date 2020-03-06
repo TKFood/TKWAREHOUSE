@@ -49,6 +49,8 @@ namespace TKWAREHOUSE
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
 
+        DataTable ADDDT = new DataTable();
+
         int result;
         string tablename = null;
 
@@ -58,6 +60,11 @@ namespace TKWAREHOUSE
         public FrmPURCOPCOMMENT()
         {
             InitializeComponent();
+
+            ADDDT.Columns.AddRange(new DataColumn[2] {
+                 new DataColumn("訂單單別", typeof(string)),
+                 new DataColumn("訂單單號", typeof(string))
+            });
         }
 
         #region FUNCTION
@@ -77,7 +84,7 @@ namespace TKWAREHOUSE
             //先建立個 CheckBox 欄
             DataGridViewCheckBoxColumn cbCol = new DataGridViewCheckBoxColumn();
             cbCol.Width = 120;   //設定寬度
-            cbCol.HeaderText = "　全選";
+            cbCol.HeaderText = "";
             cbCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;   //置中
             cbCol.TrueValue = true;
             cbCol.FalseValue = false;
@@ -293,6 +300,26 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCHCOP()
+        {
+            ADDDT.Clear();
+
+            foreach (DataGridViewRow row in dataGridView3.Rows)
+            {
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[0];
+                if (chk.Value == chk.TrueValue)
+                {
+                    ADDDT.Rows.Add(row.Cells["訂單單別"].Value.ToString(), row.Cells["訂單單號"].Value.ToString());
+                }
+                              
+            }
+
+            if (ADDDT.Rows.Count >= 1)
+            {
+                dataGridView4.DataSource = ADDDT;
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -304,6 +331,10 @@ namespace TKWAREHOUSE
         private void button1_Click(object sender, EventArgs e)
         {
             Search3();
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SEARCHCOP();
         }
 
         #endregion
