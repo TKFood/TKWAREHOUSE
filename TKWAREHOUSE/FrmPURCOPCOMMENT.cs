@@ -321,17 +321,33 @@ namespace TKWAREHOUSE
 
         public void ADDDTROWS(string TC001,string TC002)
         {
-            if(ADDDT.Rows.Count>0)
+            string COMPARE1;
+            string COMPARE2 = TC001.Trim() + TC002.Trim();
+            string CHECKADD = "N"; ;
+
+            if (dataGridView4.Rows.Count>0)
             {
-                foreach (DataRow dr in ADDDT.Rows)
+                foreach (DataGridViewRow row in dataGridView4.Rows)
                 {
-                    if (!dr[0].ToString().Equals(TC001) && !dr[1].ToString().Equals(TC002))
+                    COMPARE1 = row.Cells[0].Value.ToString().Trim() + row.Cells[1].Value.ToString().Trim();
+
+                    if (COMPARE1.Equals(COMPARE2))
                     {
-                        ADDDT.Rows.Add(TC001, TC002);
+                        CHECKADD = "N";
+                        break;
+                    }
+                    else
+                    {
+                        CHECKADD = "Y";
                     }
                 }
             }
             else
+            {
+                ADDDT.Rows.Add(TC001, TC002);
+            }
+
+            if(CHECKADD.Equals("Y"))
             {
                 ADDDT.Rows.Add(TC001, TC002);
             }
