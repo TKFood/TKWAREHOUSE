@@ -211,6 +211,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@"  SELECT [COPTC001] AS '訂單單別',[COPTC002] AS '訂單單號',[COMMENT] AS '備註',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[ID] ");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
                 sbSql.AppendFormat(@"  WHERE [PURTA001]='{0}' AND [PURTA002]='{1}' ",PURTA001,PURTA002);
+                sbSql.AppendFormat(@"  AND [VISIABLE]='Y'");
                 sbSql.AppendFormat(@"  ORDER BY [ID]");
                 sbSql.AppendFormat(@"  ");
 
@@ -302,8 +303,6 @@ namespace TKWAREHOUSE
 
         public void SEARCHCOP()
         {
-            ADDDT.Clear();
-
             foreach (DataGridViewRow row in dataGridView3.Rows)
             {
                 DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[0];
@@ -319,7 +318,10 @@ namespace TKWAREHOUSE
                 dataGridView4.DataSource = ADDDT;
             }
         }
-
+        public void CLEARCOP()
+        {
+            ADDDT.Clear();
+        }
         #endregion
 
         #region BUTTON
@@ -337,6 +339,10 @@ namespace TKWAREHOUSE
             SEARCHCOP();
         }
 
+        private void button5_Click(object sender, EventArgs e)
+        {
+            CLEARCOP();
+        }
         #endregion
 
 
