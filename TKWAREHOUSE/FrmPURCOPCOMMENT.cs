@@ -53,9 +53,13 @@ namespace TKWAREHOUSE
 
         int result;
         string tablename = null;
+        SqlTransaction tran;
+        SqlCommand cmd = new SqlCommand();
 
         string PURTA001;
         string PURTA002;
+        string COPTC001;
+        string COPTC002;
 
         public FrmPURCOPCOMMENT()
         {
@@ -363,6 +367,66 @@ namespace TKWAREHOUSE
         {
             ADDDT.Clear();
         }
+
+        public void ADDPURCOPCOMMENT()
+        {
+            if(!string.IsNullOrEmpty(PURTA001)&& !string.IsNullOrEmpty(PURTA002) && ADDDT.Rows.Count>0)
+            {
+                ADDPURCOPCOMMENTDB(PURTA001, PURTA002, ADDDT);
+            }
+        }
+
+        public void ADDPURCOPCOMMENTDB(string PURTA001,string PURTA002,DataTable TEMP)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                foreach (DataRow dr in TEMP.Rows)
+                {
+                    sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
+                    sbSql.AppendFormat(" ([PURTA001],[PURTA002],[COPTC001],[COPTC002],[COMMENT],[VISIABLE])");
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}','{3}','{4}','Y')",PURTA001,PURTA002,dr["訂單單別"].ToString(), dr["訂單單號"].ToString(),textBox3.Text.ToString());
+                    sbSql.AppendFormat(" ");
+                }
+                sbSql.AppendFormat(" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -387,7 +451,7 @@ namespace TKWAREHOUSE
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            ADDPURCOPCOMMENT();
         }
 
         #endregion
