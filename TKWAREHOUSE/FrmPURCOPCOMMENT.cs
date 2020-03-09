@@ -452,6 +452,7 @@ namespace TKWAREHOUSE
         private void button3_Click(object sender, EventArgs e)
         {
             ADDPURCOPCOMMENT();
+            Search2(PURTA001, PURTA002);
         }
 
         #endregion
