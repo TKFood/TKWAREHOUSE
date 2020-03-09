@@ -139,7 +139,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  SELECT TA001 AS '請購單別',TA002 AS '請購單號',TA006 AS '備註'");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.PURTA");
-                sbSql.AppendFormat(@"  WHERE TA003>='{0}' AND TA003<='{1}'",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  WHERE TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ORDER BY TA001,TA002");
                 sbSql.AppendFormat(@"  ");
 
@@ -150,7 +150,7 @@ namespace TKWAREHOUSE
                 ds.Clear();
                 adapter.Fill(ds, "ds");
                 sqlConn.Close();
-                
+
 
                 if (ds.Tables["ds"].Rows.Count == 0)
                 {
@@ -192,7 +192,8 @@ namespace TKWAREHOUSE
 
                     textBox1.Text = row.Cells["請購單別"].Value.ToString().Trim();
                     textBox2.Text = row.Cells["請購單號"].Value.ToString().Trim();
-
+                    textBox4.Text = row.Cells["請購單別"].Value.ToString().Trim();
+                    textBox5.Text = row.Cells["請購單號"].Value.ToString().Trim();
 
                     Search2(PURTA001, PURTA002);
                 }
@@ -202,13 +203,15 @@ namespace TKWAREHOUSE
                     PURTA002 = null;
                     textBox1.Text = null;
                     textBox2.Text = null;
+                    textBox4.Text = null;
+                    textBox5.Text = null;
 
                 }
             }
-           
+
         }
 
-        public void Search2(string PURTA001,string PURTA002)
+        public void Search2(string PURTA001, string PURTA002)
         {
             try
             {
@@ -220,7 +223,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  SELECT [COPTC001] AS '訂單單別',[COPTC002] AS '訂單單號',[COMMENT] AS '備註',[PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[ID] ");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
-                sbSql.AppendFormat(@"  WHERE [PURTA001]='{0}' AND [PURTA002]='{1}' ",PURTA001,PURTA002);
+                sbSql.AppendFormat(@"  WHERE [PURTA001]='{0}' AND [PURTA002]='{1}' ", PURTA001, PURTA002);
                 sbSql.AppendFormat(@"  AND [VISIABLE]='Y'");
                 sbSql.AppendFormat(@"  ORDER BY [ID]");
                 sbSql.AppendFormat(@"  ");
@@ -320,7 +323,7 @@ namespace TKWAREHOUSE
                 {
                     ADDDTROWS(row.Cells["訂單單別"].Value.ToString(), row.Cells["訂單單號"].Value.ToString());
                 }
-                              
+
             }
 
             if (ADDDT.Rows.Count >= 1)
@@ -329,13 +332,13 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADDDTROWS(string TC001,string TC002)
+        public void ADDDTROWS(string TC001, string TC002)
         {
             string COMPARE1;
             string COMPARE2 = TC001.Trim() + TC002.Trim();
             string CHECKADD = "N"; ;
 
-            if (dataGridView4.Rows.Count>0)
+            if (dataGridView4.Rows.Count > 0)
             {
                 foreach (DataGridViewRow row in dataGridView4.Rows)
                 {
@@ -357,11 +360,11 @@ namespace TKWAREHOUSE
                 ADDDT.Rows.Add(TC001, TC002);
             }
 
-            if(CHECKADD.Equals("Y"))
+            if (CHECKADD.Equals("Y"))
             {
                 ADDDT.Rows.Add(TC001, TC002);
             }
-            
+
         }
         public void CLEARCOP()
         {
@@ -370,13 +373,13 @@ namespace TKWAREHOUSE
 
         public void ADDPURCOPCOMMENT()
         {
-            if(!string.IsNullOrEmpty(PURTA001)&& !string.IsNullOrEmpty(PURTA002) && ADDDT.Rows.Count>0)
+            if (!string.IsNullOrEmpty(PURTA001) && !string.IsNullOrEmpty(PURTA002) && ADDDT.Rows.Count > 0)
             {
                 ADDPURCOPCOMMENTDB(PURTA001, PURTA002, ADDDT);
             }
         }
 
-        public void ADDPURCOPCOMMENTDB(string PURTA001,string PURTA002,DataTable TEMP)
+        public void ADDPURCOPCOMMENTDB(string PURTA001, string PURTA002, DataTable TEMP)
         {
             try
             {
@@ -393,7 +396,7 @@ namespace TKWAREHOUSE
                 {
                     sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
                     sbSql.AppendFormat(" ([PURTA001],[PURTA002],[COPTC001],[COPTC002],[COMMENT],[VISIABLE])");
-                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}','{3}','{4}','Y')",PURTA001,PURTA002,dr["訂單單別"].ToString(), dr["訂單單號"].ToString(),textBox3.Text.ToString());
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}','{3}','{4}','Y')", PURTA001, PURTA002, dr["訂單單別"].ToString(), dr["訂單單號"].ToString(), textBox3.Text.ToString());
                     sbSql.AppendFormat(" ");
                 }
                 sbSql.AppendFormat(" ");
@@ -427,6 +430,135 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+
+                    COPTC001 = row.Cells["訂單單別"].Value.ToString().Trim();
+                    COPTC002 = row.Cells["訂單單號"].Value.ToString().Trim();
+                    textBox6.Text = row.Cells["訂單單別"].Value.ToString().Trim();
+                    textBox7.Text = row.Cells["訂單單號"].Value.ToString().Trim();
+
+                }
+                else
+                {
+                    COPTC001 = null;
+                    COPTC002 = null;
+                    textBox6.Text = null;
+                    textBox7.Text = null;
+
+                }
+            }
+        }
+
+        public void PURCOPCOMMENT(string PURTA001, string PURTA002,string COPTC001,string COPTC002)
+        {
+            if (!string.IsNullOrEmpty(PURTA001) && !string.IsNullOrEmpty(PURTA002) && !string.IsNullOrEmpty(COPTC001) && !string.IsNullOrEmpty(COPTC002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+                    
+                    sbSql.AppendFormat(" UPDATE [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
+                    sbSql.AppendFormat(" SET [VISIABLE]='N'");
+                    sbSql.AppendFormat(" WHERE [PURTA001]='{0}' AND [PURTA002]='{1}' AND [COPTC001]='{2}' AND [COPTC002]='{3}'",PURTA001,PURTA002,COPTC001,COPTC002);
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
+
+        public void PURCOPCOMMENTALL(string PURTA001,string PURTA002)
+        {
+            if(!string.IsNullOrEmpty(PURTA001) && !string.IsNullOrEmpty(PURTA002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" UPDATE [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
+                    sbSql.AppendFormat(" SET [VISIABLE]='N'");
+                    sbSql.AppendFormat(" WHERE [PURTA001]='{0}' AND [PURTA002]='{1}' ", PURTA001, PURTA002);
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -455,6 +587,27 @@ namespace TKWAREHOUSE
             Search2(PURTA001, PURTA002);
         }
 
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("是否整張請購清空?", "是否整張請購清空?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                PURCOPCOMMENTALL(textBox4.Text.Trim(), textBox5.Text.Trim());
+                Search2(PURTA001, PURTA002);
+            }
+           
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("是否請購的訂單清空?", "是否請購的訂單清空?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                PURCOPCOMMENT(textBox4.Text.Trim(), textBox5.Text.Trim(), textBox6.Text.Trim(), textBox7.Text.Trim());
+                Search2(PURTA001, PURTA002);
+            }
+
+                
+        }
         #endregion
 
 
