@@ -186,12 +186,18 @@ namespace TKWAREHOUSE
                     PURTA001 = row.Cells["請購單別"].Value.ToString().Trim();
                     PURTA002 = row.Cells["請購單號"].Value.ToString().Trim();
 
+                    textBox1.Text = row.Cells["請購單別"].Value.ToString().Trim();
+                    textBox2.Text = row.Cells["請購單號"].Value.ToString().Trim();
+
+
                     Search2(PURTA001, PURTA002);
                 }
                 else
                 {
                     PURTA001 = null;
                     PURTA002 = null;
+                    textBox1.Text = null;
+                    textBox2.Text = null;
 
                 }
             }
@@ -378,6 +384,12 @@ namespace TKWAREHOUSE
         {
             CLEARCOP();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
 
