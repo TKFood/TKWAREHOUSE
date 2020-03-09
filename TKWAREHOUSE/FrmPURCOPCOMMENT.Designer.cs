@@ -85,7 +85,7 @@
             this.splitContainer12 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView6 = new System.Windows.Forms.DataGridView();
-            this.button9 = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -806,11 +806,11 @@
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 82F));
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 147F));
-            this.tableLayoutPanel7.Controls.Add(this.button9, 2, 1);
             this.tableLayoutPanel7.Controls.Add(this.label6, 0, 0);
             this.tableLayoutPanel7.Controls.Add(this.dateTimePicker5, 1, 0);
             this.tableLayoutPanel7.Controls.Add(this.dateTimePicker6, 2, 0);
             this.tableLayoutPanel7.Controls.Add(this.button8, 1, 1);
+            this.tableLayoutPanel7.Controls.Add(this.comboBox1, 2, 1);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel7.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
@@ -869,6 +869,7 @@
             this.dataGridView5.RowTemplate.Height = 24;
             this.dataGridView5.Size = new System.Drawing.Size(341, 474);
             this.dataGridView5.TabIndex = 4;
+            this.dataGridView5.SelectionChanged += new System.EventHandler(this.dataGridView5_SelectionChanged);
             // 
             // splitContainer12
             // 
@@ -916,16 +917,18 @@
             this.dataGridView6.Size = new System.Drawing.Size(617, 474);
             this.dataGridView6.TabIndex = 5;
             // 
-            // button9
+            // comboBox1
             // 
-            this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button9.Location = new System.Drawing.Point(196, 55);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(142, 32);
-            this.button9.TabIndex = 57;
-            this.button9.Text = "查詢所有記錄";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "一般",
+            "全部(含刪除)"});
+            this.comboBox1.Location = new System.Drawing.Point(196, 61);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(142, 24);
+            this.comboBox1.TabIndex = 57;
+            this.comboBox1.Text = "一般";
             // 
             // FrmPURCOPCOMMENT
             // 
@@ -1069,6 +1072,6 @@
         private System.Windows.Forms.SplitContainer splitContainer12;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.DataGridView dataGridView6;
-        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }

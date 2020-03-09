@@ -66,6 +66,8 @@ namespace TKWAREHOUSE
         string PURTA002;
         string COPTC001;
         string COPTC002;
+        string COPTC001TAB2;
+        string COPTC002TAB2;
 
         public FrmPURCOPCOMMENT()
         {
@@ -617,6 +619,92 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void dataGridView5_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView5.CurrentRow != null)
+            {
+                int rowindex = dataGridView5.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView5.Rows[rowindex];
+
+                    COPTC001TAB2 = row.Cells["訂單單別"].Value.ToString().Trim();
+                    COPTC002TAB2 = row.Cells["訂單單號"].Value.ToString().Trim();
+
+                    Search5(COPTC001TAB2, COPTC002TAB2);
+                }
+                else
+                {
+                    COPTC001TAB2 = null;
+                    COPTC002TAB2 = null;
+                   
+
+                }
+            }
+        }
+
+        public void Search5(string COPTC001TAB2,string COPTC002TAB2)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                if(comboBox1.Text.Equals("一般"))
+                {
+                    sbSql.AppendFormat(@"  SELECT [PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[COMMENT] AS '備註',[COPTC001] AS '訂單單別',[COPTC002] AS '訂單單號',[ID],[VISIABLE]");
+                    sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
+                    sbSql.AppendFormat(@"  WHERE [COPTC001]='{0}' AND [COPTC002]='{1}' ", COPTC001TAB2, COPTC002TAB2);
+                    sbSql.AppendFormat(@"  AND [VISIABLE]='Y'");
+                    sbSql.AppendFormat(@"  ORDER BY [ID]");
+                }
+                else if (comboBox1.Text.Equals("全部(含刪除)"))
+                {
+                    sbSql.AppendFormat(@"  SELECT [PURTA001] AS '請購單別',[PURTA002] AS '請購單號',[COMMENT] AS '備註',[COPTC001] AS '訂單單別',[COPTC002] AS '訂單單號',[ID],[VISIABLE]");
+                    sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[PURCOPCOMMENT]");
+                    sbSql.AppendFormat(@"  WHERE [COPTC001]='{0}' AND [COPTC002]='{1}' ", COPTC001TAB2, COPTC002TAB2);
+                    sbSql.AppendFormat(@"  ORDER BY [ID]");
+                }
+
+                sbSql.AppendFormat(@"  ");
+
+                adapter6 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder6 = new SqlCommandBuilder(adapter6);
+                sqlConn.Open();
+                ds6.Clear();
+                adapter6.Fill(ds6, "ds6");
+                sqlConn.Close();
+
+
+                if (ds6.Tables["ds6"].Rows.Count == 0)
+                {
+                    dataGridView6.DataSource = null;
+                }
+                else
+                {
+                    if (ds6.Tables["ds6"].Rows.Count >= 1)
+                    {
+                        dataGridView6.DataSource = ds6.Tables["ds6"];
+                        dataGridView6.AutoResizeColumns();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -670,12 +758,10 @@ namespace TKWAREHOUSE
         {
             Search4();
         }
-        private void button9_Click(object sender, EventArgs e)
-        {
 
-        }
+
         #endregion
 
-
+     
     }
 }
