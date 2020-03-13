@@ -570,7 +570,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" SELECT 品號,品名,規格,批號,庫存量,單位,在倉日期,有效天數,業務");
                 FASTSQL.AppendFormat(@" FROM (");
                 FASTSQL.AppendFormat(@" SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'");
-                FASTSQL.AppendFormat(@" ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'");
+                FASTSQL.AppendFormat(@" ,CONVERT(DECIMAL(16,3),SUM(LA005*LA011)) AS '庫存量',MB004 AS '單位'");
                 FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,LA016,'20200312') AS '在倉日期old' ");
                 FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,(SELECT TOP 1 TH014 FROM [TK].dbo.PURTG,[TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002 AND TH004=LA001 AND TH010=LA016 ),'20200312') AS '在倉日期'  ");
                 FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,'20200312',LA016) AS '有效天數'");
@@ -609,7 +609,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@"   SELECT 品號,品名,規格,批號,庫存量,單位,在倉日期,有效天數,業務");
                 FASTSQL.AppendFormat(@"   FROM (");
                 FASTSQL.AppendFormat(@"   SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'");
-                FASTSQL.AppendFormat(@"   ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'");
+                FASTSQL.AppendFormat(@"   ,CONVERT(DECIMAL(16,3),SUM(LA005*LA011)) AS '庫存量',MB004 AS '單位'");
                 FASTSQL.AppendFormat(@"   ,DATEDIFF(DAY,LA016,'{0}') AS '在倉日期old' ", dateTimePicker1.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@"   ,(CASE WHEN DATEDIFF(DAY,LA016,'{0}')>0 THEN DATEDIFF(DAY,LA016,'{0}') ELSE (CASE WHEN DATEDIFF(DAY,LA016,'{0}')<0 THEN  (CASE WHEN MB198='2' THEN DATEDIFF(DAY,DATEADD(month, -1*MB023, LA016 ),'{0}') END ) END ) END) AS '在倉日期' ", dateTimePicker1.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@"   ,(CASE WHEN MB198='2' THEN DATEDIFF(DAY,'{0}',DATEADD(month, MB023, '{0}' )) END)-(CASE WHEN DATEDIFF(DAY,LA016,'{0}')>0 THEN DATEDIFF(DAY,LA016,'{0}') ELSE (CASE WHEN DATEDIFF(DAY,LA016,'{0}')<0 THEN  (CASE WHEN MB198='2' THEN DATEDIFF(DAY,DATEADD(month, -1*MB023, LA016 ),'{0}') END ) END ) END)  AS '有效天數'", dateTimePicker1.Value.ToString("yyyyMMdd"));
