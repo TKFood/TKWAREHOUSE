@@ -47,6 +47,12 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
         SqlDataAdapter adapter6 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder6= new SqlCommandBuilder();
+        SqlDataAdapter adapter7 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
+        SqlDataAdapter adapter8 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
+        SqlDataAdapter adapter9 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
 
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
@@ -54,6 +60,9 @@ namespace TKWAREHOUSE
         DataSet ds4 = new DataSet();
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
+        DataSet ds7 = new DataSet();
+        DataSet ds8 = new DataSet();
+        DataSet ds9 = new DataSet();
 
         DataTable ADDDT = new DataTable();
 
@@ -358,6 +367,58 @@ namespace TKWAREHOUSE
                     {
                         dataGridView5.DataSource = ds5.Tables["ds5"];
                         dataGridView5.AutoResizeColumns();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+
+        public void Search5()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT TC001 AS '訂單單別',TC002 AS '訂單單號',MV002  AS '業務',TC053 AS '客戶'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.COPTC,[TK].dbo.CMSMV");
+                sbSql.AppendFormat(@"  WHERE TC003>='{0}' AND TC003<='{1}'", dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  AND TC006=MV001");
+                sbSql.AppendFormat(@"  ORDER BY TC001,TC002");
+                sbSql.AppendFormat(@"  ");
+
+                adapter7 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder7 = new SqlCommandBuilder(adapter7);
+                sqlConn.Open();
+                ds7.Clear();
+                adapter7.Fill(ds7, "ds7");
+                sqlConn.Close();
+
+
+                if (ds7.Tables["ds7"].Rows.Count == 0)
+                {
+                    dataGridView7.DataSource = null;
+                }
+                else
+                {
+                    if (ds7.Tables["ds7"].Rows.Count >= 1)
+                    {
+                        dataGridView7.DataSource = ds7.Tables["ds7"];
+                        dataGridView7.AutoResizeColumns();
                     }
 
                 }
@@ -704,6 +765,157 @@ namespace TKWAREHOUSE
 
             }
         }
+        private void dataGridView7_SelectionChanged(object sender, EventArgs e)
+        {
+            string TC001002;
+
+            if (dataGridView7.CurrentRow != null)
+            {
+                int rowindex = dataGridView7.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView7.Rows[rowindex];
+
+                    TC001002 = row.Cells["訂單單別"].Value.ToString().Trim()+"-"+row.Cells["訂單單號"].Value.ToString().Trim();
+                
+                    Search6(TC001002);
+                }
+                else
+                {
+                    TC001002 = null;
+                    
+                }
+            }
+        }
+
+
+
+        private void dataGridView8_SelectionChanged(object sender, EventArgs e)
+        {
+            string TA001;
+            string TA002;
+
+            if (dataGridView8.CurrentRow != null)
+            {
+                int rowindex = dataGridView8.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView8.Rows[rowindex];
+
+                    TA001 = row.Cells["請購單別"].Value.ToString().Trim();
+                    TA002 = row.Cells["請購單號"].Value.ToString().Trim();
+
+                    Search7(TA001, TA002);
+                }
+                else
+                {
+                    TA001 = null;
+                    TA002 = null;
+
+                }
+            }
+        }
+
+        public void Search6(string TC001002)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT TA001 AS '請購單別',TA002 AS '請購單號' ,TA006 AS '備註' ");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.PURTA,[TK].dbo.PURTB ");
+                sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 ");
+                sbSql.AppendFormat(@"  AND( TA006 LIKE '%{0}%' OR TB012 LIKE '%{0}%') ", TC001002);
+                sbSql.AppendFormat(@"  GROUP BY TA001,TA002,TA006");
+                sbSql.AppendFormat(@"  ");
+
+                adapter8 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder8 = new SqlCommandBuilder(adapter8);
+                sqlConn.Open();
+                ds8.Clear();
+                adapter8.Fill(ds8, "ds8");
+                sqlConn.Close();
+
+
+                if (ds8.Tables["ds8"].Rows.Count == 0)
+                {
+                    dataGridView8.DataSource = null;
+                }
+                else
+                {
+                    if (ds8.Tables["ds8"].Rows.Count >= 1)
+                    {
+                        dataGridView8.DataSource = ds8.Tables["ds8"];
+                        dataGridView8.AutoResizeColumns();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void Search7(string TA001,string TA002)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT TB004 AS '品號',TB005 AS '品名',TB007 AS '單位',TB009 AS '數量',TB011 AS '需求日',TB012 AS '備註'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.PURTB");
+                sbSql.AppendFormat(@"  WHERE TB001='{0}' AND TB002='{1}'",TA001,TA002);
+                sbSql.AppendFormat(@"  ");
+
+                adapter9 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder9 = new SqlCommandBuilder(adapter9);
+                sqlConn.Open();
+                ds9.Clear();
+                adapter9.Fill(ds9, "ds9");
+                sqlConn.Close();
+
+
+                if (ds9.Tables["ds9"].Rows.Count == 0)
+                {
+                    dataGridView9.DataSource = null;
+                }
+                else
+                {
+                    if (ds9.Tables["ds9"].Rows.Count >= 1)
+                    {
+                        dataGridView9.DataSource = ds9.Tables["ds9"];
+                        dataGridView9.AutoResizeColumns();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
 
         #endregion
 
@@ -759,9 +971,14 @@ namespace TKWAREHOUSE
             Search4();
         }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            Search5();
+        }
+
 
         #endregion
 
-     
+
     }
 }
