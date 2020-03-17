@@ -394,9 +394,9 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                if(!string.IsNullOrEmpty(textBox8.Text)&& !string.IsNullOrEmpty(textBox9.Text))
+                if( !string.IsNullOrEmpty(textBox9.Text))
                 {
-                    SQLQUERY.AppendFormat(@" AND TC001+TC002 IN ('{0}')", textBox8.Text.Trim()+ textBox9.Text.Trim());
+                    SQLQUERY.AppendFormat(@" AND TC002 IN ('{0}')", textBox9.Text.Trim());
                 }
 
                 if(comboBox2.Text.Equals("已發請購的訂單"))
