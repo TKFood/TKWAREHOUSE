@@ -393,11 +393,39 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT TC001 AS '訂單單別',TC002 AS '訂單單號',MV002  AS '業務',TC053 AS '客戶'");
-                sbSql.AppendFormat(@"  FROM [TK].dbo.COPTC,[TK].dbo.CMSMV");
-                sbSql.AppendFormat(@"  WHERE TC003>='{0}' AND TC003<='{1}'", dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  AND TC006=MV001");
-                sbSql.AppendFormat(@"  ORDER BY TC001,TC002");
+                if(comboBox2.Text.Equals("已發請購的訂單"))
+                {
+                    //用A22去找請購單的單頭、單身的備註中訂單單號
+                    sbSql.AppendFormat(@"  SELECT TC001 AS '訂單單別',TC002 AS '訂單單號',MV002  AS '業務',TC053 AS '客戶'");
+                    sbSql.AppendFormat(@"  FROM [TK].dbo.COPTC,[TK].dbo.CMSMV");
+                    sbSql.AppendFormat(@"  WHERE TC006=MV001");
+                    sbSql.AppendFormat(@"  AND TC001+TC002 IN (");
+                    sbSql.AppendFormat(@"  ");
+                    sbSql.AppendFormat(@"  SELECT SUBSTRING(TC001002,CHARINDEX('A22', TC001002),4)+SUBSTRING(TC001002,CHARINDEX('A22', TC001002)+5,11)  AS 'TC002'");
+                    sbSql.AppendFormat(@"  FROM (");
+                    sbSql.AppendFormat(@"  SELECT (CASE WHEN TB012 LIKE '%A22%' THEN  TB012 ELSE TA006 END ) AS TC001002");
+                    sbSql.AppendFormat(@"  ,TA001 AS '請購單別',TA002 AS '請購單號' ,TA006 AS '備註1' ,TB012 AS '備註2'");
+                    sbSql.AppendFormat(@"  FROM [TK].dbo.PURTA,[TK].dbo.PURTB ");
+                    sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
+                    sbSql.AppendFormat(@"  AND ( ISNULL(TA006,'')<>''  OR ISNULL(TB012,'')<>'') ");
+                    sbSql.AppendFormat(@"  AND( TA006 LIKE '%A22%' OR TB012 LIKE '%A22%')");
+                    sbSql.AppendFormat(@"  ) AS TEMP");
+                    sbSql.AppendFormat(@"  )");
+                    sbSql.AppendFormat(@"  AND TC003>='{0}' AND TC003<='{1}'", dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@"  ORDER BY TC001,TC002");
+                    sbSql.AppendFormat(@"  ");
+                    sbSql.AppendFormat(@"  ");
+                }
+                else if (comboBox2.Text.Equals("全部訂單"))
+                {
+                    sbSql.AppendFormat(@"  SELECT TC001 AS '訂單單別',TC002 AS '訂單單號',MV002  AS '業務',TC053 AS '客戶'");
+                    sbSql.AppendFormat(@"  FROM [TK].dbo.COPTC,[TK].dbo.CMSMV");
+                    sbSql.AppendFormat(@"  WHERE TC003>='{0}' AND TC003<='{1}'", dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@"  AND TC006=MV001");
+                    sbSql.AppendFormat(@"  ORDER BY TC001,TC002");
+                    sbSql.AppendFormat(@"  ");
+                }
+                
                 sbSql.AppendFormat(@"  ");
 
                 adapter7 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -845,6 +873,8 @@ namespace TKWAREHOUSE
                 if (ds8.Tables["ds8"].Rows.Count == 0)
                 {
                     dataGridView8.DataSource = null;
+
+                    dataGridView9.DataSource = null;
                 }
                 else
                 {
