@@ -385,6 +385,7 @@ namespace TKWAREHOUSE
 
         public void Search5()
         {
+            StringBuilder SQLQUERY = new StringBuilder();
             try
             {
                 connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
@@ -392,6 +393,11 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
+
+                if(!string.IsNullOrEmpty(textBox8.Text)&& !string.IsNullOrEmpty(textBox9.Text))
+                {
+                    SQLQUERY.AppendFormat(@" AND TC001+TC002 IN ('{0}')", textBox8.Text.Trim()+ textBox9.Text.Trim());
+                }
 
                 if(comboBox2.Text.Equals("已發請購的訂單"))
                 {
@@ -412,6 +418,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@"  ) AS TEMP");
                     sbSql.AppendFormat(@"  )");
                     sbSql.AppendFormat(@"  AND TC003>='{0}' AND TC003<='{1}'", dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@"  {0}",SQLQUERY.ToString());
                     sbSql.AppendFormat(@"  ORDER BY TC001,TC002");
                     sbSql.AppendFormat(@"  ");
                     sbSql.AppendFormat(@"  ");
@@ -422,6 +429,7 @@ namespace TKWAREHOUSE
                     sbSql.AppendFormat(@"  FROM [TK].dbo.COPTC,[TK].dbo.CMSMV");
                     sbSql.AppendFormat(@"  WHERE TC003>='{0}' AND TC003<='{1}'", dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
                     sbSql.AppendFormat(@"  AND TC006=MV001");
+                    sbSql.AppendFormat(@"  {0}", SQLQUERY.ToString());
                     sbSql.AppendFormat(@"  ORDER BY TC001,TC002");
                     sbSql.AppendFormat(@"  ");
                 }
@@ -440,6 +448,8 @@ namespace TKWAREHOUSE
                 if (ds7.Tables["ds7"].Rows.Count == 0)
                 {
                     dataGridView7.DataSource = null;
+                    dataGridView8.DataSource = null;
+                    dataGridView9.DataSource = null;
                 }
                 else
                 {
