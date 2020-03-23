@@ -116,6 +116,12 @@
     <Compile Include="FrmCOPINVCHECK.Designer.cs">
       <DependentUpon>FrmCOPINVCHECK.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmCOPPURTA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmCOPPURTA.Designer.cs">
+      <DependentUpon>FrmCOPPURTA.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmhctEDI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -264,6 +270,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmCOPINVCHECK.resx">
       <DependentUpon>FrmCOPINVCHECK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmCOPPURTA.resx">
+      <DependentUpon>FrmCOPPURTA.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmhctEDI.resx">
       <DependentUpon>FrmhctEDI.cs</DependentUpon>
