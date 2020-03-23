@@ -309,9 +309,55 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
-        public void ADDCOPPURBATCHCOPTD(string TD001,string TD002,string TD003)
+        public void ADDCOPPURBATCHCOPTD(string ID,string TD001,string TD002,string TD003)
         {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
 
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD]");
+                sbSql.AppendFormat(" ([ID],[TD001],[TD002],[TD003],[TD004],[TD005],[TD008],[TD009],[TD010],[TD024],[TD025])");
+                sbSql.AppendFormat(" SELECT '{0}',[TD001],[TD002],[TD003],[TD004],[TD005],[TD008],[TD009],[TD010],[TD024],[TD025]",ID);
+                sbSql.AppendFormat(" FROM [TK].dbo.COPTD");
+                sbSql.AppendFormat(" WHERE TD001='{0}' AND TD002='{1}' AND TD003='{2}'",TD001,TD002,TD003);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
         #endregion
 
@@ -330,10 +376,12 @@ namespace TKWAREHOUSE
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if(!string.IsNullOrEmpty(textBox1.Text)&& !string.IsNullOrEmpty(textBox2.Text)&& !string.IsNullOrEmpty(textBox3.Text))
+            if(!string.IsNullOrEmpty(textBoxID.Text)&&!string.IsNullOrEmpty(textBox1.Text)&& !string.IsNullOrEmpty(textBox2.Text)&& !string.IsNullOrEmpty(textBox3.Text))
             {
-                ADDCOPPURBATCHCOPTD(textBox1.Text.Trim(), textBox2.Text.Trim(), textBox3.Text.Trim());
+                ADDCOPPURBATCHCOPTD(textBoxID.Text.Trim(), textBox1.Text.Trim(), textBox2.Text.Trim(), textBox3.Text.Trim());
             }
+
+            SEARCHCOPPURBATCHCOPTD(textBoxID.Text.Trim());
         }
         #endregion
 
