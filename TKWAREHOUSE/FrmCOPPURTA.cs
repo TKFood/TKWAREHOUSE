@@ -247,6 +247,8 @@ namespace TKWAREHOUSE
                     textBoxID.Text = row.Cells["批號"].Value.ToString();
                     ID = row.Cells["批號"].Value.ToString();
 
+                    SEARCHCOPPURBATCHCOPTD(ID);
+
                 }
                 else
                 {
@@ -257,12 +259,67 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCHCOPPURBATCHCOPTD(string ID)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[TD001] AS '訂單單別',[TD002] AS '訂單單號',[TD003] AS '訂單序號',[TD004] AS '品號',[TD005] AS '品名',[TD008] AS '訂單數量',[TD009] AS '已交數量',[TD010] AS '單位',[TD024] AS '贈品量',[TD025] AS '贈品已交量'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD]");
+                sbSql.AppendFormat(@"  WHERE  [ID]='{0}'",ID);
+                sbSql.AppendFormat(@"  ");
+
+                adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder2 = new SqlCommandBuilder(adapter2);
+                sqlConn.Open();
+                ds2.Clear();
+                adapter2.Fill(ds2, "ds2");
+                sqlConn.Close();
+
+
+                if (ds2.Tables["ds2"].Rows.Count == 0)
+                {
+                    dataGridView2.DataSource = null;
+                }
+                else
+                {
+                    if (ds2.Tables["ds2"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView2.DataSource = ds2.Tables["ds2"];
+                        dataGridView2.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void ADDCOPPURBATCHCOPTD(string TD001,string TD002,string TD003)
+        {
+
+        }
         #endregion
 
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
             SEARCHBTACHID();
+            //SEARCHCOPPURBATCHCOPTD(ID);
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -271,8 +328,15 @@ namespace TKWAREHOUSE
             SEARCHBTACHID();
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox1.Text)&& !string.IsNullOrEmpty(textBox2.Text)&& !string.IsNullOrEmpty(textBox3.Text))
+            {
+                ADDCOPPURBATCHCOPTD(textBox1.Text.Trim(), textBox2.Text.Trim(), textBox3.Text.Trim());
+            }
+        }
         #endregion
 
-     
+
     }
 }
