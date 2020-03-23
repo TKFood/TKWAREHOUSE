@@ -51,6 +51,9 @@ namespace TKWAREHOUSE
 
         string ID;
         string NEWID;
+        string DELTD001;
+        string DELTD002;
+        string DELTD003;
 
         public FrmCOPPURTA()
         {
@@ -359,6 +362,81 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            DELTD001 = null;
+            DELTD002 = null;
+            DELTD003 = null;
+
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+                    DELTD001 = row.Cells["訂單單別"].Value.ToString();
+                    DELTD002 = row.Cells["訂單單號"].Value.ToString();
+                    DELTD003 = row.Cells["訂單序號"].Value.ToString();
+
+
+                }
+                else
+                {
+                    DELTD001 = null;
+                    DELTD002 = null;
+                    DELTD003 = null;
+
+                }
+            }
+        }
+
+        public void DELCOPPURBATCHCOPTD(string ID, string TD001, string TD002, string TD003)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD]");
+                sbSql.AppendFormat(" WHERE [ID]='{0}' AND TD001='{1}' AND TD002='{2}' AND TD003='{3}'",ID, TD001, TD002, TD003);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -383,8 +461,23 @@ namespace TKWAREHOUSE
 
             SEARCHCOPPURBATCHCOPTD(textBoxID.Text.Trim());
         }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                if (!string.IsNullOrEmpty(textBoxID.Text) && !string.IsNullOrEmpty(DELTD001) && !string.IsNullOrEmpty(DELTD002) && !string.IsNullOrEmpty(DELTD003))
+                {
+                    DELCOPPURBATCHCOPTD(textBoxID.Text.Trim(), DELTD001.Trim(), DELTD002.Trim(), DELTD003.Trim());
+                }
+            }
+
+            SEARCHCOPPURBATCHCOPTD(textBoxID.Text.Trim());
+
+        }
+
         #endregion
 
-
+       
     }
 }
