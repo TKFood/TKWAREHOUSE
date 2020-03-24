@@ -935,10 +935,10 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" '{0}' [MODI_DATE],{1} [FLAG],'{2}' [CREATE_TIME],'{3}' [MODI_TIME],'{4}' [TRANS_TYPE],", PURTB.MODI_DATE, PURTB.FLAG, PURTB.CREATE_TIME, PURTB.MODI_TIME, PURTB.TRANS_TYPE);
             sbSql.AppendFormat(" '{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],{4} [sync_count],", PURTB.TRANS_NAME, PURTB.sync_date, PURTB.sync_time, PURTB.sync_mark, PURTB.sync_count);
             sbSql.AppendFormat(" '{0}' [DataUser],'{1}' [DataGroup],", PURTB.DataUser, PURTB.DataGroup);
-            sbSql.AppendFormat(" '{0}' [TB001],'{1}' [TB002],Right('0000' + Cast(ROW_NUMBER() OVER( ORDER BY TB003)  as varchar),4) AS TB003,[COPPURBATCHUSED].[MB001] AS TB004,[COPPURBATCHUSED].[MB002] AS TB005,", PURTB.TB001, PURTB.TB002);
-            sbSql.AppendFormat(" MB003 AS TB006,TB007 AS TB007,MB017 AS TB008,SUM([NUM]) AS TB009,MB032 AS TB010,");
-            sbSql.AppendFormat(" '{0}' [TB011],[ID]+' '+[TD001]+'-'+[TD002]+'-'+[TD003] [TB012],'{1}' [TB013],SUM(TB004) [TB014],'{2}' [TB015],", PURTB.TB011, PURTB.TB013, PURTB.TB015);
-            sbSql.AppendFormat(" '{0}' [TB016],MB050 AS TB017,ROUND((MB050*SUM(TB004)),0) AS TB018,'{1}' [TB019],'{2}' [TB020],", PURTB.TB016, PURTB.TB019, PURTB.TB020);
+            sbSql.AppendFormat(" '{0}' [TB001],'{1}' [TB002],Right('0000' + Cast(ROW_NUMBER() OVER( ORDER BY [COPPURBATCHUSED].[MB001])  as varchar),4) AS TB003,[COPPURBATCHUSED].[MB001] AS TB004,[COPPURBATCHUSED].[MB002] AS TB005,", PURTB.TB001, PURTB.TB002);
+            sbSql.AppendFormat(" MB003 AS TB006,MB004 AS TB007,MB017 AS TB008,SUM([NUM]) AS TB009,MB032 AS TB010,");
+            sbSql.AppendFormat(" '{0}' [TB011],[ID]+' '+[TD001]+'-'+[TD002]+'-'+[TD003] [TB012],'{1}' [TB013],0 [TB014],'{2}' [TB015],", PURTB.TB011, PURTB.TB013, PURTB.TB015);
+            sbSql.AppendFormat(" '{0}' [TB016],MB050 AS TB017,ROUND((MB050*SUM([NUM])),0) AS TB018,'{1}' [TB019],'{2}' [TB020],", PURTB.TB016, PURTB.TB019, PURTB.TB020);
             sbSql.AppendFormat(" '{0}' [TB021],'{1}' [TB022],'{2}' [TB023],'{3}' [TB024],'{4}' [TB025],", PURTB.TB021, PURTB.TB022, PURTB.TB023, PURTB.TB024, PURTB.TB025);
             sbSql.AppendFormat(" '{0}' [TB026],'{1}' [TB027],'{2}' [TB028],'{3}' [TB029],'{4}' [TB030],", PURTB.TB026, PURTB.TB027, PURTB.TB028, PURTB.TB029, PURTB.TB030);
             sbSql.AppendFormat(" '{0}' [TB031],'{1}' [TB032],'{2}' [TB033],{3} [TB034],{4} [TB035],", PURTB.TB031, PURTB.TB032, PURTB.TB033, PURTB.TB034, PURTB.TB035);
@@ -961,7 +961,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" WHERE [COPPURBATCHUSED].[MB001]=INVMB.[MB001]");
             sbSql.AppendFormat(" AND ([COPPURBATCHUSED].[MB001] LIKE '2%')");
             sbSql.AppendFormat(" AND [ID]='{0}'",ID);
-            sbSql.AppendFormat(" GROUP BY [ID],[TD001]+'-'+[TD002]+'-'+[TD003],[COPPURBATCHUSED].[MB001],[COPPURBATCHUSED].[MB002],MB004");
+            sbSql.AppendFormat(" GROUP BY [ID]+' '+[TD001]+'-'+[TD002]+'-'+[TD003],[COPPURBATCHUSED].[MB001],[COPPURBATCHUSED].[MB002],MB003,MB004,MB017,MB032,MB050 )");
             sbSql.AppendFormat(" ");
             sbSql.AppendFormat(" ");
 
@@ -1067,7 +1067,7 @@ namespace TKWAREHOUSE
             PURTA.TA001 = MOCTA001;
             PURTA.TA002 = MOCTA002;
             PURTA.TA003 = MOCTA003;
-            PURTA.TA004 = "103400";
+            PURTA.TA004 = "103500";
             PURTA.TA005 = ID;
             PURTA.TA006 = null;
             PURTA.TA007 = "N";
@@ -1075,7 +1075,7 @@ namespace TKWAREHOUSE
             PURTA.TA009 = "9";
             PURTA.TA010 = "20";
             PURTA.TA011 = "0";
-            PURTA.TA012 = "120025";
+            PURTA.TA012 = "190006";
             PURTA.TA013 = MOCTA003;
             PURTA.TA014 = null;
             PURTA.TA015 = "0";
@@ -1299,6 +1299,7 @@ namespace TKWAREHOUSE
         private void button5_Click(object sender, EventArgs e)
         {
             MOCTA001 = "A311";
+            MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
             MOCTA002 = GETMAXMOCTA002(MOCTA001);
 
             ADDMOCTAB(textBoxID.Text.Trim());
