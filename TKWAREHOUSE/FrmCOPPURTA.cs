@@ -852,7 +852,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADDMOCTAB(string ID)
+        public void ADDMOCTAB(string ID,string TYPE)
         {
             PURTA PURTA = new PURTA();
             PURTB PURTB = new PURTB();
@@ -962,7 +962,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" {0} [UDF07],{1}[UDF08],{2} [UDF09],{3} [UDF10]", PURTB.UDF07, PURTB.UDF08, PURTB.UDF09, PURTB.UDF10);
             sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED],[TK].dbo.INVMB");
             sbSql.AppendFormat(" WHERE [COPPURBATCHUSED].[MB001]=INVMB.[MB001]");
-            sbSql.AppendFormat(" AND ([COPPURBATCHUSED].[MB001] LIKE '2%')");
+            sbSql.AppendFormat(" AND ([COPPURBATCHUSED].[MB001] LIKE '{0}%')", TYPE);
             sbSql.AppendFormat(" AND [ID]='{0}'",ID);
             sbSql.AppendFormat(" GROUP BY [ID]+' '+[TD001]+'-'+[TD002]+'-'+[TD003],[COPPURBATCHUSED].[MB001],[COPPURBATCHUSED].[MB002],MB003,MB004,MB017,MB032,MB050 )");
             sbSql.AppendFormat(" ");
@@ -988,6 +988,8 @@ namespace TKWAREHOUSE
                 UPDATEPURTA();
             }
         }
+
+
 
         public void UPDATEPURTA()
         {
@@ -1256,6 +1258,7 @@ namespace TKWAREHOUSE
             return PURTB;
         }
 
+      
         public void SEARCHCOPPURBATCHPUR(string ID)
         {
             try
@@ -1392,7 +1395,7 @@ namespace TKWAREHOUSE
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
             MOCTA002 = GETMAXMOCTA002(MOCTA001);
 
-            ADDMOCTAB(textBoxID.Text.Trim());
+            ADDMOCTAB(textBoxID.Text.Trim(),"2");
 
             ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
@@ -1401,6 +1404,37 @@ namespace TKWAREHOUSE
 
         }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            MOCTA001 = "A311";
+            MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
+            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+
+            ADDMOCTAB(textBoxID.Text.Trim(),"3");
+
+            ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
+            SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
+
+            MessageBox.Show("已完成請購單" + MOCTA001 + " " + MOCTA002);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            MOCTA001 = "A311";
+            MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
+            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+
+            ADDMOCTAB(textBoxID.Text.Trim(), "4");
+
+            ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
+            SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
+
+            MessageBox.Show("已完成請購單" + MOCTA001 + " " + MOCTA002);
+        }
+        private void button9_Click(object sender, EventArgs e)
+        {
+
+        }
 
         #endregion
 
