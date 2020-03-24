@@ -36,6 +36,8 @@ namespace TKWAREHOUSE
         SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
         SqlDataAdapter adapter4 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
+        SqlDataAdapter adapter5 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
 
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
@@ -43,7 +45,7 @@ namespace TKWAREHOUSE
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
-
+        DataSet ds5 = new DataSet();
 
         DataTable dt = new DataTable();
         string tablename = null;
@@ -465,6 +467,7 @@ namespace TKWAREHOUSE
 
                     SEARCHCOPPURBATCHCOPTD(ID);
                     SEARCHCOPPURBATCHUSED(ID);
+                    SEARCHCOPPURBATCHPUR(ID);
 
                 }
                 else
@@ -1253,6 +1256,93 @@ namespace TKWAREHOUSE
             return PURTB;
         }
 
+        public void SEARCHCOPPURBATCHPUR(string ID)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [TA001] AS '請購',[TA002] AS '單號',[ID] AS '批號'");
+                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[COPPURBATCHPUR]");
+                sbSql.AppendFormat(@"  WHERE [ID]='{0}' ",ID);
+                sbSql.AppendFormat(@"  ");
+
+                adapter5 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder5 = new SqlCommandBuilder(adapter5);
+                sqlConn.Open();
+                ds5.Clear();
+                adapter5.Fill(ds5, "ds5");
+                sqlConn.Close();
+
+
+                if (ds5.Tables["ds5"].Rows.Count == 0)
+                {
+                    dataGridView4.DataSource = null;
+                }
+                else
+                {
+                    if (ds5.Tables["ds5"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView4.DataSource = ds5.Tables["ds5"];
+                        dataGridView4.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void ADDCOPPURBATCHPUR(string ID,string TA001,string TA002)
+        {
+            connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
+
+            sqlConn.Close();
+            sqlConn.Open();
+            tran = sqlConn.BeginTransaction();
+
+
+            sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[COPPURBATCHPUR]");
+            sbSql.AppendFormat(" ([ID],[TA001],[TA002])");
+            sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')",ID,TA001,TA002);
+            sbSql.AppendFormat(" ");
+
+
+            cmd.Connection = sqlConn;
+            cmd.CommandTimeout = 60;
+            cmd.CommandText = sbSql.ToString();
+            cmd.Transaction = tran;
+            result = cmd.ExecuteNonQuery();
+
+            if (result == 0)
+            {
+                tran.Rollback();    //交易取消
+
+
+            }
+            else
+            {
+                tran.Commit();      //執行交易  
+
+
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -1303,6 +1393,9 @@ namespace TKWAREHOUSE
             MOCTA002 = GETMAXMOCTA002(MOCTA001);
 
             ADDMOCTAB(textBoxID.Text.Trim());
+
+            ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
+            SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
             MessageBox.Show("已完成請購單" + MOCTA001 + " " + MOCTA002);
 
