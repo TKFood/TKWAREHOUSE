@@ -62,11 +62,12 @@
             this.splitContainer7 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.button5 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -518,7 +519,7 @@
             // 
             this.splitContainer7.Panel2.Controls.Add(this.dataGridView4);
             this.splitContainer7.Size = new System.Drawing.Size(279, 337);
-            this.splitContainer7.SplitterDistance = 125;
+            this.splitContainer7.SplitterDistance = 156;
             this.splitContainer7.TabIndex = 0;
             // 
             // tableLayoutPanel4
@@ -526,31 +527,66 @@
             this.tableLayoutPanel4.BackColor = System.Drawing.Color.LightGreen;
             this.tableLayoutPanel4.ColumnCount = 2;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 146F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 104F));
-            this.tableLayoutPanel4.Controls.Add(this.button5, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.button8, 0, 2);
-            this.tableLayoutPanel4.Controls.Add(this.button7, 0, 1);
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 129F));
             this.tableLayoutPanel4.Controls.Add(this.button9, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.button8, 0, 3);
+            this.tableLayoutPanel4.Controls.Add(this.button7, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.button5, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.button10, 0, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 3;
+            this.tableLayoutPanel4.RowCount = 4;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(275, 121);
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(275, 152);
             this.tableLayoutPanel4.TabIndex = 5;
             // 
             // button5
             // 
             this.button5.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button5.Location = new System.Drawing.Point(3, 3);
+            this.button5.Location = new System.Drawing.Point(3, 43);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(140, 34);
             this.button5.TabIndex = 2;
             this.button5.Text = "產生物料請購單";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button8
+            // 
+            this.button8.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button8.Location = new System.Drawing.Point(3, 123);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(140, 34);
+            this.button8.TabIndex = 4;
+            this.button8.Text = "產生成品請購單";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button7
+            // 
+            this.button7.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button7.Location = new System.Drawing.Point(3, 83);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(140, 34);
+            this.button7.TabIndex = 3;
+            this.button7.Text = "產生半成品請購單";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button9
+            // 
+            this.button9.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button9.Location = new System.Drawing.Point(149, 3);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(122, 34);
+            this.button9.TabIndex = 5;
+            this.button9.Text = "訂單請購單";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // dataGridView4
             // 
@@ -564,7 +600,7 @@
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.ReadOnly = true;
             this.dataGridView4.RowTemplate.Height = 24;
-            this.dataGridView4.Size = new System.Drawing.Size(275, 204);
+            this.dataGridView4.Size = new System.Drawing.Size(275, 173);
             this.dataGridView4.TabIndex = 5;
             // 
             // tabPage2
@@ -577,38 +613,16 @@
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // button7
+            // button10
             // 
-            this.button7.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button7.Location = new System.Drawing.Point(3, 43);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(140, 34);
-            this.button7.TabIndex = 3;
-            this.button7.Text = "產生半成品請購單";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
-            // button8
-            // 
-            this.button8.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button8.Location = new System.Drawing.Point(3, 83);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(140, 34);
-            this.button8.TabIndex = 4;
-            this.button8.Text = "產生成品請購單";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
-            // button9
-            // 
-            this.button9.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button9.Location = new System.Drawing.Point(149, 3);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(122, 34);
-            this.button9.TabIndex = 5;
-            this.button9.Text = "訂單請購單";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.button10.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button10.Location = new System.Drawing.Point(3, 3);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(140, 34);
+            this.button10.TabIndex = 6;
+            this.button10.Text = "產生原料請購單";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // FrmCOPPURTA
             // 
@@ -701,5 +715,6 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button10;
     }
 }

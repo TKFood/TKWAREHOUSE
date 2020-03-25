@@ -1567,6 +1567,20 @@ namespace TKWAREHOUSE
 
             MessageBox.Show("已完成請購單" + MOCTA001 + " " + MOCTA002);
         }
+        private void button10_Click(object sender, EventArgs e)
+        {
+            MOCTA001 = "A311";
+            MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
+            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+
+            ADDMOCTAB(textBoxID.Text.Trim(), "1");
+
+            ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
+            SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
+
+            MessageBox.Show("已完成請購單" + MOCTA001 + " " + MOCTA002);
+        }
+
         private void button9_Click(object sender, EventArgs e)
         {
             MOCTA001 = "A311";
@@ -1582,8 +1596,9 @@ namespace TKWAREHOUSE
 
         }
 
+
         #endregion
 
-
+       
     }
 }
