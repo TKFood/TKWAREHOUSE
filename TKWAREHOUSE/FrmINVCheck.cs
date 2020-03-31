@@ -495,7 +495,7 @@ namespace TKWAREHOUSE
             }
             else if (comboBox1.Text.Equals("21001     方城市銷售倉"))
             {
-                report1.Load(@"REPORT\每日盤點表-成品.frx");
+                report1.Load(@"REPORT\每日盤點表-成品-21001.frx");
             }
             else if(comboBox1.Text.Equals("20006     原料倉"))
             {
@@ -588,7 +588,6 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   ");
                 FASTSQL.AppendFormat(@" WHERE  (LA009='21001')   ");
                 FASTSQL.AppendFormat(@" AND (LA001 LIKE '4%' OR LA001 LIKE '5%')");
-                FASTSQL.AppendFormat(@" AND isdate(LA016)=1");
                 FASTSQL.AppendFormat(@" GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    ");
                 FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
                 FASTSQL.AppendFormat(@" ) AS TEMP");
