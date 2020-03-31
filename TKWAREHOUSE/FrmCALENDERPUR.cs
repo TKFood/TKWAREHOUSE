@@ -222,7 +222,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@"  AND MA001=TC004");
                 FASTSQL.AppendFormat(@"  AND TD012>='{0}' AND TD012<='{1}'",dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@"  AND TD018='Y'");
-                FASTSQL.AppendFormat(@"  AND TD005 LIKE '%{0}%'",textBox1.Text.Trim());
+                FASTSQL.AppendFormat(@"  AND (TD005 LIKE '%{0}%' OR TD004 LIKE '%{0}%')", textBox1.Text.Trim());
                 FASTSQL.AppendFormat(@"  ORDER BY TD012,TD001,TD002,TD003");
                 FASTSQL.AppendFormat(@"  ");
                 FASTSQL.AppendFormat(@"  ");
