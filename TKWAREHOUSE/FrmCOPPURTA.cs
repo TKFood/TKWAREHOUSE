@@ -1089,7 +1089,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" '{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],{4} [sync_count],", PURTB.TRANS_NAME, PURTB.sync_date, PURTB.sync_time, PURTB.sync_mark, PURTB.sync_count);
             sbSql.AppendFormat(" '{0}' [DataUser],'{1}' [DataGroup],", PURTB.DataUser, PURTB.DataGroup);
             sbSql.AppendFormat(" '{0}' [TB001],'{1}' [TB002],Right('0000' + Cast(ROW_NUMBER() OVER( ORDER BY INVMB.[MB001])  as varchar),4) AS TB003,INVMB.[MB001] AS TB004,INVMB.[MB002] AS TB005,", PURTB.TB001, PURTB.TB002);
-            sbSql.AppendFormat(" MB003 AS TB006,MB004 AS TB007,MB017 AS TB008,SUM(TD008+TD024) AS TB009,MB032 AS TB010,");
+            sbSql.AppendFormat(" MB003 AS TB006,TD010 AS TB007,MB017 AS TB008,SUM(TD008+TD024) AS TB009,MB032 AS TB010,");
             sbSql.AppendFormat(" '{0}' [TB011],[ID]+' '+[TD001]+'-'+[TD002]+'-'+[TD003] [TB012],'{1}' [TB013],0 [TB014],'{2}' [TB015],", PURTB.TB011, PURTB.TB013, PURTB.TB015);
             sbSql.AppendFormat(" '{0}' [TB016],MB050 AS TB017,ROUND((MB050*SUM([TD008])),0) AS TB018,'{1}' [TB019],'{2}' [TB020],", PURTB.TB016, PURTB.TB019, PURTB.TB020);
             sbSql.AppendFormat(" '{0}' [TB021],'{1}' [TB022],'{2}' [TB023],'{3}' [TB024],'{4}' [TB025],", PURTB.TB021, PURTB.TB022, PURTB.TB023, PURTB.TB024, PURTB.TB025);
@@ -1113,7 +1113,7 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(" FROM [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD],[TK].dbo.INVMB");
             sbSql.AppendFormat(" WHERE [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD].[TD004]=INVMB.[MB001]  ");
             sbSql.AppendFormat(" AND [ID]='{0}'",ID);
-            sbSql.AppendFormat(" GROUP BY [ID]+' '+[TD001]+'-'+[TD002]+'-'+[TD003],INVMB.[MB001],INVMB.[MB002],MB003,MB004,MB017,MB032,MB050 )");
+            sbSql.AppendFormat(" GROUP BY [ID]+' '+[TD001]+'-'+[TD002]+'-'+[TD003],INVMB.[MB001],INVMB.[MB002],MB003,TD010,MB017,MB032,MB050 )");
             sbSql.AppendFormat(" ");
             sbSql.AppendFormat(" ");
 
