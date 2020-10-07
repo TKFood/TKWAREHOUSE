@@ -695,7 +695,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(" AND TC001=TD001 AND TC002=TD002");
                 sbSql.AppendFormat(" AND TD001+TD002+TD003 IN (SELECT TD001+TD002+TD003 FROM [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD] WHERE ID='{0}')",ID);
                 sbSql.AppendFormat(" ) AS TEMP");
-                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat("  WHERE MD003 LIKE '3%'");
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
