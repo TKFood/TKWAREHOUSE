@@ -668,36 +668,38 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
 
-                sbSql.AppendFormat(" DELETE [TKWAREHOUSE].[dbo].[COPPURBATCHUSED]");
-                sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
+               
                 sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[COPPURBATCHUSED]");
-                sbSql.AppendFormat(" ([ID],[TD001],[TD002],[TD003],[TD004],[TD005],[TDNUM],[TDUNIT],[MB001],[MB002],[NUM],[UNIT])");
-                sbSql.AppendFormat(" SELECT '{0}',TD001,TD002,TD003,TD004,TD005,NUM,MB004,MD003,MD035,CASE WHEN [MD003] LIKE '2%' THEN ROUND((NUM*CAL),0) ELSE (NUM*CAL) END,MD004", ID);
-                sbSql.AppendFormat(" FROM (");
-                sbSql.AppendFormat(" SELECT   TD001,TD002,TD003,TC053 ,TD013,TD004,TD005,TD006");
-                sbSql.AppendFormat(" ,((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END)-ISNULL(MOCTA.TA017,0)) AS 'NUM'");
-                sbSql.AppendFormat(" ,MB004");
-                sbSql.AppendFormat(" ,((TD008-TD009)+(TD024-TD025)) AS 'COPNUM'");
-                sbSql.AppendFormat(" ,TD010");
-                sbSql.AppendFormat(" ,(CASE WHEN ISNULL(INVMD.MD002,'')<>'' THEN INVMD.MD002 ELSE TD010 END ) AS INVMDMD002");
-                sbSql.AppendFormat(" ,(CASE WHEN INVMD.MD003>0 THEN INVMD.MD003 ELSE 1 END) AS INVMDMD003");
-                sbSql.AppendFormat(" ,(CASE WHEN INVMD.MD004>0 THEN INVMD.MD004 ELSE (TD008-TD009) END ) AS INVMDMD004");
-                sbSql.AppendFormat(" ,ISNULL(MOCTA.TA017,0) AS TA017");
-                sbSql.AppendFormat(" ,[MC001],[MC004],BOMMD.[MD003],[MD035],BOMMD.[MD006],BOMMD.[MD007],BOMMD.[MD008],BOMMD.[MD004]");
-                sbSql.AppendFormat(" ,CONVERT(decimal(16,4),(1/[MC004]*BOMMD.[MD006]/BOMMD.[MD007]*(1+BOMMD.[MD008]))) AS CAL");
-                sbSql.AppendFormat(" FROM [TK].dbo.BOMMC,[TK].dbo.BOMMD,[TK].dbo.INVMB,[TK].dbo.COPTC,[TK].dbo.COPTD");
-                sbSql.AppendFormat(" LEFT JOIN [TK].dbo.INVMD ON MD001=TD004 AND TD010=MD002");
-                sbSql.AppendFormat(" LEFT JOIN [TK].dbo.MOCTA ON TA026=TD001 AND TA027=TD002 AND TD028=TD003 AND TA006=TD004");
-                sbSql.AppendFormat(" WHERE BOMMC.MC001=BOMMD.MD001");
-                sbSql.AppendFormat(" AND  BOMMD.MD001=TD004");
-                sbSql.AppendFormat(" AND TD004=MB001");
-                sbSql.AppendFormat(" AND TC001=TD001 AND TC002=TD002");
-                sbSql.AppendFormat(" AND TD001+TD002+TD003 IN (SELECT TD001+TD002+TD003 FROM [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD] WHERE ID='{0}')",ID);
-                sbSql.AppendFormat(" ) AS TEMP");
-                sbSql.AppendFormat(" WHERE (MD003 LIKE '1%' OR MD003 LIKE '2%' OR MD003 LIKE '3%' )  ");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(@" 
+                                    DELETE [TKWAREHOUSE].[dbo].[COPPURBATCHUSED]
+                                    WHERE [ID]='{0}'
+ 
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[COPPURBATCHUSED]
+                                    ([ID],[TD001],[TD002],[TD003],[TD004],[TD005],[TDNUM],[TDUNIT],[MB001],[MB002],[NUM],[UNIT])
+                                    SELECT '{0}',TD001,TD002,TD003,TD004,TD005,NUM,MB004,MD003,MD035,CASE WHEN [MD003] LIKE '2%' THEN ROUND((NUM*CAL),0) ELSE (NUM*CAL) END,MD004
+                                    FROM (
+                                    SELECT   TD001,TD002,TD003,TC053 ,TD013,TD004,TD005,TD006
+                                    ,((CASE WHEN MB004=TD010 THEN ((TD008-TD009)+(TD024-TD025)) ELSE ((TD008-TD009)+(TD024-TD025))*INVMD.MD004 END)-ISNULL(MOCTA.TA017,0)) AS 'NUM'
+                                    ,MB004
+                                    ,((TD008-TD009)+(TD024-TD025)) AS 'COPNUM'
+                                    ,TD010
+                                    ,(CASE WHEN ISNULL(INVMD.MD002,'')<>'' THEN INVMD.MD002 ELSE TD010 END ) AS INVMDMD002
+                                    ,(CASE WHEN INVMD.MD003>0 THEN INVMD.MD003 ELSE 1 END) AS INVMDMD003
+                                    ,(CASE WHEN INVMD.MD004>0 THEN INVMD.MD004 ELSE (TD008-TD009) END ) AS INVMDMD004
+                                    ,ISNULL(MOCTA.TA017,0) AS TA017
+                                    ,[MC001],[MC004],BOMMD.[MD003],[MD035],BOMMD.[MD006],BOMMD.[MD007],BOMMD.[MD008],BOMMD.[MD004]
+                                    ,CONVERT(decimal(16,4),(1/[MC004]*BOMMD.[MD006]/BOMMD.[MD007]*(1+BOMMD.[MD008]))) AS CAL
+                                    FROM [TK].dbo.BOMMC,[TK].dbo.BOMMD,[TK].dbo.INVMB,[TK].dbo.COPTC,[TK].dbo.COPTD
+                                    LEFT JOIN [TK].dbo.INVMD ON MD001=TD004 AND TD010=MD002
+                                    LEFT JOIN [TK].dbo.MOCTA ON TA026=TD001 AND TA027=TD002 AND TD028=TD003 AND TA006=TD004
+                                    WHERE BOMMC.MC001=BOMMD.MD001
+                                    AND  BOMMD.MD001=TD004
+                                    AND TD004=MB001
+                                    AND TC001=TD001 AND TC002=TD002
+                                    AND TD001+TD002+TD003 IN (SELECT TD001+TD002+TD003 FROM [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD] WHERE ID='{0}')
+                                    ) AS TEMP
+                                    WHERE (MD003 LIKE '1%' OR MD003 LIKE '2%' OR MD003 LIKE '3%' OR MD003 LIKE '4%' )  
+                                    ", ID);
 
 
                 cmd.Connection = sqlConn;
