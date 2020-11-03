@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/03/2020 14:54:30" ReportInfo.Modified="11/03/2020 14:57:53" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/03/2020 14:54:30" ReportInfo.Modified="11/03/2020 15:19:15" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KVzShwFX1IR3Hgm+iiNQqZ">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9L2aQVeAA62sBG9TRfDwBua">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="WITH NODE (MD001,MD003,LAYER,MD004,MC004,PREMC004,MD006,MD007,MD008,USEDNUM ,PREUSEDNUM) AS&#13;&#10;(&#13;&#10;SELECT MD001,MD003,0 ,[MD004],[MC004],[MC004] AS PREMC004,[MD006],[MD007],[MD008],CONVERT(DECIMAL(18,4),([MD006]/[MD007]/[MC004]*(1+MD008))),CONVERT(DECIMAL(18,4),1) AS PREUSEDNUM  FROM [TK].[dbo].[VBOMMD]&#13;&#10;UNION ALL&#13;&#10;SELECT TB1.MD001,TB2.MD003,TB2.LAYER+1,TB2.MD004,TB2.MC004,TB1.MC004,TB2.MD006,TB2.MD007,TB2.MD008,TB2.USEDNUM,CONVERT(DECIMAL(18,4),(TB1.[MD006]/TB1.[MD007]/TB1.[MC004]*(1+TB1.MD008))) AS PREUSEDNUM FROM [TK].[dbo].[VBOMMD] TB1&#13;&#10;INNER JOIN NODE TB2&#13;&#10;ON TB1.MD003 = TB2.MD001&#13;&#10;)&#13;&#10;&#13;&#10;SELECT MD001 AS '成品號',MB1.MB002 AS '成品名',MD003 AS '原物料',MB2.MB002 AS '原物料名'&#13;&#10;,(SELECT SUM(LA011*LA005) FROM [TK].dbo.INVLA WITH(NOLOCK) WHERE LA009 LIKE '2%' AND  LA001=MD003 )  AS '總數量'&#13;&#10;,SUM(LA011*LA005) AS '批號庫存量',LA016 AS '批號'  ,LA009 AS '庫別' &#13;&#10;FROM (&#13;&#10;SELECT DISTINCT MD001,MD003&#13;&#10;FROM NODE&#13;&#10;WHERE  MD001='40101110430280'&#13;&#10;) AS TEMP,[TK].dbo.INVMB MB1,[TK].dbo.INVMB MB2,[TK].dbo.INVLA WITH(NOLOCK)&#13;&#10;WHERE  MD001=MB1.MB001 AND MD003=MB2.MB001&#13;&#10;AND LA001=MD003&#13;&#10;AND LA009 LIKE '2%'&#13;&#10;AND ISNULL(LA016,'')&lt;&gt;''&#13;&#10;AND MD001='40101110430280'&#13;&#10;GROUP BY MD001,MB1.MB002,MD003,MB2.MB002,LA009,LA016&#13;&#10;HAVING SUM(LA011*LA005)&lt;&gt;0&#13;&#10;ORDER BY MD001,MB1.MB002,MD003,MB2.MB002,LA009,LA016&#13;&#10;">
         <Column Name="成品號" DataType="System.String"/>
         <Column Name="成品名" DataType="System.String"/>
@@ -16,20 +16,20 @@
   </Dictionary>
   <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210">
     <PageHeaderBand Name="PageHeader1" Width="1047.06" Height="18.9">
-      <TextObject Name="Text2" Width="141.75" Height="18.9" Border.Lines="All" Text="成品號" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text4" Left="141.75" Width="160.65" Height="18.9" Border.Lines="All" Text="成品名" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text6" Left="302.4" Width="160.65" Height="18.9" Border.Lines="All" Text="原物料" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text8" Left="463.05" Width="189" Height="18.9" Border.Lines="All" Text="原物料名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text2" Width="132.3" Height="18.9" Border.Lines="All" Text="成品號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="132.3" Width="245.7" Height="18.9" Border.Lines="All" Text="成品名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="378" Width="113.4" Height="18.9" Border.Lines="All" Text="原物料" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="491.4" Width="160.65" Height="18.9" Border.Lines="All" Text="原物料名" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text10" Left="652.05" Width="94.5" Height="18.9" Border.Lines="All" Text="總數量" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text12" Left="746.55" Width="94.5" Height="18.9" Border.Lines="All" Text="批號庫存量" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text14" Left="841.05" Width="94.5" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text16" Left="935.55" Width="94.5" Height="18.9" Border.Lines="All" Text="庫別" HorzAlign="Center" VertAlign="Center"/>
     </PageHeaderBand>
     <DataBand Name="Data1" Top="23.02" Width="1047.06" Height="18.9" CanGrow="true" DataSource="Table">
-      <TextObject Name="Text1" Width="141.75" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.成品號]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text3" Left="141.75" Width="160.65" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.成品名]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text5" Left="302.4" Width="160.65" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.原物料]" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text7" Left="463.05" Width="189" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.原物料名]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text1" Width="132.3" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.成品號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text3" Left="132.3" Width="245.7" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.成品名]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="378" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.原物料]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="491.4" Width="160.65" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.原物料名]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text9" Left="652.05" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.總數量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text11" Left="746.55" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號庫存量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text13" Left="841.05" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號]" HorzAlign="Center" VertAlign="Center"/>

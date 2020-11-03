@@ -354,7 +354,7 @@ namespace TKWAREHOUSE
                                     AND MD001='{0}'
                                     GROUP BY MD001,MB1.MB002,MD003,MB2.MB002,LA009,LA016
                                     HAVING SUM(LA011*LA005)<>0
-                                    ORDER BY MD001,MB1.MB002,MD003,MB2.MB002,LA009,LA016
+                                    ORDER BY MD001,MB1.MB002,MD003,MB2.MB002,LA009,LA016  
                                     ", MD001);
 
 
