@@ -146,6 +146,12 @@
     <Compile Include="FrmINVCOP.Designer.cs">
       <DependentUpon>FrmINVCOP.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmINVLACHECK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmINVLACHECK.Designer.cs">
+      <DependentUpon>FrmINVLACHECK.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmINVOUT.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -285,6 +291,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmINVCOP.resx">
       <DependentUpon>FrmINVCOP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmINVLACHECK.resx">
+      <DependentUpon>FrmINVLACHECK.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmINVOUT.resx">
       <DependentUpon>FrmINVOUT.cs</DependentUpon>
