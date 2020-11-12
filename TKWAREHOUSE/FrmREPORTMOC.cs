@@ -126,7 +126,7 @@ namespace TKWAREHOUSE
                                      AND TA003>='{0}' AND TA003<='{1}'
                                     ) AS TEMP
                                     LEFT JOIN  [TK].dbo.BOMMD ON 產品品號=MD001 AND 材料品號=MD003
-                                    ORDER BY 線別,製令單別,製令單號"
+                                    ORDER BY 線別,製令單別,製令單號   "
                                 , dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
          
 
