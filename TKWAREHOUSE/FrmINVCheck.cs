@@ -567,7 +567,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
                 FASTSQL.AppendFormat(@" ) AS TEMP");
                 FASTSQL.AppendFormat(@" ORDER BY 品號 ");
-                FASTSQL.AppendFormat(@" ");
+                FASTSQL.AppendFormat(@"  ");
             }
             else if (comboBox1.Text.Equals("21001     方城市銷售倉"))
             {
