@@ -661,7 +661,7 @@ namespace TKWAREHOUSE
             }
             else
             {
-                FASTSQL.AppendFormat(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ");
+                FASTSQL.AppendFormat(@" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量',CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'  ");
                 FASTSQL.AppendFormat(@"  FROM [{0}].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [{0}].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 ", sqlConn.Database.ToString());
                 FASTSQL.AppendFormat(@" WHERE  (LA009='{0}') {1}", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
                 FASTSQL.AppendFormat(@" GROUP BY  LA001,MB002,MB003,LA016");
