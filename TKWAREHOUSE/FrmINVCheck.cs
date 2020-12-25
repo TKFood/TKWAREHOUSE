@@ -637,11 +637,11 @@ namespace TKWAREHOUSE
             {
 
                 FASTSQL.AppendFormat(@"   
-                                    SELECT 品號,品名,規格,批號,庫存量,單位,庫存金額,在倉日期,有效天數,業務
+                                    SELECT 品號,品名,規格,批號,庫存量,單位,在倉日期,有效天數,業務
+                                    ,(庫存量*(SELECT MB065/MB064 FROM [TK].dbo.INVMB WHERE MB001=品號))AS 庫存金額
                                     FROM (
-                                    SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
-                                    ,CONVERT(DECIMAL(16,3),SUM(LA005*LA011)) AS '庫存量',MB004 AS '單位'
-                                    ,CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'
+                                    SELECT   LA001 AS '品號' ,INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',LA016 AS '批號'
+                                    ,CONVERT(DECIMAL(16,3),SUM(LA005*LA011)) AS '庫存量',INVMB.MB004 AS '單位'
                                     ,DATEDIFF(DAY,LA016,'{0}') AS '在倉日期old' 
                                     ,(CASE WHEN DATEDIFF(DAY,LA016,'{0}')>=0 THEN DATEDIFF(DAY,LA016,'{0}') ELSE (CASE WHEN DATEDIFF(DAY,LA016,'{0}')<0 THEN  (CASE WHEN MB198='2' THEN DATEDIFF(DAY,DATEADD(month, -1*MB023, LA016 ),'{0}') END ) END ) END) AS '在倉日期' 
                                     ,(CASE WHEN MB198='2' THEN DATEDIFF(DAY,'{0}',DATEADD(month, MB023, '{0}' )) END)-(CASE WHEN DATEDIFF(DAY,LA016,'{0}')>=0 THEN DATEDIFF(DAY,LA016,'{0}') ELSE (CASE WHEN DATEDIFF(DAY,LA016,'{0}')<0 THEN  (CASE WHEN MB198='2' THEN DATEDIFF(DAY,DATEADD(month, -1*MB023, LA016 ),'{0}') END ) END ) END)  AS '有效天數'
@@ -652,7 +652,7 @@ namespace TKWAREHOUSE
                                     GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004
                                     HAVING SUM(LA005*LA011)<>0 
                                     ) AS TEMP
-                                    ORDER BY 品號 
+                                    ORDER BY 品號  
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"));
               
 
