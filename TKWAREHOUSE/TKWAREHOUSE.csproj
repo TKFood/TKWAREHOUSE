@@ -242,6 +242,12 @@
     <Compile Include="FrmREPORTMOCTEDAY.Designer.cs">
       <DependentUpon>FrmREPORTMOCTEDAY.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmREPORTPURIN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmREPORTPURIN.Designer.cs">
+      <DependentUpon>FrmREPORTPURIN.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmREPORTPURTG.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -339,6 +345,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmREPORTMOCTEDAY.resx">
       <DependentUpon>FrmREPORTMOCTEDAY.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmREPORTPURIN.resx">
+      <DependentUpon>FrmREPORTPURIN.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmREPORTPURTG.resx">
       <DependentUpon>FrmREPORTPURTG.cs</DependentUpon>
