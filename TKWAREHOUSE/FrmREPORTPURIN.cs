@@ -79,7 +79,7 @@ namespace TKWAREHOUSE
                                     WHERE TC001=TD001 AND TC002=TD002
                                     AND TC004=MA001
                                     AND TD012>='{0}' AND TD012<='{0}'
-                                    ORDER BY TD012,TD004
+                                    ORDER BY TD012,TD004  
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"));
 
            
