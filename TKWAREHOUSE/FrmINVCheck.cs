@@ -531,16 +531,22 @@ namespace TKWAREHOUSE
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
+            FASTSQL.Clear();
+            sbSqlQuery.Clear();
+
             DateTime dt = DateTime.Now;
             dt = dt.AddMonths(-2);
 
             if (checkBox1.Checked == true)
             {
+                sbSqlQuery.Clear();
+
                 sbSqlQuery.AppendFormat(" AND LA001 IN (SELECT LA001 FROM [TK].dbo.INVLA WITH (NOLOCK) WHERE LA004='{0}'   AND LA009='{1}')", dateTimePicker1.Value.ToString("yyyyMMdd"), comboBox1.SelectedValue.ToString());
                 sbSqlQuery.AppendFormat("  AND LA004<='{0}'", dateTimePicker1.Value.ToString("yyyyMMdd"));
             }
             else
             {
+                sbSqlQuery.Clear();
                 sbSqlQuery.Append(" ");
             }
 
@@ -608,12 +614,13 @@ namespace TKWAREHOUSE
                                      FROM [TK].dbo.INVLA WITH (NOLOCK)  
                                      LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
                                      WHERE  (LA009='20006')   
+                                      {1}
                                      GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004   
                                      HAVING SUM(LA005*LA011)<>0 
                                      ) AS TEMP
                                      WHERE 品號 NOT IN ('122221001','114141009')
                                      ORDER BY 品號  
-                                    ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+                                    ", dateTimePicker1.Value.ToString("yyyyMMdd"), sbSqlQuery.ToString());
 
 
                 FASTSQL.AppendFormat(@" ");
@@ -625,13 +632,14 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" 
                                     SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ,CAST(SUM(LA005*LA013) AS DECIMAL(18,4)) AS '庫存金額'  
                                     FROM [TK].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
-                                    WHERE  (LA009='{0}') {1}
+                                    WHERE  (LA009='{0}') 
+                                    {1}
                                     GROUP BY  LA001,MB002,MB003,LA016
                                     HAVING SUM(LA005*LA011)<>0
                                     ORDER BY  LA001,MB002,MB003,LA016
                                     ", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
 
-
+                FASTSQL.AppendFormat(@" ");
             }
             else if (comboBox1.Text.Equals("20005     半成品倉"))
             {
