@@ -48,7 +48,9 @@ namespace TKWAREHOUSE
         public FrmINVCheck()
         {
             InitializeComponent();
+
             comboboxload();
+            comboboxload2();
         }
 
         #region FUNCTION
@@ -74,11 +76,33 @@ namespace TKWAREHOUSE
 
         }
 
+        public void comboboxload2()
+        {
+
+            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
+            String Sequel = "SELECT MC001,MC001+MC002 AS MC002 FROM [DY].dbo.CMSMC WITH (NOLOCK) ORDER BY MC001";
+            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("MC001", typeof(string));
+            dt.Columns.Add("MC002", typeof(string));
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "MC001";
+            comboBox2.DisplayMember = "MC002";
+            sqlConn.Close();
+
+            comboBox2.SelectedValue = "10001     ";
+
+        }
+
         //public void Search()
         //{
         //    try
         //    {
-                
+
         //        connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
         //        sqlConn = new SqlConnection(connectionString);
 
@@ -184,7 +208,7 @@ namespace TKWAREHOUSE
         //        }
 
 
-                
+
 
 
         //        if (ds.Tables["TEMPds"].Rows.Count == 0)
@@ -194,9 +218,9 @@ namespace TKWAREHOUSE
         //        else
         //        {
         //            label14.Text = "有 " + ds.Tables["TEMPds"].Rows.Count.ToString() + " 筆";
-                  
-                    //dataGridView1.DataSource = ds.Tables["TEMPds"];
-                    //dataGridView1.AutoResizeColumns();
+
+        //dataGridView1.DataSource = ds.Tables["TEMPds"];
+        //dataGridView1.AutoResizeColumns();
         //        }
 
         //    }
@@ -436,9 +460,9 @@ namespace TKWAREHOUSE
         //            }
         //        }
         //    }
-            
 
-            
+
+
 
 
         //    //int j = 1;
@@ -449,7 +473,7 @@ namespace TKWAREHOUSE
         //    //    ws.GetRow(j + 1).CreateCell(k).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
         //    //    ws.GetRow(j + 1).CreateCell(k + 1).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[2].ToString());
         //    //    ws.GetRow(j + 1).CreateCell(k + 2).SetCellValue(((System.Data.DataRowView)(dr.DataBoundItem)).Row.ItemArray[1].ToString());
-            
+
         //    //    j++;
         //    //}
 
@@ -751,6 +775,107 @@ namespace TKWAREHOUSE
 
             return FASTSQL.ToString();
         }
+
+
+        public void SETFASTREPORT3()
+        {
+
+            string SQL;
+            report1 = new Report();
+
+            if (comboBox2.Text.Equals("10001     成品倉"))
+            {
+                report1.Load(@"REPORT\大潁-每日盤點表-成品.frx");
+            }
+           
+            else
+            {
+                report1.Load(@"REPORT\每日盤點表.frx");
+            }
+
+
+
+            report1.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+            SQL = SETFASETSQL4();
+            Table.SelectCommand = SQL;
+            report1.Preview = previewControl3;
+            report1.Show();
+
+        }
+
+        public string SETFASETSQL4()
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            FASTSQL.Clear();
+            sbSqlQuery.Clear();
+
+            DateTime dt = DateTime.Now;
+            dt = dt.AddMonths(-2);
+
+            if (checkBox1.Checked == true)
+            {
+                sbSqlQuery.Clear();
+
+                sbSqlQuery.AppendFormat(@" 
+                                        AND LA001 IN (SELECT LA001 FROM [DY].dbo.INVLA WITH (NOLOCK) WHERE LA004='{0}'   AND LA009='{1}')
+                                        AND LA004<='{2}'"
+                                        , dateTimePicker3.Value.ToString("yyyyMMdd"), comboBox2.SelectedValue.ToString(), dateTimePicker3.Value.ToString("yyyyMMdd"));
+            }
+            else
+            {
+                sbSqlQuery.Clear();
+                sbSqlQuery.Append(" ");
+            }
+
+            if (comboBox2.Text.Equals("10001     成品倉"))
+            {
+
+                FASTSQL.AppendFormat(@"  
+                                     SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,在倉日期,有效天數,總訂單需求量,業務
+                                     FROM ( 
+                                     SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
+                                     ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'
+                                     ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [DY].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'     
+                                     ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [DY].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' 
+                                     ,ISNULL ( DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [DY].dbo.MOCTF,[DY].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009),'{0}'),DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [DY].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND A.LA005='1') ,'{0}') ) AS '在倉日期' 
+                                    , DATEDIFF(DAY, '{0}',LA016  )  AS '有效天數' 
+                                     ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [DY].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='20190208') AS INT) AS '總訂單需求量' 
+                                     ,(SELECT TOP 1 TC006+' '+MV002 FROM [DY].dbo.COPTC,[DY].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [DY].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [DY].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
+                                     FROM [DY].dbo.INVLA WITH (NOLOCK)  
+                                     LEFT JOIN  [DY].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
+                                     WHERE  (LA009='10001')   
+                                     AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
+                                     GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
+                                     HAVING SUM(LA005*LA011)<>0 
+                                     ) AS TEMP
+                                     ORDER BY 品號 
+                                        ", DateTime.Now.ToString("yyyyMMdd"));
+            }
+            
+            else
+            {
+                FASTSQL.AppendFormat(@" 
+                                    SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量',CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'  
+                                    FROM [DY].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [DY].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
+                                    WHERE  (LA009='{0}') {1}
+                                    GROUP BY  LA001,MB002,MB003,LA016
+                                    HAVING SUM(LA005*LA011)<>0
+                                    ORDER BY  LA001,MB002,MB003,LA016  "
+                                    , comboBox2.SelectedValue.ToString(), sbSqlQuery.ToString());
+
+
+            }
+
+
+
+
+
+            return FASTSQL.ToString();
+        }
         #endregion
 
         #region BUTTON
@@ -769,6 +894,10 @@ namespace TKWAREHOUSE
             SETFASTREPORT2();
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT3();
+        }
 
 
         #endregion
