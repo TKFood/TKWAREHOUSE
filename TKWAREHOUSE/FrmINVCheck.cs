@@ -790,7 +790,7 @@ namespace TKWAREHOUSE
            
             else
             {
-                report1.Load(@"REPORT\每日盤點表.frx");
+                report1.Load(@"REPORT\大潁-每日盤點表.frx");
             }
 
 
