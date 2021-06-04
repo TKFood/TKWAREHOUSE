@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="06/01/2021 10:53:39" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="06/01/2021 10:57:14" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9JVepaDx/sWYvFM2p1n7kEt">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand=" SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',CAST(SUM(LA005*LA013) AS DECIMAL(18,4)) AS '庫存金額'      FROM [TK].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001  WHERE  (LA009='20001     ')   GROUP BY  LA001,MB002,MB003,LA016 HAVING SUM(LA005*LA011)&lt;&gt;0 ORDER BY  LA001,MB002,MB003,LA016">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KgrrhqNY9dXaNt2R21U458">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  &#13;&#10;,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',CAST(SUM(LA005*LA013) AS DECIMAL(18,4)) AS '庫存金額'    &#13;&#10;FROM [DY].dbo.INVLA WITH (NOLOCK) &#13;&#10;LEFT JOIN  [DY].dbo.INVMB WITH (NOLOCK) ON MB001=LA001  &#13;&#10;WHERE  (LA009='10001     ')   &#13;&#10;GROUP BY  LA001,MB002,MB003,LA016 &#13;&#10;HAVING SUM(LA005*LA011)&lt;&gt;0 &#13;&#10;ORDER BY  LA001,MB002,MB003,LA016">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
         <Column Name="規格" DataType="System.String"/>
@@ -14,7 +14,7 @@
   </Dictionary>
   <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210">
     <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="37.8">
-      <TextObject Name="Text9" Width="963.9" Height="18.9" Text="老楊食品大林廠-庫存表[Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Width="963.9" Height="18.9" Text="大潁-庫存表[Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text2" Top="18.9" Width="113.4" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text4" Left="113.4" Top="18.9" Width="236.25" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text6" Left="718.2" Top="18.9" Width="75.6" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>

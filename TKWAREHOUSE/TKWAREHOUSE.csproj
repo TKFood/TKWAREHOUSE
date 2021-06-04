@@ -212,6 +212,12 @@
     <Compile Include="FrmPURTAB.Designer.cs">
       <DependentUpon>FrmPURTAB.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmPURTABCD.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmPURTABCD.Designer.cs">
+      <DependentUpon>FrmPURTABCD.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmREPORT.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -330,6 +336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmPURTAB.resx">
       <DependentUpon>FrmPURTAB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmPURTABCD.resx">
+      <DependentUpon>FrmPURTABCD.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmREPORT.resx">
       <DependentUpon>FrmREPORT.cs</DependentUpon>
