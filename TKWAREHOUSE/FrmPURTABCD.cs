@@ -128,7 +128,7 @@ namespace TKWAREHOUSE
                 }
 
                 sbSql.AppendFormat(@"  
-                                    SELECT TA001 AS '請購單別',TA002 AS '請購單號',TB003 AS '請購序號',TB004 AS '品號',TB005 AS '品名',TB006 AS '規格',TB009 AS '請購數量',TB007 AS '請購單位',TB022 AS '採購單',TD008 AS '採購數量',TD009 AS '採購單位'
+                                    SELECT TA001 AS '請購單別',TA002 AS '請購單號',TB003 AS '請購序號',TB004 AS '品號',TB005 AS '品名',TB006 AS '規格',TB009 AS '請購數量',TB007 AS '請購單位',TB022 AS '採購單',TD008 AS '採購數量',TD009 AS '採購單位',TD012 AS '預交日期'
                                     FROM [TK].dbo.PURTA,[TK].dbo.PURTB
                                     LEFT JOIN [TK].dbo.[PURTD] ON TD001=SUBSTRING(TB022,1,4) AND TD002=SUBSTRING(TB022,6,11) AND TD003=SUBSTRING(TB022,18,4)
                                     WHERE TA001=TB001 AND TA002=TB002
