@@ -596,7 +596,7 @@ namespace TKWAREHOUSE
                                      GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
                                      HAVING SUM(LA005*LA011)<>0 
                                      ) AS TEMP
-                                     ORDER BY 品號  
+                                     ORDER BY 品號   
                                         ", DateTime.Now.ToString("yyyyMMdd"));
             }
             else if (comboBox1.Text.Equals("21001     方城市銷售倉"))

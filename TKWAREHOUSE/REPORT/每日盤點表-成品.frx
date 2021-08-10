@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="08/10/2021 15:09:28" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="08/10/2021 15:15:43" ReportInfo.CreatorVersion="2016.4.4.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,7 +45,7 @@ namespace FastReport
 }
 </ScriptText>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9L5UcFX/O0qnW0W93EdDqc5">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9LMYjznRfO1a47z8Q2Hz/X0">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,在倉日期,有效天數,總訂單需求量,業務,生產日期&#13;&#10;FROM ( &#13;&#10;SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'&#13;&#10;,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'&#13;&#10;,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013&gt;='20210810' AND  TD013&lt;=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'     &#13;&#10;,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013&gt;='{0}' AND  TD013&lt;=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' &#13;&#10;,ISNULL ( DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009),'20210810'),DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [TK].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND A.LA005='1') ,'20210810') ) AS '在倉日期' &#13;&#10;, DATEDIFF(DAY, '20210810',LA016  )  AS '有效天數' &#13;&#10;,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013&gt;='20210810') AS INT) AS '總訂單需求量' &#13;&#10;,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'&#13;&#10;,(SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 ORDER BY TF003 ASC) AS '生產日期'&#13;&#10;FROM [TK].dbo.INVLA WITH (NOLOCK)  &#13;&#10;LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   &#13;&#10;WHERE  (LA009='20001')   &#13;&#10;AND (LA001 LIKE '4%' OR LA001 LIKE '5%')&#13;&#10;GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    &#13;&#10;HAVING SUM(LA005*LA011)&lt;&gt;0 &#13;&#10;) AS TEMP&#13;&#10;WHERE 品號='40102910540666'&#13;&#10;ORDER BY 品號 ">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
@@ -65,7 +65,7 @@ namespace FastReport
   </Dictionary>
   <ReportPage Name="Page1" PaperWidth="400">
     <ReportTitleBand Name="ReportTitle1" Width="1436.4" Height="66.15">
-      <TextObject Name="Text9" Left="85.05" Width="1351.35" Height="18.9" Text="老楊食品大林廠-庫存表[Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Width="1426.95" Height="18.9" Text="老楊食品大林廠-庫存表[Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text4" Left="103.95" Top="18.9" Width="226.8" Height="47.25" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text6" Left="481.95" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text8" Left="557.55" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="庫存量" HorzAlign="Center" VertAlign="Center"/>
