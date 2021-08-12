@@ -670,18 +670,23 @@ namespace TKWAREHOUSE
             {
 
                 FASTSQL.AppendFormat(@"   
-                                    SELECT 品號,品名,規格,批號,庫存量,單位,在倉日期,有效天數,業務
+                                   SELECT 品號,品名,規格,批號,庫存量,單位,製造日期NEW
+                                    , DATEDIFF(DAY,製造日期NEW,'{0}') AS '在倉日期'
+                                    ,(CASE WHEN MB198='2' THEN DATEDIFF(DAY,'{0}',DATEADD(month, MB023, '{0}' )) END)-(CASE WHEN DATEDIFF(DAY,製造日期NEW,'{0}')>=0 THEN DATEDIFF(DAY,製造日期NEW,'{0}') ELSE (CASE WHEN DATEDIFF(DAY,製造日期NEW,'{0}')<0 THEN  (CASE WHEN MB198='2' THEN DATEDIFF(DAY,DATEADD(month, -1*MB023, 製造日期NEW ),'{0}') END ) END ) END)  AS '有效天數' 
+                                    ,業務
                                     ,(庫存量*(SELECT MB065/MB064 FROM [TK].dbo.INVMB WHERE MB001=品號))AS 庫存金額
+                                    ,(CASE WHEN DATEDIFF(DAY,製造日期NEW,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,製造日期NEW,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
                                     FROM (
                                     SELECT   LA001 AS '品號' ,INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',LA016 AS '批號'
-                                    ,CONVERT(DECIMAL(16,3),SUM(LA005*LA011)) AS '庫存量',INVMB.MB004 AS '單位'
-                                    ,DATEDIFF(DAY,LA016,'{0}') AS '在倉日期old' 
-                                    ,(CASE WHEN DATEDIFF(DAY,LA016,'{0}')>=0 THEN DATEDIFF(DAY,LA016,'{0}') ELSE (CASE WHEN DATEDIFF(DAY,LA016,'{0}')<0 THEN  (CASE WHEN MB198='2' THEN DATEDIFF(DAY,DATEADD(month, -1*MB023, LA016 ),'{0}') END ) END ) END) AS '在倉日期' 
-                                    ,(CASE WHEN MB198='2' THEN DATEDIFF(DAY,'{0}',DATEADD(month, MB023, '{0}' )) END)-(CASE WHEN DATEDIFF(DAY,LA016,'{0}')>=0 THEN DATEDIFF(DAY,LA016,'{0}') ELSE (CASE WHEN DATEDIFF(DAY,LA016,'{0}')<0 THEN  (CASE WHEN MB198='2' THEN DATEDIFF(DAY,DATEADD(month, -1*MB023, LA016 ),'{0}') END ) END ) END)  AS '有效天數'
+                                    ,CONVERT(DECIMAL(16,3),SUM(LA005*LA011)) AS '庫存量',INVMB.MB004 AS '單位',MB198,MB023
+                                    ,(SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040) AS '製造日期'
+                                    ,(SELECT TOP 1 TG018 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG018) AS '有效日期'
                                     ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
+                                    ,(CASE WHEN ISNULL((SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040),'')<>'' THEN (SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040) ELSE LA016 END) AS '製造日期NEW'
                                     FROM [TK].dbo.INVLA WITH (NOLOCK) 
                                     LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001  
                                     WHERE  (LA009='20005') 
+
                                     GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004
                                     HAVING SUM(LA005*LA011)<>0 
                                     ) AS TEMP
