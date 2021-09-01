@@ -508,7 +508,7 @@ namespace TKWAREHOUSE
         //}
 
         public void SETFASTREPORT()
-        {
+        { 
 
             string SQL;
             report1 = new Report();
