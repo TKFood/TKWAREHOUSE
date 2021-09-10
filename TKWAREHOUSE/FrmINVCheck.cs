@@ -592,6 +592,7 @@ namespace TKWAREHOUSE
                                     ,(SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 ORDER BY TF003 ASC) AS '生產日期'
                                     ,(SELECT TOP 1 TG018 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 ORDER BY TF003 ASC) AS '有效日期'
                                     ,(CASE WHEN ISNULL((SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040),'')<>'' THEN (SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040) ELSE LA016 END) AS '有效日期NEW'
+                                      ,ISDATE(LA016) AS LA016
                                     FROM [TK].dbo.INVLA WITH (NOLOCK)  
                                     LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
                                     WHERE  (LA009='20001')   
@@ -632,6 +633,7 @@ namespace TKWAREHOUSE
             {
                 FASTSQL.AppendFormat(@"  
                                      SELECT 品號,品名,規格,批號,庫存量,單位,庫存金額,在倉日期,有效天數,業務
+                                     
                                      FROM (
                                      SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
                                      ,CONVERT(DECIMAL(16,3),SUM(LA005*LA011)) AS '庫存量',MB004 AS '單位'
@@ -640,6 +642,7 @@ namespace TKWAREHOUSE
                                      ,DATEDIFF(DAY,(SELECT TOP 1 TH014 FROM [TK].dbo.PURTG,[TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002 AND TH004=LA001 AND TH010=LA016 ),'{0}') AS '在倉日期'  
                                      ,DATEDIFF(DAY,'{0}',LA016) AS '有效天數'
                                      ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
+                                      ,ISDATE(LA016) AS LA016
                                      FROM [TK].dbo.INVLA WITH (NOLOCK)  
                                      LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
                                      WHERE  (LA009='20006')   
@@ -687,6 +690,7 @@ namespace TKWAREHOUSE
                                     ,(SELECT TOP 1 TG018 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG018) AS '有效日期'
                                     ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
                                     ,(CASE WHEN ISNULL((SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040),'')<>'' THEN (SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040) ELSE LA016 END) AS '製造日期NEW'
+                                      ,ISDATE(LA016) AS LA016
                                     FROM [TK].dbo.INVLA WITH (NOLOCK) 
                                     LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001  
                                     WHERE  (LA009='20005') 
