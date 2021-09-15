@@ -58,8 +58,9 @@ namespace TKWAREHOUSE
 
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
-            String Sequel = "SELECT MD002,MD001 FROM [TK].dbo.CMSMD WHERE MD002 LIKE '新%' ORDER BY MD001";
-            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT MD001,MD002 FROM [TK].dbo.CMSMD    WHERE MD003 IN ('20') ORDER BY  MD001 ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
 
@@ -107,7 +108,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 AND LA004<='{0}') AS '庫存量' ", dateTimePicker2.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@" FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]");
                 FASTSQL.AppendFormat(@" WHERE MQ001=TE001");
-                FASTSQL.AppendFormat(@" AND MD002 LIKE '新%'  ");
+                FASTSQL.AppendFormat(@" AND  MD003 IN ('20') ");
                 FASTSQL.AppendFormat(@" AND MD001=TC005 ");
                 FASTSQL.AppendFormat(@" AND TC001=TE001 AND TC002=TE002 ");
                 FASTSQL.AppendFormat(@" AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '301%' AND LEN(TE004)=10))   ");
@@ -127,7 +128,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 AND LA004<='{0}') AS '庫存量' ", dateTimePicker2.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@" FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]");
                 FASTSQL.AppendFormat(@" WHERE MQ001=TE001");
-                FASTSQL.AppendFormat(@" AND MD002 LIKE '新%'  ");
+                FASTSQL.AppendFormat(@" AND  MD003 IN ('20') ");
                 FASTSQL.AppendFormat(@" AND MD001=TC005 ");
                 FASTSQL.AppendFormat(@" AND TC001=TE001 AND TC002=TE002 ");
                 FASTSQL.AppendFormat(@" AND TE004 LIKE '2%' ");
@@ -147,7 +148,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 AND LA004<='{0}') AS '庫存量' ", dateTimePicker2.Value.ToString("yyyyMMdd"));
                 FASTSQL.AppendFormat(@" FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]");
                 FASTSQL.AppendFormat(@" WHERE MQ001=TE001");
-                FASTSQL.AppendFormat(@" AND MD002 LIKE '新%'  ");
+                FASTSQL.AppendFormat(@" AND MD003 IN ('20')  ");
                 FASTSQL.AppendFormat(@" AND MD001=TC005 ");
                 FASTSQL.AppendFormat(@" AND TC001=TE001 AND TC002=TE002 ");
                 FASTSQL.AppendFormat(@" AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '301%' AND LEN(TE004)=10))");
