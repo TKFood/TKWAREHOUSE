@@ -122,7 +122,7 @@ namespace TKWAREHOUSE
                                     AND TA021=CMSMD.MD001
                                     AND TB003 LIKE '1%'
                                     AND TB003 NOT IN ('101001009')
-                                    AND CMSMD.MD002  IN ('新廠製一組','新廠製二組','新廠製三組(手工)') 
+                                    AND CMSMD.MD002  IN ('製一線','製二線 ','手工線') 
                                      AND TA003>='{0}' AND TA003<='{1}'
                                     ) AS TEMP
                                     LEFT JOIN  [TK].dbo.BOMMD ON 產品品號=MD001 AND 材料品號=MD003
@@ -148,7 +148,7 @@ namespace TKWAREHOUSE
                                  AND TA021=MD001
                                  AND TB003 LIKE '1%'
                                  AND TB003 IN ('101001009')
-                                 AND MD002  IN ('新廠製一組','新廠製二組','新廠製三組(手工)') 
+                                 AND MD002  IN ('製一線','製二線 ','手工線') 
                                  AND TA003>='{0}' AND TA003<='{1}'
                                  GROUP BY MD002,TA003,TB003,TB012,TB007
                                  ORDER BY MD002,TA003,TB003,TB012,TB007  
