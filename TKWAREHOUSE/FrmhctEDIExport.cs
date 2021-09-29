@@ -132,7 +132,7 @@ namespace TKWAREHOUSE
                 STR.Append(@" ,CASE WHEN TG111='1' THEN '' WHEN TG111='2' THEN '09-13' WHEN TG111='3' THEN '13-17'  WHEN TG111='4' THEN '17-20'   WHEN TG111='5' THEN '09'  WHEN TG111='6' THEN '10'  WHEN TG111='7' THEN '11'   WHEN TG111='8' THEN '12'   WHEN TG111='9' THEN '13' WHEN TG111='A' THEN '14' WHEN TG111='B' THEN '15'  WHEN TG111='C' THEN '16'  WHEN TG111='D' THEN '17'  WHEN TG111='E' THEN '18'  WHEN TG111='F' THEN '19'  WHEN TG111='G' THEN '20' END AS '指定時間' ");
                 STR.Append(@" ,TG020 AS '備註' ");
                 STR.AppendFormat(@"  FROM [TK].dbo.COPTG WITH (NOLOCK)  ", sqlConn.Database.ToString());
-                STR.AppendFormat(@" WHERE TG003>='TK' AND TG003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@" WHERE TG003>='{0}' AND TG003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
 
 
                 STR.AppendFormat(@"  ");
@@ -147,7 +147,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"   ,TA030 AS '備註' ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTA WITH (NOLOCK) ");
                 STR.AppendFormat(@"   WHERE TA001 IN ('A122','A124') ");
-                STR.AppendFormat(@"  AND TA014>='TK' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  AND TA014>='{0}' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  ");
 
                 STR.AppendFormat(@"  ");
@@ -163,7 +163,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"   ,TF014 AS '備註'   ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTF WITH (NOLOCK) ");
                 STR.AppendFormat(@"   WHERE TF001='A131' ");
-                STR.AppendFormat(@"  AND TF003 >='TK' AND TF003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  AND TF003 >='{0}' AND TF003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  ");
                 STR.AppendFormat(@"  ");
                 STR.AppendFormat(@"  ");
@@ -180,7 +180,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"   ,TA030 AS '備註' ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTA WITH (NOLOCK) ");
                 STR.AppendFormat(@"   WHERE TA001='A128'");
-                STR.AppendFormat(@"  AND TA014>='TK' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  AND TA014>='{0}' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  ");
 
                 STR.AppendFormat(@"  ");
