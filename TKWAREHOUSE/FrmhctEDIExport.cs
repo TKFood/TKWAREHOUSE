@@ -21,6 +21,7 @@ using NPOI.SS.UserModel;
 using System.Configuration;
 using NPOI.XSSF.UserModel;
 using System.Text.RegularExpressions;
+using TKITDLL;
 
 namespace TKWAREHOUSE
 {
@@ -64,8 +65,17 @@ namespace TKWAREHOUSE
             {
                 if (!string.IsNullOrEmpty(dateTimePicker1.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker2.Value.ToString("yyyyMMdd")))
                 {
-                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-                    sqlConn = new SqlConnection(connectionString);
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
 
                     sbSql.Clear();
                     sbSqlQuery.Clear();
@@ -121,8 +131,8 @@ namespace TKWAREHOUSE
                 STR.Append(@" SELECT TG001 AS '銷貨單別',TG002  AS '銷貨單號',TG003  AS '銷貨日',''  AS '收貨人代號',TG007  AS '客戶',TG008  AS '地址',TG066  AS '收貨人' ,TG106  AS '電話',TG113  AS '代收貸款',TG110  AS '指定日期'  ");
                 STR.Append(@" ,CASE WHEN TG111='1' THEN '' WHEN TG111='2' THEN '09-13' WHEN TG111='3' THEN '13-17'  WHEN TG111='4' THEN '17-20'   WHEN TG111='5' THEN '09'  WHEN TG111='6' THEN '10'  WHEN TG111='7' THEN '11'   WHEN TG111='8' THEN '12'   WHEN TG111='9' THEN '13' WHEN TG111='A' THEN '14' WHEN TG111='B' THEN '15'  WHEN TG111='C' THEN '16'  WHEN TG111='D' THEN '17'  WHEN TG111='E' THEN '18'  WHEN TG111='F' THEN '19'  WHEN TG111='G' THEN '20' END AS '指定時間' ");
                 STR.Append(@" ,TG020 AS '備註' ");
-                STR.AppendFormat(@"  FROM [{0}].dbo.COPTG WITH (NOLOCK)  ", sqlConn.Database.ToString());
-                STR.AppendFormat(@" WHERE TG003>='{0}' AND TG003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  FROM [TK].dbo.COPTG WITH (NOLOCK)  ", sqlConn.Database.ToString());
+                STR.AppendFormat(@" WHERE TG003>='TK' AND TG003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
 
 
                 STR.AppendFormat(@"  ");
@@ -137,7 +147,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"   ,TA030 AS '備註' ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTA WITH (NOLOCK) ");
                 STR.AppendFormat(@"   WHERE TA001 IN ('A122','A124') ");
-                STR.AppendFormat(@"  AND TA014>='{0}' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  AND TA014>='TK' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  ");
 
                 STR.AppendFormat(@"  ");
@@ -153,7 +163,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"   ,TF014 AS '備註'   ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTF WITH (NOLOCK) ");
                 STR.AppendFormat(@"   WHERE TF001='A131' ");
-                STR.AppendFormat(@"  AND TF003 >='{0}' AND TF003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  AND TF003 >='TK' AND TF003<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  ");
                 STR.AppendFormat(@"  ");
                 STR.AppendFormat(@"  ");
@@ -170,7 +180,7 @@ namespace TKWAREHOUSE
                 STR.AppendFormat(@"   ,TA030 AS '備註' ");
                 STR.AppendFormat(@"   FROM [TK].dbo.INVTA WITH (NOLOCK) ");
                 STR.AppendFormat(@"   WHERE TA001='A128'");
-                STR.AppendFormat(@"  AND TA014>='{0}' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                STR.AppendFormat(@"  AND TA014>='TK' AND TA014<='{1}' ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 STR.AppendFormat(@"  ");
 
                 STR.AppendFormat(@"  ");
@@ -639,7 +649,7 @@ namespace TKWAREHOUSE
                 Directory.CreateDirectory(@"c:\temp\");
             }
             StringBuilder filename = new StringBuilder();
-            filename.AppendFormat(@"c:\temp\宅配資料{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
+            filename.AppendFormat(@"c:\temp\宅配資料TK.xlsx", DateTime.Now.ToString("yyyyMMdd"));
 
             FileStream file = new FileStream(filename.ToString(), FileMode.Create);//產生檔案
             wb.Write(file);

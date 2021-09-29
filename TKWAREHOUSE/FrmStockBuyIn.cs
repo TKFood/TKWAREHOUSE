@@ -198,7 +198,7 @@ namespace TKWAREHOUSE
                     sbSqlQuery.Clear();
 
                     sbSqlQuery.AppendFormat("  WHERE TD001='{0}' AND TD002='{1}' ", comboBox2.Text.ToString(), textBox1.Text.ToString());
-                    sbSql.AppendFormat(@"SELECT TD003,TD004,TD005,TD006,TD007,TD008-(SELECT ISNULL(SUM(TH007),0) FROM [{1}].[dbo].PURTH WITH (NOLOCK) WHERE TH011=TD001 AND TH012=TD002 AND TH013=TD003 ) AS TD008,TD009,TD010,TD001,TD002,TD003 FROM [{2}].[dbo].PURTD WITH (NOLOCK) {0} ", sbSqlQuery.ToString(), sqlConn.Database.ToString(), sqlConn.Database.ToString());
+                    sbSql.AppendFormat(@"SELECT TD003,TD004,TD005,TD006,TD007,TD008-(SELECT ISNULL(SUM(TH007),0) FROM [TK].[dbo].PURTH WITH (NOLOCK) WHERE TH011=TD001 AND TH012=TD002 AND TH013=TD003 ) AS TD008,TD009,TD010,TD001,TD002,TD003 FROM [TK].dbo.PURTD WITH (NOLOCK) {0} ", sbSqlQuery.ToString(), sqlConn.Database.ToString(), sqlConn.Database.ToString());
 
                     adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
                     sqlCmdBuilder = new SqlCommandBuilder(adapter);
@@ -411,11 +411,11 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSql.Append(" ");
-                sbSql.AppendFormat("DELETE  [{0}].[dbo].[ZWAREWHOUSEPURTH] WHERE TH001='{1}' AND  TH002='{2}'", sqlConn.Database.ToString(), TH001.ToString(), TH002.ToString());
+                sbSql.AppendFormat("DELETE  [TKWAREHOUSE].[dbo].[ZWAREWHOUSEPURTH] WHERE TH001='{1}' AND  TH002='{2}'", sqlConn.Database.ToString(), TH001.ToString(), TH002.ToString());
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     
-                    sbSql.AppendFormat(" INSERT INTO [{0}].[dbo].[ZWAREWHOUSEPURTH] ", sqlConn.Database.ToString());
+                    sbSql.AppendFormat(" INSERT INTO [TKWAREHOUSE].[dbo].[ZWAREWHOUSEPURTH] ", sqlConn.Database.ToString());
                     sbSql.Append(" ([TH001],[TH002],[TH003],[TH004],[TH005],[TH007],[TH008],[TH009],[TH009CH],[TH010],[TH018],[TH011],[TH012],[TH013])");
                     sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}')", TH001.ToString(), TH002.ToString(), (i + 1).ToString().PadLeft(4, '0'), dt.Rows[i]["TH004"].ToString(), dt.Rows[i]["TH005"].ToString(), dt.Rows[i]["TH007"].ToString(), dt.Rows[i]["TH008"].ToString(), dt.Rows[i]["TH009"].ToString(), dt.Rows[i]["TH009CH"].ToString(), dt.Rows[i]["TH010"].ToString(), dt.Rows[i]["TH018"].ToString(), dt.Rows[i]["TH011"].ToString(), dt.Rows[i]["TH012"].ToString(), dt.Rows[i]["TH013"].ToString());
                     sbSql.Append(" ");
@@ -447,7 +447,7 @@ namespace TKWAREHOUSE
                 tran = sqlConn.BeginTransaction();
 
                 sbSql.Clear();
-                sbSql.AppendFormat(" INSERT INTO [{0}].[dbo].PURTH", NowDB);
+                sbSql.AppendFormat(" INSERT INTO [TK].[dbo].PURTH", NowDB);
                 sbSql.Append(" ([COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
                 sbSql.Append(" ,[TH001],[TH002],[TH003],[TH004],[TH005],[TH006],[TH007],[TH008],[TH009],[TH010]");
                 sbSql.Append(" ,[TH011],[TH012],[TH013],[TH014],[TH015],[TH016],[TH017],[TH018],[TH019],[TH020]");
@@ -476,7 +476,7 @@ namespace TKWAREHOUSE
                 sbSql.Append(" ");
 
                 sbSql.Append(" ");
-                sbSql.AppendFormat(" INSERT INTO [{0}].[dbo].[PURTG]", NowDB);
+                sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[PURTG]", NowDB);
                 sbSql.Append(" ([COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
                 sbSql.Append(" ,[TG001],[TG002],[TG003],[TG004],[TG005],[TG006],[TG007],[TG008],[TG009],[TG010]");
                 sbSql.Append(" ,[TG011],[TG012],[TG013],[TG014],[TG015],[TG016],[TG017],[TG018],[TG019],[TG020]");
@@ -499,14 +499,14 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat("  FROM [{2}].dbo.PURTC,TK.dbo.PURMA WHERE TC004=MA001 AND  TC001='{0}' AND TC002='{1}'", comboBox2.Text.ToString(), textBox1.Text.ToString(), NowDB);
                 sbSql.Append(" ");
 
-                sbSql.AppendFormat(" UPDATE [{0}].dbo.PURTG SET ",NowDB);
-                sbSql.AppendFormat(" TG017=(SELECT SUM(TH045) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
-                sbSql.AppendFormat(" ,TG019=(SELECT SUM(TH046) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)  ", NowDB);
-                sbSql.AppendFormat(" ,TG025=(SELECT SUM(TH007) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
-                sbSql.AppendFormat(" ,TG026=(SELECT SUM(TH007) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
-                sbSql.AppendFormat(" ,TG031=(SELECT SUM(TH045) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
-                sbSql.AppendFormat(" ,TG032=(SELECT SUM(TH046) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
-                sbSql.AppendFormat(" ,TG040=(SELECT SUM(TH007) FROM  [{0}].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
+                sbSql.AppendFormat(" UPDATE [TK].dbo.PURTG SET ",NowDB);
+                sbSql.AppendFormat(" TG017=(SELECT SUM(TH045) FROM  [TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
+                sbSql.AppendFormat(" ,TG019=(SELECT SUM(TH046) FROM  [TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)  ", NowDB);
+                sbSql.AppendFormat(" ,TG025=(SELECT SUM(TH007) FROM  [TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
+                sbSql.AppendFormat(" ,TG026=(SELECT SUM(TH007) FROM  [TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
+                sbSql.AppendFormat(" ,TG031=(SELECT SUM(TH045) FROM  [TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002)", NowDB);
+                sbSql.AppendFormat(" ,TG032=(SELECT SUM(TH046) FROM  [TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
+                sbSql.AppendFormat(" ,TG040=(SELECT SUM(TH007) FROM  [TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002) ", NowDB);
                 sbSql.AppendFormat(" WHERE TG001='{0}' AND TG002='{1}'",TH001,TH002);
 
                 cmd.Connection = sqlConn;
@@ -554,7 +554,7 @@ namespace TKWAREHOUSE
             int countid;
             NowDay = DateTime.Now.ToString("yyyyMMdd");
             StringBuilder sbSql=new StringBuilder();
-            sbSql.AppendFormat(@"SELECT( CASE WHEN ISNULL(MAX(TG002),'')='' THEN '0' ELSE  MAX(TG002)  END) AS TG002  FROM  [{2}].dbo.PURTG WITH (NOLOCK) WHERE TG003='{0}' AND TG001='{1}' ", NowDay, TG001,NowDB);
+            sbSql.AppendFormat(@"SELECT( CASE WHEN ISNULL(MAX(TG002),'')='' THEN '0' ELSE  MAX(TG002)  END) AS TG002  FROM  [TK].dbo.PURTG WITH (NOLOCK) WHERE TG003='{0}' AND TG001='{1}' ", NowDay, TG001,NowDB);
 
             DataSet dt = new DataSet();
 
