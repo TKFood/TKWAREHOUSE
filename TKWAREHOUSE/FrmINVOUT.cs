@@ -15,6 +15,7 @@ using NPOI.XSSF.UserModel;
 using NPOI.SS.Util;
 using System.Reflection;
 using System.Threading;
+using TKITDLL;
 
 namespace TKWAREHOUSE
 {
@@ -41,10 +42,19 @@ namespace TKWAREHOUSE
         #region FUNCTION
         public void comboBox1load()
         {
-            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-            sqlConn = new SqlConnection(connectionString);
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT MD001,MD002 FROM [TK].dbo.CMSMD   WHERE MD002 LIKE '新%'   ");
+            Sequel.AppendFormat(@"SELECT MD001,MD002 FROM [TK].dbo.CMSMD   WHERE MD003='20'   ");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -64,8 +74,16 @@ namespace TKWAREHOUSE
         {
             try
             {
-                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-                sqlConn = new SqlConnection(connectionString);
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
                 StringBuilder sbSql = new StringBuilder();
                 sbSql.Clear();
@@ -190,26 +208,38 @@ namespace TKWAREHOUSE
         {
             try
             {
-                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-                sqlConn = new SqlConnection(connectionString);
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
                 StringBuilder sbSql = new StringBuilder();
                 sbSql.Clear();
                 sbSqlQuery.Clear();
                 ds1.Clear();
-                sbSql.AppendFormat(@"  SELECT TB003,MB002,SUM(TB004) AS 'NUM',TB007");
-                sbSql.AppendFormat(@"  FROM (");
-                sbSql.AppendFormat(@"  SELECT TA001,TA002,TA003,TA021,TB003,MB002,TB004,TB007");
-                sbSql.AppendFormat(@"  FROM [TK].dbo.MOCTA WITH (NOLOCK),[TK].dbo.MOCTB WITH (NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)");
-                sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
-                sbSql.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  AND TB003=MB001");
-                sbSql.AppendFormat(@"  AND TB003 LIKE '2%'");
-                sbSql.AppendFormat(@"  AND TA021='{0}'",comboBox1.SelectedValue.ToString());
-                sbSql.AppendFormat(@"  ) AS TEMP");
-                sbSql.AppendFormat(@"  GROUP BY TB003,MB002,TB007");
-                sbSql.AppendFormat(@"  ORDER BY TB003,MB002,TB007");
-                sbSql.AppendFormat(@"  ");
+                if(!string.IsNullOrEmpty(comboBox1.SelectedValue.ToString()))
+                {
+                    sbSql.AppendFormat(@"  SELECT TB003,MB002,SUM(TB004) AS 'NUM',TB007");
+                    sbSql.AppendFormat(@"  FROM (");
+                    sbSql.AppendFormat(@"  SELECT TA001,TA002,TA003,TA021,TB003,MB002,TB004,TB007");
+                    sbSql.AppendFormat(@"  FROM [TK].dbo.MOCTA WITH (NOLOCK),[TK].dbo.MOCTB WITH (NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)");
+                    sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002");
+                    sbSql.AppendFormat(@"  AND TA003>='{0}' AND TA003<='{1}'", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(@"  AND TB003=MB001");
+                    sbSql.AppendFormat(@"  AND TB003 LIKE '2%'");
+                    sbSql.AppendFormat(@"  AND TA021='{0}'", comboBox1.SelectedValue.ToString());
+                    sbSql.AppendFormat(@"  ) AS TEMP");
+                    sbSql.AppendFormat(@"  GROUP BY TB003,MB002,TB007");
+                    sbSql.AppendFormat(@"  ORDER BY TB003,MB002,TB007");
+                    sbSql.AppendFormat(@"  ");
+                }
+              
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
