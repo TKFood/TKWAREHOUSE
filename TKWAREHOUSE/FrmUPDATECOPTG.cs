@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Threading;
 using System.Globalization;
 using Calendar.NET;
+using TKITDLL;
 
 namespace TKWAREHOUSE
 {
@@ -96,8 +97,17 @@ namespace TKWAREHOUSE
         #region FUNCTION
         public void comboboxload2()
         {
-            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-            sqlConn = new SqlConnection(connectionString);
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
             String Sequel = "SELECT MA001,MA002 FROM [TK].dbo.PURMA WHERE MA001 LIKE '8%' ORDER BY MA001";
             SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
             DataTable dt = new DataTable();
@@ -120,8 +130,16 @@ namespace TKWAREHOUSE
             {
                 if (!string.IsNullOrEmpty(dateTimePicker1.Value.ToString("yyyyMMdd")) || !string.IsNullOrEmpty(dateTimePicker2.Value.ToString("yyyyMMdd")))
                 {
-                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-                    sqlConn = new SqlConnection(connectionString);
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
                     sbSql.Clear();
                     sbSqlQuery.Clear();
@@ -217,8 +235,16 @@ namespace TKWAREHOUSE
             {
                 if (!string.IsNullOrEmpty(TG001) || !string.IsNullOrEmpty(TG002))
                 {
-                    connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-                    sqlConn = new SqlConnection(connectionString);
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
                     sbSql.Clear();
 
@@ -292,8 +318,16 @@ namespace TKWAREHOUSE
             {
                 try
                 {
-                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
-                    sqlConn = new SqlConnection(connectionString);
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
                     sqlConn.Close();
                     sqlConn.Open();
