@@ -1114,7 +1114,9 @@ namespace TKWAREHOUSE
             PURTA.TA009="9";
             PURTA.TA010="20";
             PURTA.TA011 = "0";
-            PURTA.TA012= "120025";
+            //TA012 請購人員
+            //PURTA.TA012= "120025";
+            PURTA.TA012 = "請選擇";
             PURTA.TA013= MOCTA003;
             PURTA.TA014=null;
             PURTA.TA015="0";
