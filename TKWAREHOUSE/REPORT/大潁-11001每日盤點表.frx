@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="10/18/2021 13:39:52" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="10/18/2021 13:46:11" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9JMDfdMB9CajOwNjfAtwrrx">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KlClrV+mJ6KNfF90g44l15">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,0)) AS '庫存量',CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'  &#13;&#10;,DATEADD(day,1,DATEADD(month,-1*10,CONVERT(DATETIME,LA016)))&#13;&#10;,CASE WHEN MB198='2' AND MB023&gt;0 THEN DATEADD(day,1,DATEADD(month,-1*MB023,CONVERT(DATETIME,LA016))) END AS '製造日期'&#13;&#10;,MB004 AS '庫存單位'&#13;&#10;,(CAST(SUM(LA005*LA011) /240 AS DECIMAL(18,0))) AS '板數'&#13;&#10;,'' AS '備註'&#13;&#10;FROM [DY].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [DY].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 &#13;&#10;WHERE  (LA009='10001') &#13;&#10;GROUP BY  LA001,MB002,MB003,LA016,MB198,MB023,MB004&#13;&#10;HAVING SUM(LA005*LA011)&lt;&gt;0&#13;&#10;ORDER BY  LA001,MB002,MB003,LA016,MB198,MB023,MB004">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
@@ -19,7 +19,7 @@
   </Dictionary>
   <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210">
     <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="37.8">
-      <TextObject Name="Text9" Width="1048.95" Height="18.9" Text="好事多寄倉明細 [Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Width="1048.95" Height="18.9" Text="好市多寄倉明細 [Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text2" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text4" Left="94.5" Top="18.9" Width="179.55" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text6" Left="274.05" Top="18.9" Width="141.75" Height="18.9" Border.Lines="All" Text="規格" HorzAlign="Center" VertAlign="Center"/>
