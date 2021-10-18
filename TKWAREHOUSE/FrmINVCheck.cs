@@ -849,7 +849,10 @@ namespace TKWAREHOUSE
             {
                 report1.Load(@"REPORT\大潁-每日盤點表-成品.frx");
             }
-           
+            else if (comboBox2.Text.Equals("11001     大榮觀音倉"))
+            {
+                report1.Load(@"REPORT\大潁-11001每日盤點表.frx");
+            }
             else
             {
                 report1.Load(@"REPORT\大潁-每日盤點表.frx");
@@ -918,7 +921,7 @@ namespace TKWAREHOUSE
                                      ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [DY].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' 
                                      ,ISNULL ( DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [DY].dbo.MOCTF,[DY].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009),'{0}'),DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [DY].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND A.LA005='1') ,'{0}') ) AS '在倉日期' 
                                     , DATEDIFF(DAY, '{0}',LA016  )  AS '有效天數' 
-                                     ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [DY].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='20190208') AS INT) AS '總訂單需求量' 
+                                     ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [DY].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}') AS INT) AS '總訂單需求量' 
                                      ,(SELECT TOP 1 TC006+' '+MV002 FROM [DY].dbo.COPTC,[DY].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [DY].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [DY].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
                                      FROM [DY].dbo.INVLA WITH (NOLOCK)  
                                      LEFT JOIN  [DY].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
@@ -930,11 +933,28 @@ namespace TKWAREHOUSE
                                      ORDER BY 品號 
                                         ", DateTime.Now.ToString("yyyyMMdd"));
             }
-            
-            else
+            else if (comboBox2.Text.Equals("11001     大榮觀音倉"))
             {
                 FASTSQL.AppendFormat(@" 
-                                    SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量',CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'  
+                                    SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,0)) AS '庫存量',CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'  
+                                    ,DATEADD(day,1,DATEADD(month,-1*10,CONVERT(DATETIME,LA016)))
+                                    ,CASE WHEN MB198='2' AND MB023>0 THEN DATEADD(day,1,DATEADD(month,-1*MB023,CONVERT(DATETIME,LA016))) END AS '製造日期'
+                                    ,MB004 AS '庫存單位'
+                                    ,(CAST(SUM(LA005*LA011) /240 AS DECIMAL(18,0))) AS '板數'
+                                    ,'' AS '備註'
+                                    FROM [DY].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [DY].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
+                                    WHERE  (LA009='11001') 
+                                    GROUP BY  LA001,MB002,MB003,LA016,MB198,MB023,MB004
+                                    HAVING SUM(LA005*LA011)<>0
+                                    ORDER BY  LA001,MB002,MB003,LA016,MB198,MB023,MB004
+                                        "
+                                        );
+            }
+            else
+            {
+                FASTSQL.AppendFormat(@"
+
+                                   SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量',CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'  
                                     FROM [DY].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [DY].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
                                     WHERE  (LA009='{0}') {1}
                                     GROUP BY  LA001,MB002,MB003,LA016
@@ -942,7 +962,7 @@ namespace TKWAREHOUSE
                                     ORDER BY  LA001,MB002,MB003,LA016  "
                                     , comboBox2.SelectedValue.ToString(), sbSqlQuery.ToString());
 
-
+                 
             }
 
 
