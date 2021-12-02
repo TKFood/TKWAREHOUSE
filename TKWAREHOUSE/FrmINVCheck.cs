@@ -635,7 +635,7 @@ namespace TKWAREHOUSE
                                     GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
                                     HAVING SUM(LA005*LA011)<>0 
                                     ) AS TEMP
-                                    ORDER BY 品號    
+                                    ORDER BY 品號,批號    
 
                                         ", DateTime.Now.ToString("yyyyMMdd"));
             }
@@ -661,7 +661,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    ");
                 FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
                 FASTSQL.AppendFormat(@" ) AS TEMP");
-                FASTSQL.AppendFormat(@" ORDER BY 品號 ");
+                FASTSQL.AppendFormat(@" ORDER BY 品號,批號 ");
                 FASTSQL.AppendFormat(@" ");
             }
             else if (comboBox1.Text.Equals("20006     原料倉"))
@@ -686,7 +686,7 @@ namespace TKWAREHOUSE
                                      HAVING SUM(LA005*LA011)<>0 
                                      ) AS TEMP
                                      WHERE 品號 NOT IN ('122221001','114141009')
-                                     ORDER BY 品號  
+                                     ORDER BY 品號,批號  
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"), sbSqlQuery.ToString());
 
 
@@ -733,7 +733,7 @@ namespace TKWAREHOUSE
                                     GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004
                                     HAVING SUM(LA005*LA011)<>0 
                                     ) AS TEMP
-                                    ORDER BY 品號  
+                                    ORDER BY 品號,批號   
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"));
               
 
