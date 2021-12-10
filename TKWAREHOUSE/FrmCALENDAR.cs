@@ -421,6 +421,12 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SETTEXT()
+        {
+            textBox1.Text = null;
+            textBox2.Text = null;
+            textBox3.Text = null;
+        }
         #endregion
 
         #region BUTTON
@@ -428,6 +434,8 @@ namespace TKWAREHOUSE
         {
             ADDCALENDAR();
             SETCALENDAR();
+
+            SETTEXT();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -438,6 +446,8 @@ namespace TKWAREHOUSE
             {
                 DELCALENDAR();
                 SETCALENDAR();
+
+                SETTEXT();
             }
             else if (dialogResult == DialogResult.No)
             {
@@ -450,6 +460,8 @@ namespace TKWAREHOUSE
             {
                 UPDATECALENDAR(textBox3.Text,textBox1.Text.Trim());
                 SETCALENDAR();
+
+                SETTEXT();
             }
            
         }
