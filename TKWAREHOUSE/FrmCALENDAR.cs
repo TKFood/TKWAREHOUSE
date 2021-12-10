@@ -289,7 +289,137 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            SEACRH(dateTimePicker1.Value.ToString("yyyyMMdd"),comboBox1.Text.ToString());
+        }
 
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SEACRH(dateTimePicker1.Value.ToString("yyyyMMdd"), comboBox1.Text.ToString());
+        }
+
+        public void SEACRH(string EVENTDATE,string CAR)
+        {
+            textBox1.Text = null;
+            textBox3.Text = null;
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+
+                sbSql.AppendFormat(@"  
+                                    SELECT [ID],[EVENTDATE],[CAR],[EVENT]
+                                    FROM [TKWAREHOUSE].[dbo].[CALENDAR]
+                                 
+                                    WHERE convert(varchar, [EVENTDATE], 112)='{0}'
+                                    AND [CAR]='{1}'
+                                    ORDER BY [EVENTDATE]
+                                    ", EVENTDATE, CAR);
+
+                adapterCALENDAR = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilderCALENDAR = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                dsCALENDAR.Clear();
+                adapterCALENDAR.Fill(dsCALENDAR, "TEMPdsCALENDAR");
+                sqlConn.Close();
+
+
+                if (dsCALENDAR.Tables["TEMPdsCALENDAR"].Rows.Count == 0)
+                {
+
+                }
+                else
+                {
+                    if (dsCALENDAR.Tables["TEMPdsCALENDAR"].Rows.Count >= 1)
+                    {                        
+                        textBox1.Text = dsCALENDAR.Tables["TEMPdsCALENDAR"].Rows[0]["CAR"].ToString() + "-" + dsCALENDAR.Tables["TEMPdsCALENDAR"].Rows[0]["EVENT"].ToString();
+                        textBox3.Text = dsCALENDAR.Tables["TEMPdsCALENDAR"].Rows[0]["ID"].ToString();
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void UPDATECALENDAR(string ID,string EVENT)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKWAREHOUSE].[dbo].[CALENDAR]
+                                    SET [EVENT]='{1}'
+                                    WHERE [ID]='{0}'
+                                    ", ID, EVENT);
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
 
         #endregion
 
@@ -314,6 +444,17 @@ namespace TKWAREHOUSE
                 //do something else
             }
         }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox3.Text))
+            {
+                UPDATECALENDAR(textBox3.Text,textBox1.Text.Trim());
+                SETCALENDAR();
+            }
+           
+        }
+
+
         #endregion
 
 
