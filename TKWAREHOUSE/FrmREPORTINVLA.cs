@@ -140,9 +140,9 @@ namespace TKWAREHOUSE
                                     ) AS TEMP
                                     WHERE LA004='{0}'
                                     {1}
-                                    ORDER BY SERNO,KINDS,LA004,LA001
+                                    ORDER BY LA004,LA001,SERNO,KINDS
 
-                                    ",dateTimePicker1.Value.ToString("yyyyMMdd"), STRQUERY.ToString());
+                                    ", dateTimePicker1.Value.ToString("yyyyMMdd"), STRQUERY.ToString());
 
             return FASTSQL.ToString();
         }
