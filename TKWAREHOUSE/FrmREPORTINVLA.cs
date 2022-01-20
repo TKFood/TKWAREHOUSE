@@ -49,9 +49,42 @@ namespace TKWAREHOUSE
         public FrmREPORTINVLA()
         {
             InitializeComponent();
+
+            combobox1load();
         }
 
         #region FUNCTION
+        public void combobox1load()
+        {
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT MC001,MC002 FROM [TK].dbo.CMSMC WHERE MC001 IN ('20001','20017','21001') ORDER BY MC001");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("MC001", typeof(string));
+            dt.Columns.Add("MC002", typeof(string));
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "MC001";
+            comboBox1.DisplayMember = "MC002";
+            sqlConn.Close();
+
+
+
+        }
         private void FrmREPORTINVLA_Load(object sender, EventArgs e)
         {
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;      //奇數列顏色
@@ -132,8 +165,10 @@ namespace TKWAREHOUSE
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
-            
-            if(!string.IsNullOrEmpty(textBox1.Text))
+
+            string LA009 = comboBox1.SelectedValue.ToString();
+
+            if (!string.IsNullOrEmpty(textBox1.Text))
             {
                 STRQUERY.AppendFormat(@" AND LA001 LIKE '{0}%'",textBox1.Text.Trim());
             }
@@ -147,7 +182,7 @@ namespace TKWAREHOUSE
                                     AND LA001=MB001
                                     AND MQ003 IN ('23')
                                     AND LA005='-1'
-                                    AND LA009 IN ('20001')
+                                    AND LA009 IN ('{2}')
                                     GROUP BY LA004,LA001,LA009,MB002,MB003,MB004
                                     UNION ALL
                                     SELECT '2' AS SERNO,'暫出單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004
@@ -156,7 +191,7 @@ namespace TKWAREHOUSE
                                     AND LA001=MB001
                                     AND MQ003 IN ('13','14')
                                     AND LA005='-1'
-                                    AND LA009 IN ('20001')
+                                    AND LA009 IN ('{2}')
                                     GROUP BY LA004,LA001,LA009,MB002,MB003,MB004
                                     UNION ALL
                                     SELECT '3' AS SERNO,'暫入單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004
@@ -165,7 +200,7 @@ namespace TKWAREHOUSE
                                     AND LA001=MB001
                                     AND MQ003 IN ('15','16')
                                     AND LA005='-1'
-                                    AND LA009 IN ('20001')
+                                    AND LA009 IN ('{2}')
                                     GROUP BY LA004,LA001,LA009,MB002,MB003,MB004
                                     UNION ALL
                                     SELECT '4' AS SERNO,'庫存異動單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004
@@ -174,7 +209,7 @@ namespace TKWAREHOUSE
                                     AND LA001=MB001
                                     AND MQ003 IN ('11')
                                     AND LA005='-1'
-                                    AND LA009 IN ('20001')
+                                    AND LA009 IN ('{2}')
                                     GROUP BY LA004,LA001,LA009,MB002,MB003,MB004
                                     UNION ALL
                                     SELECT '5' AS SERNO,'轉撥單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004
@@ -183,14 +218,14 @@ namespace TKWAREHOUSE
                                     AND LA001=MB001
                                     AND MQ003 IN ('12','13')
                                     AND LA005='-1'
-                                    AND LA009 IN ('20001')
+                                    AND LA009 IN ('{2}')
                                     GROUP BY LA004,LA001,LA009,MB002,MB003,MB004
                                     ) AS TEMP
                                     WHERE LA004='{0}'
                                     {1}
                                     ORDER BY LA004,LA001,SERNO,KINDS
 
-                                    ", dateTimePicker1.Value.ToString("yyyyMMdd"), STRQUERY.ToString());
+                                    ", dateTimePicker1.Value.ToString("yyyyMMdd"), STRQUERY.ToString(), LA009);
 
             return FASTSQL.ToString();
         }
@@ -362,6 +397,7 @@ namespace TKWAREHOUSE
         {
             StringBuilder STR = new StringBuilder();
 
+
             STR.AppendFormat(@"  
                                 SELECT KINDS AS '分類',LA006 AS '單別',LA007 AS '單號'
                                 FROM (
@@ -371,7 +407,7 @@ namespace TKWAREHOUSE
                                 AND LA001=MB001
                                 AND MQ003 IN ('23')
                                 AND LA005='-1'
-                                AND LA009 IN ('20001') 
+                                AND LA009 IN ('20001')  
                                 GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007
                                 UNION ALL
                                 SELECT '2' AS SERNO,'暫出單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007
@@ -407,7 +443,7 @@ namespace TKWAREHOUSE
                                 AND LA001=MB001
                                 AND MQ003 IN ('12','13')
                                 AND LA005='-1'
-                                AND LA009 IN ('20001')
+                                AND LA009 IN ('20001') 
                                 GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007
                                 ) AS TEMP
                                 WHERE LA004='{0}' 
