@@ -2356,6 +2356,104 @@ namespace TKWAREHOUSE
             }
         }
 
+        public string GETMAXTA002(string TA001)
+        {
+            DateTime dt = dateTimePicker2.Value;
+            string TA002;
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TA002),'00000000000') AS TA002");
+                sbSql.AppendFormat(@"  FROM [TK].[dbo].[MOCTA] ");
+                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
+                sbSql.AppendFormat(@"  WHERE  TA001='{0}' AND TA003='{1}'", TA001, dt.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter4 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder4 = new SqlCommandBuilder(adapter4);
+                sqlConn.Open();
+                ds4.Clear();
+                adapter4.Fill(ds4, "TEMPds4");
+                sqlConn.Close();
+
+
+                if (ds4.Tables["TEMPds4"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds4.Tables["TEMPds4"].Rows.Count >= 1)
+                    {
+                        TA002 = SETTA002(ds4.Tables["TEMPds4"].Rows[0]["TA002"].ToString());
+                        return TA002;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+        }
+        public string SETTA002(string TA002)
+        {
+            DateTime dt = dateTimePicker2.Value;
+
+            try
+            {
+                if (TA002.Equals("00000000000"))
+                {
+                    return dt.ToString("yyyyMMdd") + "001";
+                }
+
+                else
+                {
+                    int serno = Convert.ToInt16(TA002.Substring(8, 3));
+                    serno = serno + 1;
+                    string temp = serno.ToString();
+                    temp = temp.PadLeft(3, '0');
+                    return dt.ToString("yyyyMMdd") + temp.ToString();
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+            
+            
+        }
+
 
         #endregion
 
@@ -2431,10 +2529,15 @@ namespace TKWAREHOUSE
 
         private void button8_Click(object sender, EventArgs e)
         {
-            //TA002 = GETMAXTA002(TA001);
-            //ADDMOCMANULINERESULT();
+            string TA001 = "A512";
+            string TA002 = "";
+
+            TA002 = GETMAXTA002(TA001);
+     
             //ADDMOCTATB();
-            //SEARCHMOCMANULINERESULT();
+
+            //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
+            //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
             MessageBox.Show("完成");
 

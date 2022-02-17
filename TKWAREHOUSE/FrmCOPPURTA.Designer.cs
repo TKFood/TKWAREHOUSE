@@ -92,6 +92,7 @@
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.button15 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
+            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -555,7 +556,7 @@
             // 
             this.splitContainer7.Panel2.Controls.Add(this.dataGridView4);
             this.splitContainer7.Size = new System.Drawing.Size(352, 337);
-            this.splitContainer7.SplitterDistance = 223;
+            this.splitContainer7.SplitterDistance = 243;
             this.splitContainer7.TabIndex = 0;
             // 
             // tableLayoutPanel4
@@ -565,14 +566,15 @@
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 186F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel4.Controls.Add(this.dateTimePicker2, 0, 5);
             this.tableLayoutPanel4.Controls.Add(this.button12, 0, 3);
             this.tableLayoutPanel4.Controls.Add(this.button9, 1, 0);
             this.tableLayoutPanel4.Controls.Add(this.button7, 0, 2);
             this.tableLayoutPanel4.Controls.Add(this.button5, 0, 1);
             this.tableLayoutPanel4.Controls.Add(this.button10, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.button11, 1, 1);
-            this.tableLayoutPanel4.Controls.Add(this.button13, 1, 3);
-            this.tableLayoutPanel4.Controls.Add(this.button8, 1, 4);
+            this.tableLayoutPanel4.Controls.Add(this.button13, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.button8, 1, 5);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -583,15 +585,16 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(348, 219);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(348, 239);
             this.tableLayoutPanel4.TabIndex = 5;
             // 
             // button12
             // 
+            this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button12.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button12.Location = new System.Drawing.Point(3, 123);
             this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(140, 34);
+            this.button12.Size = new System.Drawing.Size(144, 34);
             this.button12.TabIndex = 8;
             this.button12.Text = "產生成品請購單";
             this.button12.UseVisualStyleBackColor = true;
@@ -599,10 +602,11 @@
             // 
             // button9
             // 
+            this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button9.Location = new System.Drawing.Point(153, 3);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(122, 34);
+            this.button9.Size = new System.Drawing.Size(180, 34);
             this.button9.TabIndex = 5;
             this.button9.Text = "訂單請購單";
             this.button9.UseVisualStyleBackColor = true;
@@ -610,10 +614,11 @@
             // 
             // button7
             // 
+            this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button7.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button7.Location = new System.Drawing.Point(3, 83);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(140, 34);
+            this.button7.Size = new System.Drawing.Size(144, 34);
             this.button7.TabIndex = 3;
             this.button7.Text = "產生半成品請購單";
             this.button7.UseVisualStyleBackColor = true;
@@ -621,10 +626,11 @@
             // 
             // button5
             // 
+            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button5.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button5.Location = new System.Drawing.Point(3, 43);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(140, 34);
+            this.button5.Size = new System.Drawing.Size(144, 34);
             this.button5.TabIndex = 2;
             this.button5.Text = "產生物料請購單";
             this.button5.UseVisualStyleBackColor = true;
@@ -632,10 +638,11 @@
             // 
             // button10
             // 
+            this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button10.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button10.Location = new System.Drawing.Point(3, 3);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(140, 34);
+            this.button10.Size = new System.Drawing.Size(144, 34);
             this.button10.TabIndex = 6;
             this.button10.Text = "產生原料請購單";
             this.button10.UseVisualStyleBackColor = true;
@@ -643,10 +650,11 @@
             // 
             // button11
             // 
+            this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button11.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button11.Location = new System.Drawing.Point(153, 43);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(123, 34);
+            this.button11.Size = new System.Drawing.Size(180, 34);
             this.button11.TabIndex = 7;
             this.button11.Text = "同時原料/物料請購單";
             this.button11.UseVisualStyleBackColor = true;
@@ -664,7 +672,7 @@
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.ReadOnly = true;
             this.dataGridView4.RowTemplate.Height = 24;
-            this.dataGridView4.Size = new System.Drawing.Size(348, 106);
+            this.dataGridView4.Size = new System.Drawing.Size(348, 86);
             this.dataGridView4.TabIndex = 5;
             // 
             // tabPage2
@@ -680,8 +688,9 @@
             // 
             // button13
             // 
+            this.button13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button13.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button13.Location = new System.Drawing.Point(153, 123);
+            this.button13.Location = new System.Drawing.Point(153, 83);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(180, 34);
             this.button13.TabIndex = 9;
@@ -691,8 +700,9 @@
             // 
             // button8
             // 
+            this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button8.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button8.Location = new System.Drawing.Point(153, 163);
+            this.button8.Location = new System.Drawing.Point(153, 203);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(180, 34);
             this.button8.TabIndex = 10;
@@ -715,7 +725,7 @@
             // 
             this.splitContainer8.Panel2.Controls.Add(this.tableLayoutPanel6);
             this.splitContainer8.Size = new System.Drawing.Size(970, 589);
-            this.splitContainer8.SplitterDistance = 464;
+            this.splitContainer8.SplitterDistance = 463;
             this.splitContainer8.TabIndex = 0;
             // 
             // splitContainer9
@@ -733,7 +743,7 @@
             // splitContainer9.Panel2
             // 
             this.splitContainer9.Panel2.Controls.Add(this.dataGridView5);
-            this.splitContainer9.Size = new System.Drawing.Size(464, 589);
+            this.splitContainer9.Size = new System.Drawing.Size(463, 589);
             this.splitContainer9.SplitterDistance = 96;
             this.splitContainer9.TabIndex = 0;
             // 
@@ -758,7 +768,7 @@
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(460, 92);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(459, 92);
             this.tableLayoutPanel5.TabIndex = 5;
             // 
             // button14
@@ -784,7 +794,7 @@
             this.dataGridView5.Name = "dataGridView5";
             this.dataGridView5.ReadOnly = true;
             this.dataGridView5.RowTemplate.Height = 24;
-            this.dataGridView5.Size = new System.Drawing.Size(460, 485);
+            this.dataGridView5.Size = new System.Drawing.Size(459, 485);
             this.dataGridView5.TabIndex = 4;
             this.dataGridView5.SelectionChanged += new System.EventHandler(this.dataGridView5_SelectionChanged);
             // 
@@ -827,7 +837,7 @@
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(498, 585);
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(499, 585);
             this.tableLayoutPanel6.TabIndex = 6;
             // 
             // label3
@@ -978,6 +988,17 @@
             this.button16.UseVisualStyleBackColor = true;
             this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
+            // dateTimePicker2
+            // 
+            this.dateTimePicker2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.dateTimePicker2.CustomFormat = "yyyy/MM/dd";
+            this.dateTimePicker2.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker2.Location = new System.Drawing.Point(3, 206);
+            this.dateTimePicker2.Name = "dateTimePicker2";
+            this.dateTimePicker2.Size = new System.Drawing.Size(144, 27);
+            this.dateTimePicker2.TabIndex = 11;
+            // 
             // FrmCOPPURTA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -1106,5 +1127,6 @@
         private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.DateTimePicker dateTimePicker2;
     }
 }
