@@ -1800,7 +1800,7 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [TA001] AS '請購',[TA002] AS '單號',[ID] AS '批號'");
+                sbSql.AppendFormat(@"  SELECT [TA001] AS '單別',[TA002] AS '單號',[ID] AS '批號'");
                 sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[COPPURBATCHPUR]");
                 sbSql.AppendFormat(@"  WHERE [ID]='{0}' ",ID);
                 sbSql.AppendFormat(@"  ");
@@ -1859,11 +1859,14 @@ namespace TKWAREHOUSE
             sqlConn.Open();
             tran = sqlConn.BeginTransaction();
 
+            sbSql.Clear();
 
-            sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[COPPURBATCHPUR]");
-            sbSql.AppendFormat(" ([ID],[TA001],[TA002])");
-            sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')",ID,TA001,TA002);
-            sbSql.AppendFormat(" ");
+
+            sbSql.AppendFormat(@" 
+                                INSERT INTO  [TKWAREHOUSE].[dbo].[COPPURBATCHPUR]
+                                ([ID],[TA001],[TA002])
+                                VALUES ('{0}','{1}','{2}')
+                                ", ID, TA001, TA002); 
 
 
             cmd.Connection = sqlConn;
@@ -2977,12 +2980,12 @@ namespace TKWAREHOUSE
             string TA001 = "A512";
             string TA002 = "";
 
-            //TA002 = GETMAXTA002(TA001);
+            TA002 = GETMAXTA002(TA001);
      
             ADDMOCTATB();
 
-            //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
-            //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
+            ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), TA001, TA002);
+            SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
             MessageBox.Show("完成");
 
