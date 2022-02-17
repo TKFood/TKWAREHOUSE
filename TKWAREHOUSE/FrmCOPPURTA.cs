@@ -64,6 +64,16 @@ namespace TKWAREHOUSE
 
         string MAXID;
 
+        string MB001;
+        string MB002;
+        string MB003;
+        decimal BAR;
+        string TA026A;
+        string TA027A;
+        string TA028A;
+        decimal SUM1;
+        string TC015TD020;
+
         public class PURTA
         {
             public string COMPANY;
@@ -269,6 +279,66 @@ namespace TKWAREHOUSE
             public string UDF08;
             public string UDF09;
             public string UDF10;
+        }
+
+        public class MOCTADATA
+        {
+            public string COMPANY;
+            public string CREATOR;
+            public string USR_GROUP;
+            public string CREATE_DATE;
+            public string MODIFIER;
+            public string MODI_DATE;
+            public string FLAG;
+            public string CREATE_TIME;
+            public string MODI_TIME;
+            public string TRANS_TYPE;
+            public string TRANS_NAME;
+            public string sync_count;
+            public string DataGroup;
+            public string TA001;
+            public string TA002;
+            public string TA003;
+            public string TA004;
+            public string TA005;
+            public string TA006;
+            public string TA007;
+            public string TA009;
+            public string TA010;
+            public string TA011;
+            public string TA012;
+            public string TA013;
+            public string TA014;
+            public string TA015;
+            public string TA016;
+            public string TA017;
+            public string TA018;
+            public string TA019;
+            public string TA020;
+            public string TA021;
+            public string TA022;
+            public string TA024;
+            public string TA025;
+            public string TA026;
+            public string TA027;
+            public string TA028;
+            public string TA029;
+            public string TA030;
+            public string TA031;
+            public string TA032;
+            public string TA033;
+            public string TA034;
+            public string TA035;
+            public string TA040;
+            public string TA041;
+            public string TA043;
+            public string TA044;
+            public string TA045;
+            public string TA046;
+            public string TA047;
+            public string TA049;
+            public string TA050;
+            public string TA200;
         }
 
         public FrmCOPPURTA()
@@ -526,10 +596,15 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [ID] AS '批號',[TD001] AS '訂單單別',[TD002] AS '訂單單號',[TD003] AS '訂單序號',[TD004] AS '品號',[TD005] AS '品名',[TD008] AS '訂單數量',[TD009] AS '已交數量',[TD010] AS '單位',[TD024] AS '贈品量',[TD025] AS '贈品已交量'");
-                sbSql.AppendFormat(@"  FROM [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD]");
-                sbSql.AppendFormat(@"  WHERE  [ID]='{0}'",ID);
-                sbSql.AppendFormat(@"  ");
+          
+                sbSql.AppendFormat(@"  
+                                    SELECT [ID] AS '批號',[COPPURBATCHCOPTD].[TD001] AS '訂單單別',[COPPURBATCHCOPTD].[TD002] AS '訂單單號',[COPPURBATCHCOPTD].[TD003] AS '訂單序號',[COPPURBATCHCOPTD].[TD004] AS '品號',[COPPURBATCHCOPTD].[TD005] AS '品名',[COPPURBATCHCOPTD].[TD008] AS '訂單數量',[COPPURBATCHCOPTD].[TD009] AS '已交數量',[COPPURBATCHCOPTD].[TD010] AS '單位',[COPPURBATCHCOPTD].[TD024] AS '贈品量',[COPPURBATCHCOPTD].[TD025] AS '贈品已交量',MB001,MB002,MB003,TC015,TD020
+                                    FROM [TKWAREHOUSE].[dbo].[COPPURBATCHCOPTD]
+                                    LEFT JOIN [TK].dbo.COPTC ON COPTC.TC001=[COPPURBATCHCOPTD].[TD001]  AND COPTC.TC002=[COPPURBATCHCOPTD].[TD002] 
+                                    LEFT JOIN [TK].dbo.COPTD ON COPTD.TD001=[COPPURBATCHCOPTD].[TD001]  AND COPTD.TD002=[COPPURBATCHCOPTD].[TD002] AND COPTD.TD003=[COPPURBATCHCOPTD].[TD003] 
+                                    LEFT JOIN [TK].dbo.INVMB ON [COPPURBATCHCOPTD].[TD004]=INVMB.MB001
+                                    WHERE  [ID]='{0}'
+                                    ", ID);
 
                 adapter2 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -627,9 +702,21 @@ namespace TKWAREHOUSE
         }
         private void dataGridView2_SelectionChanged(object sender, EventArgs e)
         {
+            //MOCTA的生產品號在dataGridView2_SelectionChanged決定
+            //
             DELTD001 = null;
             DELTD002 = null;
             DELTD003 = null;
+
+            MB001 = null;
+            MB002 = null;
+            MB003 = null;
+            BAR = 0;
+            TA026A = null;
+            TA027A = null;
+            TA028A = null;
+            SUM1 = 0;
+            TC015TD020 = null;
 
             if (dataGridView2.CurrentRow != null)
             {
@@ -640,7 +727,15 @@ namespace TKWAREHOUSE
                     DELTD001 = row.Cells["訂單單別"].Value.ToString();
                     DELTD002 = row.Cells["訂單單號"].Value.ToString();
                     DELTD003 = row.Cells["訂單序號"].Value.ToString();
-
+                    MB001 = row.Cells["品號"].Value.ToString();
+                    MB002 = row.Cells["MB002"].Value.ToString();
+                    MB003 = row.Cells["MB003"].Value.ToString();
+                    BAR = Convert.ToDecimal(row.Cells["訂單數量"].Value.ToString());
+                    TA026A = row.Cells["訂單單別"].Value.ToString();
+                    TA027A = row.Cells["訂單單號"].Value.ToString();
+                    TA028A = row.Cells["訂單序號"].Value.ToString();
+                    SUM1 = Convert.ToDecimal(row.Cells["訂單數量"].Value.ToString());
+                    TC015TD020 = (row.Cells["TC015"].Value.ToString()+ row.Cells["TD020"].Value.ToString());
 
                 }
                 else
@@ -648,6 +743,16 @@ namespace TKWAREHOUSE
                     DELTD001 = null;
                     DELTD002 = null;
                     DELTD003 = null;
+
+                    MB001 = null;
+                    MB002 = null;
+                    MB003 = null;
+                    BAR = 0;
+                    TA026A = null;
+                    TA027A = null;
+                    TA028A = null;
+                    SUM1 = 0;
+                    TC015TD020 = null;
 
                 }
             }
@@ -2453,6 +2558,322 @@ namespace TKWAREHOUSE
             
             
         }
+        public void ADDMOCTATB()
+        {
+            MOCTADATA MOCTA = new MOCTADATA();
+            MOCTA = SETMOCTA();
+            string MOCMB001 = null;
+            decimal MOCTA004 = 0; ;
+            string MOCTB009 = null;
+
+
+            const int MaxLength = 100;
+            
+            MOCMB001 = MB001;
+            MOCTA004 = BAR;
+            MOCTA.TA026 = TA026A;
+            MOCTA.TA027 = TA027A;
+            MOCTA.TA028 = TA028A;
+            //MOCTB009 = textBox77.Text;
+
+            
+            try
+            {
+                //check TA002=2,TA040=2
+                //[TB004]的計算，如果領用倍數MB041=1且不是201開頭的箱子，就取整數、MB041=1且是201開頭的箱子，就4捨5入到整數、其他就取到小數第3位
+                if (MOCTA.TA002.Substring(0, 1).Equals("2") && MOCTA.TA040.Substring(0, 1).Equals("2"))
+                {
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                
+     
+                    sbSql.AppendFormat(@" 
+                                        INSERT INTO [TK].[dbo].[MOCTA]
+                                        ([COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]
+                                        ,[TRANS_NAME],[sync_count],[DataGroup],[TA001],[TA002],[TA003],[TA004],[TA005],[TA006],[TA007]
+                                        ,[TA009],[TA010],[TA011],[TA012],[TA013],[TA014],[TA015],[TA016],[TA017],[TA018]
+                                        ,[TA019],[TA020],[TA021],[TA022],[TA024],[TA025],[TA029],[TA030],[TA031],[TA034],[TA035]
+                                        ,[TA040],[TA041],[TA043],[TA044],[TA045],[TA046],[TA047],[TA049],[TA050],[TA200]
+                                        ,[TA026],[TA027],[TA028],[TA032]
+                                        )
+                                        VALUES
+                                        ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'
+                                        ,'{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}'
+                                        ,'{20}','{21}','{22}','{23}','{24}','{25}','{26}','{27}','{28}','{29}'
+                                        ,'{30}','{31}','{32}','{33}','{34}','{35}',N'{36}','{37}','{38}','{39}'
+                                        ,'{40}','{41}','{42}','{43}','{44}','{45}','{46}','{47}','{48}','{49}'
+                                        ,'{50}','{51}','{52}','{53}','{54}'
+                                        )
+                                        ", MOCTA.COMPANY, MOCTA.CREATOR, MOCTA.USR_GROUP, MOCTA.CREATE_DATE, MOCTA.MODIFIER, MOCTA.MODI_DATE, MOCTA.FLAG, MOCTA.CREATE_TIME, MOCTA.MODI_TIME, MOCTA.TRANS_TYPE
+                                        , MOCTA.TRANS_NAME, MOCTA.sync_count, MOCTA.DataGroup, MOCTA.TA001, MOCTA.TA002, MOCTA.TA003, MOCTA.TA004, MOCTA.TA005, MOCTA.TA006, MOCTA.TA007
+                                        , MOCTA.TA009, MOCTA.TA010, MOCTA.TA011, MOCTA.TA012, MOCTA.TA013, MOCTA.TA014, MOCTA.TA015, MOCTA.TA016, MOCTA.TA017, MOCTA.TA018
+                                        , MOCTA.TA019, MOCTA.TA020, MOCTA.TA021, MOCTA.TA022, MOCTA.TA024, MOCTA.TA025, MOCTA.TA029, MOCTA.TA030, MOCTA.TA031, MOCTA.TA034
+                                        , MOCTA.TA035, MOCTA.TA040, MOCTA.TA041, MOCTA.TA043, MOCTA.TA044, MOCTA.TA045, MOCTA.TA046, MOCTA.TA047, MOCTA.TA049, MOCTA.TA050
+                                        , MOCTA.TA200, MOCTA.TA026, MOCTA.TA027, MOCTA.TA028, MOCTA.TA032);
+
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+                }
+
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
+
+        public MOCTADATA SETMOCTA()
+        {
+            DateTime dt = dateTimePicker2.Value;
+
+            DataTable OUTPURSET = SEARCHOUTPURSET(MB001);
+            DataTable BOMMC= SEARCHBOMMC(MB001);
+
+
+
+            MOCTADATA MOCTA = new MOCTADATA();
+            MOCTA.COMPANY = "TK";
+            MOCTA.CREATOR = "140020";
+            MOCTA.USR_GROUP = "103000";
+            //MOCTA.CREATE_DATE = dt1.ToString("yyyyMMdd");
+            MOCTA.CREATE_DATE = DateTime.Now.ToString("yyyyMMdd");
+            MOCTA.MODIFIER = "140020";
+            MOCTA.MODI_DATE = dt.ToString("yyyyMMdd");
+            MOCTA.FLAG = "0";
+            MOCTA.CREATE_TIME = DateTime.Now.ToString("HH:mm:dd");
+            MOCTA.MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
+            MOCTA.TRANS_TYPE = "P001";
+            MOCTA.TRANS_NAME = "MOCMI02";
+            MOCTA.sync_count = "0";
+            MOCTA.DataGroup = "103000";
+            MOCTA.TA001 = "A512";
+            MOCTA.TA002 = GETMAXTA002(MOCTA.TA001);
+            MOCTA.TA003 = dt.ToString("yyyyMMdd");
+            MOCTA.TA004 = dt.ToString("yyyyMMdd");
+            MOCTA.TA005 = BOMMC.Rows[0]["MC009"].ToString();
+            MOCTA.TA006 = MB001;
+            MOCTA.TA007 = BOMMC.Rows[0]["MB004"].ToString();
+            MOCTA.TA009 = dt.ToString("yyyyMMdd");
+            MOCTA.TA010 = dt.ToString("yyyyMMdd");
+            MOCTA.TA011 = "1";
+            MOCTA.TA012 = dt.ToString("yyyyMMdd");
+            MOCTA.TA013 = "N";
+            //MOCTA.TA014 = dt1.ToString("yyyyMMdd");
+            MOCTA.TA014 = "";
+            //MOCTA.TA015 = (BAR * BOMBAR).ToString();
+            MOCTA.TA015 = SUM1.ToString();
+            MOCTA.TA016 = "0";
+            MOCTA.TA017 = "0";
+            MOCTA.TA018 = "0";
+            MOCTA.TA019 = "20";
+            MOCTA.TA020 = OUTPURSET.Rows[0]["MC001"].ToString();
+            MOCTA.TA021 = "";
+            MOCTA.TA022 = "0";
+            MOCTA.TA024 = "A512";
+            MOCTA.TA025 = MOCTA.TA002;
+            MOCTA.TA029 = TC015TD020;
+            MOCTA.TA030 = "1";
+            MOCTA.TA031 = "0";
+            MOCTA.TA032 = OUTPURSET.Rows[0]["PURMA001"].ToString();
+            MOCTA.TA034 = MB002;
+            MOCTA.TA035 = MB003;
+            MOCTA.TA040 = dt.ToString("yyyyMMdd");
+            MOCTA.TA041 = "";
+            MOCTA.TA043 = "1";
+            MOCTA.TA044 = "N";
+            MOCTA.TA045 = "0";
+            MOCTA.TA046 = "0";
+            MOCTA.TA047 = "0";
+            MOCTA.TA049 = "0";
+            MOCTA.TA050 = "0";
+            MOCTA.TA200 = "1";
+
+
+            return MOCTA;
+
+            
+
+        }
+
+        public DataTable SEARCHBOMMC(string MB001)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            StringBuilder sbSqlQuery = new StringBuilder();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet dsBOMMC = new DataSet();
+
+         
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+      
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    [MC001],[MC002],[MC003],[MC004],[MC005],[MC006],[MC007],[MC008],[MC009],[MC010],[MC011],[MC012],[MC013],[MC014],[MC015],[MC016],[MC017],[MC018],[MC019],[MC020],[MC021],[MC022],[MC023],[MC024],[MC025],[MC026],[MC027]
+                                    ,INVMB.MB004
+                                    FROM [TK].[dbo].[BOMMC]
+                                    LEFT JOIN [TK].dbo.[INVMB] ON MB001=MC001
+                                    WHERE  [MC001]='{0}'
+                                    ", MB001);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                dsBOMMC.Clear();
+                adapter1.Fill(dsBOMMC, "dsBOMMC");
+                sqlConn.Close();
+
+
+                if (dsBOMMC.Tables["dsBOMMC"].Rows.Count >= 1)
+                {
+                    return dsBOMMC.Tables["dsBOMMC"];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+
+
+        }
+
+        public DataTable SEARCHOUTPURSET(string MB001)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            StringBuilder sbSqlQuery = new StringBuilder();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet dsBOMMC = new DataSet();
+
+           
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    [MB001]
+                                    ,[MB002]
+                                    ,[PURMA001]
+                                    ,[PURMA002]
+                                    ,[MC001]
+                                    ,[MC002]
+                                    FROM [TKWAREHOUSE].[dbo].[OUTPURSET]
+                                    WHERE [MB001]='{0}'
+                                    ", MB001);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                dsBOMMC.Clear();
+                adapter1.Fill(dsBOMMC, "dsBOMMC");
+                sqlConn.Close();
+
+
+                if (dsBOMMC.Tables["dsBOMMC"].Rows.Count >= 1)
+                {
+                    return dsBOMMC.Tables["dsBOMMC"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+
+
+        }
 
 
         #endregion
@@ -2532,9 +2953,9 @@ namespace TKWAREHOUSE
             string TA001 = "A512";
             string TA002 = "";
 
-            TA002 = GETMAXTA002(TA001);
+            //TA002 = GETMAXTA002(TA001);
      
-            //ADDMOCTATB();
+            ADDMOCTATB();
 
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
