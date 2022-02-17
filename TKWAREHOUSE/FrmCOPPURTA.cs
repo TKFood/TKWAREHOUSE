@@ -1947,12 +1947,12 @@ namespace TKWAREHOUSE
 
         private void textBox6_TextChanged(object sender, EventArgs e)
         {
-
+            textBox7.Text = SEARCHPURMA002(textBox6.Text.Trim());
         }
 
         private void textBox8_TextChanged(object sender, EventArgs e)
         {
-
+            textBox9.Text = SEARCHCMSMC002(textBox8.Text.Trim());
         }
 
         public string SEARCHMB002(string MB001)
@@ -1996,7 +1996,7 @@ namespace TKWAREHOUSE
 
                 if (ds1.Tables["ds1"].Rows.Count >= 1)
                 {
-                    return ds1.Tables["ds1"].Rows[0]["MB002"].ToString();
+                    return ds1.Tables["ds1"].Rows[0]["MB002"].ToString().Trim();
                 }
                 else
                 {
@@ -2013,6 +2013,126 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        public string SEARCHPURMA002(string MA001)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"
+                                    SELECT MA001,MA002
+                                    FROM [TK].dbo.PURMA
+                                    WHERE MA001='{0}'
+                                      ", MA001);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"].Rows[0]["MA002"].ToString().Trim(); ;
+                }
+                else
+                {
+                    return "";
+                }
+
+            }
+            catch
+            {
+                return "";
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string SEARCHCMSMC002(string MC001)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"
+                                    SELECT MC001,MC002
+                                    FROM [TK].dbo.CMSMC
+                                    WHERE MC001='{0}'
+                                      ", MC001);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"].Rows[0]["MC002"].ToString().Trim(); ;
+                }
+                else
+                {
+                    return "";
+                }
+
+            }
+            catch
+            {
+                return "";
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
         #endregion
 
         #region BUTTON
