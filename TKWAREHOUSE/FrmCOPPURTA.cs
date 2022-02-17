@@ -2627,6 +2627,30 @@ namespace TKWAREHOUSE
                                         , MOCTA.TA035, MOCTA.TA040, MOCTA.TA041, MOCTA.TA043, MOCTA.TA044, MOCTA.TA045, MOCTA.TA046, MOCTA.TA047, MOCTA.TA049, MOCTA.TA050
                                         , MOCTA.TA200, MOCTA.TA026, MOCTA.TA027, MOCTA.TA028, MOCTA.TA032);
 
+                    sbSql.AppendFormat(@" 
+                                        INSERT INTO [TK].dbo.[MOCTB]
+                                        ([COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]
+                                        ,[TRANS_NAME],[sync_count],[DataGroup],[TB001],[TB002],[TB003],[TB004],[TB005],[TB006],[TB007]
+                                        ,[TB009],[TB011],[TB012],[TB013],[TB014],[TB018],[TB019],[TB020],[TB022],[TB024]
+                                        ,[TB025],[TB026],[TB027],[TB029],[TB030],[TB031],[TB501],[TB554],[TB556],[TB560])  
+
+                                        (
+                                        SELECT 
+                                        '{1}' [COMPANY],'{2}' [CREATOR],'{3}' [USR_GROUP],'{4}' [CREATE_DATE],'{5}' [MODIFIER],'{6}' [MODI_DATE],'{7}' [FLAG],'{8}' [CREATE_TIME],'{9}' [MODI_TIME],'{10}' [TRANS_TYPE]
+                                        ,'{11}' [TRANS_NAME],{12} [sync_count],'{13}' [DataGroup],'{14}' [TB001],'{15}' [TB002]
+                                        ,[COPPURBATCHUSED].MB001 [TB003],CASE WHEN [COPPURBATCHUSED].MB001 LIKE '3%' THEN [COPPURBATCHUSED].[TDNUM] ELSE [COPPURBATCHUSED].[NUM] END  [TB004],0 [TB005],'****' [TB006],CASE WHEN [COPPURBATCHUSED].MB001 LIKE '3%' THEN [COPPURBATCHUSED].[TDUNIT] ELSE [INVMB].MB004 END  [TB007]
+                                        ,[INVMB].MB017 [TB009],'1' [TB011],[INVMB].MB002 [TB012],[INVMB].MB003 [TB013],[COPPURBATCHUSED].TD004 [TB014],'N' [TB018],'0' [TB019],'0' [TB020],'2' [TB022],'0' [TB024]
+                                        ,'****' [TB025],'0' [TB026],'1' [TB027],'0' [TB029],'0' [TB030],'0' [TB031],'0' [TB501],'N' [TB554],'0' [TB556],'0' [TB560]
+                                        FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED],[TK].dbo.[INVMB]
+                                        WHERE [COPPURBATCHUSED].[MB001]=[INVMB].MB001
+                                        AND [COPPURBATCHUSED].[ID]='{0}'
+                                        )
+                                        
+                                        ",textBoxID.Text.Trim()
+                                        , MOCTA.COMPANY, MOCTA.CREATOR, MOCTA.USR_GROUP, MOCTA.CREATE_DATE, MOCTA.MODIFIER, MOCTA.MODI_DATE, MOCTA.FLAG, MOCTA.CREATE_TIME, MOCTA.MODI_TIME, MOCTA.TRANS_TYPE
+                                        , MOCTA.TRANS_NAME, MOCTA.sync_count, MOCTA.DataGroup, MOCTA.TA001, MOCTA.TA002
+                                        );
+
 
 
                     cmd.Connection = sqlConn;
