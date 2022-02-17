@@ -2132,6 +2132,230 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCHOUTPURSET()
+        {
+            StringBuilder sbSql = new StringBuilder();
+            StringBuilder sbSqlQuery = new StringBuilder();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+               
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    [MB001] AS '品號'
+                                    ,[MB002] AS '品名'
+                                    ,[PURMA001] AS '廠商'
+                                    ,[PURMA002] AS '廠商名'
+                                    ,[MC001] AS '庫別'
+                                    ,[MC002] AS '庫別名'
+                                    FROM [TKWAREHOUSE].[dbo].[OUTPURSET]
+                                    ORDER BY [MB001]
+                                    ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView5.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView5.DataSource = ds1.Tables["ds1"];
+                        dataGridView5.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void ADDOUTPURSET(string MB001,string MB002,string PURMA001,string PURMA002,string MC001,string MC002)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+
+                sbSql.AppendFormat(@" 
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[OUTPURSET]
+                                    ([MB001],[MB002],[PURMA001],[PURMA002],[MC001],[MC002])
+                                    VALUES
+                                    ('{0}','{1}','{2}','{3}','{4}','{5}')
+
+                                    ", MB001,MB002,PURMA001,PURMA002,MC001,MC002);
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    MessageBox.Show("完成");
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void DELETEOUTPURSET(string MB001,string PURMA001, string MC002)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+
+                sbSql.AppendFormat(@" 
+                                    DELETE [TKWAREHOUSE].[dbo].[OUTPURSET]
+                                    WHERE [MB001]='{0}' AND [PURMA001]='{1}' AND [MC001]='{2}'
+
+                                    ", MB001, PURMA001, MC002);
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    MessageBox.Show("完成");
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        private void dataGridView5_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox4.Text = null;
+            textBox5.Text = null;
+            textBox6.Text = null;
+            textBox7.Text = null;
+            textBox8.Text = null;
+            textBox9.Text = null;
+
+            if (dataGridView5.CurrentRow != null)
+            {
+                int rowindex = dataGridView5.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView5.Rows[rowindex];
+                    textBox4.Text = row.Cells["品號"].Value.ToString();
+                    textBox5.Text = row.Cells["品名"].Value.ToString();
+                    textBox6.Text = row.Cells["廠商"].Value.ToString();
+                    textBox7.Text = row.Cells["廠商名"].Value.ToString();
+                    textBox8.Text = row.Cells["庫別"].Value.ToString();
+                    textBox9.Text = row.Cells["庫別名"].Value.ToString();
+
+                }
+                else
+                {
+                    
+
+                }
+            }
+        }
+
 
         #endregion
 
@@ -2297,13 +2521,46 @@ namespace TKWAREHOUSE
         }
         private void button14_Click(object sender, EventArgs e)
         {
-
+            SEARCHOUTPURSET();
         }
 
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox5.Text)&& !string.IsNullOrEmpty(textBox7.Text)&& !string.IsNullOrEmpty(textBox9.Text))
+            {
+                ADDOUTPURSET(textBox4.Text.Trim(), textBox5.Text.Trim(), textBox6.Text.Trim(), textBox7.Text.Trim(), textBox8.Text.Trim(), textBox9.Text.Trim());
+
+                SEARCHOUTPURSET();
+            }
+
+            
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                if (!string.IsNullOrEmpty(textBox5.Text) && !string.IsNullOrEmpty(textBox7.Text) && !string.IsNullOrEmpty(textBox9.Text))
+                {
+                    DELETEOUTPURSET(textBox4.Text.Trim(), textBox6.Text.Trim(), textBox8.Text.Trim());
+
+                    SEARCHOUTPURSET();
+                }
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+
+            
+                
+        }
 
 
         #endregion
 
-      
+       
     }
 }
