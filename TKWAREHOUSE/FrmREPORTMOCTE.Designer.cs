@@ -152,7 +152,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 16);
             this.label3.TabIndex = 2;
-            this.label3.Text = "日期";
+            this.label3.Text = "製令開單日期";
             // 
             // label4
             // 
