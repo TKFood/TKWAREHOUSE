@@ -2794,7 +2794,7 @@ namespace TKWAREHOUSE
             MOCTA.TA024 = "A512";
             MOCTA.TA025 = MOCTA.TA002;
             MOCTA.TA029 = TC015TD020;
-            MOCTA.TA030 = "1";
+            MOCTA.TA030 = "2"; //1=廠內、2=託外
             MOCTA.TA031 = "0";
             MOCTA.TA032 = OUTPURSET.Rows[0]["PURMA001"].ToString();
             MOCTA.TA034 = MB002;
