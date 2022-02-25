@@ -74,6 +74,10 @@ namespace TKWAREHOUSE
         decimal SUM1;
         string TC015TD020;
 
+        string DELCOPPURBATCHPUR_ID;
+        string DELCOPPURBATCHPUR_TA001;
+        string DELCOPPURBATCHPUR_TA002;
+
         public class PURTA
         {
             public string COMPANY;
@@ -1889,6 +1893,54 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void DELETECOPPURBATCHPUR(string ID, string TA001, string TA002)
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+            sqlConn.Close();
+            sqlConn.Open();
+            tran = sqlConn.BeginTransaction();
+
+            sbSql.Clear();
+
+
+            sbSql.AppendFormat(@"
+                                DELETE [TKWAREHOUSE].[dbo].[COPPURBATCHPUR]
+                                WHERE [ID]='{0}' AND [TA001]='{1}'AND [TA002]='{2}'
+
+                                ", ID, TA001, TA002);
+
+
+            cmd.Connection = sqlConn;
+            cmd.CommandTimeout = 60;
+            cmd.CommandText = sbSql.ToString();
+            cmd.Transaction = tran;
+            result = cmd.ExecuteNonQuery();
+
+            if (result == 0)
+            {
+                tran.Rollback();    //交易取消
+
+
+            }
+            else
+            {
+                tran.Commit();      //執行交易  
+
+
+            }
+        }
+
         public void ADDPURTAB(string ID, string TYPE)
         {
             try
@@ -2902,7 +2954,34 @@ namespace TKWAREHOUSE
 
         }
 
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            //SELECT [TA001] AS '單別',[TA002] AS '單號',[ID] AS '批號'
+            DELCOPPURBATCHPUR_ID = "";
+            DELCOPPURBATCHPUR_TA001 = "";
+            DELCOPPURBATCHPUR_TA002 = "";
 
+            if(dataGridView4.CurrentRow != null)
+            {
+                int rowindex = dataGridView4.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView4.Rows[rowindex];
+                    DELCOPPURBATCHPUR_ID = row.Cells["批號"].Value.ToString();
+                    DELCOPPURBATCHPUR_TA001 = row.Cells["單別"].Value.ToString();
+                    DELCOPPURBATCHPUR_TA002 = row.Cells["單號"].Value.ToString();
+                   
+
+                }
+                else
+                {
+                    DELCOPPURBATCHPUR_ID = "";
+                    DELCOPPURBATCHPUR_TA001 = "";
+                    DELCOPPURBATCHPUR_TA002 = "";
+
+                }
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -3109,9 +3188,26 @@ namespace TKWAREHOUSE
                 
         }
 
+        private void button17_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                
+                DELETECOPPURBATCHPUR(DELCOPPURBATCHPUR_ID, DELCOPPURBATCHPUR_TA001, DELCOPPURBATCHPUR_TA002);
+                SEARCHCOPPURBATCHPUR(ID);
+                
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+           
+        }
+
 
         #endregion
 
-       
+
     }
 }
