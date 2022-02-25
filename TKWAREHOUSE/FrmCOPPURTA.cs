@@ -321,6 +321,7 @@ namespace TKWAREHOUSE
             public string TA020;
             public string TA021;
             public string TA022;
+            public string TA023;
             public string TA024;
             public string TA025;
             public string TA026;
@@ -335,6 +336,7 @@ namespace TKWAREHOUSE
             public string TA035;
             public string TA040;
             public string TA041;
+            public string TA042;
             public string TA043;
             public string TA044;
             public string TA045;
@@ -2665,7 +2667,7 @@ namespace TKWAREHOUSE
                                         ,[TA009],[TA010],[TA011],[TA012],[TA013],[TA014],[TA015],[TA016],[TA017],[TA018]
                                         ,[TA019],[TA020],[TA021],[TA022],[TA024],[TA025],[TA029],[TA030],[TA031],[TA034],[TA035]
                                         ,[TA040],[TA041],[TA043],[TA044],[TA045],[TA046],[TA047],[TA049],[TA050],[TA200]
-                                        ,[TA026],[TA027],[TA028],[TA032]
+                                        ,[TA026],[TA027],[TA028],[TA032],[TA023],[TA042]
                                         )
                                         VALUES
                                         ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'
@@ -2673,14 +2675,14 @@ namespace TKWAREHOUSE
                                         ,'{20}','{21}','{22}','{23}','{24}','{25}','{26}','{27}','{28}','{29}'
                                         ,'{30}','{31}','{32}','{33}','{34}','{35}',N'{36}','{37}','{38}','{39}'
                                         ,'{40}','{41}','{42}','{43}','{44}','{45}','{46}','{47}','{48}','{49}'
-                                        ,'{50}','{51}','{52}','{53}','{54}'
+                                        ,'{50}','{51}','{52}','{53}','{54}','{55}','{56}'
                                         )
                                         ", MOCTA.COMPANY, MOCTA.CREATOR, MOCTA.USR_GROUP, MOCTA.CREATE_DATE, MOCTA.MODIFIER, MOCTA.MODI_DATE, MOCTA.FLAG, MOCTA.CREATE_TIME, MOCTA.MODI_TIME, MOCTA.TRANS_TYPE
                                         , MOCTA.TRANS_NAME, MOCTA.sync_count, MOCTA.DataGroup, MOCTA.TA001, MOCTA.TA002, MOCTA.TA003, MOCTA.TA004, MOCTA.TA005, MOCTA.TA006, MOCTA.TA007
                                         , MOCTA.TA009, MOCTA.TA010, MOCTA.TA011, MOCTA.TA012, MOCTA.TA013, MOCTA.TA014, MOCTA.TA015, MOCTA.TA016, MOCTA.TA017, MOCTA.TA018
                                         , MOCTA.TA019, MOCTA.TA020, MOCTA.TA021, MOCTA.TA022, MOCTA.TA024, MOCTA.TA025, MOCTA.TA029, MOCTA.TA030, MOCTA.TA031, MOCTA.TA034
                                         , MOCTA.TA035, MOCTA.TA040, MOCTA.TA041, MOCTA.TA043, MOCTA.TA044, MOCTA.TA045, MOCTA.TA046, MOCTA.TA047, MOCTA.TA049, MOCTA.TA050
-                                        , MOCTA.TA200, MOCTA.TA026, MOCTA.TA027, MOCTA.TA028, MOCTA.TA032);
+                                        , MOCTA.TA200, MOCTA.TA026, MOCTA.TA027, MOCTA.TA028, MOCTA.TA032, MOCTA.TA023, MOCTA.TA042);
 
                     sbSql.AppendFormat(@" 
                                         INSERT INTO [TK].dbo.[MOCTB]
@@ -2788,6 +2790,7 @@ namespace TKWAREHOUSE
             MOCTA.TA020 = OUTPURSET.Rows[0]["MC001"].ToString();
             MOCTA.TA021 = "";
             MOCTA.TA022 = "0";
+            MOCTA.TA023 = BOMMC.Rows[0]["MC002"].ToString();
             MOCTA.TA024 = "A512";
             MOCTA.TA025 = MOCTA.TA002;
             MOCTA.TA029 = TC015TD020;
@@ -2798,12 +2801,13 @@ namespace TKWAREHOUSE
             MOCTA.TA035 = MB003;
             MOCTA.TA040 = dt.ToString("yyyyMMdd");
             MOCTA.TA041 = "";
+            MOCTA.TA042 = "NTD";
             MOCTA.TA043 = "1";
             MOCTA.TA044 = "N";
             MOCTA.TA045 = "0";
             MOCTA.TA046 = "0";
             MOCTA.TA047 = "0";
-            MOCTA.TA049 = "0";
+            MOCTA.TA049 = "N";
             MOCTA.TA050 = "0";
             MOCTA.TA200 = "1";
 
