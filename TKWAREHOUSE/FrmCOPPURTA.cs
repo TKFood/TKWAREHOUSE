@@ -2843,6 +2843,7 @@ namespace TKWAREHOUSE
                                         ,(CASE WHEN ISNULL([MC001],'')<>'' THEN [MC001] ELSE [INVMB].MB017 END ) [TB009],'1' [TB011],[INVMB].MB002 [TB012],[INVMB].MB003 [TB013],[COPPURBATCHUSED].TD004 [TB014],'N' [TB018],'0' [TB019],'0' [TB020],'2' [TB022],'0' [TB024]
                                         ,'****' [TB025],'0' [TB026],'1' [TB027],'0' [TB029],'0' [TB030],'0' [TB031],'0' [TB501],'N' [TB554],'0' [TB556],'0' [TB560]
                                         FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED],[TK].dbo.[INVMB]
+                                        LEFT JOIN [TKWAREHOUSE].[dbo].[OUTPURSET] ON LTRIM(RTRIM([OUTPURSET].[MB001]))=LTRIM(RTRIM([INVMB].[MB001]))
                                         WHERE [COPPURBATCHUSED].[MB001]=[INVMB].MB001
                                         AND [COPPURBATCHUSED].[ID]='{0}'
                                         )
