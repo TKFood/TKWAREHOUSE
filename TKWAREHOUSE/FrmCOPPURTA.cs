@@ -2840,14 +2840,14 @@ namespace TKWAREHOUSE
                                         '{1}' [COMPANY],'{2}' [CREATOR],'{3}' [USR_GROUP],'{4}' [CREATE_DATE],'{5}' [MODIFIER],'{6}' [MODI_DATE],'{7}' [FLAG],'{8}' [CREATE_TIME],'{9}' [MODI_TIME],'{10}' [TRANS_TYPE]
                                         ,'{11}' [TRANS_NAME],{12} [sync_count],'{13}' [DataGroup],'{14}' [TB001],'{15}' [TB002]
                                         ,[COPPURBATCHUSED].MB001 [TB003],CASE WHEN [COPPURBATCHUSED].MB001 LIKE '3%' THEN [COPPURBATCHUSED].[TDNUM] ELSE [COPPURBATCHUSED].[NUM] END  [TB004],0 [TB005],'****' [TB006],CASE WHEN [COPPURBATCHUSED].MB001 LIKE '3%' THEN [COPPURBATCHUSED].[TDUNIT] ELSE [INVMB].MB004 END  [TB007]
-                                        ,[INVMB].MB017 [TB009],'1' [TB011],[INVMB].MB002 [TB012],[INVMB].MB003 [TB013],[COPPURBATCHUSED].TD004 [TB014],'N' [TB018],'0' [TB019],'0' [TB020],'2' [TB022],'0' [TB024]
+                                        ,(CASE WHEN ISNULL([MC001],'')<>'' THEN [MC001] ELSE [INVMB].MB017 END ) [TB009],'1' [TB011],[INVMB].MB002 [TB012],[INVMB].MB003 [TB013],[COPPURBATCHUSED].TD004 [TB014],'N' [TB018],'0' [TB019],'0' [TB020],'2' [TB022],'0' [TB024]
                                         ,'****' [TB025],'0' [TB026],'1' [TB027],'0' [TB029],'0' [TB030],'0' [TB031],'0' [TB501],'N' [TB554],'0' [TB556],'0' [TB560]
                                         FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED],[TK].dbo.[INVMB]
                                         WHERE [COPPURBATCHUSED].[MB001]=[INVMB].MB001
                                         AND [COPPURBATCHUSED].[ID]='{0}'
                                         )
                                         
-                                        ",textBoxID.Text.Trim()
+                                        ", textBoxID.Text.Trim()
                                         , MOCTA.COMPANY, MOCTA.CREATOR, MOCTA.USR_GROUP, MOCTA.CREATE_DATE, MOCTA.MODIFIER, MOCTA.MODI_DATE, MOCTA.FLAG, MOCTA.CREATE_TIME, MOCTA.MODI_TIME, MOCTA.TRANS_TYPE
                                         , MOCTA.TRANS_NAME, MOCTA.sync_count, MOCTA.DataGroup, MOCTA.TA001, MOCTA.TA002
                                         );
