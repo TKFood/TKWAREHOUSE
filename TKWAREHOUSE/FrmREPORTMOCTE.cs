@@ -45,6 +45,7 @@ namespace TKWAREHOUSE
         DataGridViewRow row;
         string SALSESID = null;
         int result;
+        string MOCTA001002 = null;
 
         public Report report1 { get; private set; }
 
@@ -53,6 +54,49 @@ namespace TKWAREHOUSE
             InitializeComponent();
             combobox2load();
             combobox4load();
+        }
+        private void FrmREPORTMOCTE_Load(object sender, EventArgs e)
+        {
+            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;      //奇數列顏色
+
+            //先建立個 CheckBox 欄
+            DataGridViewCheckBoxColumn cbCol = new DataGridViewCheckBoxColumn();
+            cbCol.Width = 120;   //設定寬度
+            cbCol.HeaderText = "　選擇";
+            cbCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;   //置中
+            cbCol.TrueValue = true;
+            cbCol.FalseValue = false;
+            dataGridView1.Columns.Insert(0, cbCol);
+
+            //region 建立全选 CheckBox
+
+            //建立个矩形，等下计算 CheckBox 嵌入 GridView 的位置
+            Rectangle rect = dataGridView1.GetCellDisplayRectangle(0, -1, true);
+            rect.X = rect.Location.X + rect.Width / 4 - 18;
+            rect.Y = rect.Location.Y + (rect.Height / 2 - 9);
+
+            CheckBox cbHeader = new CheckBox();
+            cbHeader.Name = "checkboxHeader";
+            cbHeader.Size = new Size(18, 18);
+            cbHeader.Location = rect.Location;
+
+            //全选要设定的事件
+            cbHeader.CheckedChanged += new EventHandler(cbHeader_CheckedChanged);
+
+            //将 CheckBox 加入到 dataGridView
+            dataGridView1.Controls.Add(cbHeader);
+
+        }
+        private void cbHeader_CheckedChanged(object sender, EventArgs e)
+        {
+            dataGridView1.EndEdit();
+
+            foreach (DataGridViewRow dr in dataGridView1.Rows)
+            {
+                dr.Cells[0].Value = ((CheckBox)dataGridView1.Controls.Find("checkboxHeader", true)[0]).Checked;
+
+            }
+
         }
 
         #region FUNCTION
@@ -227,7 +271,7 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
         }
 
-        public void SETFASTREPORT2()
+        public void SETFASTREPORT2(string MOCTA001002)
         {
 
             string SQL;
@@ -277,11 +321,11 @@ namespace TKWAREHOUSE
                                     AND TC001=TE001 AND TC002=TE002 
                                    
                                     AND (TE004 LIKE '1%'  OR (TE004 LIKE '301%' AND LEN(TE004)=10))  
-                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND  TA003>='{0}' AND TA003<='{1}' AND MD002='{2}')
+                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
 
                                    
                                     ORDER BY TE011,TE012,TE004,TE017 ,TE010 
-                                    ", dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"), comboBox4.Text.ToString());
+                                    ", comboBox4.Text.ToString(), MOCTA001002);
 
             }
             else if (comboBox3.Text.ToString().Equals("物料"))
@@ -299,10 +343,10 @@ namespace TKWAREHOUSE
                                     AND TC001=TE001 AND TC002=TE002 
 
                                     AND (TE004 LIKE '2%' )   
-                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND  TA003>='{0}' AND TA003<='{1}' AND MD002='{2}')
+                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
 
                                     ORDER BY TE011,TE012,TE004,TE017 ,TE010 
-                                    ", dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"), comboBox4.Text.ToString());
+                                    ", comboBox4.Text.ToString(), MOCTA001002);
 
 
 
@@ -322,10 +366,10 @@ namespace TKWAREHOUSE
                                     AND TC001=TE001 AND TC002=TE002 
  
                                     AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '301%' AND LEN(TE004)=10))  
-                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND  TA003>='{0}' AND TA003<='{1}' AND MD002='{2}')
+                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
 
                                     ORDER BY TE011,TE012,TE004,TE017 ,TE010  
-                                    ", dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"), comboBox4.Text.ToString());
+                                     ", comboBox4.Text.ToString(), MOCTA001002);
 
 
 
@@ -335,6 +379,97 @@ namespace TKWAREHOUSE
             FASTSQL.AppendFormat(@"  ");
 
             return FASTSQL.ToString();
+        }
+
+        public void SEARCHMOCTAB()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+      
+                sbSql.AppendFormat(@"  
+                                    SELECT MD002 AS '線別',LTRIM(RTRIM(TA001)) AS  '製令單別',LTRIM(RTRIM(TA002)) AS  '製令單號',TA006 AS  '品號',TA034 AS  '品名',TA015 AS  '預計生產量', TA007 AS  '單位'
+                                    FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD 
+                                    WHERE TA021=MD001 AND  TA003>='{0}' AND TA003<='{1}' 
+                                    ORDER BY TA001,TA002
+
+                                    ", dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["TEMPds1"].Rows.Count == 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["TEMPds1"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView1.DataSource = ds1.Tables["TEMPds1"];
+                        dataGridView1.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void FINDCHECK()
+        {
+            MOCTA001002 = null;
+
+            foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+            {                
+                if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
+                {
+                    MOCTA001002 = MOCTA001002 +"'"+ dr.Cells["製令單別"].Value.ToString() + dr.Cells["製令單號"].Value.ToString() + "',";
+                    //MessageBox.Show(dr.Cells["製令單號"].Value.ToString());
+
+                }
+            }
+
+            MOCTA001002 = MOCTA001002 +"''";
+
+            if(!string.IsNullOrEmpty(MOCTA001002))
+            {
+                SETFASTREPORT2(MOCTA001002);
+            }
+            
+            //MessageBox.Show(MOCTA001002.ToString());
         }
 
         #endregion
@@ -348,7 +483,13 @@ namespace TKWAREHOUSE
 
         private void button2_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT2();
+            SEARCHMOCTAB();
+            //SETFASTREPORT2();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            FINDCHECK();
         }
 
 
