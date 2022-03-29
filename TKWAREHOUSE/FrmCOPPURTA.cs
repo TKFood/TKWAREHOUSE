@@ -2898,7 +2898,7 @@ namespace TKWAREHOUSE
 
             DataTable OUTPURSET = SEARCHOUTPURSET(MB001);
             DataTable BOMMC= SEARCHBOMMC(MB001);
-
+            DataTable DTINVMB = SEARCHINVMB(MB001);
 
 
             MOCTADATA MOCTA = new MOCTADATA();
@@ -2936,7 +2936,7 @@ namespace TKWAREHOUSE
             MOCTA.TA017 = "0";
             MOCTA.TA018 = "0";
             MOCTA.TA019 = "20";
-            MOCTA.TA020 = OUTPURSET.Rows[0]["MC001"].ToString();
+            MOCTA.TA020 = DTINVMB.Rows[0]["MB017"].ToString();
             MOCTA.TA021 = "";
             MOCTA.TA022 = "0";
             MOCTA.TA023 = BOMMC.Rows[0]["MC002"].ToString();
@@ -3106,6 +3106,74 @@ namespace TKWAREHOUSE
 
 
         }
+
+        public DataTable SEARCHINVMB(string MB001)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            StringBuilder sbSqlQuery = new StringBuilder();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds = new DataSet();
+
+
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    *
+                                    FROM [TK].dbo.INVMB
+                                    WHERE MB001='{0}'
+                                    ", MB001);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds.Clear();
+                adapter1.Fill(ds, "ds");
+                sqlConn.Close();
+
+
+                if (ds.Tables["ds"].Rows.Count >= 1)
+                {
+                    return ds.Tables["ds"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+
+
+        }
+
 
         private void dataGridView4_SelectionChanged(object sender, EventArgs e)
         {
