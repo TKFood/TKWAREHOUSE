@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="03/17/2022 10:02:35" ReportInfo.Modified="04/12/2022 16:32:48" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/17/2022 10:02:35" ReportInfo.Modified="04/12/2022 16:35:10" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUHTKynWk3jxZhhVFZaTgHBQ">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUEoLsiSfn3a5ZV6Rhqil+W2">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT TE001,TE001,TE003,MD002 AS '線別',TE004 AS '品號',TE017 AS '品名' ,TE011 AS '製令單別',TE012 AS '製令單號',(MQ010*TE005)*-1  AS '應領料量',TE010  AS '批號'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '實發數量' &#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料數量'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料數量' &#13;&#10;,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存數量' &#13;&#10;FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]&#13;&#10;WHERE MQ001=TE001&#13;&#10;AND MD003 IN ('20') &#13;&#10;AND MD001=TC005 &#13;&#10;AND TC001=TE001 AND TC002=TE002 &#13;&#10;AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '301%' AND LEN(TE004)=10))   &#13;&#10;AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND  TA003&gt;='20220317' AND TA003&lt;='20220317')&#13;&#10;&#13;&#10;&#13;&#10;ORDER BY TE011,TE012,TE004,TE017 ,TE010 ">
         <Column Name="TE001" DataType="System.String"/>
         <Column Name="TE0011" DataType="System.String"/>
@@ -70,11 +70,11 @@
           <TextObject Name="Text34" Left="963.9" Width="75.6" Height="18.9" Border.Lines="All" Text="[Total退料數量]" HorzAlign="Right" VertAlign="Center"/>
         </GroupFooterBand>
       </GroupHeaderBand>
-      <GroupFooterBand Name="GroupFooter1" Top="102.57" Width="1047.06"/>
+      <GroupFooterBand Name="GroupFooter1" Top="102.57" Width="1047.06" Height="18.9">
+        <TextObject Name="Text35" Left="9.45" Width="1030.05" Height="18.9" Text="倉管:       :              領料人員: :                    退料人員:           :          主管:       " VertAlign="Center"/>
+      </GroupFooterBand>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="107.06" Width="1047.06" Height="18.9">
-      <TextObject Name="Text35" Left="9.45" Width="1030.05" Height="18.9" Text="倉管:       :              領料人員: :                    退料人員:           :          主管:       " VertAlign="Center"/>
-    </ReportSummaryBand>
-    <PageFooterBand Name="PageFooter1" Top="130.46" Width="1047.06" Height="18.9"/>
+    <ReportSummaryBand Name="ReportSummary1" Top="125.96" Width="1047.06" Height="18.9"/>
+    <PageFooterBand Name="PageFooter1" Top="149.36" Width="1047.06" Height="18.9"/>
   </ReportPage>
 </Report>

@@ -323,7 +323,7 @@ namespace TKWAREHOUSE
                                     AND (TE004 LIKE '1%'  OR (TE004 LIKE '301%' AND LEN(TE004)=10))  
                                     AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
  
-                                     
+                                       
                                     ORDER BY TE011,TE012,TE004,TE017 ,TE010 
                                     ", comboBox4.Text.ToString(), MOCTA001002);
 
