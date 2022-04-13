@@ -333,7 +333,7 @@ namespace TKWAREHOUSE
 
                                     ) AS TEMP
                                     ORDER BY 製令單別,製令單號,品號,批號
- 
+   
                                     ", comboBox4.Text.ToString(), MOCTA001002);
 
             }
