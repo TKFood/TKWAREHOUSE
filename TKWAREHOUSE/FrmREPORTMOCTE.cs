@@ -308,7 +308,7 @@ namespace TKWAREHOUSE
             if (comboBox3.Text.ToString().Equals("原料"))
             {
 
-                FASTSQL.AppendFormat(@"  
+                FASTSQL.AppendFormat(@"   
  
                                     SELECT 線別,品號,品名,製令單別,製令單號,應領料量,批號
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' ) AS '實發數量' 
