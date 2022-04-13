@@ -311,7 +311,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@"   
  
                                     SELECT 線別,品號,品名,製令單別,製令單號,應領料量,批號
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' ) AS '實發數量' 
+                                    ,((SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' )+(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' )-(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' )) AS '實發數量' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' ) AS '補料數量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' ) AS '退料數量' 
                                     ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=品號 ) AS '庫存數量' 
@@ -325,6 +325,7 @@ namespace TKWAREHOUSE
                                     AND MD003 IN ('20') 
                                     AND MD001=TC005 
                                     AND TC001=TE001 AND TC002=TE002 
+                                    AND TE001='A541'
 
                                     AND (TE004 LIKE '1%'  OR (TE004 LIKE '301%' AND LEN(TE004)=10))  
                                     AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
@@ -341,7 +342,7 @@ namespace TKWAREHOUSE
             {
                 FASTSQL.AppendFormat(@"   
                                     SELECT 線別,品號,品名,製令單別,製令單號,應領料量,批號
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' ) AS '實發數量' 
+                                    ,((SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' )+(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' )-(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' )) AS '實發數量' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' ) AS '補料數量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' ) AS '退料數量' 
                                     ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=品號 ) AS '庫存數量' 
@@ -355,6 +356,7 @@ namespace TKWAREHOUSE
                                     AND MD003 IN ('20') 
                                     AND MD001=TC005 
                                     AND TC001=TE001 AND TC002=TE002 
+                                    AND TE001='A541'
 
                                     AND (TE004 LIKE '2%' )   
                                     AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
@@ -372,7 +374,7 @@ namespace TKWAREHOUSE
             {
                 FASTSQL.AppendFormat(@"   
                                     SELECT 線別,品號,品名,製令單別,製令單號,應領料量,批號
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' ) AS '實發數量' 
+                                    ,((SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' )+(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' )-(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' )) AS '實發數量' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' ) AS '補料數量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' ) AS '退料數量' 
                                     ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=品號 ) AS '庫存數量' 
@@ -386,6 +388,7 @@ namespace TKWAREHOUSE
                                     AND MD003 IN ('20') 
                                     AND MD001=TC005 
                                     AND TC001=TE001 AND TC002=TE002 
+                                    AND TE001='A541'
 
                                    AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '301%' AND LEN(TE004)=10))   
                                     AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
