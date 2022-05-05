@@ -500,6 +500,119 @@ namespace TKWAREHOUSE
             //MessageBox.Show(MOCTA001002.ToString());
         }
 
+        public void SETFASTREPORT3(string MOCTA001002,string MD002)
+        {
+
+            string SQL;
+            report1 = new Report();
+            report1.Load(@"REPORT\合併領料.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+
+            SQL = SETFASETSQL3(MOCTA001002, MD002);
+            Table.SelectCommand = SQL;
+            report1.Preview = previewControl2;
+            report1.Show();
+
+        }
+
+        public string SETFASETSQL3(string MOCTA001002,string MD002)
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            if (comboBox3.Text.ToString().Equals("原料"))
+            {
+
+                FASTSQL.AppendFormat(@"   
+                                    SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
+                                    ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量' 
+                                    FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]
+                                    WHERE MQ001=TE001
+                                    AND MD003 IN ('20') 
+                                    AND MD001=TC005 
+                                    AND TC001=TE001 AND TC002=TE002 
+                                    AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '301%' AND LEN(TE004)=10))   
+                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN ({0} )
+                                    AND MD002='{1}'
+
+                                    GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 
+                                    ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 
+                                    ", MOCTA001002, MD002);
+
+            }
+            else if (comboBox3.Text.ToString().Equals("物料"))
+            {
+                FASTSQL.AppendFormat(@"   
+                                    SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
+                                    ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量' 
+                                    FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]
+                                    WHERE MQ001=TE001
+                                    AND MD003 IN ('20') 
+                                    AND MD001=TC005 
+                                    AND TC001=TE001 AND TC002=TE002 
+                                    AND (TE004 LIKE '2%' )   
+                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN ({0} )
+                                    AND MD002='{1}'
+
+                                    GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 
+                                    ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 
+                                    ", MOCTA001002, MD002);
+
+
+
+            }
+            else if (comboBox3.Text.ToString().Equals("原料+物料"))
+            {
+                FASTSQL.AppendFormat(@"   
+                                    SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
+                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
+                                    ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量' 
+                                    FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]
+                                    WHERE MQ001=TE001
+                                    AND MD003 IN ('20') 
+                                    AND MD001=TC005 
+                                    AND TC001=TE001 AND TC002=TE002 
+                                    AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '301%' AND LEN(TE004)=10))  
+                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN ({0} )
+                                    AND MD002='{1}'
+
+                                    GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 
+                                    ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 
+                                     ", MOCTA001002, MD002);
+
+
+
+            }
+
+
+            FASTSQL.AppendFormat(@"  ");
+
+            return FASTSQL.ToString();
+        }
+
         #endregion
 
         #region BUTTON
@@ -520,6 +633,30 @@ namespace TKWAREHOUSE
             FINDCHECK();
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string MOCTA001002 = null;
+
+            foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+            {
+                if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
+                {
+                    MOCTA001002 = MOCTA001002 + "'" + dr.Cells["製令單別"].Value.ToString() + dr.Cells["製令單號"].Value.ToString() + "',";
+                    //MessageBox.Show(dr.Cells["製令單號"].Value.ToString());
+
+                }
+            }
+
+            MOCTA001002 = MOCTA001002 + "''";
+
+            if (!string.IsNullOrEmpty(MOCTA001002))
+            {
+                //MessageBox.Show(MOCTA001002);
+
+                SETFASTREPORT3(MOCTA001002,comboBox4.Text);
+            }
+
+        }
 
         #endregion
 
