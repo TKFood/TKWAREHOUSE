@@ -613,7 +613,17 @@ namespace TKWAREHOUSE
             {
                
                 FASTSQL.AppendFormat(@"  
-                                     SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務,生產日期
+                                     SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
+                                    ,CASE WHEN ISNULL(生產日期,'')<>'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END AS '生產日期'
+                                    ,CASE WHEN ISNULL(在倉日期,'')<>'' THEN 在倉日期 ELSE DATEDIFF(DAY,CASE WHEN ISNULL(生產日期,'')<>'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END,'{0}') END AS '在倉日期'
+                                    ,有效天數
+                                    ,狀態
+                                    ,CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END AS 'DAYS'
+                                    ,CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) AS '外購品的生產日'
+
+                                    FROM (
+                                    SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
+                                    ,生產日期
                                     ,DATEDIFF(DAY,生產日期,'{0}') AS '在倉日期'
                                     ,DATEDIFF(DAY,'{0}',有效日期NEW)  AS '有效天數'
                                     ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
@@ -627,7 +637,7 @@ namespace TKWAREHOUSE
                                     ,(SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 ORDER BY TF003 ASC) AS '生產日期'
                                     ,(SELECT TOP 1 TG018 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 ORDER BY TF003 ASC) AS '有效日期'
                                     ,(CASE WHEN ISNULL((SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040),'')<>'' THEN (SELECT TOP 1 TG040 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TG001=TF001 AND TG002=TF002 AND TG010='20005' AND TG004=LA001 AND TG017=LA016  ORDER BY TG040) ELSE LA016 END) AS '有效日期NEW'
-                                      ,ISDATE(LA016) AS LA016
+                                    ,ISDATE(LA016) AS LA016
                                     FROM [TK].dbo.INVLA WITH (NOLOCK)  
                                     LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
                                     WHERE  (LA009='20001')   
@@ -635,7 +645,9 @@ namespace TKWAREHOUSE
                                     GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
                                     HAVING SUM(LA005*LA011)<>0 
                                     ) AS TEMP
-                                    ORDER BY 品號,批號    
+                                    ) AS TEMP2
+                                    LEFT JOIN [TK].dbo.INVMB ON MB001=品號
+                                    ORDER BY 品號,批號       
 
                                         ", DateTime.Now.ToString("yyyyMMdd"));
             }
