@@ -310,7 +310,8 @@ namespace TKWAREHOUSE
 
                 FASTSQL.AppendFormat(@"   
   
-                                    SELECT 線別,品號,品名,製令單別,製令單號,應領料量,批號
+                                    SELECT 線別,品號,品名,製令單別,製令單號,批號
+                                    ,(SELECT ISNULL(TB004,0) FROM [TK].dbo.MOCTB WHERE TB001=製令單別 AND TB002=製令單號 AND TB003=品號) AS '應領料量'
                                     ,((SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' )+(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' )-(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' )) AS '實發數量' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' ) AS '補料數量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' ) AS '退料數量' 
@@ -318,14 +319,14 @@ namespace TKWAREHOUSE
 
                                     FROM 
                                     (
-                                    SELECT MD002 AS '線別',TE004 AS '品號',TE017 AS '品名' ,TE011 AS '製令單別',TE012 AS '製令單號',SUM((MQ010*TE005)*-1)  AS '應領料量',TE010  AS '批號'
+                                    SELECT MD002 AS '線別',TE004 AS '品號',TE017 AS '品名' ,TE011 AS '製令單別',TE012 AS '製令單號',TE010  AS '批號'
 
                                     FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]
                                     WHERE MQ001=TE001
                                     AND MD003 IN ('20') 
                                     AND MD001=TC005 
                                     AND TC001=TE001 AND TC002=TE002 
-                                    AND TE001='A541'
+                                    AND TE001 IN ('A541','A542')
 
                                     AND (TE004 LIKE '1%'  OR (TE004 LIKE '301%' AND LEN(TE004)=10))  
                                     AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
@@ -341,7 +342,8 @@ namespace TKWAREHOUSE
             else if (comboBox3.Text.ToString().Equals("物料"))
             {
                 FASTSQL.AppendFormat(@"   
-                                    SELECT 線別,品號,品名,製令單別,製令單號,應領料量,批號
+                                    SELECT 線別,品號,品名,製令單別,製令單號,批號
+                                    ,(SELECT ISNULL(TB004,0) FROM [TK].dbo.MOCTB WHERE TB001=製令單別 AND TB002=製令單號 AND TB003=品號) AS '應領料量'
                                     ,((SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' )+(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' )-(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' )) AS '實發數量' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' ) AS '補料數量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' ) AS '退料數量' 
@@ -356,7 +358,7 @@ namespace TKWAREHOUSE
                                     AND MD003 IN ('20') 
                                     AND MD001=TC005 
                                     AND TC001=TE001 AND TC002=TE002 
-                                    AND TE001='A541'
+                                    AND TE001 IN ('A541','A542')
 
                                     AND (TE004 LIKE '2%' )   
                                     AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
@@ -373,7 +375,8 @@ namespace TKWAREHOUSE
             else if (comboBox3.Text.ToString().Equals("原料+物料"))
             {
                 FASTSQL.AppendFormat(@"   
-                                    SELECT 線別,品號,品名,製令單別,製令單號,應領料量,批號
+                                    SELECT 線別,品號,品名,製令單別,製令單號,批號
+                                    ,(SELECT ISNULL(TB004,0) FROM [TK].dbo.MOCTB WHERE TB001=製令單別 AND TB002=製令單號 AND TB003=品號) AS '應領料量'
                                     ,((SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A541' )+(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' )-(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' )) AS '實發數量' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A542' ) AS '補料數量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=品號 AND TE.TE011=製令單別 AND TE.TE012=製令單號 AND TE.TE010=批號 AND TE.TE001='A561' ) AS '退料數量' 
@@ -388,10 +391,10 @@ namespace TKWAREHOUSE
                                     AND MD003 IN ('20') 
                                     AND MD001=TC005 
                                     AND TC001=TE001 AND TC002=TE002 
-                                    AND TE001='A541'
+                                    AND TE001 IN ('A541','A542')
 
                                    AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '301%' AND LEN(TE004)=10))   
-                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
+                                   AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND LTRIM(RTRIM(TA001))+LTRIM(RTRIM(TA002)) IN ({1}) AND MD002='{0}')
 
                                     GROUP BY MD002,TE004,TE017  ,TE011,TE012,TE010
 
@@ -505,7 +508,7 @@ namespace TKWAREHOUSE
 
             string SQL;
             report1 = new Report();
-            report1.Load(@"REPORT\合併領料.frx");
+            report1.Load(@"REPORT\單次合併領料.frx");
 
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -540,6 +543,7 @@ namespace TKWAREHOUSE
 
                 FASTSQL.AppendFormat(@"   
                                     SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
+                                    ,(SELECT ISNULL(TB004,0) FROM [TK].dbo.MOCTB WHERE TB001=TE011 AND TB002=TE012 AND TB003=TE004) AS '應領料量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
@@ -562,6 +566,7 @@ namespace TKWAREHOUSE
             {
                 FASTSQL.AppendFormat(@"   
                                     SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
+                                    ,(SELECT ISNULL(TB004,0) FROM [TK].dbo.MOCTB WHERE TB001=TE011 AND TB002=TE012 AND TB003=TE004) AS '應領料量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
@@ -586,6 +591,7 @@ namespace TKWAREHOUSE
             {
                 FASTSQL.AppendFormat(@"   
                                     SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
+                                    ,(SELECT ISNULL(TB004,0) FROM [TK].dbo.MOCTB WHERE TB001=TE011 AND TB002=TE012 AND TB003=TE004) AS '應領料量'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
