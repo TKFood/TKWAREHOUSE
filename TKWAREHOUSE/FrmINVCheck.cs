@@ -549,7 +549,7 @@ namespace TKWAREHOUSE
             }
             else if (comboBox1.Text.Equals("20004     物料倉"))
             {
-                report1.Load(@"REPORT\每日盤點表.frx");
+                report1.Load(@"REPORT\每日盤點表-物料.frx");
             }
             else if (comboBox1.Text.Equals("20005     半成品倉"))
             {
@@ -708,14 +708,26 @@ namespace TKWAREHOUSE
             else if (comboBox1.Text.Equals("20004     物料倉"))
             {
            
-                FASTSQL.AppendFormat(@" 
+                FASTSQL.AppendFormat(@"                                     
+                                    SELECT 品號,品名,規格,批號,庫存量,庫存金額
+                                    ,製造日期,有效日期
+                                    , 客供製造日期,客供有效日期
+                                    ,(製造日期+客供製造日期) AS 'F製造日期',(有效日期+客供有效日期)  AS 'F有效日期'
+                                    FROM ( 
                                     SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ,CAST(SUM(LA005*LA013) AS DECIMAL(18,4)) AS '庫存金額'  
-                                    FROM [TK].dbo.INVLA WITH (NOLOCK) LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
+                                    ,ISNULL(TH117,'') AS '製造日期' ,ISNULL(TH036,'') AS '有效日期'
+                                    ,ISNULL(TB033,'') AS '客供製造日期' ,ISNULL(TB015 ,'')AS '客供有效日期'
+                                    FROM [TK].dbo.INVLA WITH (NOLOCK) 
+                                    LEFT JOIN [TK].dbo.PURTH WITH (NOLOCK) ON TH030='Y' AND TH004=LA001 AND TH010=LA016
+                                    LEFT JOIN [TK].dbo.INVTB WITH (NOLOCK) ON TB001='A11A' AND TB018='Y' AND TB004=LA001 AND TB014=LA016
+                                    LEFT JOIN [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
                                     WHERE  (LA009='{0}') 
                                     {1}
-                                    GROUP BY  LA001,MB002,MB003,LA016
+                                    GROUP BY  LA001,MB002,MB003,LA016,TH117,TH036, TB033,TB015
                                     HAVING SUM(LA005*LA011)<>0
-                                    ORDER BY  LA001,MB002,MB003,LA016
+                                    ) AS TEMP 
+                                    ORDER BY  品號,品名,規格,批號
+
                                     ", comboBox1.SelectedValue.ToString(), sbSqlQuery.ToString());
 
                 FASTSQL.AppendFormat(@" ");

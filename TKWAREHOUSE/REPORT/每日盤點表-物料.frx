@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="05/30/2022 10:41:22" ReportInfo.CreatorVersion="2016.4.4.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9I6TZltYVSU+iaqNjsh8u39">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT 品號,品名,規格,批號,庫存量,庫存金額&#13;&#10;,製造日期,有效日期&#13;&#10;, 客供製造日期,客供有效日期&#13;&#10;,(製造日期+客供製造日期) AS 'F製造日期',(有效日期+客供有效日期)  AS 'F有效日期'&#13;&#10;FROM ( &#13;&#10;SELECT  LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ,CAST(SUM(LA005*LA013) AS DECIMAL(18,4)) AS '庫存金額'  &#13;&#10;,ISNULL(TH117,'') AS '製造日期' ,ISNULL(TH036,'') AS '有效日期'&#13;&#10;,ISNULL(TB033,'') AS '客供製造日期' ,ISNULL(TB015 ,'')AS '客供有效日期'&#13;&#10;FROM [TK].dbo.INVLA WITH (NOLOCK) &#13;&#10;LEFT JOIN [TK].dbo.PURTH WITH (NOLOCK) ON TH030='Y' AND TH004=LA001 AND TH010=LA016&#13;&#10;LEFT JOIN [TK].dbo.INVTB WITH (NOLOCK) ON TB001='A11A' AND TB018='Y' AND TB004=LA001 AND TB014=LA016&#13;&#10;LEFT JOIN [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 &#13;&#10;WHERE  (LA009='20004') &#13;&#10;GROUP BY  LA001,MB002,MB003,LA016,TH117,TH036, TB033,TB015&#13;&#10;HAVING SUM(LA005*LA011)&lt;&gt;0&#13;&#10;) AS TEMP &#13;&#10;ORDER BY  品號,品名,規格,批號&#13;&#10;&#13;&#10;&#13;&#10;">
+        <Column Name="品號" DataType="System.String"/>
+        <Column Name="品名" DataType="System.String"/>
+        <Column Name="規格" DataType="System.String"/>
+        <Column Name="批號" DataType="System.String"/>
+        <Column Name="庫存量" DataType="System.Int32"/>
+        <Column Name="庫存金額" DataType="System.Decimal"/>
+        <Column Name="製造日期" DataType="System.String"/>
+        <Column Name="有效日期" DataType="System.String"/>
+        <Column Name="客供製造日期" DataType="System.String"/>
+        <Column Name="客供有效日期" DataType="System.String"/>
+        <Column Name="F製造日期" DataType="System.String"/>
+        <Column Name="F有效日期" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="340" PaperHeight="210">
+    <ReportTitleBand Name="ReportTitle1" Width="1209.6" Height="37.8">
+      <TextObject Name="Text9" Width="1209.6" Height="18.9" Text="老楊食品大林廠-庫存表[Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text2" Top="18.9" Width="113.4" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="113.4" Top="18.9" Width="236.25" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="746.55" Top="18.9" Width="103.95" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="850.5" Top="18.9" Width="75.6" Height="18.9" Border.Lines="All" Text="庫存量" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="349.65" Top="18.9" Width="396.9" Height="18.9" Border.Lines="All" Text="規格" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text13" Left="926.1" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="庫存金額" Format="Currency" Format.UseLocale="true" HorzAlign="Center" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text16" Left="1020.6" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="製造日期" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text17" Left="1115.1" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="有效日期" HorzAlign="Center" VertAlign="Center"/>
+    </ReportTitleBand>
+    <DataBand Name="Data1" Top="42.29" Width="1209.6" Height="18.9" CanGrow="true" DataSource="Table">
+      <TextObject Name="Text1" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" VertAlign="Center"/>
+      <TextObject Name="Text3" Left="113.4" Width="236.25" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="746.55" Width="103.95" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="850.5" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫存量]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="349.65" Width="396.9" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.規格]"/>
+      <TextObject Name="Text12" Left="926.1" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫存金額]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text14" Left="1020.6" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.F製造日期]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text15" Left="1115.1" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.F有效日期]" HorzAlign="Center" VertAlign="Center"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="65.69" Width="1209.6"/>
+  </ReportPage>
+</Report>
