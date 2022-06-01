@@ -444,19 +444,49 @@ namespace TKWAREHOUSE
             //庫別中的庫存總數量>0才查詢相關批號
             //AND LA001 IN (SELECT LA001 FROM [TK].dbo.INVLA WITH (NOLOCK)  WHERE LA009='{0}' GROUP BY LA001 HAVING SUM(LA005*LA011)<>0)
 
-            FASTSQL.AppendFormat(@"  
-                                    SELECT 庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
+            FASTSQL.AppendFormat(@" 
+                                    SELECT 
+                                    庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
                                     ,進貨製造日期
                                     ,進貨有效日期
                                     ,進貨日
                                     ,進貨單
+                                    ,客供製造日期,客供有效日期
+                                    ,客供進貨日
+                                    ,F製造日期
+                                    ,F有效日期
+                                    ,F進貨日
+
+                                    FROM (
+                                    SELECT 
+                                    庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
+                                    ,進貨製造日期
+                                    ,進貨有效日期
+                                    ,進貨日
+                                    ,進貨單
+                                    ,客供製造日期,客供有效日期
+                                    ,客供進貨日
+                                    ,ISNULL(CASE WHEN ISNULL(進貨製造日期,'')<>'' THEN 進貨製造日期 
+                                    WHEN  ISNULL(進貨製造日期,'')='' AND ISNULL(客供製造日期,'')<>'' THEN 客供製造日期 
+                                    END,'') AS 'F製造日期' 
+
+                                    ,ISNULL(CASE WHEN ISNULL(進貨有效日期,'')<>'' THEN 進貨有效日期 
+                                    WHEN  ISNULL(進貨有效日期,'')='' AND ISNULL(客供有效日期,'')<>'' THEN 客供有效日期 
+                                    END,'') AS 'F有效日期' 
+
+                                    ,ISNULL(CASE WHEN ISNULL(進貨日,'')<>'' THEN 進貨日 
+                                    WHEN  ISNULL(進貨日,'')='' AND ISNULL(客供進貨日,'')<>'' THEN 客供進貨日 
+                                    END,'') AS 'F進貨日' 
 
                                     FROM (
                                     SELECT 庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
-                                    ,ISNULL((SELECT TOP 1 TH117 FROM [TK].dbo.PURTH  WITH (NOLOCK) WHERE TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TH002 ),'') AS '進貨製造日期'
-                                    ,ISNULL((SELECT TOP 1 TH036 FROM [TK].dbo.PURTH  WITH (NOLOCK) WHERE TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TH002 ),'') AS '進貨有效日期'
-                                    ,ISNULL((SELECT TOP 1 TG003 FROM [TK].dbo.PURTH  WITH (NOLOCK),[TK].dbo.PURTG  WITH (NOLOCK) WHERE TG001=TH001 AND TG002=TH002 AND TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TG003 ),'') AS '進貨日'
-                                    ,ISNULL((SELECT TOP 1 TH001+TH002+TH003 FROM [TK].dbo.PURTH  WITH (NOLOCK),[TK].dbo.PURTG  WITH (NOLOCK) WHERE TG001=TH001 AND TG002=TH002 AND TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TG003 ),'') AS '進貨單'
+                                    ,ISNULL((SELECT TOP 1 TH117 FROM [TK].dbo.PURTH  WITH (NOLOCK) WHERE TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TH002 DESC),'') AS '進貨製造日期'
+                                    ,ISNULL((SELECT TOP 1 TH036 FROM [TK].dbo.PURTH  WITH (NOLOCK) WHERE TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TH002 DESC),'') AS '進貨有效日期'
+                                    ,ISNULL((SELECT TOP 1 TG003 FROM [TK].dbo.PURTH  WITH (NOLOCK),[TK].dbo.PURTG  WITH (NOLOCK) WHERE TG001=TH001 AND TG002=TH002 AND TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TG003 DESC),'') AS '進貨日'
+                                    ,ISNULL((SELECT TOP 1 TH001+TH002+TH003 FROM [TK].dbo.PURTH  WITH (NOLOCK),[TK].dbo.PURTG  WITH (NOLOCK) WHERE TG001=TH001 AND TG002=TH002 AND TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TG003 DESC),'') AS '進貨單'
+                                    ,ISNULL((SELECT TOP 1 TB033 FROM [TK].dbo.INVTB  WITH (NOLOCK) WHERE TB001='A11A' AND TB018='Y' AND TB004=品號 AND TB014=批號 ORDER BY TB002 DESC),'') AS '客供製造日期'
+                                    ,ISNULL((SELECT TOP 1 TB015 FROM [TK].dbo.INVTB  WITH (NOLOCK) WHERE TB001='A11A' AND TB018='Y' AND TB004=品號 AND TB014=批號 ORDER BY TB002 DESC),'') AS '客供有效日期'
+                                    ,ISNULL((SELECT TOP 1 TA003 FROM [TK].dbo.INVTB  WITH (NOLOCK),[TK].dbo.INVTA  WITH (NOLOCK) WHERE TA001=TB001 AND TA002=TB002 AND TB001='A11A' AND TB018='Y' AND TB004=品號 AND TB014=批號 ORDER BY TB002 DESC),'') AS '客供進貨日'
 
                                     FROM (
                                     SELECT  LA009 AS '庫別', MC002 AS '庫名',LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ,CAST(SUM(LA005*LA013) AS DECIMAL(18,4)) AS '庫存金額'  
@@ -470,7 +500,8 @@ namespace TKWAREHOUSE
                                     HAVING SUM(LA005*LA011)<>0
                                     ) AS TEMP
                                     ) AS TEMP2
-                                    WHERE 進貨日<='{1}'
+                                    ) AS TEMP3
+                                    WHERE F進貨日<='{1}'
                                     ORDER BY  品號,批號
 
                                     ", LA009, StayDay.ToString("yyyyMMdd"));
