@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:31:47" ReportInfo.Modified="11/09/2018 15:38:05" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:31:47" ReportInfo.Modified="06/01/2022 09:55:16" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9K61uW0Le+Y1szvROe/HCz5">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9JjyQSxucVS9moCNPP6YMxS">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand=" SELECT INVMB.MB001 AS '品號',INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',INVMC.MC002 AS '庫別' ,CMSMC.MC002 AS '庫名',INVMC.MC012 AS '最近入庫日' ,INVMC.MC013 AS '最近出庫日'  ,MF002 AS '批號',SUM(MF008*MF010)  AS '庫存量'  FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC ,TK.dbo.INVME, TK.dbo.INVMF WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND MB001=ME001 AND ME001=MF001 AND ME002=MF002 AND MF007=INVMC.MC002 AND (( INVMC.MC012&lt;='20181102') AND ( INVMC.MC013&lt;='20181102') ) AND INVMC.MC002='20001     ' GROUP BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002 ,INVMC.MC007 ,INVMC.MC012 ,INVMC.MC013   ,INVMF.MF001,INVMF.MF002       HAVING SUM(MF008*MF010)&gt;0  ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002         ">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
@@ -15,29 +15,29 @@
       </TableDataSource>
     </MsSqlDataConnection>
   </Dictionary>
-  <ReportPage Name="Page1">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="18.9">
-      <TextObject Name="Text17" Width="718.2" Height="18.9" Text="庫存呆滯表 [Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="18.9">
+      <TextObject Name="Text17" Width="1048.95" Height="18.9" Text="庫存呆滯表 [Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
     </ReportTitleBand>
-    <ColumnHeaderBand Name="ColumnHeader1" Top="22.75" Width="718.2" Height="18.9">
-      <TextObject Name="Text2" Width="122.85" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text4" Left="122.85" Width="132.3" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text6" Left="255.15" Width="113.4" Height="18.9" Border.Lines="All" Text="規格" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text8" Left="434.7" Width="75.6" Height="18.9" Border.Lines="All" Text="最近入庫日" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text10" Left="510.3" Width="75.6" Height="18.9" Border.Lines="All" Text="最近出庫日" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text12" Left="585.9" Width="66.15" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text14" Left="652.05" Width="66.15" Height="18.9" Border.Lines="All" Text="庫存量" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text16" Left="368.55" Width="66.15" Height="18.9" Border.Lines="All" Text="庫名" HorzAlign="Center" VertAlign="Center"/>
+    <ColumnHeaderBand Name="ColumnHeader1" Top="23.39" Width="1047.06" Height="18.9">
+      <TextObject Name="Text2" Width="160.65" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="160.65" Width="245.7" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="406.35" Width="236.25" Height="18.9" Border.Lines="All" Text="規格" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="727.65" Width="75.6" Height="18.9" Border.Lines="All" Text="最近入庫日" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="803.25" Width="75.6" Height="18.9" Border.Lines="All" Text="最近出庫日" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text12" Left="878.85" Width="85.05" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text14" Left="963.9" Width="85.05" Height="18.9" Border.Lines="All" Text="庫存量" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text16" Left="642.6" Width="85.05" Height="18.9" Border.Lines="All" Text="庫名" HorzAlign="Center" VertAlign="Center"/>
     </ColumnHeaderBand>
-    <DataBand Name="Data1" Top="45.49" Width="718.2" Height="18.9" CanGrow="true" DataSource="Table">
-      <TextObject Name="Text1" Width="122.85" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" VertAlign="Center"/>
-      <TextObject Name="Text3" Left="122.85" Width="132.3" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
-      <TextObject Name="Text5" Left="255.15" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.規格]" VertAlign="Center"/>
-      <TextObject Name="Text7" Left="434.7" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.最近入庫日]" VertAlign="Center"/>
-      <TextObject Name="Text9" Left="510.3" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.最近出庫日]" VertAlign="Center"/>
-      <TextObject Name="Text11" Left="585.9" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號]" VertAlign="Center"/>
-      <TextObject Name="Text13" Left="652.05" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫存量]" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text15" Left="368.55" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫名]" VertAlign="Center"/>
+    <DataBand Name="Data1" Top="46.79" Width="1047.06" Height="18.9" CanGrow="true" DataSource="Table">
+      <TextObject Name="Text1" Width="160.65" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" VertAlign="Center"/>
+      <TextObject Name="Text3" Left="160.65" Width="245.7" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="406.35" Width="236.25" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.規格]" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="727.65" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.最近入庫日]" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="803.25" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.最近出庫日]" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="878.85" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號]" VertAlign="Center"/>
+      <TextObject Name="Text13" Left="963.9" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫存量]" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text15" Left="642.6" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫名]" VertAlign="Center"/>
     </DataBand>
   </ReportPage>
 </Report>

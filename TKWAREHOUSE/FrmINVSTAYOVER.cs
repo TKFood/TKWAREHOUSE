@@ -442,7 +442,7 @@ namespace TKWAREHOUSE
             StringBuilder STRQUERY = new StringBuilder();
 
 
-            FASTSQL.AppendFormat(@" 
+            FASTSQL.AppendFormat(@"  
                                     SELECT 庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
                                     ,進貨製造日期
                                     ,進貨有效日期
