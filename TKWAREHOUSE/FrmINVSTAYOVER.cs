@@ -441,6 +441,8 @@ namespace TKWAREHOUSE
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
+            //庫別中的庫存總數量>0才查詢相關批號
+            //AND LA001 IN (SELECT LA001 FROM [TK].dbo.INVLA WITH (NOLOCK)  WHERE LA009='{0}' GROUP BY LA001 HAVING SUM(LA005*LA011)<>0)
 
             FASTSQL.AppendFormat(@"  
                                     SELECT 庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
@@ -462,6 +464,8 @@ namespace TKWAREHOUSE
                                     LEFT JOIN [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
                                     LEFT JOIN [TK].dbo.CMSMC WITH (NOLOCK) ON MC001=LA009 
                                     WHERE  (LA009='{0}') 
+                                    AND LA001 IN (SELECT LA001 FROM [TK].dbo.INVLA WITH (NOLOCK)  WHERE LA009='{0}' GROUP BY LA001 HAVING SUM(LA005*LA011)<>0)
+
                                     GROUP BY  LA001,LA016,MB002,MB003,LA009,MC002
                                     HAVING SUM(LA005*LA011)<>0
                                     ) AS TEMP
