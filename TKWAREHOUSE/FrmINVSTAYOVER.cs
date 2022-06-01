@@ -56,7 +56,18 @@ namespace TKWAREHOUSE
         {
             InitializeComponent();
             comboboxload();
+            comboboxload2();
+
             dateTimePicker1.Value = DateTime.Now;
+            dateTimePicker2.Value = DateTime.Now;
+            dateTimePicker3.Value = DateTime.Now;
+            dateTimePicker4.Value = DateTime.Now;
+
+            DateTime StayDay = dateTimePicker1.Value;
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(textBox1.Text));
+
+            dateTimePicker2.Value = StayDay;
+            dateTimePicker4.Value = StayDay;
         }
 
         #region FUNCTION
@@ -91,10 +102,73 @@ namespace TKWAREHOUSE
             comboBox1.SelectedValue = "20001";
 
         }
+
+        public void comboboxload2()
+        {
+
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            String Sequel = "SELECT MC001,MC001+MC002 AS MC002 FROM [TK].dbo.CMSMC WITH (NOLOCK) ORDER BY MC001";
+            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("MC001", typeof(string));
+            dt.Columns.Add("MC002", typeof(string));
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "MC001";
+            comboBox2.DisplayMember = "MC002";
+            sqlConn.Close();
+
+            comboBox2.SelectedValue = "20001";
+
+        }
+
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            DateTime StayDay = dateTimePicker1.Value;
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(textBox1.Text));
+
+            dateTimePicker2.Value = StayDay;
+        }
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            DateTime StayDay = dateTimePicker1.Value;
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(textBox1.Text));
+
+            dateTimePicker2.Value = StayDay;
+        }
+        private void dateTimePicker3_ValueChanged(object sender, EventArgs e)
+        {
+            DateTime StayDay = dateTimePicker3.Value;
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(textBox2.Text));
+
+            dateTimePicker4.Value = StayDay;
+        }
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            DateTime StayDay = dateTimePicker3.Value;
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(textBox2.Text));
+
+            dateTimePicker4.Value = StayDay;
+        }
+
         public void Search()
         {
             StayDay = dateTimePicker1.Value;
-            StayDay = StayDay.AddDays(-1*Convert.ToDouble(numericUpDown1.Value));
+            StayDay = StayDay.AddDays(-1*Convert.ToDouble(textBox1.Text));
             try
             {
                 
@@ -264,7 +338,7 @@ namespace TKWAREHOUSE
         //}
 
 
-        public void SETFASTREPORT()
+        public void SETFASTREPORT(string LA009,DateTime StayDay)
         {
 
             string SQL;
@@ -285,14 +359,15 @@ namespace TKWAREHOUSE
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL();
+            SQL = SETFASETSQL(LA009,StayDay);
+
             Table.SelectCommand = SQL;
             report1.Preview = previewControl1;
             report1.Show();
 
         }
 
-        public string SETFASETSQL()
+        public string SETFASETSQL(string LA009, DateTime StayDay)
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
@@ -306,7 +381,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@"  FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC ,TK.dbo.INVME, TK.dbo.INVMF");
                 FASTSQL.AppendFormat(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND MB001=ME001 AND ME001=MF001 AND ME002=MF002 AND MF007=INVMC.MC002");
                 FASTSQL.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )", StayDay.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" AND INVMC.MC002='{0}'", comboBox1.SelectedValue.ToString());
+                FASTSQL.AppendFormat(@" AND INVMC.MC002='{0}'", LA009);
                 FASTSQL.AppendFormat(@" GROUP BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002 ,INVMC.MC007 ,INVMC.MC012 ,INVMC.MC013   ,INVMF.MF001,INVMF.MF002     ");
                 FASTSQL.AppendFormat(@"  HAVING SUM(MF008*MF010)>0");
                 FASTSQL.AppendFormat(@"  ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002      ");
@@ -320,7 +395,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" FROM TK..INVMB INVMB ,TK..INVMC INVMC ,TK..CMSMC CMSMC");
                 FASTSQL.AppendFormat(@" WHERE INVMB.MB001=INVMC.MC001 AND INVMC.MC002=CMSMC.MC001 AND  INVMC.MC007>0 ");
                 FASTSQL.AppendFormat(@" AND (( INVMC.MC012<='{0}') AND ( INVMC.MC013<='{0}') )", StayDay.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" AND INVMC.MC002='{0}'", comboBox1.SelectedValue.ToString());
+                FASTSQL.AppendFormat(@" AND INVMC.MC002='{0}'", LA009);
                 FASTSQL.AppendFormat(@" ORDER BY INVMB.MB001,INVMB.MB002,INVMB.MB003,INVMC.MC002,CMSMC.MC002");
                 FASTSQL.AppendFormat(@" ");
             }
@@ -331,6 +406,78 @@ namespace TKWAREHOUSE
 
             return FASTSQL.ToString();
         }
+
+        public void SETFASTREPORT2(string LA009,DateTime StayDay)
+        {
+
+            string SQL;
+            report1 = new Report();
+            report1.Load(@"REPORT\庫存呆滯表-依進貨日.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+            SQL = SETFASETSQL2(LA009,StayDay);
+
+            Table.SelectCommand = SQL;
+            report1.Preview = previewControl2;
+            report1.Show();
+
+        }
+
+        public string SETFASETSQL2(string LA009, DateTime StayDay)
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+
+            FASTSQL.AppendFormat(@" 
+                                    SELECT 庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
+                                    ,進貨製造日期
+                                    ,進貨有效日期
+                                    ,進貨日
+                                    ,進貨單
+
+                                    FROM (
+                                    SELECT 庫別,庫名,品號 ,品名,規格,批號,庫存量,庫存金額 
+                                    ,ISNULL((SELECT TOP 1 TH117 FROM [TK].dbo.PURTH  WITH (NOLOCK) WHERE TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TH002 ),'') AS '進貨製造日期'
+                                    ,ISNULL((SELECT TOP 1 TH036 FROM [TK].dbo.PURTH  WITH (NOLOCK) WHERE TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TH002 ),'') AS '進貨有效日期'
+                                    ,ISNULL((SELECT TOP 1 TG003 FROM [TK].dbo.PURTH  WITH (NOLOCK),[TK].dbo.PURTG  WITH (NOLOCK) WHERE TG001=TH001 AND TG002=TH002 AND TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TG003 ),'') AS '進貨日'
+                                    ,ISNULL((SELECT TOP 1 TH001+TH002+TH003 FROM [TK].dbo.PURTH  WITH (NOLOCK),[TK].dbo.PURTG  WITH (NOLOCK) WHERE TG001=TH001 AND TG002=TH002 AND TH030='Y' AND TH004=品號 AND TH010=批號 ORDER BY TG003 ),'') AS '進貨單'
+
+                                    FROM (
+                                    SELECT  LA009 AS '庫別', MC002 AS '庫名',LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'  ,CAST(SUM(LA005*LA011) AS DECIMAL(18,4)) AS '庫存量'  ,CAST(SUM(LA005*LA013) AS DECIMAL(18,4)) AS '庫存金額'  
+                                    FROM [TK].dbo.INVLA WITH (NOLOCK) 
+                                    LEFT JOIN [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001 
+                                    LEFT JOIN [TK].dbo.CMSMC WITH (NOLOCK) ON MC001=LA009 
+                                    WHERE  (LA009='{0}') 
+                                    GROUP BY  LA001,LA016,MB002,MB003,LA009,MC002
+                                    HAVING SUM(LA005*LA011)<>0
+                                    ) AS TEMP
+                                    ) AS TEMP2
+                                    WHERE 進貨日<='{1}'
+                                    ORDER BY  品號,批號
+
+                                    ", LA009, StayDay.ToString("yyyyMMdd"));
+
+
+
+
+
+            return FASTSQL.ToString();
+        }
+
         #endregion
 
         #region BUTTON
@@ -339,17 +486,31 @@ namespace TKWAREHOUSE
             //Search();
 
             StayDay = dateTimePicker1.Value;
-            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(numericUpDown1.Value));
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(textBox1.Text));
 
-            SETFASTREPORT();
+            SETFASTREPORT(comboBox1.SelectedValue.ToString(),StayDay);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             //ExcelExport();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            StayDay = dateTimePicker3.Value;
+            StayDay = StayDay.AddDays(-1 * Convert.ToDouble(textBox2.Text));
+
+            SETFASTREPORT2(comboBox2.SelectedValue.ToString(),StayDay);
+        }
+
+
+
+
+
+
         #endregion
 
-
+       
     }
 }
