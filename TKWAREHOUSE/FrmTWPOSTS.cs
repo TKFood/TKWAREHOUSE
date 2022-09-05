@@ -52,7 +52,7 @@ namespace TKWAREHOUSE
         }
 
         #region FUNCTION
-        public void SEARCH()
+        public void SEARCH(string SDAYS,string EDAYS)
         {
             try
             {
@@ -93,8 +93,9 @@ namespace TKWAREHOUSE
                                         ,[COLMONEYS] AS '代收貨價'
 
                                         FROM [TKWAREHOUSE].[dbo].[TWPOSTS]
+                                        WHERE CONVERT(NVARCHAR,[SENDDATES],112)>='{0}' AND CONVERT(NVARCHAR,[SENDDATES],112)<='{1}'
                                         ORDER BY CONVERT(NVARCHAR,[SENDDATES],112),ID
-                                    ");
+                                        ", SDAYS, EDAYS);
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -131,14 +132,45 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            string ID = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
+
+            //MessageBox.Show(ID+" "+e.RowIndex+" "+e.ColumnIndex);
+        }
+
+        public void SAVE()
+        {
+            string ID = null;
+
+            if(ds1.Tables[0].Rows.Count>0)
+            {
+                foreach (DataRow DR in ds1.Tables[0].Rows)
+                {                    
+                    ID = ID + "," +DR["ID"].ToString();
+                }
+            }
+           
+
+            MessageBox.Show(ID);
+        }
+
         #endregion
 
         #region BUTTON
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SEARCH();
+            SEARCH(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SAVE();
+        }
+
         #endregion
+
+
     }
 }
