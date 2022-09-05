@@ -136,8 +136,10 @@ namespace TKWAREHOUSE
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             string ID = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
+            decimal WEIGHTS =Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["重量"].Value.ToString());
 
-            //MessageBox.Show(ID+" "+e.RowIndex+" "+e.ColumnIndex);
+            int prices = SEARCHTWPOSTSBASE(WEIGHTS);
+            MessageBox.Show(prices+" "+ID + " "+e.RowIndex+" "+e.ColumnIndex);
         }
 
         public void SAVE()
@@ -156,6 +158,69 @@ namespace TKWAREHOUSE
             MessageBox.Show(ID);
         }
 
+        public int SEARCHTWPOSTSBASE(decimal WEIGHTS)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    [SWEIGHTS]
+                                    ,[EWEIGHTS]
+                                    ,[PRICES]
+                                    FROM [TKWAREHOUSE].[dbo].[TWPOSTSBASE]
+                                    WHERE [SWEIGHTS]<={0} AND [EWEIGHTS]>={0}
+                                    
+                                        ", WEIGHTS);
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    //dataGridView1.Rows.Clear();
+                    dataGridView1.DataSource = ds1.Tables["ds1"];
+                    dataGridView1.AutoResizeColumns();
+                    //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["PRICES"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
