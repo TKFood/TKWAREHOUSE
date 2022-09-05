@@ -54,6 +54,10 @@ namespace TKWAREHOUSE
         #region FUNCTION
         public void SEARCH(string SDAYS,string EDAYS)
         {
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
             try
             {
                 //20210902密
@@ -160,6 +164,11 @@ namespace TKWAREHOUSE
 
         public int SEARCHTWPOSTSBASE(decimal WEIGHTS)
         {
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+
             try
             {
                 //20210902密
@@ -198,11 +207,6 @@ namespace TKWAREHOUSE
 
                 if (ds1.Tables["ds1"].Rows.Count >= 1)
                 {
-                    //dataGridView1.Rows.Clear();
-                    dataGridView1.DataSource = ds1.Tables["ds1"];
-                    dataGridView1.AutoResizeColumns();
-                    //dataGridView1.CurrentCell = dataGridView1[0, rownum];
-
                     return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["PRICES"].ToString());
 
                 }
