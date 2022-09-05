@@ -275,6 +275,12 @@
     <Compile Include="FrmStockBuyIn.Designer.cs">
       <DependentUpon>FrmStockBuyIn.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmTWPOSTS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmTWPOSTS.Designer.cs">
+      <DependentUpon>FrmTWPOSTS.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmUPDATECOPTG.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -375,6 +381,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmStockBuyIn.resx">
       <DependentUpon>FrmStockBuyIn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmTWPOSTS.resx">
+      <DependentUpon>FrmTWPOSTS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmUPDATECOPTG.resx">
       <DependentUpon>FrmUPDATECOPTG.cs</DependentUpon>
