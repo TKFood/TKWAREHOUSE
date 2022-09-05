@@ -40,6 +40,8 @@ namespace TKWAREHOUSE
         SqlCommand cmd = new SqlCommand();
         DataSet ds1 = new DataSet();
         DataSet ds2 = new DataSet();
+        DataSet MAINds = new DataSet();
+
         string tablename = null;
         int rownum = 0;
         DataGridViewRow row;   
@@ -57,6 +59,7 @@ namespace TKWAREHOUSE
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
             DataSet ds1 = new DataSet();
+            MAINds.Clear();
 
             try
             {
@@ -122,7 +125,7 @@ namespace TKWAREHOUSE
                         dataGridView1.DataSource = ds1.Tables["ds1"];
                         dataGridView1.AutoResizeColumns();
                         //dataGridView1.CurrentCell = dataGridView1[0, rownum];
-
+                        MAINds = ds1;
                     }
                 }
 
@@ -139,27 +142,117 @@ namespace TKWAREHOUSE
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            dataGridView1.EndEdit();
+            int prices = 0;
+
             string ID = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
             decimal WEIGHTS =Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["重量"].Value.ToString());
 
-            int prices = SEARCHTWPOSTSBASE(WEIGHTS);
-            MessageBox.Show(prices+" "+ID + " "+e.RowIndex+" "+e.ColumnIndex);
+            prices = SEARCHTWPOSTSBASE(WEIGHTS);
+
+            if (dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("y"))
+            {
+                prices = prices - 10;
+                dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value = "Y";
+                dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
+            }
+            else if(dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("n"))
+            {               
+                dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value = "N";
+                dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
+            }
+            else if (dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("Y"))
+            {
+                prices = prices-10;
+                dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
+            }
+            else if (dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("N"))
+            {
+                dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
+            }
+          
+
+            //MessageBox.Show(prices+" "+ID + " "+e.RowIndex+" "+e.ColumnIndex);
         }
 
-        public void SAVE()
+        public void SAVE(DataSet MAINds)
         {
             string ID = null;
 
-            if(ds1.Tables[0].Rows.Count>0)
+            sbSql.Clear();
+
+            if (MAINds.Tables[0].Rows.Count>0)
             {
-                foreach (DataRow DR in ds1.Tables[0].Rows)
-                {                    
-                    ID = ID + "," +DR["ID"].ToString();
+                foreach (DataRow DR in MAINds.Tables[0].Rows)
+                {
+                    sbSql.AppendFormat(@" 
+                                        UPDATE [TKWAREHOUSE].[dbo].[TWPOSTS]
+                                        SET [WEIGHETS]={1},[PAYMONEYS]={2},[ISSINGALS]='{3}'
+                                        WHERE [ID]='{0}'
+
+                                       ", DR["ID"].ToString(), DR["重量"].ToString(), DR["金額"].ToString(), DR["單筆單件"].ToString());
+
+                    //ID = ID + "," +DR["ID"].ToString();
                 }
             }
-           
 
-            MessageBox.Show(ID);
+            UPDATETWPOSTS(sbSql.ToString());
+            //MessageBox.Show(ID);
+        }
+
+        public void UPDATETWPOSTS(string SQLCOMMAND)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    {0}
+                                    ", SQLCOMMAND.ToString());
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
         public int SEARCHTWPOSTSBASE(decimal WEIGHTS)
@@ -232,10 +325,14 @@ namespace TKWAREHOUSE
         private void button1_Click(object sender, EventArgs e)
         {
             SEARCH(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            SAVE();
+            SAVE(MAINds);
+
+            SEARCH(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+
         }
 
         #endregion
