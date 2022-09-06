@@ -354,6 +354,10 @@ namespace TKWAREHOUSE
 
                 INSERTINTOTWPOSTS(dt3);
             }
+            else
+            {
+                MessageBox.Show("沒有新資料可匯入");
+            }
         }
 
         public DataTable SEARCHTWPOSTS()
@@ -531,9 +535,125 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void INSERTINTOTWPOSTS(DataTable dt)
+        public void INSERTINTOTWPOSTS(DataTable DT)
         {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                foreach (DataRow DR in DT.Rows)
+                {
+                    sbSql.AppendFormat(@" 
+                                        
+                                        INSERT INTO [TKWAREHOUSE].[dbo].[TWPOSTS]
+                                        (
+                                        [SENDDATES]
+                                        ,[CUSTOMERNO]
+                                        ,[CUSTOMERNAMES]
+                                        ,[PHONES]
+                                        ,[ZIPCODE]
+                                        ,[ADDRESS]
+                                        ,[SENDCONTENTS]
+                                        ,[SENDNUMS]
+                                        ,[COMMENTS]
+                                        ,[USEDUNITS]
+                                        ,[SENDNO]
+                                        ,[MOBILEPHONE]
+                                        ,[COLMONEYS]
+                                        ,[WEIGHETS]
+                                        ,[PAYMONEYS]
+                                        ,[ISSINGALS]
+                                        )
+                                        VALUES
+                                        (
+                                        '{0}'
+                                        ,'{1}'
+                                        ,'{2}'
+                                        ,'{3}'
+                                        ,'{4}'
+                                        ,'{5}'
+                                        ,'{6}'
+                                        ,'{7}'
+                                        ,'{8}'
+                                        ,'{9}'
+                                        ,'{10}'
+                                        ,'{11}'
+                                        ,'{12}'
+                                        ,'{13}'
+                                        ,'{14}'
+                                        ,'{15}'
+                                        )
+
+                                        
+                                           
+                                         ", Convert.ToDateTime(DR["交寄日期"].ToString().Replace("'", "").Replace("下午", "PM").Replace("上午", "AM")).ToString("yyyy/MM/dd HH:mm")
+                                            , DR["客戶編號"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["客戶名稱"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["電話"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["郵遞區號"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["地址"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["內裝物品Memo"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["件數編號"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["備註(出貨單編號)"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["使用單位編號"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["託運單編號"].ToString().Replace("'", "").Replace(" ", "")
+                                            , DR["手機"].ToString().Replace("'", "").Replace(" ", "")
+                                            , 0
+                                            , 0
+                                            , 0
+                                            , 'N'
+
+
+
+                                        );
+
+                }
+
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    MessageBox.Show("完成");
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
         #endregion
@@ -560,7 +680,7 @@ namespace TKWAREHOUSE
         {
             CHECKADDDATA();
 
-            MessageBox.Show("完成");
+            //MessageBox.Show("完成");
         }
     }
 }

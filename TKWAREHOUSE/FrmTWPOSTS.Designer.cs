@@ -205,7 +205,7 @@
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(234, 34);
             this.textBox4.TabIndex = 30;
-            this.textBox4.Text = "檔案要先另成xls格式";
+            this.textBox4.Text = "檔案要先另成xlsx格式";
             // 
             // button4
             // 
