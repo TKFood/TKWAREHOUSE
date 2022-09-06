@@ -146,7 +146,7 @@ namespace TKWAREHOUSE
 
                                         FROM [TKWAREHOUSE].[dbo].[TWPOSTS]
                                         WHERE CONVERT(NVARCHAR,[SENDDATES],112)>='{0}' AND CONVERT(NVARCHAR,[SENDDATES],112)<='{1}'
-                                        ORDER BY CONVERT(NVARCHAR,[SENDDATES],112),ID
+                                        ORDER BY [DEPNO],CONVERT(NVARCHAR,[SENDDATES],112),ID
                                         ", SDAYS, EDAYS);
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -743,7 +743,72 @@ namespace TKWAREHOUSE
             }
         }
 
-    
+        public void SETFASTREPORT(string SDAYS, string EDAYS)
+        {
+
+            string SQL;
+            report1 = new Report();
+            report1.Load(@"REPORT\中華郵政.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+
+            SQL = SETFASETSQL(SDAYS, EDAYS);
+
+            Table.SelectCommand = SQL;
+            report1.Preview = previewControl1;
+            report1.Show();
+
+        }
+
+        public string SETFASETSQL(string SDAYS,string EDAYS)
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+         
+            FASTSQL.AppendFormat(@"  
+                                   
+                                SELECT 
+                                [ID] AS 'ID'
+                                ,[DEPNO] AS '部門'
+                                ,CONVERT(NVARCHAR,[SENDDATES],112) AS '交寄日期'
+                                ,[PAYMONEYS] AS '金額'                                        
+                                ,[WEIGHETS] AS '重量'
+                                ,[ISSINGALS] AS '單筆單件'
+                                ,[SENDNO] AS '託運單編號'
+                                ,[CUSTOMERNO] AS '客戶編號'
+                                ,[CUSTOMERNAMES] AS '客戶名稱'
+                                ,[PHONES] AS '電話'
+                                ,[ZIPCODE] AS '郵遞區號'
+                                ,[ADDRESS] AS '地址'
+                                ,[SENDCONTENTS] AS '內裝物品Memo'
+                                ,[SENDNUMS] AS '件數編號'
+                                ,[COMMENTS] AS '備註(出貨單編號)'
+                                ,[USEDUNITS] AS '使用單位編號'                      
+                                ,[MOBILEPHONE] AS '手機'
+                                ,[COLMONEYS] AS '代收貨價'
+
+                                FROM [TKWAREHOUSE].[dbo].[TWPOSTS]
+                                WHERE CONVERT(NVARCHAR,[SENDDATES],112)>='{0}' AND CONVERT(NVARCHAR,[SENDDATES],112)<='{1}'
+                                ORDER BY [DEPNO],CONVERT(NVARCHAR,[SENDDATES],112),ID
+
+                                    ", SDAYS, EDAYS);
+
+            return FASTSQL.ToString();
+        }
 
         #endregion
 
@@ -762,9 +827,6 @@ namespace TKWAREHOUSE
 
         }
 
-
-        #endregion
-
         private void button4_Click(object sender, EventArgs e)
         {
             CHECKADDDATA();
@@ -772,6 +834,12 @@ namespace TKWAREHOUSE
             //MessageBox.Show("完成");
         }
 
-      
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT(dateTimePicker3.Value.ToString("yyyyMMdd"),dateTimePicker4.Value.ToString("yyyyMMdd"));
+        }
+        #endregion
+
+
     }
 }

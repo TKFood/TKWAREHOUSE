@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/06/2022 14:36:43" ReportInfo.Modified="09/06/2022 14:46:11" ReportInfo.CreatorVersion="2016.4.4.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUEYCG/e9p1kyViJEqfwsz7C">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT &#13;&#10;[ID] AS 'ID'&#13;&#10;,[DEPNO] AS '部門'&#13;&#10;,CONVERT(NVARCHAR,[SENDDATES],112) AS '交寄日期'&#13;&#10;,[PAYMONEYS] AS '金額'                                        &#13;&#10;,[WEIGHETS] AS '重量'&#13;&#10;,[ISSINGALS] AS '單筆單件'&#13;&#10;,[SENDNO] AS '託運單編號'&#13;&#10;,[CUSTOMERNO] AS '客戶編號'&#13;&#10;,[CUSTOMERNAMES] AS '客戶名稱'&#13;&#10;,[PHONES] AS '電話'&#13;&#10;,[ZIPCODE] AS '郵遞區號'&#13;&#10;,[ADDRESS] AS '地址'&#13;&#10;,[SENDCONTENTS] AS '內裝物品Memo'&#13;&#10;,[SENDNUMS] AS '件數編號'&#13;&#10;,[COMMENTS] AS '備註(出貨單編號)'&#13;&#10;,[USEDUNITS] AS '使用單位編號'                      &#13;&#10;,[MOBILEPHONE] AS '手機'&#13;&#10;,[COLMONEYS] AS '代收貨價'&#13;&#10;&#13;&#10;FROM [TKWAREHOUSE].[dbo].[TWPOSTS]&#13;&#10;WHERE CONVERT(NVARCHAR,[SENDDATES],112)&gt;='20220901' AND CONVERT(NVARCHAR,[SENDDATES],112)&lt;='20220930'&#13;&#10;ORDER BY [DEPNO],CONVERT(NVARCHAR,[SENDDATES],112),ID">
+        <Column Name="ID" DataType="System.Decimal"/>
+        <Column Name="部門" DataType="System.String"/>
+        <Column Name="交寄日期" DataType="System.String"/>
+        <Column Name="金額" DataType="System.Int32"/>
+        <Column Name="重量" DataType="System.Decimal"/>
+        <Column Name="單筆單件" DataType="System.String"/>
+        <Column Name="託運單編號" DataType="System.String"/>
+        <Column Name="客戶編號" DataType="System.String"/>
+        <Column Name="客戶名稱" DataType="System.String"/>
+        <Column Name="電話" DataType="System.String"/>
+        <Column Name="郵遞區號" DataType="System.String"/>
+        <Column Name="地址" DataType="System.String"/>
+        <Column Name="內裝物品Memo" DataType="System.String"/>
+        <Column Name="件數編號" DataType="System.Int32"/>
+        <Column Name="備註(出貨單編號)" DataType="System.String"/>
+        <Column Name="使用單位編號" DataType="System.String"/>
+        <Column Name="手機" DataType="System.String"/>
+        <Column Name="代收貨價" DataType="System.Int32"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Total Name="Total金額" Expression="[Table.金額]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="400" PaperHeight="210">
+    <ReportTitleBand Name="ReportTitle1" Width="1436.4" Height="18.9">
+      <TextObject Name="Text23" Width="1426.95" Height="18.9" Border.Lines="All" Text="中華郵政託運" HorzAlign="Center" VertAlign="Center"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="23.39" Width="1436.4" Height="18.9">
+      <TextObject Name="Text2" Width="75.6" Height="18.9" Border.Lines="All" Text="部門" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="75.6" Width="66.15" Height="18.9" Border.Lines="All" Text="交寄日期" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="141.75" Width="94.5" Height="18.9" Border.Lines="All" Text="金額" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="236.25" Width="56.7" Height="18.9" Border.Lines="All" Text="重量" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="292.95" Width="66.15" Height="18.9" Border.Lines="All" Text="單筆單件" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text12" Left="359.1" Width="113.4" Height="18.9" Border.Lines="All" Text="託運單編號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text14" Left="472.5" Width="179.55" Height="18.9" Border.Lines="All" Text="客戶名稱" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text16" Left="652.05" Width="94.5" Height="18.9" Border.Lines="All" Text="電話" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text18" Left="746.55" Width="94.5" Height="18.9" Border.Lines="All" Text="郵遞區號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text20" Left="841.05" Width="340.2" Height="18.9" Border.Lines="All" Text="地址" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text22" Left="1181.25" Width="245.7" Height="18.9" Border.Lines="All" Text="內裝物品Memo" HorzAlign="Center" VertAlign="Center"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="46.79" Width="1436.4" Condition="[Table.部門]" SortOrder="None">
+      <DataBand Name="Data1" Top="51.28" Width="1436.4" Height="18.9" CanGrow="true" DataSource="Table">
+        <TextObject Name="Text1" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.部門]" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text3" Left="75.6" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.交寄日期]" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text5" Left="141.75" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.金額]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text7" Left="236.25" Width="56.7" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.重量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text9" Left="292.95" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.單筆單件]" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text11" Left="359.1" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.託運單編號]" VertAlign="Center"/>
+        <TextObject Name="Text13" Left="472.5" Width="179.55" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.客戶名稱]" VertAlign="Center"/>
+        <TextObject Name="Text15" Left="652.05" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.電話]" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text17" Left="746.55" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.郵遞區號]" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text19" Left="841.05" Width="340.2" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.地址]" VertAlign="Center"/>
+        <TextObject Name="Text21" Left="1181.25" Width="245.7" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.內裝物品Memo]" HorzAlign="Center" VertAlign="Center"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="74.68" Width="1436.4" Height="18.9">
+        <TextObject Name="Text24" Left="141.75" Width="94.5" Height="18.9" Border.Lines="All" Text="[Total金額]" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text25" Width="141.75" Height="18.9" Border.Lines="All" Text="小計" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text26" Left="236.25" Width="1190.7" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="98.07" Width="1436.4" Height="18.9"/>
+  </ReportPage>
+</Report>
