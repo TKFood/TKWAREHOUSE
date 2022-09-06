@@ -57,9 +57,46 @@ namespace TKWAREHOUSE
         public FrmTWPOSTS()
         {
             InitializeComponent();
+            comboBox1load();
+
         }
 
         #region FUNCTION
+        public void comboBox1load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT [DEPNO]
+                                FROM [TKWAREHOUSE].[dbo].[TWPOSTDEP]
+                                ORDER BY [DEPNO]
+
+                                    ");
+
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("DEPNO", typeof(string));
+            
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "DEPNO";
+            comboBox1.DisplayMember = "DEPNO";
+            sqlConn.Close();
+
+
+        }
         public void SEARCH(string SDAYS, string EDAYS)
         {
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -88,10 +125,12 @@ namespace TKWAREHOUSE
 
                                         SELECT 
                                         [ID] AS 'ID'
-                                        ,[PAYMONEYS] AS '金額'
+                                        ,[DEPNO] AS '部門'
                                         ,CONVERT(NVARCHAR,[SENDDATES],112) AS '交寄日期'
+                                        ,[PAYMONEYS] AS '金額'                                        
                                         ,[WEIGHETS] AS '重量'
                                         ,[ISSINGALS] AS '單筆單件'
+                                        ,[SENDNO] AS '託運單編號'
                                         ,[CUSTOMERNO] AS '客戶編號'
                                         ,[CUSTOMERNAMES] AS '客戶名稱'
                                         ,[PHONES] AS '電話'
@@ -100,8 +139,7 @@ namespace TKWAREHOUSE
                                         ,[SENDCONTENTS] AS '內裝物品Memo'
                                         ,[SENDNUMS] AS '件數編號'
                                         ,[COMMENTS] AS '備註(出貨單編號)'
-                                        ,[USEDUNITS] AS '使用單位編號'
-                                        ,[SENDNO] AS '託運單編號'
+                                        ,[USEDUNITS] AS '使用單位編號'                      
                                         ,[MOBILEPHONE] AS '手機'
                                         ,[COLMONEYS] AS '代收貨價'
 
@@ -588,6 +626,7 @@ namespace TKWAREHOUSE
                                         ,[WEIGHETS]
                                         ,[PAYMONEYS]
                                         ,[ISSINGALS]
+                                        ,[DEPNO]
                                         )
                                         VALUES
                                         (
@@ -607,6 +646,7 @@ namespace TKWAREHOUSE
                                         ,'{13}'
                                         ,'{14}'
                                         ,'{15}'
+                                        ,'{16}'
                                         )
 
                                         
@@ -627,7 +667,7 @@ namespace TKWAREHOUSE
                                             , 0
                                             , 0
                                             , 'N'
-
+                                            , comboBox1.Text.ToString().Trim()
 
 
                                         );
