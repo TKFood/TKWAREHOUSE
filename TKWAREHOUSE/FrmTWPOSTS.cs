@@ -218,7 +218,10 @@ namespace TKWAREHOUSE
 
             //MessageBox.Show(prices+" "+ID + " "+e.RowIndex+" "+e.ColumnIndex);
         }
-
+        private void dataGridView1_RowLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            MessageBox.Show(e.ColumnIndex.ToString() + " " + e.RowIndex.ToString());
+        }
         public void SAVE(DataSet MAINds)
         {
             string ID = null;
@@ -705,6 +708,8 @@ namespace TKWAREHOUSE
             }
         }
 
+    
+
         #endregion
 
         #region BUTTON
@@ -731,5 +736,7 @@ namespace TKWAREHOUSE
             SEARCH(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             //MessageBox.Show("完成");
         }
+
+      
     }
 }
