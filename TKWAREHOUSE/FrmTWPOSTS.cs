@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using FastReport;
 using FastReport.Data;
 using TKITDLL;
+using System.Data.OleDb;
 
 namespace TKWAREHOUSE
 {
@@ -44,8 +45,13 @@ namespace TKWAREHOUSE
 
         string tablename = null;
         int rownum = 0;
-        DataGridViewRow row;   
+        DataGridViewRow row;
         int result;
+
+        string _path = null;
+        DataTable EXCEL = null;
+
+
         public Report report1 { get; private set; }
 
         public FrmTWPOSTS()
@@ -54,7 +60,7 @@ namespace TKWAREHOUSE
         }
 
         #region FUNCTION
-        public void SEARCH(string SDAYS,string EDAYS)
+        public void SEARCH(string SDAYS, string EDAYS)
         {
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
@@ -77,7 +83,7 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
-             
+
                 sbSql.AppendFormat(@"  
 
                                         SELECT 
@@ -146,7 +152,7 @@ namespace TKWAREHOUSE
             int prices = 0;
 
             string ID = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
-            decimal WEIGHTS =Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["重量"].Value.ToString());
+            decimal WEIGHTS = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["重量"].Value.ToString());
 
             prices = SEARCHTWPOSTSBASE(WEIGHTS);
 
@@ -156,21 +162,21 @@ namespace TKWAREHOUSE
                 dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value = "Y";
                 dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
             }
-            else if(dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("n"))
-            {               
+            else if (dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("n"))
+            {
                 dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value = "N";
                 dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
             }
             else if (dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("Y"))
             {
-                prices = prices-10;
+                prices = prices - 10;
                 dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
             }
             else if (dataGridView1.Rows[e.RowIndex].Cells["單筆單件"].Value.ToString().Equals("N"))
             {
                 dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
             }
-          
+
 
             //MessageBox.Show(prices+" "+ID + " "+e.RowIndex+" "+e.ColumnIndex);
         }
@@ -181,7 +187,7 @@ namespace TKWAREHOUSE
 
             sbSql.Clear();
 
-            if (MAINds.Tables[0].Rows.Count>0)
+            if (MAINds.Tables[0].Rows.Count > 0)
             {
                 foreach (DataRow DR in MAINds.Tables[0].Rows)
                 {
@@ -318,6 +324,218 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        public void CHECKADDDATA()
+        {
+            //IEnumerable<DataRow> tempExcept = null;
+
+            DataTable DT1 = SEARCHTWPOSTS();
+            DataTable DT2 = IMPORTEXCEL();
+         
+            //找DataTable差集
+            //要有相同的欄位名稱
+            //找DataTable差集
+            //如果兩個datatable中有部分欄位相同，可以使用Contains比較　
+        
+              var  tempExcept = from r in DT2.AsEnumerable()
+                                 where
+                                 !(from rr in DT1.AsEnumerable() select rr.Field<string>("託運單編號")).Contains(
+                                 r.Field<string>("託運單編號"))
+                                 select r;
+          
+
+
+            //var tempExcept = DT2.AsEnumerable();
+
+            if (tempExcept.Count() > 0)
+            {
+                //差集集合
+                DataTable dt3 = tempExcept.CopyToDataTable();
+
+                INSERTINTOTWPOSTS(dt3);
+            }
+        }
+
+        public DataTable SEARCHTWPOSTS()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            //THISYEARS = "21";
+
+            try
+            {
+                //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                //sqlConn = new SqlConnection(connectionString);
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+
+                //核準過TASK_RESULT='0'
+                //AND DOC_NBR  LIKE 'QC1002{0}%'
+
+                sbSql.AppendFormat(@"  
+                                   SELECT 
+                                    [SENDNO] AS '託運單編號'
+                                    FROM [TKWAREHOUSE].[dbo].[TWPOSTS]
+                                    UNION ALL
+                                    SELECT '託運單編號'  AS '託運單編號'
+
+
+                                    ");
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public DataTable IMPORTEXCEL()
+        {
+            //記錄選到的檔案路徑
+            _path = null;
+
+            OpenFileDialog od = new OpenFileDialog();
+            od.Filter = "Excell|*.xls;*.xlsx;";
+
+            DialogResult dr = od.ShowDialog();
+            if (dr == DialogResult.Abort)
+            {
+                return null;
+            }
+            if (dr == DialogResult.Cancel)
+            {
+                return null;
+            }
+            
+           
+            _path = od.FileName.ToString();
+
+            try
+            {
+                //  ExcelConn(_path);
+                //找出不同excel的格式，設定連接字串
+                //xls跟非xls
+                string constr = null;
+                string CHECKEXCELFORMAT = _path.Substring(_path.Length - 4, 4);
+
+                if (CHECKEXCELFORMAT.CompareTo("xlsx") == 0)
+                {
+                    constr = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + _path + ";Extended Properties='Excel 12.0;HDR=NO';"; //for above excel 2007  
+                }
+                else
+                {
+                    
+                    constr = @"provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + _path + ";Extended Properties='Excel 8.0;HRD=Yes;IMEX=1';"; //for below excel 2007  
+                }
+
+                //找出excel的第1張分頁名稱，用query中                
+                OleDbConnection Econ = new OleDbConnection(constr);
+                Econ.Open();
+
+
+
+                DataTable excelShema = Econ.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                string firstSheetName = excelShema.Rows[0]["TABLE_NAME"].ToString();
+
+                string Query = string.Format("Select * FROM [{0}]", firstSheetName);
+                OleDbCommand Ecom = new OleDbCommand(Query, Econ);
+
+
+                DataTable dtExcelData = new DataTable();
+
+                OleDbDataAdapter oda = new OleDbDataAdapter(Query, Econ);
+                Econ.Close();
+                oda.Fill(dtExcelData);
+                DataTable Exceldt = dtExcelData;
+
+                //如果xlsx要另外處理欄位名
+                if (CHECKEXCELFORMAT.CompareTo("xlsx") == 0)
+                {
+                    //把第一列的欄位名移除，並重設欄位名
+                    //Exceldt.Rows[0].Delete();
+                    Exceldt.Columns[0].ColumnName = "交寄日期";
+                    Exceldt.Columns[1].ColumnName = "客戶編號";
+                    Exceldt.Columns[2].ColumnName = "客戶名稱";
+                    Exceldt.Columns[3].ColumnName = "電話";
+                    Exceldt.Columns[4].ColumnName = "郵遞區號";
+                    Exceldt.Columns[5].ColumnName = "地址";
+                    Exceldt.Columns[6].ColumnName = "內裝物品Memo";
+                    Exceldt.Columns[7].ColumnName = "件數編號";
+                    Exceldt.Columns[8].ColumnName = "備註(出貨單編號)";
+                    Exceldt.Columns[9].ColumnName = "使用單位編號";
+                    Exceldt.Columns[10].ColumnName = "託運單編號";
+                    Exceldt.Columns[11].ColumnName = "手機";
+                    //Exceldt.Columns[12].ColumnName = "代收貨價";
+                    //Exceldt.Columns[13].ColumnName = "重量";
+                    //Exceldt.Columns[14].ColumnName = "金額";
+                    //Exceldt.Columns[15].ColumnName = "單筆單件";
+                }
+
+
+
+                if (Exceldt.Rows.Count > 0)
+                {
+                    return Exceldt;
+                }
+                else
+                {
+                    return null;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+                //MessageBox.Show(string.Format("錯誤:{0}", ex.Message), "Not Imported", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            }
+        }
+
+        public void INSERTINTOTWPOSTS(DataTable dt)
+        {
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -335,8 +553,14 @@ namespace TKWAREHOUSE
 
         }
 
+
         #endregion
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            CHECKADDDATA();
 
+            MessageBox.Show("完成");
+        }
     }
 }

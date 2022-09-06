@@ -30,20 +30,20 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.label4 = new System.Windows.Forms.Label();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.label3 = new System.Windows.Forms.Label();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button4 = new System.Windows.Forms.Button();
             this.textBox4 = new System.Windows.Forms.TextBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -75,16 +75,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 26);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(192, 70);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // splitContainer1
             // 
@@ -137,15 +127,34 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(966, 146);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
-            // label3
+            // button2
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 12);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(114, 16);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "日期";
+            this.button2.Location = new System.Drawing.Point(603, 83);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(114, 34);
+            this.button2.TabIndex = 8;
+            this.button2.Text = "修改後存檔";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(483, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(114, 34);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "查詢";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // dateTimePicker2
+            // 
+            this.dateTimePicker2.CustomFormat = "yyyy/MM/dd";
+            this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker2.Location = new System.Drawing.Point(363, 3);
+            this.dateTimePicker2.Name = "dateTimePicker2";
+            this.dateTimePicker2.Size = new System.Drawing.Size(114, 27);
+            this.dateTimePicker2.TabIndex = 7;
             // 
             // label4
             // 
@@ -158,16 +167,6 @@
             this.label4.Text = "~";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(483, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(114, 34);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "查詢";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // dateTimePicker1
             // 
             this.dateTimePicker1.CustomFormat = "yyyy/MM/dd";
@@ -177,14 +176,58 @@
             this.dateTimePicker1.Size = new System.Drawing.Size(114, 27);
             this.dateTimePicker1.TabIndex = 6;
             // 
-            // dateTimePicker2
+            // label3
             // 
-            this.dateTimePicker2.CustomFormat = "yyyy/MM/dd";
-            this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker2.Location = new System.Drawing.Point(363, 3);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(114, 27);
-            this.dateTimePicker2.TabIndex = 7;
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 12);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(114, 16);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "日期";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox3.Location = new System.Drawing.Point(123, 46);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.ReadOnly = true;
+            this.textBox3.Size = new System.Drawing.Size(114, 27);
+            this.textBox3.TabIndex = 28;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox4, 2);
+            this.textBox4.Location = new System.Drawing.Point(363, 43);
+            this.textBox4.Multiline = true;
+            this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
+            this.textBox4.Size = new System.Drawing.Size(234, 34);
+            this.textBox4.TabIndex = 30;
+            this.textBox4.Text = "檔案要先另成xls格式";
+            // 
+            // button4
+            // 
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.Location = new System.Drawing.Point(244, 44);
+            this.button4.Margin = new System.Windows.Forms.Padding(4);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(112, 32);
+            this.button4.TabIndex = 29;
+            this.button4.Text = "1-上傳資料";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 52);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(114, 16);
+            this.label1.TabIndex = 27;
+            this.label1.Text = "上傳附件";
             // 
             // dataGridView1
             // 
@@ -199,57 +242,15 @@
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             // 
-            // button2
+            // tabPage2
             // 
-            this.button2.Location = new System.Drawing.Point(603, 83);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(114, 34);
-            this.button2.TabIndex = 8;
-            this.button2.Text = "修改後存檔";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // textBox3
-            // 
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(123, 46);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(114, 27);
-            this.textBox3.TabIndex = 28;
-            // 
-            // button4
-            // 
-            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(244, 44);
-            this.button4.Margin = new System.Windows.Forms.Padding(4);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(112, 32);
-            this.button4.TabIndex = 29;
-            this.button4.Text = "1-上傳資料";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox4, 2);
-            this.textBox4.Location = new System.Drawing.Point(363, 43);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(234, 34);
-            this.textBox4.TabIndex = 30;
-            this.textBox4.Text = "檔案要先另成xls格式";
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 52);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(114, 16);
-            this.label1.TabIndex = 27;
-            this.label1.Text = "上傳附件";
+            this.tabPage2.Location = new System.Drawing.Point(4, 26);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(976, 672);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // FrmTWPOSTS
             // 
@@ -258,7 +259,7 @@
             this.ClientSize = new System.Drawing.Size(984, 702);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmTWPOSTS";
             this.Text = "FrmTWPOSTS";
             this.tabControl1.ResumeLayout(false);
