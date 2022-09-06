@@ -50,7 +50,8 @@ namespace TKWAREHOUSE
 
         string _path = null;
         DataTable EXCEL = null;
-
+        int ROWSINDEX;
+        int COLUMNSINDEX;
 
         public Report report1 { get; private set; }
 
@@ -170,6 +171,15 @@ namespace TKWAREHOUSE
                         dataGridView1.AutoResizeColumns();
                         //dataGridView1.CurrentCell = dataGridView1[0, rownum];
                         MAINds = ds1;
+
+                        if (ROWSINDEX > 0 || COLUMNSINDEX > 0)
+                        {
+                            dataGridView1.CurrentCell = dataGridView1.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
+
+                            DataGridViewRow row = dataGridView1.Rows[ROWSINDEX];
+                           
+                        }
+
                     }
                 }
 
@@ -215,12 +225,20 @@ namespace TKWAREHOUSE
                 dataGridView1.Rows[e.RowIndex].Cells["金額"].Value = prices;
             }
 
+            ROWSINDEX = e.RowIndex;
+            COLUMNSINDEX = e.ColumnIndex;
 
+            SAVEROWS(dataGridView1.Rows[ROWSINDEX].Cells["ID"].Value.ToString(), dataGridView1.Rows[ROWSINDEX].Cells["重量"].Value.ToString(), dataGridView1.Rows[ROWSINDEX].Cells["金額"].Value.ToString(), dataGridView1.Rows[ROWSINDEX].Cells["單筆單件"].Value.ToString());
             //MessageBox.Show(prices+" "+ID + " "+e.RowIndex+" "+e.ColumnIndex);
         }
         private void dataGridView1_RowLeave(object sender, DataGridViewCellEventArgs e)
         {
-            MessageBox.Show(e.ColumnIndex.ToString() + " " + e.RowIndex.ToString());
+           
+            //ROWSINDEX = e.RowIndex;
+            //COLUMNSINDEX= e.ColumnIndex;
+
+            //SAVEROWS(dataGridView1.Rows[ROWSINDEX].Cells["ID"].Value.ToString(), dataGridView1.Rows[ROWSINDEX].Cells["重量"].Value.ToString(), dataGridView1.Rows[ROWSINDEX].Cells["金額"].Value.ToString(), dataGridView1.Rows[ROWSINDEX].Cells["單筆單件"].Value.ToString());
+            //MessageBox.Show(e.ColumnIndex.ToString() + " " + e.RowIndex.ToString());
         }
         public void SAVE(DataSet MAINds)
         {
@@ -242,6 +260,23 @@ namespace TKWAREHOUSE
                     //ID = ID + "," +DR["ID"].ToString();
                 }
             }
+
+            UPDATETWPOSTS(sbSql.ToString());
+            //MessageBox.Show(ID);
+        }
+
+        public void SAVEROWS(string ID,string WEIGHETS,string PAYMONEYS,string ISSINGALS)
+        {          
+            sbSql.Clear();
+
+            sbSql.AppendFormat(@" 
+                                        UPDATE [TKWAREHOUSE].[dbo].[TWPOSTS]
+                                        SET [WEIGHETS]={1},[PAYMONEYS]={2},[ISSINGALS]='{3}'
+                                        WHERE [ID]='{0}'
+
+                                       ", ID, WEIGHETS, PAYMONEYS, ISSINGALS);
+
+            //ID = ID + "," +DR["ID"].ToString();
 
             UPDATETWPOSTS(sbSql.ToString());
             //MessageBox.Show(ID);
