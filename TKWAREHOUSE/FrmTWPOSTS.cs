@@ -331,13 +331,16 @@ namespace TKWAREHOUSE
 
             DataTable DT1 = SEARCHTWPOSTS();
             DataTable DT2 = IMPORTEXCEL();
-         
+
+            //MessageBox.Show(DT1.Rows.Count.ToString());
+            //MessageBox.Show(DT2.Rows.Count.ToString());
+
             //找DataTable差集
             //要有相同的欄位名稱
             //找DataTable差集
             //如果兩個datatable中有部分欄位相同，可以使用Contains比較　
-        
-              var  tempExcept = from r in DT2.AsEnumerable()
+
+            var  tempExcept = from r in DT2.AsEnumerable()
                                  where
                                  !(from rr in DT1.AsEnumerable() select rr.Field<string>("託運單編號")).Contains(
                                  r.Field<string>("託運單編號"))
@@ -461,6 +464,8 @@ namespace TKWAREHOUSE
                 string constr = null;
                 string CHECKEXCELFORMAT = _path.Substring(_path.Length - 4, 4);
 
+                //MessageBox.Show(CHECKEXCELFORMAT);
+
                 if (CHECKEXCELFORMAT.CompareTo("xlsx") == 0)
                 {
                     constr = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + _path + ";Extended Properties='Excel 12.0;HDR=NO';"; //for above excel 2007  
@@ -478,7 +483,9 @@ namespace TKWAREHOUSE
 
 
                 DataTable excelShema = Econ.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                string firstSheetName = excelShema.Rows[0]["TABLE_NAME"].ToString();
+                string firstSheetName = excelShema.Rows[0]["TABLE_Name"].ToString();
+
+                //MessageBox.Show(firstSheetName);
 
                 string Query = string.Format("Select * FROM [{0}]", firstSheetName);
                 OleDbCommand Ecom = new OleDbCommand(Query, Econ);
@@ -490,6 +497,8 @@ namespace TKWAREHOUSE
                 Econ.Close();
                 oda.Fill(dtExcelData);
                 DataTable Exceldt = dtExcelData;
+
+                //MessageBox.Show(Exceldt.Rows.Count.ToString());
 
                 //如果xlsx要另外處理欄位名
                 if (CHECKEXCELFORMAT.CompareTo("xlsx") == 0)
@@ -679,7 +688,7 @@ namespace TKWAREHOUSE
         private void button4_Click(object sender, EventArgs e)
         {
             CHECKADDDATA();
-
+            SEARCH(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             //MessageBox.Show("完成");
         }
     }
