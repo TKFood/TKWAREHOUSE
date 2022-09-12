@@ -236,7 +236,7 @@
             "原料",
             "物料",
             "原料+物料"});
-            this.comboBox1.Location = new System.Drawing.Point(123, 8);
+            this.comboBox1.Location = new System.Drawing.Point(123, 10);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 8;
@@ -247,7 +247,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.comboBox2, 2);
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(123, 50);
+            this.comboBox2.Location = new System.Drawing.Point(123, 48);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(234, 24);
             this.comboBox2.TabIndex = 9;
@@ -478,7 +478,7 @@
             "原料",
             "物料",
             "原料+物料"});
-            this.comboBox3.Location = new System.Drawing.Point(123, 8);
+            this.comboBox3.Location = new System.Drawing.Point(123, 10);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(114, 24);
             this.comboBox3.TabIndex = 9;
@@ -489,7 +489,7 @@
             this.comboBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel3.SetColumnSpan(this.comboBox4, 2);
             this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(123, 48);
+            this.comboBox4.Location = new System.Drawing.Point(123, 50);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(234, 24);
             this.comboBox4.TabIndex = 10;

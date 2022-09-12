@@ -199,7 +199,7 @@ namespace TKWAREHOUSE
             if(comboBox1.Text.ToString().Equals("原料"))
             {
                
-                FASTSQL.AppendFormat(@"   
+                FASTSQL.AppendFormat(@"    
                                     SELECT MD002,TE004, MB002 AS TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
                                     ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
