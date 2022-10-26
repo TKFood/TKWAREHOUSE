@@ -581,8 +581,8 @@ namespace TKWAREHOUSE
             SQL = SETFASETSQL();
             Table.SelectCommand = SQL;
             report1.Preview = previewControl1;
-            report1.Show();
-
+            report1.Show(); 
+             
         }
 
         public string SETFASETSQL()
