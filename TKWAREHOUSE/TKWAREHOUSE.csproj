@@ -143,6 +143,12 @@
     <Compile Include="FrmINVCheck.Designer.cs">
       <DependentUpon>FrmINVCheck.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmINVCHECKLOT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmINVCHECKLOT.Designer.cs">
+      <DependentUpon>FrmINVCHECKLOT.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmINVCOP.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -321,6 +327,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmINVCheck.resx">
       <DependentUpon>FrmINVCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmINVCHECKLOT.resx">
+      <DependentUpon>FrmINVCHECKLOT.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmINVCOP.resx">
       <DependentUpon>FrmINVCOP.cs</DependentUpon>
