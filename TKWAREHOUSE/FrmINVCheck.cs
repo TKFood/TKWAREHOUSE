@@ -787,9 +787,10 @@ namespace TKWAREHOUSE
                                      ,CONVERT(DECIMAL(16,3),SUM(LA005*LA013)) AS '庫存金額'
                                      ,DATEDIFF(DAY,LA016,'{0}') AS '在倉日期old' 
                                      ,DATEDIFF(DAY,(SELECT TOP 1 TH014 FROM [TK].dbo.PURTG,[TK].dbo.PURTH WHERE TG001=TH001 AND TG002=TH002 AND TH004=LA001 AND TH010=LA016 ),'{0}') AS '在倉日期'  
-                                     ,DATEDIFF(DAY,'{0}',LA016) AS '有效天數'
+                                     ,CASE WHEN ISDATE(LA016)=1 THEN DATEDIFF(DAY,'{0}',LA016) ELSE 0 END  AS '有效天數'
                                      ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
-                                      ,ISDATE(LA016) AS LA016
+                                     ,ISDATE(LA016) AS LA016
+
                                      FROM [TK].dbo.INVLA WITH (NOLOCK)  
                                      LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
                                      WHERE  (LA009='20006')   
@@ -799,6 +800,7 @@ namespace TKWAREHOUSE
                                      ) AS TEMP
                                      WHERE 品號 NOT IN ('122221001','114141009')
                                      ORDER BY 品號,批號  
+
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"), sbSqlQuery.ToString());
 
 
