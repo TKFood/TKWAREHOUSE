@@ -133,7 +133,7 @@ namespace TKWAREHOUSE
                                     WHERE TA001=TB001 AND TA002=TB002
                                     AND TA006=MC001
                                     AND TA021=CMSMD.MD001
-                                    AND TB003 LIKE '1%'
+                                    AND (TB003 LIKE '1%' OR TB003 LIKE '30101%')
                                     AND TB003 NOT IN ('101001009')
                                     AND CMSMD.MD002  IN ('製一線','製二線 ','手工線') 
                                      AND TA003>='{0}' AND TA003<='{1}'
@@ -159,7 +159,7 @@ namespace TKWAREHOUSE
                                  WHERE TA001=TB001 AND TA002=TB002
                                  AND TA006=MC001
                                  AND TA021=MD001
-                                 AND TB003 LIKE '1%'
+                                 AND (TB003 LIKE '1%' OR TB003 LIKE '30101%')
                                  AND TB003 IN ('101001009')
                                  AND MD002  IN ('製一線','製二線 ','手工線') 
                                  AND TA003>='{0}' AND TA003<='{1}'
