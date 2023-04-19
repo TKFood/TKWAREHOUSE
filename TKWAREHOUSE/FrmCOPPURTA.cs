@@ -3233,12 +3233,23 @@ namespace TKWAREHOUSE
 
 
                 sbSql.AppendFormat(@"  
-                                     SELECT TOP 1 MC001
+                                     
+                                    SELECT TOP 1 MC001
+                                    FROM 
+                                    (
+                                    SELECT MC001
                                     FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED],[TK].dbo.[INVMB]
                                     LEFT JOIN [TKWAREHOUSE].[dbo].[OUTPURSET] ON LTRIM(RTRIM([OUTPURSET].[MB001]))=LTRIM(RTRIM([INVMB].[MB001]))
                                     WHERE [COPPURBATCHUSED].[MB001]=[INVMB].MB001
                                     AND [COPPURBATCHUSED].[ID]='{0}'
-                                    AND ISNULL([MC001],'')<>''
+                                    UNION ALL
+                                    SELECT MC001 
+                                    FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED]
+                                    LEFT JOIN [TKWAREHOUSE].[dbo].[OUTPURSET] ON (LTRIM(RTRIM([OUTPURSET].[MB001]))='41004110010001') 
+                                    WHERE  [COPPURBATCHUSED].[ID]='{0}'
+                                    ) AS TEMP 
+                                    WHERE  ISNULL([MC001],'')<>''
+
                                     ", ID);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
