@@ -2766,7 +2766,8 @@ namespace TKWAREHOUSE
             string MOCMB001 = null;
             decimal MOCTA004 = 0; ;
             //找出外倉，製令單身用此外倉代號
-            string MOCTB009 = SEARCHOUTPURSETMC001(textBoxID.Text.Trim());
+            string MAINMB001 = MB001;
+            string MOCTB009 = SEARCHOUTPURSETMC001(textBoxID.Text.Trim(), MB001);
 
 
             const int MaxLength = 100;
@@ -3204,7 +3205,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public string SEARCHOUTPURSETMC001(string ID)
+        public string SEARCHOUTPURSETMC001(string ID,string MAINMB001)
         {
             StringBuilder sbSql = new StringBuilder();
             StringBuilder sbSqlQuery = new StringBuilder();
@@ -3234,23 +3235,26 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"  
                                      
+                                  SELECT (CASE WHEN ISNULL(MC001,'')<>'' THEN MC001 ELSE MC001B END ) AS MC001
+                                    FROM (
+                                    SELECT DISTINCT MC001 MC001
+                                    ,(
                                     SELECT TOP 1 MC001
-                                    FROM 
-                                    (
-                                    SELECT MC001
+                                    FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED]
+                                    LEFT JOIN [TKWAREHOUSE].[dbo].[OUTPURSET] ON (LTRIM(RTRIM([OUTPURSET].[MB001]))='{1}') 
+                                    WHERE  [COPPURBATCHUSED].[ID]='{0}'
+                                    AND ISNULL(MC001,'')<>''
+                                    ORDER BY MC001
+                                    ) MC001B
                                     FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED],[TK].dbo.[INVMB]
                                     LEFT JOIN [TKWAREHOUSE].[dbo].[OUTPURSET] ON LTRIM(RTRIM([OUTPURSET].[MB001]))=LTRIM(RTRIM([INVMB].[MB001]))
                                     WHERE [COPPURBATCHUSED].[MB001]=[INVMB].MB001
                                     AND [COPPURBATCHUSED].[ID]='{0}'
-                                    UNION ALL
-                                    SELECT MC001 
-                                    FROM [TKWAREHOUSE].[dbo].[COPPURBATCHUSED]
-                                    LEFT JOIN [TKWAREHOUSE].[dbo].[OUTPURSET] ON (LTRIM(RTRIM([OUTPURSET].[MB001]))='41004110010001') 
-                                    WHERE  [COPPURBATCHUSED].[ID]='{0}'
-                                    ) AS TEMP 
-                                    WHERE  ISNULL([MC001],'')<>''
+                                    AND ISNULL(MC001,'')<>''
+                                    ) AS TEMP
 
-                                    ", ID);
+
+                                    ", ID, MAINMB001);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
