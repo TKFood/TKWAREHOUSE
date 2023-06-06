@@ -3250,7 +3250,7 @@ namespace TKWAREHOUSE
                                     LEFT JOIN [TKWAREHOUSE].[dbo].[OUTPURSET] ON LTRIM(RTRIM([OUTPURSET].[MB001]))=LTRIM(RTRIM([INVMB].[MB001]))
                                     WHERE [COPPURBATCHUSED].[MB001]=[INVMB].MB001
                                     AND [COPPURBATCHUSED].[ID]='{0}'
-                                    AND ISNULL(MC001,'')<>''
+                                   
                                     ) AS TEMP
 
 
