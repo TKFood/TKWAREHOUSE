@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/06/2023 16:18:51" ReportInfo.Modified="07/06/2023 16:28:22" ReportInfo.CreatorVersion="2016.4.4.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUE8JiSSty6WIWoFZzGcZtKB">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="--20230706 成品會的品號庫存+訂單+業務員&#13;&#10;&#13;&#10;SELECT &#13;&#10;LA001 AS '品號'&#13;&#10;,LA016 AS '批號'&#13;&#10;,LA009 AS '庫別'&#13;&#10;,NUMS AS '庫存數量'&#13;&#10;,MB002 AS '品名'&#13;&#10;,MB003 AS '規格'&#13;&#10;,MB004 AS '單位'&#13;&#10;,TC0012A&#13;&#10;,TC0012B&#13;&#10;,TF003 AS '入庫日'&#13;&#10;,TG014TG015 AS '製令'&#13;&#10;,(CASE WHEN ISNULL(TC0012A,'')&lt;&gt;'' THEN TC0012A ELSE TC0012B END ) AS '訂單'&#13;&#10;,TC053 AS '客戶'&#13;&#10;,TC006 AS '業務'&#13;&#10;,TD013 AS '預交日'&#13;&#10;,MV002 AS '業務員'&#13;&#10;,DATEDIFF(day, TF003, GETDATE())  AS '存放天數'&#13;&#10;FROM &#13;&#10;(&#13;&#10;	SELECT *&#13;&#10;	,(SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE  TA001+TA002=TG014TG015) AS TC0012A&#13;&#10;	,(SELECT TOP 1 COPTD001+COPTD002 &#13;&#10;	FROM [TKMOC].[dbo].[MOCMANULINEMERGE],[TKMOC].dbo.[MOCMANULINE],[TK].dbo.MOCTA&#13;&#10;	WHERE [MOCMANULINEMERGE].SID=[MOCMANULINE].ID&#13;&#10;	AND TA033=[MOCMANULINEMERGE].[NO]&#13;&#10;	AND TA001+TA002=TG014TG015&#13;&#10;	ORDER BY TA015 DESC&#13;&#10;	) AS TC0012B&#13;&#10;	FROM  &#13;&#10;	(&#13;&#10;		SELECT LA001,LA016,LA009,NUMS,MB002,MB003,MB004&#13;&#10;		,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTG,[TK].dbo.MOCTF WHERE TG001=TF001 AND TG002=TF002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009 ) TF003&#13;&#10;		,(SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG,[TK].dbo.MOCTF WHERE TG001=TF001 AND TG002=TF002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009 ) TG014TG015&#13;&#10;		FROM &#13;&#10;		(&#13;&#10;		SELECT LA001,LA016,LA009,SUM(LA005*LA011) AS  NUMS&#13;&#10;		FROM [TK].dbo.INVLA&#13;&#10;		WHERE LA009='20001'&#13;&#10;		GROUP BY LA001,LA016,LA009&#13;&#10;		HAVING  SUM(LA005*LA011)&gt;0&#13;&#10;		) AS TEMP&#13;&#10;	LEFT JOIN [TK].dbo.INVMB ON MB001=LA001&#13;&#10;	) AS TEMP2&#13;&#10;) AS TMEP3&#13;&#10;LEFT JOIN [TK].dbo.COPTC ON TC001+TC002=(CASE WHEN ISNULL(TC0012A,'')&lt;&gt;'' THEN TC0012A ELSE TC0012B END )&#13;&#10;LEFT JOIN [TK].dbo.COPTD ON TD001=TC001 AND TD002=TC002 AND TD004=LA001 &#13;&#10;LEFT JOIN [TK].dbo.CMSMV ON MV001=TC006&#13;&#10;ORDER BY LA001,LA016&#13;&#10;&#13;&#10;&#13;&#10;">
+        <Column Name="品號" DataType="System.String"/>
+        <Column Name="批號" DataType="System.String"/>
+        <Column Name="庫別" DataType="System.String"/>
+        <Column Name="庫存數量" DataType="System.Decimal"/>
+        <Column Name="品名" DataType="System.String"/>
+        <Column Name="規格" DataType="System.String"/>
+        <Column Name="單位" DataType="System.String"/>
+        <Column Name="TC0012A" DataType="System.String"/>
+        <Column Name="TC0012B" DataType="System.String"/>
+        <Column Name="入庫日" DataType="System.String"/>
+        <Column Name="製令" DataType="System.String"/>
+        <Column Name="訂單" DataType="System.String"/>
+        <Column Name="客戶" DataType="System.String"/>
+        <Column Name="業務" DataType="System.String"/>
+        <Column Name="預交日" DataType="System.String"/>
+        <Column Name="業務員" DataType="System.String"/>
+        <Column Name="存放天數" DataType="System.Int32"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="500" PaperHeight="210">
+    <ReportTitleBand Name="ReportTitle1" Width="1814.4" Height="18.9">
+      <TextObject Name="Text1" Width="302.4" Height="18.9" Text="庫存及預計出貨表"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="23.5" Width="1814.4" Height="18.9">
+      <TextObject Name="Text3" Width="141.75" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="141.75" Width="179.55" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="500.85" Width="94.5" Height="18.9" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="595.35" Width="94.5" Height="18.9" Border.Lines="All" Text="庫存數量" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text13" Left="689.85" Width="94.5" Height="18.9" Border.Lines="All" Text="單位" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text15" Left="784.35" Width="94.5" Height="18.9" Border.Lines="All" Text="入庫日" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text17" Left="878.85" Width="94.5" Height="18.9" Border.Lines="All" Text="存放天數" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text19" Left="973.35" Width="198.45" Height="18.9" Border.Lines="All" Text="客戶" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text21" Left="1266.3" Width="94.5" Height="18.9" Border.Lines="All" Text="業務員" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text23" Left="1360.8" Width="141.75" Height="18.9" Border.Lines="All" Text="訂單" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text25" Left="1502.55" Width="141.75" Height="18.9" Border.Lines="All" Text="製令" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="321.3" Width="179.55" Height="18.9" Border.Lines="All" Text="規格" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text27" Left="1171.8" Width="94.5" Height="18.9" Border.Lines="All" Text="預交日" HorzAlign="Center" VertAlign="Center"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="47" Width="1814.4" Height="18.9" CanGrow="true" DataSource="Table">
+      <TextObject Name="Text2" Width="141.75" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="141.75" Width="179.55" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="500.85" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="595.35" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫存數量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text12" Left="689.85" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.單位]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text14" Left="784.35" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.入庫日]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text16" Left="878.85" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.存放天數]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text18" Left="973.35" Width="198.45" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.客戶]" VertAlign="Center"/>
+      <TextObject Name="Text20" Left="1266.3" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.業務員]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text22" Left="1360.8" Width="141.75" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.訂單]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text24" Left="1502.55" Width="141.75" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.製令]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="321.3" Width="179.55" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.規格]" VertAlign="Center"/>
+      <TextObject Name="Text26" Left="1171.8" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.預交日]" HorzAlign="Center" VertAlign="Center"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="70.49" Width="1814.4" Height="37.8"/>
+  </ReportPage>
+</Report>

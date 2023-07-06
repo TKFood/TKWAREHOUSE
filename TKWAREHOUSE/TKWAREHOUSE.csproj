@@ -281,6 +281,12 @@
     <Compile Include="FrmREPORTPURTG.Designer.cs">
       <DependentUpon>FrmREPORTPURTG.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmREPORTSTOCK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmREPORTSTOCK.Designer.cs">
+      <DependentUpon>FrmREPORTSTOCK.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmStockBuyIn.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -396,6 +402,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmREPORTPURTG.resx">
       <DependentUpon>FrmREPORTPURTG.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmREPORTSTOCK.resx">
+      <DependentUpon>FrmREPORTSTOCK.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmStockBuyIn.resx">
       <DependentUpon>FrmStockBuyIn.cs</DependentUpon>
