@@ -156,8 +156,8 @@ namespace TKWAREHOUSE
 	                                    FROM  
 	                                    (
 		                                    SELECT LA001,LA016,LA009,NUMS,MB002,MB003,MB004
-		                                    ,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTG,[TK].dbo.MOCTF WHERE TG001=TF001 AND TG002=TF002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009 ) TF003
-		                                    ,(SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG,[TK].dbo.MOCTF WHERE TG001=TF001 AND TG002=TF002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009 ) TG014TG015
+		                                    ,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTG,[TK].dbo.MOCTF WHERE TG001=TF001 AND TG002=TF002 AND TG004=LA001 AND TG017=LA016  ) TF003
+		                                    ,(SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG,[TK].dbo.MOCTF WHERE TG001=TF001 AND TG002=TF002 AND TG004=LA001 AND TG017=LA016  ) TG014TG015
 		                                    FROM 
 		                                    (
 		                                    SELECT LA001,LA016,LA009,SUM(LA005*LA011) AS  NUMS
