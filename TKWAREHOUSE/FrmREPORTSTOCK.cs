@@ -53,10 +53,44 @@ namespace TKWAREHOUSE
         public FrmREPORTSTOCK()
         {
             InitializeComponent();
+
+            combobox1load();
         }
 
         #region FUNCTION
-        public void SETFASTREPORT()
+
+        public void combobox1load()
+        {
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT MC001,MC002 FROM [TK].dbo.CMSMC  ORDER BY MC001");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("MC001", typeof(string));
+        
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "MC001";
+            comboBox1.DisplayMember = "MC001";
+            sqlConn.Close();
+
+            comboBox1.SelectedValue = "20001";
+
+        }
+        public void SETFASTREPORT(string LA009)
         {
 
             string SQL; 
@@ -77,20 +111,18 @@ namespace TKWAREHOUSE
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL();
+            SQL = SETFASETSQL(LA009);
             Table.SelectCommand = SQL;
             report1.Preview = previewControl1;
             report1.Show();
 
         }
 
-        public string SETFASETSQL()
+        public string SETFASETSQL(string LA009)
         {
             StringBuilder FASTSQL = new StringBuilder();
-            StringBuilder STRQUERY = new StringBuilder();
-
-        
-
+            StringBuilder STRQUERY = new StringBuilder();        
+             
             FASTSQL.AppendFormat(@" 
                                     SELECT 
                                     LA001 AS '品號'
@@ -107,7 +139,7 @@ namespace TKWAREHOUSE
                                     ,(CASE WHEN ISNULL(TC0012A,'')<>'' THEN TC0012A ELSE TC0012B END ) AS '訂單'
                                     ,TC053 AS '客戶'
                                     ,TC006 AS '業務'
-                                    ,TD013 AS '預交日'
+                                    ,(SELECT TOP 1 TD013 FROM  [TK].dbo.COPTD WHERE  TD001=TC001 AND TD002=TC002 AND TD004=LA001 ORDER BY TD013 ) AS '預交日'
                                     ,MV002 AS '業務員'
                                     ,DATEDIFF(day, TF003, GETDATE())  AS '存放天數'
                                     FROM 
@@ -130,21 +162,18 @@ namespace TKWAREHOUSE
 		                                    (
 		                                    SELECT LA001,LA016,LA009,SUM(LA005*LA011) AS  NUMS
 		                                    FROM [TK].dbo.INVLA
-		                                    WHERE LA009='20001'
+		                                    WHERE LA009='{0}'
 		                                    GROUP BY LA001,LA016,LA009
 		                                    HAVING  SUM(LA005*LA011)>0
 		                                    ) AS TEMP
 	                                    LEFT JOIN [TK].dbo.INVMB ON MB001=LA001
 	                                    ) AS TEMP2
                                     ) AS TMEP3
-                                    LEFT JOIN [TK].dbo.COPTC ON TC001+TC002=(CASE WHEN ISNULL(TC0012A,'')<>'' THEN TC0012A ELSE TC0012B END )
-                                    LEFT JOIN [TK].dbo.COPTD ON TD001=TC001 AND TD002=TC002 AND TD004=LA001 
+                                    LEFT JOIN [TK].dbo.COPTC ON TC001+TC002=(CASE WHEN ISNULL(TC0012A,'')<>'' THEN TC0012A ELSE TC0012B END )                                  
                                     LEFT JOIN [TK].dbo.CMSMV ON MV001=TC006
                                     ORDER BY LA001,LA016
-
-
-
-                                                                        ");
+ 
+                                   ", LA009);
 
             return FASTSQL.ToString();
         }
@@ -154,7 +183,7 @@ namespace TKWAREHOUSE
         #region BUTTON
         private void button2_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT();
+            SETFASTREPORT(comboBox1.SelectedValue.ToString());
         }
         #endregion
 
