@@ -139,7 +139,7 @@ namespace TKWAREHOUSE
                                     ,(CASE WHEN ISNULL(TC0012A,'')<>'' THEN TC0012A ELSE TC0012B END ) AS '訂單'
                                     ,TC053 AS '客戶'
                                     ,TC006 AS '業務'
-                                    ,(SELECT TOP 1 TD013 FROM  [TK].dbo.COPTD WHERE  TD001=TC001 AND TD002=TC002 AND TD004=LA001 ORDER BY TD013 ) AS '預交日'
+                                    ,( CASE WHEN ISNULL((SELECT TOP 1 TD013 FROM  [TK].dbo.COPTD WHERE  TD001=TC001 AND TD002=TC002 AND TD004=LA001 ORDER BY TD013),'')<>'' THEN (SELECT TOP 1 TD013 FROM  [TK].dbo.COPTD WHERE  TD001=TC001 AND TD002=TC002 AND TD004=LA001 ORDER BY TD013 ) ELSE (SELECT TOP 1 TD013 FROM  [TK].dbo.COPTD WHERE  TD001=TC001 AND TD002=TC002  ORDER BY TD013 ) END ) AS '預交日'
                                     ,MV002 AS '業務員'
                                     ,DATEDIFF(day, TF003, GETDATE())  AS '存放天數'
                                     FROM 
