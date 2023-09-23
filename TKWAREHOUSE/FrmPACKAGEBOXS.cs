@@ -238,6 +238,108 @@ namespace TKWAREHOUSE
 
         }
 
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            textBox5.Text = "";
+            textBox6.Text = "";
+            textBox7.Text = "";
+            textBox8.Text = "";
+            textBox9.Text = "";
+            pictureBox1.Image = null;
+
+            DataGridView DV = dataGridView2;
+
+            if (DV.CurrentRow != null)
+            {
+                int rowindex = DV.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = DV.Rows[rowindex];
+                    textBox1.Text = row.Cells["銷貨單"].Value.ToString()+ row.Cells["銷貨單號"].Value.ToString();
+                    textBox2.Text = row.Cells["箱號"].Value.ToString();
+                    textBox3.Text = row.Cells["秤總重(A+B)"].Value.ToString();
+                    textBox4.Text = row.Cells["網購包材重量(KG)A"].Value.ToString();
+                    textBox5.Text = row.Cells["商品總重量(KG)B"].Value.ToString();
+                    textBox6.Text = row.Cells["實際比值"].Value.ToString();
+                    textBox7.Text = row.Cells["使用包材名稱/規格"].Value.ToString();
+                    textBox8.Text = row.Cells["使用包材來源"].Value.ToString();
+                    textBox9.Text = row.Cells["NO"].Value.ToString();
+
+                    comboBox1.Text = row.Cells["商品總重量比值分類"].Value.ToString();
+                    comboBox2.Text = row.Cells["規定比值"].Value.ToString();
+                    comboBox3.Text = row.Cells["是否符合"].Value.ToString();
+
+
+                }
+            }
+        }
+
+        public void PACKAGEBOXS_ADD()
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    
+                                        
+                                        "
+                                        );
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    MessageBox.Show("完成");
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+
+            }
+        }
         #endregion
 
 
@@ -246,6 +348,7 @@ namespace TKWAREHOUSE
         {
             Search_COPTG(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
+
 
         #endregion
 
