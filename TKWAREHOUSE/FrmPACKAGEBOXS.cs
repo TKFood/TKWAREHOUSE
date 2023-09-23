@@ -42,9 +42,38 @@ namespace TKWAREHOUSE
         public FrmPACKAGEBOXS()
         {
             InitializeComponent();
+
+            comboBox1load();
+            comboBox2load();
+            comboBox3load();
         }
 
         #region FUNCTION
+        public void LoadComboBoxData(ComboBox comboBox, string query, string valueMember, string displayMember)
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            using (SqlConnection connection = new SqlConnection(sqlsb.ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable dataTable = new DataTable();
+                adapter.Fill(dataTable);
+
+                comboBox.DataSource = dataTable;
+                comboBox.ValueMember = valueMember;
+                comboBox.DisplayMember = displayMember;
+            }
+        }
+
         public void SEARCH(string QUERY, DataGridView DataGridViewNew, string SortedColumn, string SortedModel)
         {
             SqlConnection sqlConn = new SqlConnection();
@@ -108,6 +137,20 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        public void comboBox1load()
+        {
+            LoadComboBoxData(comboBox1, "SELECT [ID],[KINDS],[NAMES],[KEYS],[KEYS2] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='RATECLASS' ORDER BY ID", "NAMES", "NAMES");
+        }
+        public void comboBox2load()
+        {
+            LoadComboBoxData(comboBox2, "SELECT [ID],[KINDS],[NAMES],[KEYS],[KEYS2] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='CHECKRATES' ORDER BY ID", "NAMES", "NAMES");
+        }
+        public void comboBox3load()
+        {
+            LoadComboBoxData(comboBox3, "SELECT [NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='ISVALIDS' GROUP BY [NAMES]  ", "NAMES", "NAMES");
+        }
+
         public void Search_COPTG(string TG002)
         {
             StringBuilder sbSqlQuery1 = new StringBuilder();
