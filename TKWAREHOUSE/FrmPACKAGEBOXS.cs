@@ -198,7 +198,16 @@ namespace TKWAREHOUSE
                     DataGridViewRow row = dataGridView1.Rows[rowindex];
                     TG001TG002 = row.Cells["銷貨單"].Value.ToString()+ row.Cells["銷貨單號"].Value.ToString();
 
-                    Search_PACKAGEBOXS(TG001TG002);
+                    DataTable dt = PACKAGEBOXS_FIND(TG001TG002);
+                    if(dt!=null&&dt.Rows.Count>=1)
+                    {
+                        Search_PACKAGEBOXS(TG001TG002);
+                    }
+                    else
+                    {
+                        SET_TEXT();
+                    }
+                    
                 }
             }
         }
@@ -240,16 +249,7 @@ namespace TKWAREHOUSE
 
         private void dataGridView2_SelectionChanged(object sender, EventArgs e)
         {
-            textBox1.Text = "";
-            textBox2.Text = "";
-            textBox3.Text = "";
-            textBox4.Text = "";
-            textBox5.Text = "";
-            textBox6.Text = "";
-            textBox7.Text = "";
-            textBox8.Text = "";
-            textBox9.Text = "";
-            pictureBox1.Image = null;
+            SET_TEXT();
 
             DataGridView DV = dataGridView2;
 
@@ -273,11 +273,141 @@ namespace TKWAREHOUSE
                     comboBox2.Text = row.Cells["規定比值"].Value.ToString();
                     comboBox3.Text = row.Cells["是否符合"].Value.ToString();
 
-
+                    DisplayImageFromFolder(row.Cells["NO"].Value.ToString());
                 }
+            }
+           
+        }
+
+        public DataTable PACKAGEBOXS_FIND(string TG001TG002)
+        {
+            DataTable DT = new DataTable();
+            SqlConnection sqlConn = new SqlConnection();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+            StringBuilder QUERYS = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                QUERYS.Clear();
+
+
+                sbSql.AppendFormat(@"                                      
+                                    SELECT 
+                                    [BOXNO] AS '箱號'
+                                    ,[ALLWEIGHTS] AS '秤總重(A+B)'
+                                    ,[PACKWEIGHTS] AS '網購包材重量(KG)A'
+                                    ,[PRODUCTWEIGHTS] AS '商品總重量(KG)B'
+                                    ,[PACKRATES] AS '實際比值'
+                                    ,[RATECLASS] AS '商品總重量比值分類'
+                                    ,[CHECKRATES] AS '規定比值'
+                                    ,[ISVALIDS] AS '是否符合'
+                                    ,[PACKAGENAMES] AS '使用包材名稱/規格'
+                                    ,[PACKAGEFROM] AS '使用包材來源'
+                                    ,[TG001] AS '銷貨單'
+                                    ,[TG002] AS '銷貨單號'
+                                    ,[NO]
+                                    FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
+                                    WHERE TG001+TG002='{0}'
+                                    ORDER BY [BOXNO]
+
+
+
+                                    ", TG001TG002);
+
+
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["TEMPds1"].Rows.Count > 0)
+                {
+                    return ds1.Tables["TEMPds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
             }
         }
 
+        public void SET_TEXT()
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            textBox5.Text = "";
+            textBox6.Text = "";
+            textBox7.Text = "";
+            textBox8.Text = "";
+            textBox9.Text = "";
+
+            // 清除 PictureBox 的图像
+            pictureBox1.Image = null;
+        }
+        private void DisplayImageFromFolder(string NO)
+        {
+            string YYYY = NO.Substring(4,4);
+            string folderPath = Path.Combine(Environment.CurrentDirectory, "Images", YYYY);
+            string selectedImageFileName =null;
+            // 檢查資料夾是否存在
+            if (!Directory.Exists(folderPath))
+            {
+                MessageBox.Show("資料夾不存在。");
+                return;
+            }
+
+            // 獲取資料夾中的所有圖片檔案
+            string[] imageFiles = Directory.GetFiles(folderPath, "*.jpg"); // 只顯示 .jpg 檔案，您可以根據需要更改擴展名
+
+            if (imageFiles.Length > 0)
+            {
+                // 在这里指定要显示的图像文件名
+                selectedImageFileName = NO + ".jpg";
+
+                string imagePath = Path.Combine(folderPath, selectedImageFileName);
+                // 顯示圖片在 PictureBox 控制項上
+                pictureBox1.Image = Image.FromFile(imagePath);
+            }
+            else
+            {
+                // 如果沒有圖片，清除 PictureBox
+                pictureBox1.Image = null;
+                MessageBox.Show("沒有找到圖片。");
+            }
+        }
         public void PACKAGEBOXS_ADD()
         {
             SqlConnection sqlConn = new SqlConnection();
