@@ -143,6 +143,58 @@ namespace TKWAREHOUSE
 
         }
 
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            string TG001TG002 = "";
+
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+                    TG001TG002 = row.Cells["銷貨單"].Value.ToString()+ row.Cells["銷貨單號"].Value.ToString();
+
+                    Search_PACKAGEBOXS(TG001TG002);
+                }
+            }
+        }
+
+        public void Search_PACKAGEBOXS(string TG001TG002)
+        {
+            StringBuilder sbSqlQuery1 = new StringBuilder();
+            StringBuilder sbSqlQuery2 = new StringBuilder();
+
+            sbSql.Clear();
+            sbSqlQuery1.Clear();
+            sbSqlQuery2.Clear();
+
+            sbSql.AppendFormat(@"
+                                SELECT 
+                                [BOXNO] AS '箱號'
+                                ,[ALLWEIGHTS] AS '秤總重(A+B)'
+                                ,[PACKWEIGHTS] AS '網購包材重量(KG)A'
+                                ,[PRODUCTWEIGHTS] AS '商品總重量(KG)B'
+                                ,[PACKRATES] AS '實際比值'
+                                ,[RATECLASS] AS '商品總重量比值分類'
+                                ,[CHECKRATES] AS '規定比值'
+                                ,[ISVALIDS] AS '是否符合'
+                                ,[PACKAGENAMES] AS '使用包材名稱/規格'
+                                ,[PACKAGEFROM] AS '使用包材來源'
+                                ,[TG001] AS '銷貨單'
+                                ,[TG002] AS '銷貨單號'
+                                ,[NO]
+                                FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
+                                WHERE TG001+TG002='{0}'
+                                ORDER BY [BOXNO]
+                                  ", TG001TG002);
+
+            sbSql.AppendFormat(@"  ");
+
+            SEARCH(sbSql.ToString(), dataGridView2, SortedColumn, SortedModel);
+
+        }
+
         #endregion
 
 
@@ -153,5 +205,7 @@ namespace TKWAREHOUSE
         }
 
         #endregion
+
+       
     }
 }
