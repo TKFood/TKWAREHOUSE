@@ -36,8 +36,8 @@ namespace TKWAREHOUSE
         string SortedColumn = string.Empty;
         string SortedModel = string.Empty;
 
-        private bool isTextBox76Changing = false;
-        private bool isTextBox77Changing = false;
+        string TG001TG002 = null;
+
 
         public FrmPACKAGEBOXS()
         {
@@ -188,7 +188,7 @@ namespace TKWAREHOUSE
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            string TG001TG002 = "";
+            TG001TG002 = "";
 
             if (dataGridView1.CurrentRow != null)
             {
@@ -362,6 +362,73 @@ namespace TKWAREHOUSE
             }
         }
 
+        public DataTable PACKAGEBOXS_FIND_MAX(string TG001TG002)
+        {
+            DataTable DT = new DataTable();
+            SqlConnection sqlConn = new SqlConnection();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+            StringBuilder QUERYS = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                QUERYS.Clear();
+
+
+                sbSql.AppendFormat(@"                                      
+                                    SELECT 
+                                    ISNULL(COUNT(BOXNO),0) AS BOXNO
+                                    FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
+                                    WHERE TG001+TG002='{0}'
+                                    ", TG001TG002);
+
+
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["TEMPds1"].Rows.Count > 0)
+                {
+                    return ds1.Tables["TEMPds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         public void SET_TEXT()
         {
             textBox1.Text = "";
@@ -479,9 +546,28 @@ namespace TKWAREHOUSE
             Search_COPTG(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TG001TG002))
+            {
+                DataTable dt= PACKAGEBOXS_FIND_MAX(TG001TG002);
+                textBox2.Text= (Convert.ToInt32(dt.Rows[0]["BOXNO"].ToString())+1).ToString();
+            }
+            
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
 
         #endregion
 
-       
+
     }
 }
