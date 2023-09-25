@@ -37,6 +37,8 @@ namespace TKWAREHOUSE
         string SortedModel = string.Empty;
 
         string TG001TG002 = null;
+        string TG001 = null;
+        string TG002 = null;
 
 
         public FrmPACKAGEBOXS()
@@ -197,6 +199,8 @@ namespace TKWAREHOUSE
                 {
                     DataGridViewRow row = dataGridView1.Rows[rowindex];
                     TG001TG002 = row.Cells["銷貨單"].Value.ToString()+ row.Cells["銷貨單號"].Value.ToString();
+                    TG001 = row.Cells["銷貨單"].Value.ToString() ;
+                    TG002 = row.Cells["銷貨單號"].Value.ToString();
 
                     DataTable dt = PACKAGEBOXS_FIND(TG001TG002);
                     if(dt!=null&&dt.Rows.Count>=1)
@@ -475,7 +479,21 @@ namespace TKWAREHOUSE
                 MessageBox.Show("沒有找到圖片。");
             }
         }
-        public void PACKAGEBOXS_ADD()
+        public void PACKAGEBOXS_ADD(
+                      string NO
+                    , string TG001
+                    , string TG002
+                    , string BOXNO
+                    , string ALLWEIGHTS
+                    , string PACKWEIGHTS
+                    , string PRODUCTWEIGHTS
+                    , string PACKRATES
+                    , string RATECLASS
+                    , string CHECKRATES
+                    , string ISVALIDS
+                    , string PACKAGENAMES
+                    , string PACKAGEFROM
+            )
         {
             SqlConnection sqlConn = new SqlConnection();
             SqlCommand sqlComm = new SqlCommand();
@@ -500,10 +518,53 @@ namespace TKWAREHOUSE
 
                 sbSql.Clear();
 
-                sbSql.AppendFormat(@" 
-                                    
-                                        
+                sbSql.AppendFormat(@"                                     
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
+                                    (
+                                    [NO]
+                                    ,[TG001]
+                                    ,[TG002]
+                                    ,[BOXNO]
+                                    ,[ALLWEIGHTS]
+                                    ,[PACKWEIGHTS]
+                                    ,[PRODUCTWEIGHTS]
+                                    ,[PACKRATES]
+                                    ,[RATECLASS]
+                                    ,[CHECKRATES]
+                                    ,[ISVALIDS]
+                                    ,[PACKAGENAMES]
+                                    ,[PACKAGEFROM]
+                                    )
+                                    VALUES
+                                    (
+                                    '{0}'
+                                    ,'{1}'
+                                    ,'{2}'
+                                    ,'{3}'
+                                    ,{4}
+                                    ,{5}
+                                    ,{6}
+                                    ,'{7}'
+                                    ,'{8}'
+                                    ,'{9}'
+                                    ,'{10}'
+                                    ,'{11}'
+                                    ,'{12}'
+                                    )                                        
                                         "
+                                    , NO
+                                    , TG001
+                                    , TG002
+                                    , BOXNO
+                                    , ALLWEIGHTS
+                                    , PACKWEIGHTS
+                                    , PRODUCTWEIGHTS
+                                    , PACKRATES
+                                    , RATECLASS
+                                    , CHECKRATES
+                                    , ISVALIDS
+                                    , PACKAGENAMES
+                                    , PACKAGEFROM
                                         );
 
 
@@ -551,8 +612,49 @@ namespace TKWAREHOUSE
             if (!string.IsNullOrEmpty(TG001TG002))
             {
                 DataTable dt= PACKAGEBOXS_FIND_MAX(TG001TG002);
-                textBox2.Text= (Convert.ToInt32(dt.Rows[0]["BOXNO"].ToString())+1).ToString();
+                if (dt != null&& dt.Rows.Count>=1)
+                {
+                    textBox2.Text = (Convert.ToInt32(dt.Rows[0]["BOXNO"].ToString()) + 1).ToString();
+                }
+                else
+                {
+                    textBox2.Text = "1";
+                }
+
+                string NO = TG001 + TG002 + "-" + textBox2.Text;
+                TG001 = TG001;
+                TG002 = TG002;
+                string BOXNO = textBox2.Text;
+                string ALLWEIGHTS = textBox3.Text;
+                string PACKWEIGHTS = textBox4.Text;
+                string PRODUCTWEIGHTS = textBox5.Text;
+                string PACKRATES = textBox6.Text;
+                string RATECLASS = comboBox1.Text.ToString();
+                string CHECKRATES = comboBox2.Text.ToString();
+                string ISVALIDS = comboBox3.Text.ToString();
+                string PACKAGENAMES = textBox7.Text;
+                string PACKAGEFROM = textBox8.Text;
+
+                PACKAGEBOXS_ADD(
+                    NO
+                    , TG001
+                    , TG002
+                    , BOXNO
+                    , ALLWEIGHTS
+                    , PACKWEIGHTS
+                    , PRODUCTWEIGHTS
+                    , PACKRATES
+                    , RATECLASS
+                    , CHECKRATES
+                    , ISVALIDS
+                    , PACKAGENAMES
+                    , PACKAGEFROM
+                    );
+
+                Search_PACKAGEBOXS(TG001TG002);
             }
+
+
             
         }
 
