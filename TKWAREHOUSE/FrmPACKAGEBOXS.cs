@@ -461,22 +461,25 @@ namespace TKWAREHOUSE
             }
 
             // 獲取資料夾中的所有圖片檔案
-            string[] imageFiles = Directory.GetFiles(folderPath, "*.jpg"); // 只顯示 .jpg 檔案，您可以根據需要更改擴展名
+            // 在这里指定要显示的图像文件名
+            selectedImageFileName = NO + ".jpg";
+            string[] imageFiles = Directory.GetFiles(folderPath, selectedImageFileName); // 只顯示 .jpg 檔案，您可以根據需要更改擴展名
 
             if (imageFiles.Length > 0)
             {
-                // 在这里指定要显示的图像文件名
-                selectedImageFileName = NO + ".jpg";
-
                 string imagePath = Path.Combine(folderPath, selectedImageFileName);
                 // 顯示圖片在 PictureBox 控制項上
-                pictureBox1.Image = Image.FromFile(imagePath);
+                if (Image.FromFile(imagePath) != null)
+                {
+                    pictureBox1.Image = Image.FromFile(imagePath);
+                }
+
             }
             else
             {
                 // 如果沒有圖片，清除 PictureBox
                 pictureBox1.Image = null;
-                MessageBox.Show("沒有找到圖片。");
+                //MessageBox.Show("沒有找到圖片。");
             }
         }
         public void PACKAGEBOXS_ADD(
@@ -598,6 +601,180 @@ namespace TKWAREHOUSE
 
             }
         }
+
+
+        public void PACKAGEBOXS_UPDATE(
+                      string NO
+                    , string TG001
+                    , string TG002
+                    , string BOXNO
+                    , string ALLWEIGHTS
+                    , string PACKWEIGHTS
+                    , string PRODUCTWEIGHTS
+                    , string PACKRATES
+                    , string RATECLASS
+                    , string CHECKRATES
+                    , string ISVALIDS
+                    , string PACKAGENAMES
+                    , string PACKAGEFROM
+            )
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    UPDATE [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
+                                    SET
+                                    
+                                    ,[TG001]='{1}'
+                                    ,[TG002]='{2}'
+                                    ,[BOXNO]='{3}'
+                                    ,[ALLWEIGHTS]={4}
+                                    ,[PACKWEIGHTS]={5}
+                                    ,[PRODUCTWEIGHTS]={6}
+                                    ,[PACKRATES]='{7}'
+                                    ,[RATECLASS]='{8}'
+                                    ,[CHECKRATES]='{9}'
+                                    ,[ISVALIDS]='{10}'
+                                    ,[PACKAGENAMES]='{11}'
+                                    ,[PACKAGEFROM]='{12}'
+                                    )
+                                    WHERE [NO]='{0}'
+                                                                     
+                                        "
+                                    , NO
+                                    , TG001
+                                    , TG002
+                                    , BOXNO
+                                    , ALLWEIGHTS
+                                    , PACKWEIGHTS
+                                    , PRODUCTWEIGHTS
+                                    , PACKRATES
+                                    , RATECLASS
+                                    , CHECKRATES
+                                    , ISVALIDS
+                                    , PACKAGENAMES
+                                    , PACKAGEFROM
+                                        );
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    MessageBox.Show("完成");
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+
+            }
+        }
+
+        public void TPACKAGEBOXS_DELETE(string NO )
+                        
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    DELETE [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
+                                    WHERE NO='{0}'                         
+                                        "
+                                    , NO
+                                   
+                                        );
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    MessageBox.Show("完成");
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+
+            }
+        }
+
         #endregion
 
 
@@ -660,12 +837,57 @@ namespace TKWAREHOUSE
 
         private void button3_Click(object sender, EventArgs e)
         {
+            string NO = textBox1.Text;
+            string BOXNO = textBox2.Text;
+            string ALLWEIGHTS = textBox3.Text;
+            string PACKWEIGHTS = textBox4.Text;
+            string PRODUCTWEIGHTS = textBox5.Text;
+            string PACKRATES = textBox6.Text;
+            string RATECLASS = comboBox1.Text.ToString();
+            string CHECKRATES = comboBox2.Text.ToString();
+            string ISVALIDS = comboBox3.Text.ToString();
+            string PACKAGENAMES = textBox7.Text;
+            string PACKAGEFROM = textBox8.Text;
 
+            PACKAGEBOXS_ADD(
+                NO
+                , TG001
+                , TG002
+                , BOXNO
+                , ALLWEIGHTS
+                , PACKWEIGHTS
+                , PRODUCTWEIGHTS
+                , PACKRATES
+                , RATECLASS
+                , CHECKRATES
+                , ISVALIDS
+                , PACKAGENAMES
+                , PACKAGEFROM
+                );
+
+            Search_PACKAGEBOXS(TG001TG002);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            // 顯示確認對話框
+            DialogResult result = MessageBox.Show("確定要執行此操作嗎？", "確認", MessageBoxButtons.OKCancel);
 
+            // 檢查使用者是否按下了確定按鈕
+            if (result == DialogResult.OK)
+            {
+                // 確認後執行的動作
+                // TODO: 在這裡執行您的程式碼
+                // 例如：
+                string NO = textBox1.Text;
+                if (!string.IsNullOrEmpty(NO))
+                {
+                    TPACKAGEBOXS_DELETE(NO);
+                    Search_PACKAGEBOXS(TG001TG002);
+                }
+
+
+            }
         }
 
         #endregion
