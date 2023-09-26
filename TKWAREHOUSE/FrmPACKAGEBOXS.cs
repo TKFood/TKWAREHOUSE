@@ -1213,6 +1213,10 @@ namespace TKWAREHOUSE
                 //DisplayImageFromFolder("");
                 //pictureBox1.Image = null;
 
+
+                pictureBox1.Image.Dispose();
+                pictureBox1.Image = null;
+
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
                 string imagePathNames = imagePath + "\\" + NO + ".jpg";
                
@@ -1226,19 +1230,19 @@ namespace TKWAREHOUSE
                 MessageBox.Show("刪除照片 完成");
             }
 
-            if (!string.IsNullOrEmpty(NO))
-            {
-                TAKE_OPEN();
-                try
-                {
-                    Cam.Start();   // WebCam starts capturing images.     
-                }
-                catch { }
-            }
-            else
-            {
-                MessageBox.Show("沒有對應 箱號，不能開啟相機");
-            }
+            //if (!string.IsNullOrEmpty(NO))
+            //{
+            //    TAKE_OPEN();
+            //    try
+            //    {
+            //        Cam.Start();   // WebCam starts capturing images.     
+            //    }
+            //    catch { }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("沒有對應 箱號，不能開啟相機");
+            //}
 
 
         }
