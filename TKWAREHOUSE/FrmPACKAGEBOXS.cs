@@ -214,6 +214,7 @@ namespace TKWAREHOUSE
                     }
                     else
                     {
+                        dataGridView2.DataSource = null;
                         SET_TEXT();
                     }
                     
@@ -939,7 +940,7 @@ namespace TKWAREHOUSE
             }
             catch
             {
-
+               
             }
 
             finally
@@ -1207,7 +1208,8 @@ namespace TKWAREHOUSE
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if(!string.IsNullOrEmpty(NO))
+            NO = textBox9.Text;
+            if (!string.IsNullOrEmpty(NO))
             {
                 //string imagePath = System.Environment.CurrentDirectory;
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
