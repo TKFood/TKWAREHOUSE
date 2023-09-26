@@ -244,8 +244,10 @@ namespace TKWAREHOUSE
                                 ,[PACKAGEFROM] AS '使用包材來源'
                                 ,[TG001] AS '銷貨單'
                                 ,[TG002] AS '銷貨單號'
-                                ,[NO]
+                                ,[PACKAGEBOXS].[NO]
+                                ,[PHOTOS]
                                 FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] ON [PACKAGEBOXSPHOTO].NO=[PACKAGEBOXS].NO
                                 WHERE TG001+TG002='{0}'
                                 ORDER BY [BOXNO]
                                   ", TG001TG002);
@@ -261,6 +263,7 @@ namespace TKWAREHOUSE
             SET_TEXT();
 
             DataGridView DV = dataGridView2;
+            byte[] retrievedImageBytes;
 
             if (DV.CurrentRow != null)
             {
@@ -283,7 +286,13 @@ namespace TKWAREHOUSE
                     comboBox3.Text = row.Cells["是否符合"].Value.ToString();
 
                     NO = row.Cells["NO"].Value.ToString();
-                    DisplayImageFromFolder(row.Cells["NO"].Value.ToString());
+
+                    retrievedImageBytes = (byte[])row.Cells["PHOTOS"].Value;
+                    using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
+                    {
+                        pictureBox1.Image = Image.FromStream(ms);
+                    }
+                    //DisplayImageFromFolder(row.Cells["NO"].Value.ToString());
                 }
             }
            
