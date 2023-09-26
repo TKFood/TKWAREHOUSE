@@ -1038,6 +1038,8 @@ namespace TKWAREHOUSE
                     {
                         File.Delete(imagePaths);
                         imagePaths = null; // 设置为 null，以释放资源
+
+                        MessageBox.Show("完成-刪除照片 ");
                         break; // 如果删除成功，退出循环
                     }
                     catch (IOException ex)
@@ -1049,6 +1051,7 @@ namespace TKWAREHOUSE
                         }
                         else
                         {
+                            MessageBox.Show("失敗-刪除照片 請重開程式再刪除");
                             // 如果达到最大重试次数仍然无法删除，处理异常或显示错误消息
                             //MessageBox.Show("无法删除图像文件，因为它正在被其他进程使用。");
                         }
@@ -1229,19 +1232,19 @@ namespace TKWAREHOUSE
 
                 pictureBox1.Image.Dispose();
                 pictureBox1.Image = null;
-                pictureBox1.ImageLocation = null;     
+                pictureBox1.ImageLocation = null;
 
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
                 string imagePathNames = imagePath + "\\" + NO + ".jpg";
-               
-                if (!Directory.Exists(imagePath))
-                {
-                    Directory.CreateDirectory(imagePath);
-                }               
-                DELETE_ImageIntoDatabase(NO);
-                DEL_IMAGES(imagePathNames);
 
-                MessageBox.Show("刪除照片 完成");
+                if (File.Exists(imagePathNames))
+                {
+                    DELETE_ImageIntoDatabase(NO);
+                    DEL_IMAGES(imagePathNames);
+
+                   
+                }               
+                
             }
 
             //if (!string.IsNullOrEmpty(NO))
