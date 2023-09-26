@@ -479,8 +479,9 @@ namespace TKWAREHOUSE
                     // 顯示圖片在 PictureBox 控制項上
                     if (Image.FromFile(imagePath) != null)
                     {
-                        Image im = GetCopyImage(imagePath);
-                        pictureBox1.Image = im;
+                        Image img = GetCopyImage(imagePath);
+                        pictureBox1.Image = img;
+                        //img.Dispose();  // dispose the bitmap object
 
                         //System.Drawing.Image img = System.Drawing.Image.FromFile(imagePath);
                         //System.Drawing.Image bmp = new System.Drawing.Bitmap(img);
@@ -1226,9 +1227,9 @@ namespace TKWAREHOUSE
                 //DisplayImageFromFolder("");
                 //pictureBox1.Image = null;
 
-
                 pictureBox1.Image.Dispose();
                 pictureBox1.Image = null;
+                pictureBox1.ImageLocation = null;     
 
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
                 string imagePathNames = imagePath + "\\" + NO + ".jpg";
