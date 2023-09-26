@@ -471,21 +471,23 @@ namespace TKWAREHOUSE
                 // 獲取資料夾中的所有圖片檔案
                 // 在这里指定要显示的图像文件名
                 selectedImageFileName = NO + ".jpg";
-                string[] imageFiles = Directory.GetFiles(folderPath, selectedImageFileName); // 只顯示 .jpg 檔案，您可以根據需要更改擴展名
+                //string[] imageFiles = Directory.GetFiles(folderPath, selectedImageFileName); // 只顯示 .jpg 檔案，您可以根據需要更改擴展名
 
-                if (imageFiles.Length > 0)
-                {
-                    string imagePath = Path.Combine(folderPath, selectedImageFileName);
+                string imagePath = Path.Combine(folderPath, selectedImageFileName);
+                if (File.Exists(imagePath))
+                {                    
                     // 顯示圖片在 PictureBox 控制項上
                     if (Image.FromFile(imagePath) != null)
                     {
+                        //pictureBox1.Image = GetFiles(imagePath);
+
                         System.Drawing.Image img = System.Drawing.Image.FromFile(imagePath);
                         System.Drawing.Image bmp = new System.Drawing.Bitmap(img);
                         img.Dispose();
                         pictureBox1.Image = bmp;
                         //pictureBox1.Image = Image.FromFile(imagePath);
 
-               
+
 
                     }
 
@@ -504,6 +506,30 @@ namespace TKWAREHOUSE
                 //MessageBox.Show("沒有找到圖片。");
             }
         }
+
+        private MemoryStream Readfile(string path)
+        {
+            if(!File.Exists(path))
+            {
+                return null;
+            }
+
+            using (FileStream file = new FileStream(path, FileMode.Open))
+            {
+                byte[] b = new byte[file.Length];
+                file.Read(b,0,b.Length);
+
+                MemoryStream stream = new MemoryStream();
+                return stream;
+            }
+        }
+
+        private Image GetFiles(string path)
+        {
+            MemoryStream stream=Readfile(path);
+            return stream == null ? null : Image.FromStream(stream);
+        }
+
         public void PACKAGEBOXS_ADD(
                       string NO
                     , string TG001
