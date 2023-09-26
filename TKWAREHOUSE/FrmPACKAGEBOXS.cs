@@ -1202,6 +1202,7 @@ namespace TKWAREHOUSE
         }
         private void button5_Click(object sender, EventArgs e)
         {
+            NO = textBox9.Text;
             if (!string.IsNullOrEmpty(NO))
             {
                 TAKE_OPEN();
@@ -1248,6 +1249,7 @@ namespace TKWAREHOUSE
         }
         private void button7_Click(object sender, EventArgs e)
         {
+            NO = textBox9.Text;
             if (!string.IsNullOrEmpty(NO))
             {
                 //DisplayImageFromFolder("");
