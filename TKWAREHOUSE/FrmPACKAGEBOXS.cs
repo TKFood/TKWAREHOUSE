@@ -798,6 +798,17 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void TAKE_CLOSE()
+        {
+            if (Cam != null)
+            {
+                if (Cam.IsRunning)  // When Form1 closes itself, WebCam must stop, too.
+                {
+                    Cam.Stop();   // WebCam stops capturing images.
+                }
+            }
+        }
+
         void Cam_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             //throw new NotImplementedException();
@@ -1061,6 +1072,13 @@ namespace TKWAREHOUSE
                 }
                 SaveImageHH(imagePath + "\\" + NO + ".jpg");
                 SaveImageToDatabase(NO);
+
+                TAKE_CLOSE();
+                try
+                {
+                    Cam.Stop();  // WebCam stops capturing images.
+                }
+                catch { }
 
                 MessageBox.Show("照片完成");
             }
