@@ -1226,6 +1226,21 @@ namespace TKWAREHOUSE
                 MessageBox.Show("刪除照片 完成");
             }
 
+            if (!string.IsNullOrEmpty(NO))
+            {
+                TAKE_OPEN();
+                try
+                {
+                    Cam.Start();   // WebCam starts capturing images.     
+                }
+                catch { }
+            }
+            else
+            {
+                MessageBox.Show("沒有對應 箱號，不能開啟相機");
+            }
+
+
         }
 
         #endregion
