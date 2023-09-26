@@ -935,6 +935,7 @@ namespace TKWAREHOUSE
 
                 if (result == 0)
                 {
+                    MessageBox.Show("圖片存儲 失敗");
                     tran.Rollback();    //交易取消
                 }
                 else
@@ -946,9 +947,9 @@ namespace TKWAREHOUSE
                 }
 
             }
-            catch
-            {
-               
+            catch (Exception ex)
+            {                
+                MessageBox.Show(ex.ToString());
             }
 
             finally
@@ -971,7 +972,7 @@ namespace TKWAREHOUSE
             }
             else
             {
-
+                MessageBox.Show("pictureBox1是空的");
             }
         }
 
