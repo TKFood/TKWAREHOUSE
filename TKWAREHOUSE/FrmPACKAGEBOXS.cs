@@ -456,31 +456,47 @@ namespace TKWAREHOUSE
         }
         private void DisplayImageFromFolder(string NO)
         {
-            string YYYY = NO.Substring(4,4);
-            string folderPath = Path.Combine(Environment.CurrentDirectory, "Images", YYYY);
-            string selectedImageFileName =null;
-            // 檢查資料夾是否存在
-            if (!Directory.Exists(folderPath))
+            if(!string.IsNullOrEmpty(NO))
             {
-                MessageBox.Show("資料夾不存在。");
-                return;
-            }
-
-            // 獲取資料夾中的所有圖片檔案
-            // 在这里指定要显示的图像文件名
-            selectedImageFileName = NO + ".jpg";
-            string[] imageFiles = Directory.GetFiles(folderPath, selectedImageFileName); // 只顯示 .jpg 檔案，您可以根據需要更改擴展名
-
-            if (imageFiles.Length > 0)
-            {
-                string imagePath = Path.Combine(folderPath, selectedImageFileName);
-                // 顯示圖片在 PictureBox 控制項上
-                if (Image.FromFile(imagePath) != null)
+                string YYYY = NO.Substring(4, 4);
+                string folderPath = Path.Combine(Environment.CurrentDirectory, "Images", YYYY);
+                string selectedImageFileName = null;
+                // 檢查資料夾是否存在
+                if (!Directory.Exists(folderPath))
                 {
-                    pictureBox1.Image = Image.FromFile(imagePath);
+                    MessageBox.Show("資料夾不存在。");
+                    return;
                 }
 
-            }
+                // 獲取資料夾中的所有圖片檔案
+                // 在这里指定要显示的图像文件名
+                selectedImageFileName = NO + ".jpg";
+                string[] imageFiles = Directory.GetFiles(folderPath, selectedImageFileName); // 只顯示 .jpg 檔案，您可以根據需要更改擴展名
+
+                if (imageFiles.Length > 0)
+                {
+                    string imagePath = Path.Combine(folderPath, selectedImageFileName);
+                    // 顯示圖片在 PictureBox 控制項上
+                    if (Image.FromFile(imagePath) != null)
+                    {
+                        System.Drawing.Image img = System.Drawing.Image.FromFile(imagePath);
+                        System.Drawing.Image bmp = new System.Drawing.Bitmap(img);
+                        img.Dispose();
+                        pictureBox1.Image = bmp;
+                        //pictureBox1.Image = Image.FromFile(imagePath);
+
+               
+
+                    }
+
+                }
+                else
+                {
+                    // 如果沒有圖片，清除 PictureBox
+                    pictureBox1.Image = null;
+                    //MessageBox.Show("沒有找到圖片。");
+                }
+            }           
             else
             {
                 // 如果沒有圖片，清除 PictureBox
@@ -926,7 +942,110 @@ namespace TKWAREHOUSE
 
             }
         }
+
+
+        private void DELETE_ImageIntoDatabase(string NO)
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"
+                                    dELETE [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
+                                    WHERE NO=@NO"
+                                    );
+
+                cmd.Parameters.AddWithValue("@NO", NO);
         
+         
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    //MessageBox.Show("圖片已成功存儲到資料庫。");
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void DEL_IMAGES(string ImagePath)
+        {          
+            //// 指定圖片的完整路徑，包括資料夾和檔案名稱
+            string imagePaths = ImagePath;
+
+            try
+            {
+                int maxRetryAttempts = 3;
+                int retryDelayMilliseconds = 1000; // 1秒
+
+                for (int i = 0; i < maxRetryAttempts; i++)
+                {
+                    try
+                    {
+                        File.Delete(imagePaths);
+                        imagePaths = null; // 设置为 null，以释放资源
+                        break; // 如果删除成功，退出循环
+                    }
+                    catch (IOException ex)
+                    {
+                        if (i < maxRetryAttempts - 1)
+                        {
+                            // 如果删除失败，等待一段时间后重试
+                            System.Threading.Thread.Sleep(retryDelayMilliseconds);
+                        }
+                        else
+                        {
+                            // 如果达到最大重试次数仍然无法删除，处理异常或显示错误消息
+                            //MessageBox.Show("无法删除图像文件，因为它正在被其他进程使用。");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 处理其他异常
+            }
+        }
 
         #endregion
 
@@ -1066,11 +1185,12 @@ namespace TKWAREHOUSE
             {
                 //string imagePath = System.Environment.CurrentDirectory;
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + ".jpg";
                 if (!Directory.Exists(imagePath))
                 {
                     Directory.CreateDirectory(imagePath);
                 }
-                SaveImageHH(imagePath + "\\" + NO + ".jpg");
+                SaveImageHH(imagePathNames);
                 SaveImageToDatabase(NO);
 
                 TAKE_CLOSE();
@@ -1080,9 +1200,30 @@ namespace TKWAREHOUSE
                 }
                 catch { }
 
-                MessageBox.Show("照片完成");
+                MessageBox.Show("拍照完成");
             }
             
+        }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(NO))
+            {
+                //DisplayImageFromFolder("");
+                //pictureBox1.Image = null;
+
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + ".jpg";
+               
+                if (!Directory.Exists(imagePath))
+                {
+                    Directory.CreateDirectory(imagePath);
+                }               
+                DELETE_ImageIntoDatabase(NO);
+                DEL_IMAGES(imagePathNames);
+
+                MessageBox.Show("刪除照片 完成");
+            }
+
         }
 
         #endregion
