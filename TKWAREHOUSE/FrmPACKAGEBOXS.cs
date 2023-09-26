@@ -16,6 +16,8 @@ using FastReport.Data;
 using TKITDLL;
 using System.Data.OleDb;
 using System.Net;
+using AForge.Video;
+using AForge.Video.DirectShow;
 
 namespace TKWAREHOUSE
 {
@@ -36,10 +38,13 @@ namespace TKWAREHOUSE
         string SortedColumn = string.Empty;
         string SortedModel = string.Empty;
 
+        string NO = null;
         string TG001TG002 = null;
         string TG001 = null;
         string TG002 = null;
 
+        public FilterInfoCollection USB_Webcams = null;//FilterInfoCollection類別實體化
+        public VideoCaptureDevice Cam;//攝像頭的初始化
 
         public FrmPACKAGEBOXS()
         {
@@ -277,6 +282,7 @@ namespace TKWAREHOUSE
                     comboBox2.Text = row.Cells["規定比值"].Value.ToString();
                     comboBox3.Text = row.Cells["是否符合"].Value.ToString();
 
+                    NO = row.Cells["NO"].Value.ToString();
                     DisplayImageFromFolder(row.Cells["NO"].Value.ToString());
                 }
             }
@@ -775,6 +781,142 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void TAKE_OPEN()
+        {
+            USB_Webcams = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            if (USB_Webcams.Count > 0)  // The quantity of WebCam must be more than 0.
+            {
+                button1.Enabled = true;
+                Cam = new VideoCaptureDevice(USB_Webcams[0].MonikerString);
+
+                Cam.NewFrame += Cam_NewFrame;//Press Tab  to   create
+            }
+            else
+            {
+                button1.Enabled = false;
+                MessageBox.Show("No video input device is connected.");
+            }
+        }
+
+        void Cam_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            //throw new NotImplementedException();
+            pictureBox1.Image = (Bitmap)eventArgs.Frame.Clone();
+        }
+
+        //保存图片
+        private delegate void SaveImage();
+        private void SaveImageHH(string ImagePath)
+        {
+            if (this.pictureBox1.InvokeRequired)
+            {
+                SaveImage saveimage = delegate { this.pictureBox1.Image.Save(ImagePath); };
+                this.pictureBox1.Invoke(saveimage);
+            }
+            else
+            {
+                this.pictureBox1.Image.Save(ImagePath);
+            }
+
+        }
+
+        // 將 PictureBox 中的圖片轉換為位元組數組
+        private byte[] ImageToByteArray(Image image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); // 或者使用其他圖像格式
+                return ms.ToArray();
+            }
+        }
+
+        // 將位元組數組插入到資料庫的 BLOB 欄位中
+        private void InsertImageIntoDatabase(string NO, string CTIMES, byte[] imageBytes)
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"
+                                     INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
+                                    ([NO], [CTIMES], [PHOTOS])
+                                    VALUES
+                                    (@NO, @CTIMES, @PHOTOS)
+                                    "
+                                    );
+
+                cmd.Parameters.AddWithValue("@NO", NO);
+                cmd.Parameters.AddWithValue("@CTIMES", CTIMES);
+                cmd.Parameters.AddWithValue("@PHOTOS", imageBytes);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    //MessageBox.Show("圖片已成功存儲到資料庫。");
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        // 將 PictureBox 中的圖片存儲到資料庫
+        private void SaveImageToDatabase(string NO)
+        {
+            // 替換為您的 PictureBox 控制項名稱
+            Image image = pictureBox1.Image;
+
+            if (image != null)
+            {
+                byte[] imageBytes = ImageToByteArray(image);
+                InsertImageIntoDatabase(NO, DateTime.Now.ToString("yyyyMMdd HH:MM:ss"), imageBytes);
+
+            }
+            else
+            {
+
+            }
+        }
+        
+
         #endregion
 
 
@@ -888,6 +1030,41 @@ namespace TKWAREHOUSE
 
 
             }
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(NO))
+            {
+                TAKE_OPEN();
+                try
+                {
+                    Cam.Start();   // WebCam starts capturing images.     
+                }
+                catch { }
+            }
+            else
+            {
+                MessageBox.Show("沒有對應 箱號，不能開啟相機");
+            }
+                
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(NO))
+            {
+                //string imagePath = System.Environment.CurrentDirectory;
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                if (!Directory.Exists(imagePath))
+                {
+                    Directory.CreateDirectory(imagePath);
+                }
+                SaveImageHH(imagePath + "\\" + NO + ".jpg");
+                SaveImageToDatabase(NO);
+
+                MessageBox.Show("照片完成");
+            }
+            
         }
 
         #endregion
