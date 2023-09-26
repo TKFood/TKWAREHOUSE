@@ -288,11 +288,19 @@ namespace TKWAREHOUSE
 
                     NO = row.Cells["NO"].Value.ToString();
 
-                    retrievedImageBytes = (byte[])row.Cells["PHOTOS"].Value;
-                    using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
+                    try
                     {
-                        pictureBox1.Image = Image.FromStream(ms);
+                        retrievedImageBytes = (byte[])row.Cells["PHOTOS"].Value;
+                        using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
+                        {
+                            pictureBox1.Image = Image.FromStream(ms);
+                        }
                     }
+                    catch
+                    {
+
+                    }
+                   
                     //DisplayImageFromFolder(row.Cells["NO"].Value.ToString());
                 }
             }
