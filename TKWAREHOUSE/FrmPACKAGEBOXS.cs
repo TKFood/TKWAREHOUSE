@@ -894,6 +894,7 @@ namespace TKWAREHOUSE
         {
             SqlConnection sqlConn = new SqlConnection();
             SqlCommand sqlComm = new SqlCommand();
+            SqlCommand cmd = new SqlCommand();
 
             try
             {
@@ -961,6 +962,7 @@ namespace TKWAREHOUSE
         // 將 PictureBox 中的圖片存儲到資料庫
         private void SaveImageToDatabase(string NO)
         {
+
             // 替換為您的 PictureBox 控制項名稱
             Image image = pictureBox1.Image;
 
@@ -981,6 +983,7 @@ namespace TKWAREHOUSE
         {
             SqlConnection sqlConn = new SqlConnection();
             SqlCommand sqlComm = new SqlCommand();
+            SqlCommand cmd = new SqlCommand();
 
             try
             {
