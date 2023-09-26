@@ -479,12 +479,13 @@ namespace TKWAREHOUSE
                     // 顯示圖片在 PictureBox 控制項上
                     if (Image.FromFile(imagePath) != null)
                     {
-                        //pictureBox1.Image = GetFiles(imagePath);
+                        Image im = GetCopyImage(imagePath);
+                        pictureBox1.Image = im;
 
-                        System.Drawing.Image img = System.Drawing.Image.FromFile(imagePath);
-                        System.Drawing.Image bmp = new System.Drawing.Bitmap(img);
-                        img.Dispose();
-                        pictureBox1.Image = bmp;
+                        //System.Drawing.Image img = System.Drawing.Image.FromFile(imagePath);
+                        //System.Drawing.Image bmp = new System.Drawing.Bitmap(img);
+                        //img.Dispose();
+                        //pictureBox1.Image = bmp;
                         //pictureBox1.Image = Image.FromFile(imagePath);
 
 
@@ -507,27 +508,13 @@ namespace TKWAREHOUSE
             }
         }
 
-        private MemoryStream Readfile(string path)
+        private Image GetCopyImage(string path)
         {
-            if(!File.Exists(path))
+            using (Image im = Image.FromFile(path))
             {
-                return null;
+                Bitmap bm = new Bitmap(im);
+                return bm;
             }
-
-            using (FileStream file = new FileStream(path, FileMode.Open))
-            {
-                byte[] b = new byte[file.Length];
-                file.Read(b,0,b.Length);
-
-                MemoryStream stream = new MemoryStream();
-                return stream;
-            }
-        }
-
-        private Image GetFiles(string path)
-        {
-            MemoryStream stream=Readfile(path);
-            return stream == null ? null : Image.FromStream(stream);
         }
 
         public void PACKAGEBOXS_ADD(
@@ -996,7 +983,7 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
 
                 sbSql.AppendFormat(@"
-                                    dELETE [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
+                                    DELETE [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
                                     WHERE NO=@NO"
                                     );
 
