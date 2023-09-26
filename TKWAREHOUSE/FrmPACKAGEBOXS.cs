@@ -884,7 +884,7 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
 
                 sbSql.AppendFormat(@"
-                                     INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
                                     ([NO], [CTIMES], [PHOTOS])
                                     VALUES
                                     (@NO, @CTIMES, @PHOTOS)
@@ -1190,8 +1190,10 @@ namespace TKWAREHOUSE
                 {
                     Directory.CreateDirectory(imagePath);
                 }
-                SaveImageHH(imagePathNames);
+
                 SaveImageToDatabase(NO);
+                SaveImageHH(imagePathNames);
+           
 
                 TAKE_CLOSE();
                 try
