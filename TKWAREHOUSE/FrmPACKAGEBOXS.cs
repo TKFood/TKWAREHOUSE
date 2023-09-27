@@ -1086,6 +1086,102 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {           
+            string input = textBox5.Text;
+            float result;
+            if(!string.IsNullOrEmpty(input))
+            {
+                if (float.TryParse(input, out result))
+                {
+                    DataTable dt = SETRATECLASS(textBox5.Text);
+                    if (dt != null && dt.Rows.Count >= 1)
+                    {
+                        comboBox1.Text = dt.Rows[0]["NAMES"].ToString();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("重量不是數字格式");
+                }
+            }
+           
+
+        }
+
+        public DataTable SETRATECLASS(string ALLWEIGHTS)
+        {
+
+            DataTable DT = new DataTable();
+            SqlConnection sqlConn = new SqlConnection();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+            StringBuilder QUERYS = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                QUERYS.Clear();
+
+                //用總重去比對重量的條件
+                //({0}-CONVERT(float,[KEYS])>0)，從小排到大
+                sbSql.AppendFormat(@"                                      
+                                   SELECT [KINDS]
+                                    ,[NAMES]
+                                    ,[KEYS]
+                                    ,[KEYS2]
+                                    ,({0}-CONVERT(float,[KEYS])) AS CONDITIONS
+                                    FROM [TKWAREHOUSE].[dbo].[TBPARAS]
+                                    WHERE [KINDS]='RATECLASS'
+                                    AND ({0}-CONVERT(float,[KEYS])>0)
+                                    ORDER BY  ({0}-CONVERT(float,[KEYS])) ASC
+                                    ", ALLWEIGHTS);
+
+
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["TEMPds1"].Rows.Count > 0)
+                {
+                    return ds1.Tables["TEMPds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
 
@@ -1289,8 +1385,9 @@ namespace TKWAREHOUSE
 
         }
 
+
         #endregion
 
-
+      
     }
 }
