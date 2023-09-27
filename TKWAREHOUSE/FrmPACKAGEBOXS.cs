@@ -1123,6 +1123,7 @@ namespace TKWAREHOUSE
             {
                 if (float.TryParse(input, out result))
                 {
+                    CAL_ALLWEIGHTS();
                     CAL_RATES();
                 }
                 else
@@ -1140,7 +1141,7 @@ namespace TKWAREHOUSE
             {
                 if (float.TryParse(input, out result))
                 {
-                   
+                    CAL_ALLWEIGHTS();
                 }
                 else
                 {
@@ -1149,13 +1150,35 @@ namespace TKWAREHOUSE
             }
 
         }
-        public string CAL_RATES()
+
+        public void CAL_ALLWEIGHTS()
         {
+            float result;
+            string input1 = textBox4.Text;
+            string input2 = textBox5.Text;
+            float PACKWEIGHTS = 0;
+            float PRODUCTWEIGHTS = 0;
+            if (!string.IsNullOrEmpty(input1) && !string.IsNullOrEmpty(input2))
+            {
+                if (float.TryParse(input1, out result) && float.TryParse(input2, out result))
+                {
+                    PACKWEIGHTS = float.Parse(input1);
+                    PRODUCTWEIGHTS = float.Parse(input2);
+                    textBox3.Text = (PACKWEIGHTS+ PRODUCTWEIGHTS).ToString("0.00");
+                }
+                else
+                {
+                    MessageBox.Show("重量不是數字格式");
+                }
+            }
+        }
+        public void CAL_RATES()
+        {
+            float result;
             string input1 = textBox3.Text;
             string input2 = textBox4.Text;
             float PACKWEIGHTS = 0;
-            float ALLWEIGHTS = 0;
-            float result;
+            float ALLWEIGHTS = 0;           
             float rates = 0;
 
             if(!string.IsNullOrEmpty(input1)&& !string.IsNullOrEmpty(input2))
@@ -1173,18 +1196,7 @@ namespace TKWAREHOUSE
                 {
                     MessageBox.Show("重量不是數字格式");
                 }
-            }
-
-
-            if (PACKWEIGHTS>0&& ALLWEIGHTS > 0)
-            {
-                rates = (PACKWEIGHTS / ALLWEIGHTS) * 100;
-                return rates.ToString();
-            }
-            else
-            {
-                return "0";
-            }
+            }          
         }
 
         public DataTable SET_RATECLASS(string ALLWEIGHTS)
