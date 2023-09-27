@@ -1358,6 +1358,98 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+        private void textBox6_TextChanged(object sender, EventArgs e)
+        {
+            comboBox3.Text = "不符合";
+            if(!string.IsNullOrEmpty(comboBox1.Text)&&!string.IsNullOrEmpty(textBox6.Text))
+            {
+                string input1 = comboBox1.Text;
+                string input2 = textBox6.Text.Replace("%","");
+                DataTable dt = SET_ISVALIDS(input1, input2);
+                if (dt != null && dt.Rows.Count >= 1)
+                {
+                    comboBox3.Text = "符合";
+                }
+                else
+                {
+                    comboBox3.Text = "不符合";
+                }
+            }
+            
+        }
+
+        public DataTable SET_ISVALIDS(string KEYS, string KEYS2)
+        {
+
+            DataTable DT = new DataTable();
+            SqlConnection sqlConn = new SqlConnection();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+            StringBuilder QUERYS = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                QUERYS.Clear();
+
+                //用總重去比對重量的條件
+                //({0}-CONVERT(float,[KEYS])>0)，從小排到大
+                sbSql.AppendFormat(@"                                      
+                                    SELECT [KINDS]
+                                    ,[NAMES]
+                                    ,[KEYS]
+                                    ,[KEYS2]
+                                    FROM [TKWAREHOUSE].[dbo].[TBPARAS]
+                                    WHERE [KINDS]='ISVALIDS'
+                                    AND [KEYS]='{0}'
+                                    AND CONVERT(decimal,[KEYS2])>{1}
+                                    ", KEYS, KEYS2);
+
+
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["TEMPds1"].Rows.Count > 0)
+                {
+                    return ds1.Tables["TEMPds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
 
         #endregion
 
@@ -1565,8 +1657,9 @@ namespace TKWAREHOUSE
 
 
 
+
         #endregion
 
-      
+       
     }
 }
