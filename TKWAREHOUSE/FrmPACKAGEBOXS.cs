@@ -1092,15 +1092,38 @@ namespace TKWAREHOUSE
         {
             string input = textBox3.Text;
             float result;
+
             if(!string.IsNullOrEmpty(input))
             {
                 if (float.TryParse(input, out result))
                 {
+                    CAL_RATES();
+
                     DataTable dt = SET_RATECLASS(input);
                     if (dt != null && dt.Rows.Count >= 1)
                     {
                         comboBox1.Text = dt.Rows[0]["NAMES"].ToString();
-                    }
+                    }                  
+                }
+                else
+                {
+                    MessageBox.Show("重量不是數字格式");
+                }
+
+                
+            }
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            string input = textBox4.Text;
+            float result;
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                if (float.TryParse(input, out result))
+                {
+                    CAL_RATES();
                 }
                 else
                 {
@@ -1109,16 +1132,59 @@ namespace TKWAREHOUSE
             }
         }
 
-        private void textBox4_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void textBox5_TextChanged(object sender, EventArgs e)
         {
+            string input = textBox5.Text;
+            float result;
+            if (!string.IsNullOrEmpty(input))
+            {
+                if (float.TryParse(input, out result))
+                {
+                   
+                }
+                else
+                {
+                    MessageBox.Show("重量不是數字格式");
+                }
+            }
+
+        }
+        public string CAL_RATES()
+        {
+            string input1 = textBox3.Text;
+            string input2 = textBox4.Text;
+            float PACKWEIGHTS = 0;
+            float ALLWEIGHTS = 0;
+            float result;
+            float rates = 0;
+
+            if(!string.IsNullOrEmpty(input1)&& !string.IsNullOrEmpty(input2))
+            {                
+                if (float.TryParse(input1, out result)&& float.TryParse(input2, out result))
+                {
+                    ALLWEIGHTS = float.Parse(input1);
+                    PACKWEIGHTS = float.Parse(input2);
+
+                    rates = (PACKWEIGHTS / ALLWEIGHTS) * 100;
+
+                    textBox6.Text = rates.ToString("0.00") + "%";
+                }
+                else
+                {
+                    MessageBox.Show("重量不是數字格式");
+                }
+            }
 
 
-
+            if (PACKWEIGHTS>0&& ALLWEIGHTS > 0)
+            {
+                rates = (PACKWEIGHTS / ALLWEIGHTS) * 100;
+                return rates.ToString();
+            }
+            else
+            {
+                return "0";
+            }
         }
 
         public DataTable SET_RATECLASS(string ALLWEIGHTS)
