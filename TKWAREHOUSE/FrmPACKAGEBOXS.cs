@@ -20,6 +20,7 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Threading;
+using System.IO.Ports;
 
 namespace TKWAREHOUSE
 {
@@ -50,7 +51,7 @@ namespace TKWAREHOUSE
 
         public Thread ReadSerialDataThread;
         public string readseroaldata;
-
+        private SerialPort serialPortIn;
 
         public FrmPACKAGEBOXS()
         {
@@ -1508,7 +1509,9 @@ namespace TKWAREHOUSE
 
 
                 }
-               Thread.Sleep(20);
+
+
+                Thread.Sleep(20);
             }
         }
 
@@ -1587,12 +1590,13 @@ namespace TKWAREHOUSE
             {
                 serialPortIn.Close();
                 serialPortIn.Dispose();
-                
+  
                 Thread.Sleep(20);
 
             }
 
         }
+
 
         #endregion
 
