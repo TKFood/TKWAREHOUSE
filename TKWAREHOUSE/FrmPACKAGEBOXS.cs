@@ -21,6 +21,9 @@ using AForge.Video.DirectShow;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Threading;
 using System.IO.Ports;
+using System.Threading;
+
+
 
 namespace TKWAREHOUSE
 {
@@ -1464,12 +1467,12 @@ namespace TKWAREHOUSE
             {
                 try
                 {
-                    serialPortIn.PortName = txtportname.Text;
-                    serialPortIn.BaudRate = int.Parse(txtbaudrate.Text);
-                    serialPortIn.Parity = (Parity)Enum.Parse(typeof(Parity), txtparity.Text);
-                    serialPortIn.DataBits = int.Parse(txtdatabits.Text);
-                    serialPortIn.StopBits = (StopBits)Enum.Parse(typeof(StopBits), txtstopbits.Text);
-                    serialPortIn.Open();
+                    //serialPortIn.PortName = txtportname.Text;
+                    //serialPortIn.BaudRate = int.Parse(txtbaudrate.Text);
+                    //serialPortIn.Parity = (Parity)Enum.Parse(typeof(Parity), txtparity.Text);
+                    //serialPortIn.DataBits = int.Parse(txtdatabits.Text);
+                    //serialPortIn.StopBits = (StopBits)Enum.Parse(typeof(StopBits), txtstopbits.Text);
+                    //serialPortIn.Open();
                 }
                 catch (Exception ee)
                 {
