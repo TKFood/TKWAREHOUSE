@@ -19,8 +19,7 @@ using System.Net;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
-
+using System.Threading;
 
 namespace TKWAREHOUSE
 {
@@ -48,6 +47,10 @@ namespace TKWAREHOUSE
 
         public FilterInfoCollection USB_Webcams = null;//FilterInfoCollection類別實體化
         public VideoCaptureDevice Cam;//攝像頭的初始化
+
+        public Thread ReadSerialDataThread;
+        public string readseroaldata;
+
 
         public FrmPACKAGEBOXS()
         {
@@ -1454,6 +1457,143 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void Btnconnect()
+        {
+            if (!serialPortIn.IsOpen)
+            {
+                try
+                {
+                    serialPortIn.PortName = txtportname.Text;
+                    serialPortIn.BaudRate = int.Parse(txtbaudrate.Text);
+                    serialPortIn.Parity = (Parity)Enum.Parse(typeof(Parity), txtparity.Text);
+                    serialPortIn.DataBits = int.Parse(txtdatabits.Text);
+                    serialPortIn.StopBits = (StopBits)Enum.Parse(typeof(StopBits), txtstopbits.Text);
+                    serialPortIn.Open();
+                }
+                catch (Exception ee)
+                {
+
+                    MessageBox.Show(@"ERROR:" + ee);
+                }
+
+
+            }
+
+
+            if (serialPortIn.IsOpen)
+            {
+                ReadSerialData();
+               
+            }
+
+        }
+
+        private void ReadSerialData()
+        {
+            ReadSerialDataThread = new Thread(ReadSerial);
+            ReadSerialDataThread.Start();
+        }
+
+        private void ReadSerial()
+        {
+            while (serialPortIn.IsOpen)
+            {
+                try
+                {
+                    readseroaldata = serialPortIn.ReadLine();
+                    ShowSerialData(readseroaldata);
+                }
+                catch (Exception)
+                {
+
+
+                }
+               Thread.Sleep(20);
+            }
+        }
+
+        public delegate void ShowSerialDatadelegate(string r);
+        private void ShowSerialData(string s)
+        {
+            DateTime now = DateTime.Now;
+            string pattern = @"[-+]?\d*\.?\d+";
+            string datacon = "";
+
+            string ymdhms = "";
+            string cross = "";
+
+            // 獲取當前年份
+            int year = now.Year;
+
+            // 獲取當前月份
+            int month = now.Month;
+
+
+            // 獲取當前日期
+            int day = now.Day;
+
+            // 獲取當前小時
+            int hour = now.Hour;
+
+            // 獲取當前分鐘
+            int minute = now.Minute;
+
+            // 獲取當前秒數1056.68kg
+
+
+            int second = now.Second;
+
+
+            ymdhms = Convert.ToString(year) + "/" + Convert.ToString(month) + "/" + Convert.ToString(day) + " " + Convert.ToString(hour) + ":" + Convert.ToString(minute) + ":" + Convert.ToString(second) + " ";
+
+
+            if (txtreaddata.InvokeRequired)
+            {
+                ShowSerialDatadelegate SSDD = ShowSerialData;
+                Invoke(SSDD, s);
+            }
+            else
+            {
+
+
+                MatchCollection matches = Regex.Matches(s, pattern);
+                foreach (Match match in matches)
+                {
+                    datacon += match.Value;
+                }
+
+                string finaldatas = ymdhms + datacon + txtUnits.Text;
+
+
+
+                string prev = Clipboard.GetText();
+                txtreaddata.AppendText(finaldatas.Substring(((int)numericUpDown1.Value)));
+
+                //SendKeys.SendWait(datacon + txtUnits.Text + Environment.NewLine);
+
+                Clipboard.SetText(finaldatas.Substring(((int)numericUpDown1.Value)));
+                SendKeys.Send("^v");
+                Clipboard.SetText(prev);
+
+                txtreaddata.Text += "\n";
+                SendKeys.SendWait("{ENTER}");
+
+            }
+        }
+
+        private async void Btndisconnect(object sender, EventArgs e)
+        {
+            if (serialPortIn.IsOpen)
+            {
+                serialPortIn.Close();
+                serialPortIn.Dispose();
+                
+                Thread.Sleep(20);
+
+            }
+
+        }
+
         #endregion
 
 
@@ -1661,7 +1801,7 @@ namespace TKWAREHOUSE
 
         private void button8_Click(object sender, EventArgs e)
         {
-
+            Btnconnect();
         }
 
 
