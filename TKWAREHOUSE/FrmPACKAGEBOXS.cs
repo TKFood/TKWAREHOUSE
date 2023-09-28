@@ -18,6 +18,9 @@ using System.Data.OleDb;
 using System.Net;
 using AForge.Video;
 using AForge.Video.DirectShow;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
+
 
 namespace TKWAREHOUSE
 {
@@ -56,7 +59,7 @@ namespace TKWAREHOUSE
         }
 
         #region FUNCTION
-        public void LoadComboBoxData(ComboBox comboBox, string query, string valueMember, string displayMember)
+        public void LoadComboBoxData(System.Windows.Forms.ComboBox comboBox, string query, string valueMember, string displayMember)
         {
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -1656,10 +1659,14 @@ namespace TKWAREHOUSE
 
 
 
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+        }
 
 
         #endregion
 
-       
+
     }
 }
