@@ -1473,6 +1473,7 @@ namespace TKWAREHOUSE
                     //serialPortIn.DataBits = int.Parse(txtdatabits.Text);
                     //serialPortIn.StopBits = (StopBits)Enum.Parse(typeof(StopBits), txtstopbits.Text);
                     //serialPortIn.Open();
+                    
                 }
                 catch (Exception ee)
                 {
