@@ -276,57 +276,57 @@ namespace TKWAREHOUSE
           
 
             FASTSQL.AppendFormat(@"  
-                                   SELECT LA004 AS '日期',LA001 AS '品號',LA009 AS '庫別', SUM(LA011) AS '數量',MB002 AS '品名',MB003 AS '規格',MB004 AS '單位'
+                                   SELECT LA004 AS '日期',LA001 AS '品號',LA009 AS '庫別', SUM(LA011) AS '數量',MB002 AS '品名',MB003 AS '規格',MB004 AS '單位',LA016 AS '批號' 
                                     FROM (
-                                    SELECT '1' AS SERNO,'銷貨單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007
+                                    SELECT '1' AS SERNO,'銷貨單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007,LA016
                                     FROM [TK].dbo.INVLA WITH(NOLOCK),[TK].dbo.CMSMQ WITH(NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)
                                     WHERE LA006=MQ001
                                     AND LA001=MB001
                                     AND MQ003 IN ('23')
                                     AND LA005='-1'
                                     AND LA009 IN ('20001')
-                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007
+                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007,LA016
                                     UNION ALL
-                                    SELECT '2' AS SERNO,'暫出單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007
+                                    SELECT '2' AS SERNO,'暫出單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007,LA016
                                     FROM [TK].dbo.INVLA WITH(NOLOCK),[TK].dbo.CMSMQ WITH(NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)
                                     WHERE LA006=MQ001
                                     AND LA001=MB001
                                     AND MQ003 IN ('13','14')
                                     AND LA005='-1'
                                     AND LA009 IN ('20001')
-                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007
+                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007,LA016
                                     UNION ALL
-                                    SELECT '3' AS SERNO,'暫入單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007
+                                    SELECT '3' AS SERNO,'暫入單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007,LA016
                                     FROM [TK].dbo.INVLA WITH(NOLOCK),[TK].dbo.CMSMQ WITH(NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)
                                     WHERE LA006=MQ001
                                     AND LA001=MB001
                                     AND MQ003 IN ('15','16')
                                     AND LA005='-1'
                                     AND LA009 IN ('20001')
-                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007
+                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007,LA016
                                     UNION ALL
-                                    SELECT '4' AS SERNO,'庫存異動單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007
+                                    SELECT '4' AS SERNO,'庫存異動單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007,LA016
                                     FROM [TK].dbo.INVLA WITH(NOLOCK),[TK].dbo.CMSMQ WITH(NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)
                                     WHERE LA006=MQ001
                                     AND LA001=MB001
                                     AND MQ003 IN ('11')
                                     AND LA005='-1'
                                     AND LA009 IN ('20001')
-                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007
+                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007,LA016
                                     UNION ALL
-                                    SELECT '5' AS SERNO,'轉撥單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007
+                                    SELECT '5' AS SERNO,'轉撥單' AS 'KINDS',LA004,LA001,LA009,SUM(LA011) LA011,MB002,MB003,MB004,LA006,LA007,LA016
                                     FROM [TK].dbo.INVLA WITH(NOLOCK),[TK].dbo.CMSMQ WITH(NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)
                                     WHERE LA006=MQ001
                                     AND LA001=MB001
                                     AND MQ003 IN ('12','13')
                                     AND LA005='-1'
                                     AND LA009 IN ('20001')
-                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007
+                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA006,LA007,LA016
                                     ) AS TEMP
                                     WHERE LA004='{0}' 
                                     AND LTRIM(RTRIM(LA006))+LTRIM(RTRIM(LA007)) IN ({1})
-                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004
-                                    ORDER BY LA001
+                                    GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA016
+                                    ORDER BY LA001,LA016
 
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"), STRQUERY.ToString());
 
