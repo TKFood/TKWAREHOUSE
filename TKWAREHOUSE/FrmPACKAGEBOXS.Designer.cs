@@ -312,7 +312,7 @@
             this.tableLayoutPanel2.Controls.Add(this.button8, 0, 12);
             this.tableLayoutPanel2.Controls.Add(this.txtreaddata, 0, 11);
             this.tableLayoutPanel2.Controls.Add(this.txtUnits, 1, 11);
-            this.tableLayoutPanel2.Controls.Add(this.numericUpDown1, 1, 12);
+            this.tableLayoutPanel2.Controls.Add(this.numericUpDown1, 3, 12);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
@@ -404,7 +404,7 @@
             // 
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(162, 330);
+            this.comboBox3.Location = new System.Drawing.Point(162, 328);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(175, 24);
             this.comboBox3.TabIndex = 70;
@@ -423,7 +423,7 @@
             // 
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(162, 290);
+            this.comboBox2.Location = new System.Drawing.Point(162, 288);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(175, 24);
             this.comboBox2.TabIndex = 69;
@@ -442,7 +442,7 @@
             // 
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(162, 248);
+            this.comboBox1.Location = new System.Drawing.Point(162, 250);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(175, 24);
             this.comboBox1.TabIndex = 68;
@@ -676,9 +676,9 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(162, 483);
+            this.numericUpDown1.Location = new System.Drawing.Point(363, 483);
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(120, 27);
+            this.numericUpDown1.Size = new System.Drawing.Size(114, 27);
             this.numericUpDown1.TabIndex = 81;
             // 
             // tabPage2
