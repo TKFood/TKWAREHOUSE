@@ -263,6 +263,8 @@ namespace TKWAREHOUSE
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
+            string  LA004 = dateTimePicker2.Value.ToString("yyyyMMdd");
+
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 if (row.Cells[0].Value != null && (bool)row.Cells[0].Value&&!string.IsNullOrEmpty(row.Cells["單別"].Value.ToString())&& !string.IsNullOrEmpty(row.Cells["單號"].Value.ToString()))
@@ -328,7 +330,7 @@ namespace TKWAREHOUSE
                                     GROUP BY LA004,LA001,LA009,MB002,MB003,MB004,LA016
                                     ORDER BY LA001,LA016
 
-                                    ", dateTimePicker1.Value.ToString("yyyyMMdd"), STRQUERY.ToString());
+                                    ", LA004, STRQUERY.ToString());
 
             return FASTSQL.ToString();
         }
