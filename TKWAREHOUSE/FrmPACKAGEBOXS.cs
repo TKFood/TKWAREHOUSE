@@ -56,7 +56,7 @@ namespace TKWAREHOUSE
         public Thread ReadSerialDataThread;
         public string readseroaldata;
         private SerialPort serialPortIn;
-
+        public string CAL_TEXTBOX;
         public FrmPACKAGEBOXS()
         {
             InitializeComponent();
@@ -67,6 +67,11 @@ namespace TKWAREHOUSE
         }
 
         #region FUNCTION
+
+        private void FrmPACKAGEBOXS_Load(object sender, EventArgs e)
+        {
+            Btnconnect();
+        }
         public void LoadComboBoxData(System.Windows.Forms.ComboBox comboBox, string query, string valueMember, string displayMember)
         {
             //20210902密
@@ -225,6 +230,7 @@ namespace TKWAREHOUSE
                     }
                     else
                     {
+                        textBox1.Text = row.Cells["銷貨單"].Value.ToString() + row.Cells["銷貨單號"].Value.ToString();
                         dataGridView2.DataSource = null;
                         SET_TEXT();
                     }
@@ -1465,12 +1471,11 @@ namespace TKWAREHOUSE
         public void Btnconnect()
         {
             serialPortIn = new SerialPort();
-            //serialPortIn.PortName = "COM1";
-            //serialPortIn.BaudRate = 9600;
-            //serialPortIn.Parity = Parity.None;
-            //serialPortIn.DataBits = 8;
-            //serialPortIn.StopBits = StopBits.One;
-            ////serialPortIn.Open();
+            serialPortIn.PortName = "COM3";
+            serialPortIn.BaudRate = 9600;
+            serialPortIn.Parity = Parity.None;
+            serialPortIn.DataBits = 8;
+            serialPortIn.StopBits = StopBits.One;
 
             if (!serialPortIn.IsOpen)
             {
@@ -1483,11 +1488,7 @@ namespace TKWAREHOUSE
                     //serialPortIn.StopBits = (StopBits)Enum.Parse(typeof(StopBits), txtstopbits.Text);
                     //serialPortIn.Open();
 
-                    serialPortIn.PortName = "COM1";
-                    serialPortIn.BaudRate = 9600;
-                    serialPortIn.Parity = Parity.None;
-                    serialPortIn.DataBits = 8;
-                    serialPortIn.StopBits = StopBits.One;
+                  
                     serialPortIn.Open();
 
                 }
@@ -1570,47 +1571,46 @@ namespace TKWAREHOUSE
             ymdhms = Convert.ToString(year) + "/" + Convert.ToString(month) + "/" + Convert.ToString(day) + " " + Convert.ToString(hour) + ":" + Convert.ToString(minute) + ":" + Convert.ToString(second) + " ";
 
 
-            if (txtreaddata.InvokeRequired)
+            if (textBox3.InvokeRequired)
             {
                 ShowSerialDatadelegate SSDD = ShowSerialData;
                 Invoke(SSDD, s);
             }
             else
             {
-
-
                 MatchCollection matches = Regex.Matches(s, pattern);
                 foreach (Match match in matches)
                 {
                     datacon += match.Value;
                 }
 
-                string finaldatas = ymdhms + datacon + txtUnits.Text;
+                textBoxCAL.Text = datacon;
+
+                //string finaldatas = ymdhms + datacon + txtUnits.Text;
 
 
 
-                string prev = Clipboard.GetText();
-                txtreaddata.AppendText(finaldatas.Substring(((int)numericUpDown1.Value)));
+                //string prev = Clipboard.GetText();
+                //txtreaddata.AppendText(finaldatas.Substring(((int)numericUpDown1.Value)));
 
-                //SendKeys.SendWait(datacon + txtUnits.Text + Environment.NewLine);
+                ////SendKeys.SendWait(datacon + txtUnits.Text + Environment.NewLine);
 
-                Clipboard.SetText(finaldatas.Substring(((int)numericUpDown1.Value)));
-                SendKeys.Send("^v");
-                Clipboard.SetText(prev);
+                //Clipboard.SetText(finaldatas.Substring(((int)numericUpDown1.Value)));
+                //SendKeys.Send("^v");
+                //Clipboard.SetText(prev);
 
-                txtreaddata.Text += "\n";
-                SendKeys.SendWait("{ENTER}");
+                //txtreaddata.Text += "\n";
+                //SendKeys.SendWait("{ENTER}");
 
             }
         }
-
-        private async void Btndisconnect(object sender, EventArgs e)
+        private async void Btndisconnect_Click(object sender, EventArgs e)
         {
             if (serialPortIn.IsOpen)
             {
                 serialPortIn.Close();
                 serialPortIn.Dispose();
-  
+                
                 Thread.Sleep(20);
 
             }
@@ -1824,13 +1824,26 @@ namespace TKWAREHOUSE
 
 
         private void button8_Click(object sender, EventArgs e)
-        {
-            Btnconnect();
+        {           
+            if(!string.IsNullOrEmpty(textBoxCAL.Text))
+            {
+                textBox3.Text = textBoxCAL.Text;
+            } 
+
         }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBoxCAL.Text))
+            {
+                textBox4.Text = textBoxCAL.Text;
+            }
+
+        }
+
 
 
         #endregion
 
-
+       
     }
 }
