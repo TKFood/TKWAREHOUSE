@@ -229,10 +229,10 @@ namespace TKWAREHOUSE
                         Search_PACKAGEBOXS(TG001TG002);
                     }
                     else
-                    {
-                        textBox1.Text = row.Cells["銷貨單"].Value.ToString() + row.Cells["銷貨單號"].Value.ToString();
+                    {                       
                         dataGridView2.DataSource = null;
                         SET_TEXT();
+                        textBox1.Text = TG001TG002;
                     }
                     
                 }
