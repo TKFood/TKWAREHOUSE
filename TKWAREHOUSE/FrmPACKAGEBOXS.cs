@@ -1205,8 +1205,10 @@ namespace TKWAREHOUSE
                     ALLWEIGHTS = float.Parse(input1);
                     PACKWEIGHTS = float.Parse(input2);
 
-                    rates = (PACKWEIGHTS / ALLWEIGHTS) * 100;
+                    decimal difference = (decimal)(ALLWEIGHTS - PACKWEIGHTS);
+                    textBox5.Text = difference.ToString("0.00"); // 保留小數第二位
 
+                    rates = (PACKWEIGHTS / ALLWEIGHTS) * 100;
                     textBox6.Text = rates.ToString("0.00") + "%";
                 }
                 else
