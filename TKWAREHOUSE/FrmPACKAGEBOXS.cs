@@ -22,6 +22,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Threading;
 using System.IO.Ports;
 using System.Threading;
+using System.IO.Ports;
 
 
 
@@ -1463,6 +1464,14 @@ namespace TKWAREHOUSE
 
         public void Btnconnect()
         {
+            serialPortIn = new SerialPort();
+            //serialPortIn.PortName = "COM1";
+            //serialPortIn.BaudRate = 9600;
+            //serialPortIn.Parity = Parity.None;
+            //serialPortIn.DataBits = 8;
+            //serialPortIn.StopBits = StopBits.One;
+            ////serialPortIn.Open();
+
             if (!serialPortIn.IsOpen)
             {
                 try
@@ -1473,7 +1482,14 @@ namespace TKWAREHOUSE
                     //serialPortIn.DataBits = int.Parse(txtdatabits.Text);
                     //serialPortIn.StopBits = (StopBits)Enum.Parse(typeof(StopBits), txtstopbits.Text);
                     //serialPortIn.Open();
-                    
+
+                    serialPortIn.PortName = "COM1";
+                    serialPortIn.BaudRate = 9600;
+                    serialPortIn.Parity = Parity.None;
+                    serialPortIn.DataBits = 8;
+                    serialPortIn.StopBits = StopBits.One;
+                    serialPortIn.Open();
+
                 }
                 catch (Exception ee)
                 {
