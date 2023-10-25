@@ -1678,7 +1678,7 @@ namespace TKWAREHOUSE
         }
         public void SETFASTREPORT(string SDAYE,string EDAYS,string REPORTS)
         {
-            string SQL = "";
+            string SQL = ""; 
             report1 = new Report();
 
             if(REPORTS.Equals("現場空重比值明細秤重"))
@@ -1688,7 +1688,7 @@ namespace TKWAREHOUSE
                 SQL = SETFASETSQL(SDAYE,EDAYS);
               
             }
-            else if (REPORTS.Equals("銷貨資料"))
+            else if (REPORTS.Equals("銷貨資料")) 
             {
                 report1.Load(@"REPORT\網購包材減量應填表單-銷貨資料.frx");
 
