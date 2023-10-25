@@ -1113,19 +1113,41 @@ namespace TKWAREHOUSE
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
             string input = textBox3.Text;
+            double ALLWEIGHT;
             float result;
 
             if(!string.IsNullOrEmpty(input))
             {
                 if (float.TryParse(input, out result))
                 {
+                    ALLWEIGHT = Convert.ToDouble(input);
+
+                    if(ALLWEIGHT<0.25)
+                    {
+                        comboBox4.Text = "回收箱小(335g)";
+                    }
+                    else if(ALLWEIGHT>=0.25 && ALLWEIGHT<1)
+                    {
+                        comboBox4.Text = "回收箱小(335g)";
+                    }
+                    else if (ALLWEIGHT >= 1 && ALLWEIGHT < 3)
+                    {
+                        comboBox4.Text = "回收箱中(640g)";
+                    }
+                    else if (ALLWEIGHT >= 3 )
+                    {
+                        comboBox4.Text = "回收箱大(775g)";
+                    }
+
                     CAL_RATES();
 
                     DataTable dt = SET_RATECLASS(input);
                     if (dt != null && dt.Rows.Count >= 1)
                     {
                         comboBox1.Text = dt.Rows[0]["NAMES"].ToString();
-                    }                  
+                    }   
+                    
+                                   
                 }
                 else
                 {
@@ -1157,12 +1179,13 @@ namespace TKWAREHOUSE
 
         private void textBox5_TextChanged(object sender, EventArgs e)
         {
-            string input = textBox5.Text;
+            string input = textBox5.Text; 
             float result;
             if (!string.IsNullOrEmpty(input))
             {
                 if (float.TryParse(input, out result))
                 {
+                   
                     CAL_ALLWEIGHTS();
                 }
                 else
@@ -1624,6 +1647,22 @@ namespace TKWAREHOUSE
 
         }
 
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(comboBox1.Text.Equals("0.25公斤~1公斤"))
+            {
+
+            }
+            else if (comboBox1.Text.Equals("1公斤~3公斤"))
+            {
+
+            }
+            else if (comboBox1.Text.Equals("3公斤(KG)以上"))
+            {
+
+            }
+        
+        }
 
         #endregion
 
@@ -1849,8 +1888,9 @@ namespace TKWAREHOUSE
 
 
 
+
         #endregion
 
-       
+      
     }
 }
