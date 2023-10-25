@@ -1514,11 +1514,18 @@ namespace TKWAREHOUSE
         public void Btnconnect()
         {
             serialPortIn = new SerialPort();
-            serialPortIn.PortName = "COM3";
+
+            DataTable DT = SET_Btnconnect();
+            if (DT != null && DT.Rows.Count >= 1)
+            {
+                serialPortIn.PortName = DT.Rows[0]["NAMES"].ToString();
+            }         
             serialPortIn.BaudRate = 9600;
             serialPortIn.Parity = Parity.None;
             serialPortIn.DataBits = 8;
             serialPortIn.StopBits = StopBits.One;
+
+           
 
             if (!serialPortIn.IsOpen)
             {
@@ -1853,7 +1860,78 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
 
         }
+        public DataTable SET_Btnconnect()
+        {
 
+            DataTable DT = new DataTable();
+            SqlConnection sqlConn = new SqlConnection();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+            StringBuilder QUERYS = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                QUERYS.Clear();
+
+                //用總重去比對重量的條件
+                //({0}-CONVERT(float,[KEYS])>0)，從小排到大
+                sbSql.AppendFormat(@"                                      
+                                   SELECT 
+                                    [ID]
+                                    ,[KINDS]
+                                    ,[NAMES]
+                                    ,[KEYS]
+                                    ,[KEYS2]
+                                    FROM [TKWAREHOUSE].[dbo].[TBPARAS]
+                                    WHERE [KINDS]='PortName'
+                                    ");
+
+
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["TEMPds1"].Rows.Count > 0)
+                {
+                    return ds1.Tables["TEMPds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
 
