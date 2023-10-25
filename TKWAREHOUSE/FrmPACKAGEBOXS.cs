@@ -1692,7 +1692,7 @@ namespace TKWAREHOUSE
             {
                 report1.Load(@"REPORT\網購包材減量應填表單-銷貨資料.frx");
 
-                SQL = SETFASETSQL(SDAYE,EDAYS);
+                SQL = SETFASETSQL2(SDAYE,EDAYS);
                
             }
 
@@ -1794,6 +1794,66 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
 
         }
+
+        public string SETFASETSQL2(string SDAYE, string EDAYS)
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            FASTSQL.AppendFormat(@"                                  
+                                SELECT 訂單日期,訂單號碼
+                                ,TG001 AS '銷貨單別'
+                                ,TG002 AS '銷貨單號'
+                                ,ISNULL((SELECT TOP 1 TA016 FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),'') AS 發票日期
+                                ,ISNULL(發票號碼,'') AS '發票號碼'
+                                ,品號
+                                ,品名
+                                ,銷貨數量
+                                ,銷貨含稅金額
+                                ,ISNULL((SELECT TOP 1 (TA017+TA018) FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),0) AS 發票金額
+                                FROM
+                                (
+                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029 AS 訂單號碼
+                                ,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼
+                                ,TH004 AS 品號
+                                ,TH005 AS 品名
+                                ,(TH008+TH024) AS 銷貨數量
+                                ,(TH037+TH038) AS 銷貨含稅金額
+                                ,TG001,TG002,TG003,TG029
+                                FROM [TK].dbo.COPTG,[TK].dbo.COPTH
+                                WHERE 1=1
+                                AND TG001=TH001 AND TG002=TH002
+                                AND TG023='Y'
+                                AND TG001 IN ('A233')
+                                AND TG003>='{0}' AND TG003<='{1}'
+                                AND ISNULL(TG029,'')<>''
+
+                                UNION ALL
+                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029 AS 訂單號碼
+                                ,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼
+                                ,TH004 AS 品號
+                                ,TH005 AS 品名
+                                ,(TH008+TH024) AS 銷貨數量
+                                ,(TH037+TH038) AS 銷貨含稅金額
+                                ,TG001,TG002,TG003,TG029
+                                FROM [TK].dbo.COPTG,[TK].dbo.COPTH
+                                WHERE 1=1
+                                AND TG001=TH001 AND TG002=TH002
+                                AND TG023='Y'
+                                AND TG001 IN ('A23A')
+                                AND TG002 LIKE '2023%'
+                                AND TG003>='{0}' AND TG003<='{1}'
+                                AND TG004 IN ('A209400300')
+                                ) AS TMEP 
+                                ORDER BY TG001,TG002,訂單日期
+                                    ", SDAYE, EDAYS);
+
+
+
+            return FASTSQL.ToString();
+
+        }
+
         #endregion
 
 
