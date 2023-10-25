@@ -67,6 +67,7 @@ namespace TKWAREHOUSE
             comboBox2load();
             comboBox3load();
             comboBox4load();
+            comboBox5load();
         }
 
         #region FUNCTION
@@ -179,6 +180,10 @@ namespace TKWAREHOUSE
         public void comboBox4load()
         {
             LoadComboBoxData(comboBox4, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='PACKNAMES' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
+        }
+        public void comboBox5load()
+        {
+            LoadComboBoxData(comboBox5, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='REPORT1' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
         }
 
         public void Search_COPTG(string TG002)
@@ -1671,12 +1676,26 @@ namespace TKWAREHOUSE
             }
         
         }
-        public void SETFASTREPORT()
+        public void SETFASTREPORT(string SDAYE,string EDAYS,string REPORTS)
         {
-            string SQL;
+            string SQL = "";
             report1 = new Report();
 
-            report1.Load(@"REPORT\網購包材減量應填表單-現場空重比值明細秤重.frx");
+            if(REPORTS.Equals("現場空重比值明細秤重"))
+            {
+                report1.Load(@"REPORT\網購包材減量應填表單-現場空重比值明細秤重.frx");
+
+                SQL = SETFASETSQL(SDAYE,EDAYS);
+              
+            }
+            else if (REPORTS.Equals("銷貨資料"))
+            {
+                report1.Load(@"REPORT\網購包材減量應填表單-銷貨資料.frx");
+
+                SQL = SETFASETSQL(SDAYE,EDAYS);
+               
+            }
+
 
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -1692,20 +1711,24 @@ namespace TKWAREHOUSE
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL();
-            Table.SelectCommand = SQL;
+            Table.SelectCommand = SQL.ToString();
+
             report1.Preview = previewControl1;
             report1.Show();
 
         }
 
-        public string SETFASETSQL()
+        public string SETFASETSQL(string SDAYE, string EDAYS)
         {           
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
             FASTSQL.AppendFormat(@"   
-                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期'
+                                SELECT *
+                                FROM 
+                                (
+                                SELECT 
+                                ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期'
                                 ,TG029 AS '訂單編號'
                                 ,COPTG.TG001  AS '銷貨單別'
                                 ,COPTG.TG002 AS '銷貨單號'
@@ -1730,10 +1753,41 @@ namespace TKWAREHOUSE
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] ON [PACKAGEBOXSPHOTO].NO=[PACKAGEBOXS].NO
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A233')
-                                AND TG003>='20231025' AND TG003<='20231025'
+                                AND TG003>='{0}' AND TG003<='{1}'
                                 AND ISNULL(TG029,'')<>''
-                                ORDER BY COPTG.TG001,COPTG.TG002
-                                    ");
+                                UNION ALL
+                                SELECT 
+                                '' AS '訂單日期'
+                                ,TG029 AS '訂單編號'
+                                ,COPTG.TG001  AS '銷貨單別'
+                                ,COPTG.TG002 AS '銷貨單號'
+                                ,TG003 AS '銷貨日'
+                                ,TG020 AS '購物車編號'
+                                ,UDF02 AS 'UDF02'
+                                ,[PACKAGEBOXS].[NO] AS '編號'
+                                ,[BOXNO] AS '箱號'
+                                ,[ALLWEIGHTS] AS '秤總重(A+B)'
+                                ,[PACKWEIGHTS] AS '(非原箱)網購包材重量(KG)A'
+                                ,[PRODUCTWEIGHTS] AS '(非原箱)商品總重量(KG)B'
+                                ,[PACKRATES] AS '實際比值'
+                                ,[RATECLASS] AS '商品總重量比值分類'
+                                ,[CHECKRATES] AS '規定比值'
+                                ,[ISVALIDS] AS '是否符合'
+                                ,[PACKAGENAMES] AS '使用包材名稱/規格'
+                                ,[PACKAGEFROM] AS '使用包材來源'
+                                ,[CTIMES] AS '照片時間'
+                                ,[PHOTOS] AS '照片'
+                                FROM [TK].dbo.COPTG
+                                LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
+                                LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] ON [PACKAGEBOXSPHOTO].NO=[PACKAGEBOXS].NO
+                                WHERE TG023='Y'
+                                AND COPTG.TG001 IN ('A23A')
+                                AND TG004 IN ('A209400300')
+                                AND TG003>='{0}' AND TG003<='{1}'
+     
+                                ) AS TEMP
+                                ORDER BY 銷貨單別,銷貨單號
+                                    ", SDAYE, EDAYS);
 
 
 
@@ -1965,7 +2019,7 @@ namespace TKWAREHOUSE
 
         private void button10_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT();
+            SETFASTREPORT(dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), comboBox5.Text);
         }
 
 
