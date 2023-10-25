@@ -64,6 +64,7 @@ namespace TKWAREHOUSE
             comboBox1load();
             comboBox2load();
             comboBox3load();
+            comboBox4load();
         }
 
         #region FUNCTION
@@ -172,6 +173,10 @@ namespace TKWAREHOUSE
         public void comboBox3load()
         {
             LoadComboBoxData(comboBox3, "SELECT [NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='ISVALIDS' GROUP BY [NAMES]  ", "NAMES", "NAMES");
+        }
+        public void comboBox4load()
+        {
+            LoadComboBoxData(comboBox4, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='PACKNAMES' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
         }
 
         public void Search_COPTG(string TG002)
@@ -295,7 +300,7 @@ namespace TKWAREHOUSE
                     textBox4.Text = row.Cells["網購包材重量(KG)A"].Value.ToString();
                     textBox5.Text = row.Cells["商品總重量(KG)B"].Value.ToString();
                     textBox6.Text = row.Cells["實際比值"].Value.ToString();
-                    textBox7.Text = row.Cells["使用包材名稱/規格"].Value.ToString();
+                    comboBox4.Text = row.Cells["使用包材名稱/規格"].Value.ToString();
                     textBox8.Text = row.Cells["使用包材來源"].Value.ToString();
                     textBox9.Text = row.Cells["NO"].Value.ToString();
 
@@ -482,7 +487,7 @@ namespace TKWAREHOUSE
             textBox4.Text = "";
             textBox5.Text = "";
             textBox6.Text = "";
-            textBox7.Text = "";
+            //textBox7.Text = "";
             textBox8.Text = "";
             textBox9.Text = "";
 
@@ -1654,7 +1659,7 @@ namespace TKWAREHOUSE
                 string RATECLASS = comboBox1.Text.ToString();
                 string CHECKRATES = comboBox2.Text.ToString();
                 string ISVALIDS = comboBox3.Text.ToString();
-                string PACKAGENAMES = textBox7.Text;
+                string PACKAGENAMES = comboBox4.Text;
                 string PACKAGEFROM = textBox8.Text;
 
                 PACKAGEBOXS_ADD(
@@ -1691,7 +1696,7 @@ namespace TKWAREHOUSE
             string RATECLASS = comboBox1.Text.ToString();
             string CHECKRATES = comboBox2.Text.ToString();
             string ISVALIDS = comboBox3.Text.ToString();
-            string PACKAGENAMES = textBox7.Text;
+            string PACKAGENAMES = comboBox4.Text;
             string PACKAGEFROM = textBox8.Text;
 
             PACKAGEBOXS_ADD(
