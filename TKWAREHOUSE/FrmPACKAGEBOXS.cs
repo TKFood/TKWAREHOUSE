@@ -212,6 +212,7 @@ namespace TKWAREHOUSE
                                 ,(SELECT TOP 1 TH074 FROM [TK].dbo.COPTH WHERE TG001=TH001 AND TG002=TH002 ORDER BY  TH001)  AS '通路訂單'
                                 FROM [TK].dbo.COPTG
                                 WHERE 1=1
+                                AND TG023 IN ('Y','N')
                                 {0}
                                 AND TG001 IN (SELECT [NAMES]  FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE KINDS='COPTGTG001')
                                   ", sbSqlQuery1.ToString());
