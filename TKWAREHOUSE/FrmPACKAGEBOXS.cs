@@ -1792,7 +1792,7 @@ namespace TKWAREHOUSE
                                 AND COPTG.TG001 IN ('A23A')
                                 AND TG004 IN ('A209400300')
                                 AND TG003>='{0}' AND TG003<='{1}'
-     
+      
                                 ) AS TEMP
                                 ORDER BY 銷貨單別,銷貨單號
                                     ", SDAYE, EDAYS);
