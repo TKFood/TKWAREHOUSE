@@ -881,11 +881,19 @@ namespace TKWAREHOUSE
         {
 
             USB_Webcams = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+        
+
             if (USB_Webcams.Count > 0)  // The quantity of WebCam must be more than 0.
             {
                 
                 Cam = new VideoCaptureDevice(USB_Webcams[0].MonikerString);
-
+                // 取得視訊設備的所有可用解析度
+                VideoCapabilities[] availableResolutions = Cam.VideoCapabilities;
+                // 選擇所需的解析度，例如，選擇第一個可用的解析度
+                if (availableResolutions.Length > 0)
+                {
+                    Cam.VideoResolution = availableResolutions[18];
+                }
 
                 Cam.NewFrame += Cam_NewFrame;//Press Tab  to   create
             }
@@ -909,7 +917,9 @@ namespace TKWAREHOUSE
 
         void Cam_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;  // 設置 PictureBox 的大小模式
+            // 設定 PictureBox 的大小和模式
+            //pictureBox1.Size = new Size(Cam.VideoResolution.FrameSize.Width, Cam.VideoResolution.FrameSize.Height);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             //throw new NotImplementedException();
             pictureBox1.Image = (Bitmap)eventArgs.Frame.Clone();
         }
