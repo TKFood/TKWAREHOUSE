@@ -68,6 +68,14 @@ namespace TKWAREHOUSE
             comboBox3load();
             comboBox4load();
             comboBox5load();
+            comboBox6load();
+
+
+            DataTable DT = SET_Btnconnect();
+            if (DT != null && DT.Rows.Count >= 1)
+            {
+                comboBox6.Text = DT.Rows[0]["NAMES"].ToString();
+            }
         }
 
         #region FUNCTION
@@ -184,6 +192,11 @@ namespace TKWAREHOUSE
         public void comboBox5load()
         {
             LoadComboBoxData(comboBox5, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='REPORT1' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
+        }
+
+        public void comboBox6load()
+        {
+            LoadComboBoxData(comboBox6, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='PortNameSELECT' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
         }
 
         public void Search_COPTG(string TG002)
@@ -861,11 +874,13 @@ namespace TKWAREHOUSE
 
         public void TAKE_OPEN()
         {
+
             USB_Webcams = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             if (USB_Webcams.Count > 0)  // The quantity of WebCam must be more than 0.
             {
                 button1.Enabled = true;
                 Cam = new VideoCaptureDevice(USB_Webcams[0].MonikerString);
+
 
                 Cam.NewFrame += Cam_NewFrame;//Press Tab  to   create
             }
@@ -1516,11 +1531,8 @@ namespace TKWAREHOUSE
         {
             serialPortIn = new SerialPort();
 
-            DataTable DT = SET_Btnconnect();
-            if (DT != null && DT.Rows.Count >= 1)
-            {
-                serialPortIn.PortName = DT.Rows[0]["NAMES"].ToString();
-            }         
+
+            serialPortIn.PortName = comboBox6.Text.ToString();
             serialPortIn.BaudRate = 9600;
             serialPortIn.Parity = Parity.None;
             serialPortIn.DataBits = 8;
@@ -2159,7 +2171,7 @@ namespace TKWAREHOUSE
                 textBox3.Text = textBoxCAL.Text;
             }
             Btndisconnect();
-            Btnconnect();
+          
         }
         private void button9_Click(object sender, EventArgs e)
         {
@@ -2170,7 +2182,7 @@ namespace TKWAREHOUSE
                 textBox4.Text = textBoxCAL.Text;
             }
             Btndisconnect();
-            Btnconnect();
+         
         }
 
 
