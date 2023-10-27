@@ -730,7 +730,7 @@ namespace TKWAREHOUSE
                                     UPDATE [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
                                     SET
                                     
-                                    ,[TG001]='{1}'
+                                    [TG001]='{1}'
                                     ,[TG002]='{2}'
                                     ,[BOXNO]='{3}'
                                     ,[ALLWEIGHTS]={4}
@@ -742,7 +742,7 @@ namespace TKWAREHOUSE
                                     ,[ISVALIDS]='{10}'
                                     ,[PACKAGENAMES]='{11}'
                                     ,[PACKAGEFROM]='{12}'
-                                    )
+                                    
                                     WHERE [NO]='{0}'
                                                                      
                                         "
@@ -2019,7 +2019,7 @@ namespace TKWAREHOUSE
             string PACKAGENAMES = comboBox4.Text;
             string PACKAGEFROM = textBox8.Text;
 
-            PACKAGEBOXS_ADD(
+            PACKAGEBOXS_UPDATE(
                 NO
                 , TG001
                 , TG002
