@@ -2248,6 +2248,10 @@ namespace TKWAREHOUSE
             Btndisconnect();
             Btnconnect();
         }
+        private void button12_Click(object sender, EventArgs e)
+        {
+            SET_TEXT();
+        }
 
 
         #endregion
