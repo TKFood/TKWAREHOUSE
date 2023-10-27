@@ -1634,7 +1634,7 @@ namespace TKWAREHOUSE
             ymdhms = Convert.ToString(year) + "/" + Convert.ToString(month) + "/" + Convert.ToString(day) + " " + Convert.ToString(hour) + ":" + Convert.ToString(minute) + ":" + Convert.ToString(second) + " ";
 
 
-            if (textBox3.InvokeRequired)
+            if (textBoxCAL.InvokeRequired)
             {
                 ShowSerialDatadelegate SSDD = ShowSerialData;
                 Invoke(SSDD, s);
@@ -2167,24 +2167,47 @@ namespace TKWAREHOUSE
         private void button8_Click(object sender, EventArgs e)
         {
             Btndisconnect();
+            // 等待  秒
+            Thread.Sleep(1000);
             Btnconnect();
+            // 等待  秒
+            Thread.Sleep(1000);
+
             if (!string.IsNullOrEmpty(textBoxCAL.Text))
             {
-                textBox3.Text = textBoxCAL.Text;
+                float result;
+                if (float.TryParse(textBoxCAL.Text, out result))
+                {
+                    textBox3.Text = textBoxCAL.Text;
+                    Btndisconnect();
+                }
+                else
+                {
+                    // textBoxCAL.Text 不是有效的浮點數
+                }
             }
-            Btndisconnect();
-          
+
         }
         private void button9_Click(object sender, EventArgs e)
         {
             Btndisconnect();
+            // 等待  秒
+            Thread.Sleep(1000);
             Btnconnect();
+
             if (!string.IsNullOrEmpty(textBoxCAL.Text))
             {
-                textBox4.Text = textBoxCAL.Text;
-            }
-            Btndisconnect();
-         
+                float result;
+                if (float.TryParse(textBoxCAL.Text, out result))
+                {
+                    textBox4.Text = textBoxCAL.Text;
+                    Btndisconnect();
+                }
+                else
+                {
+                    // textBoxCAL.Text 不是有效的浮點數
+                }
+            }        
         }
 
 
