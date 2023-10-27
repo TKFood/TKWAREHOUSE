@@ -1668,6 +1668,18 @@ namespace TKWAREHOUSE
 
         }
 
+        private async void Btndisconnect()
+        {
+            if (serialPortIn.IsOpen)
+            {
+                serialPortIn.Close();
+                serialPortIn.Dispose();
+
+                Thread.Sleep(20);
+
+            }
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(comboBox1.Text.Equals("0.25公斤~1公斤"))
@@ -1995,7 +2007,7 @@ namespace TKWAREHOUSE
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string NO = textBox1.Text;
+            string NO = textBox9.Text;
             string BOXNO = textBox2.Text;
             string ALLWEIGHTS = textBox3.Text;
             string PACKWEIGHTS = textBox4.Text;
@@ -2037,7 +2049,7 @@ namespace TKWAREHOUSE
                 // 確認後執行的動作
                 // TODO: 在這裡執行您的程式碼
                 // 例如：
-                string NO = textBox1.Text;
+                string NO = textBox9.Text;
                 if (!string.IsNullOrEmpty(NO))
                 {
                     TPACKAGEBOXS_DELETE(NO);
@@ -2139,20 +2151,26 @@ namespace TKWAREHOUSE
 
 
         private void button8_Click(object sender, EventArgs e)
-        {           
-            if(!string.IsNullOrEmpty(textBoxCAL.Text))
+        {
+            Btndisconnect();
+            Btnconnect();
+            if (!string.IsNullOrEmpty(textBoxCAL.Text))
             {
                 textBox3.Text = textBoxCAL.Text;
-            } 
-
+            }
+            Btndisconnect();
+            Btnconnect();
         }
         private void button9_Click(object sender, EventArgs e)
         {
+            Btndisconnect();
+            Btnconnect();
             if (!string.IsNullOrEmpty(textBoxCAL.Text))
             {
                 textBox4.Text = textBoxCAL.Text;
             }
-
+            Btndisconnect();
+            Btnconnect();
         }
 
 
