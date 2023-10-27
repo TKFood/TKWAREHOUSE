@@ -1152,19 +1152,19 @@ namespace TKWAREHOUSE
 
                     if(ALLWEIGHT<0.25)
                     {
-                        comboBox4.Text = "回收箱小(335g)";
+                        comboBox4.Text = "回收箱小";
                     }
                     else if(ALLWEIGHT>=0.25 && ALLWEIGHT<1)
                     {
-                        comboBox4.Text = "回收箱小(335g)";
+                        comboBox4.Text = "回收箱小";
                     }
                     else if (ALLWEIGHT >= 1 && ALLWEIGHT < 3)
                     {
-                        comboBox4.Text = "回收箱中(640g)";
+                        comboBox4.Text = "回收箱中";
                     }
                     else if (ALLWEIGHT >= 3 )
                     {
-                        comboBox4.Text = "回收箱大(775g)";
+                        comboBox4.Text = "回收箱大";
                     }
 
                     CAL_RATES();
