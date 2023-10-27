@@ -883,7 +883,7 @@ namespace TKWAREHOUSE
             USB_Webcams = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             if (USB_Webcams.Count > 0)  // The quantity of WebCam must be more than 0.
             {
-                button1.Enabled = true;
+                
                 Cam = new VideoCaptureDevice(USB_Webcams[0].MonikerString);
 
 
@@ -891,7 +891,7 @@ namespace TKWAREHOUSE
             }
             else
             {
-                button1.Enabled = false;
+                
                 MessageBox.Show("No video input device is connected.");
             }
         }
@@ -909,6 +909,7 @@ namespace TKWAREHOUSE
 
         void Cam_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;  // 設置 PictureBox 的大小模式
             //throw new NotImplementedException();
             pictureBox1.Image = (Bitmap)eventArgs.Frame.Clone();
         }
