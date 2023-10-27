@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle47 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle48 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle67 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle68 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -88,6 +88,7 @@
             this.button10 = new System.Windows.Forms.Button();
             this.previewControl1 = new FastReport.Preview.PreviewControl();
             this.comboBox6 = new System.Windows.Forms.ComboBox();
+            this.button11 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -234,8 +235,8 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle47.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle47;
+            dataGridViewCellStyle67.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle67;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
@@ -270,8 +271,8 @@
             // 
             this.dataGridView2.AllowUserToAddRows = false;
             this.dataGridView2.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle48.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle48;
+            dataGridViewCellStyle68.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle68;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView2.Location = new System.Drawing.Point(0, 0);
@@ -318,16 +319,17 @@
             this.tableLayoutPanel2.Controls.Add(this.textBox3, 1, 4);
             this.tableLayoutPanel2.Controls.Add(this.button9, 1, 3);
             this.tableLayoutPanel2.Controls.Add(this.button8, 1, 5);
-            this.tableLayoutPanel2.Controls.Add(this.label12, 3, 2);
-            this.tableLayoutPanel2.Controls.Add(this.pictureBox1, 3, 4);
-            this.tableLayoutPanel2.Controls.Add(this.button4, 4, 11);
-            this.tableLayoutPanel2.Controls.Add(this.button3, 3, 11);
-            this.tableLayoutPanel2.Controls.Add(this.button7, 4, 10);
+            this.tableLayoutPanel2.Controls.Add(this.pictureBox1, 3, 5);
             this.tableLayoutPanel2.Controls.Add(this.comboBox4, 1, 11);
             this.tableLayoutPanel2.Controls.Add(this.textBoxCAL, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.button4, 4, 12);
+            this.tableLayoutPanel2.Controls.Add(this.button3, 3, 12);
+            this.tableLayoutPanel2.Controls.Add(this.button7, 4, 11);
+            this.tableLayoutPanel2.Controls.Add(this.button6, 4, 10);
+            this.tableLayoutPanel2.Controls.Add(this.button5, 3, 10);
+            this.tableLayoutPanel2.Controls.Add(this.label12, 3, 4);
             this.tableLayoutPanel2.Controls.Add(this.comboBox6, 3, 3);
-            this.tableLayoutPanel2.Controls.Add(this.button5, 3, 9);
-            this.tableLayoutPanel2.Controls.Add(this.button6, 4, 9);
+            this.tableLayoutPanel2.Controls.Add(this.button11, 4, 3);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
@@ -490,7 +492,7 @@
             // 
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(162, 330);
+            this.comboBox1.Location = new System.Drawing.Point(162, 328);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(175, 24);
             this.comboBox1.TabIndex = 68;
@@ -610,7 +612,7 @@
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(363, 92);
+            this.label12.Location = new System.Drawing.Point(363, 172);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(114, 16);
             this.label12.TabIndex = 71;
@@ -621,7 +623,7 @@
             this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.tableLayoutPanel2.SetColumnSpan(this.pictureBox1, 3);
-            this.pictureBox1.Location = new System.Drawing.Point(363, 163);
+            this.pictureBox1.Location = new System.Drawing.Point(363, 203);
             this.pictureBox1.Name = "pictureBox1";
             this.tableLayoutPanel2.SetRowSpan(this.pictureBox1, 5);
             this.pictureBox1.Size = new System.Drawing.Size(309, 194);
@@ -631,7 +633,7 @@
             // button5
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.Location = new System.Drawing.Point(364, 364);
+            this.button5.Location = new System.Drawing.Point(364, 404);
             this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(112, 32);
@@ -643,7 +645,7 @@
             // button6
             // 
             this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button6.Location = new System.Drawing.Point(484, 364);
+            this.button6.Location = new System.Drawing.Point(484, 404);
             this.button6.Margin = new System.Windows.Forms.Padding(4);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(112, 32);
@@ -655,7 +657,7 @@
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(484, 444);
+            this.button4.Location = new System.Drawing.Point(484, 484);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(112, 32);
@@ -667,7 +669,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(364, 444);
+            this.button3.Location = new System.Drawing.Point(364, 484);
             this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(112, 32);
@@ -679,7 +681,7 @@
             // button7
             // 
             this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button7.Location = new System.Drawing.Point(484, 404);
+            this.button7.Location = new System.Drawing.Point(484, 444);
             this.button7.Margin = new System.Windows.Forms.Padding(4);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(112, 32);
@@ -692,7 +694,7 @@
             // 
             this.comboBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(162, 450);
+            this.comboBox4.Location = new System.Drawing.Point(162, 448);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(175, 24);
             this.comboBox4.TabIndex = 84;
@@ -852,6 +854,18 @@
             this.comboBox6.Size = new System.Drawing.Size(114, 24);
             this.comboBox6.TabIndex = 85;
             // 
+            // button11
+            // 
+            this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button11.Location = new System.Drawing.Point(484, 124);
+            this.button11.Margin = new System.Windows.Forms.Padding(4);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(112, 32);
+            this.button11.TabIndex = 86;
+            this.button11.Text = "重設秤重";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // FrmPACKAGEBOXS
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -862,6 +876,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmPACKAGEBOXS";
             this.Text = "FrmPACKAGEBOXS";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmPACKAGEBOXS_FormClosed);
             this.Load += new System.EventHandler(this.FrmPACKAGEBOXS_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -955,5 +970,6 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker3;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.ComboBox comboBox6;
+        private System.Windows.Forms.Button button11;
     }
 }

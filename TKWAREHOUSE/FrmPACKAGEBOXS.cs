@@ -81,8 +81,13 @@ namespace TKWAREHOUSE
         #region FUNCTION
 
         private void FrmPACKAGEBOXS_Load(object sender, EventArgs e)
-        {
+        {           
             Btnconnect();
+        }
+
+        private void FrmPACKAGEBOXS_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Btndisconnect();
         }
         public void LoadComboBoxData(System.Windows.Forms.ComboBox comboBox, string query, string valueMember, string displayMember)
         {
@@ -1223,16 +1228,16 @@ namespace TKWAREHOUSE
         {
             float result;
             string input1 = textBox4.Text;
-            string input2 = textBox5.Text;
+            string input2 = textBox3.Text;
             float PACKWEIGHTS = 0;
-            float PRODUCTWEIGHTS = 0;
+            float ALLPRODUCTWEIGHTS = 0;
             if (!string.IsNullOrEmpty(input1) && !string.IsNullOrEmpty(input2))
             {
                 if (float.TryParse(input1, out result) && float.TryParse(input2, out result))
                 {
                     PACKWEIGHTS = float.Parse(input1);
-                    PRODUCTWEIGHTS = float.Parse(input2);
-                    textBox3.Text = (PACKWEIGHTS+ PRODUCTWEIGHTS).ToString("0.00");
+                    ALLPRODUCTWEIGHTS = float.Parse(input2);
+                    textBox5.Text = (ALLPRODUCTWEIGHTS - PACKWEIGHTS).ToString("0.000");
                 }
                 else
                 {
@@ -2166,12 +2171,13 @@ namespace TKWAREHOUSE
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Btndisconnect();
-            // 等待  秒
-            Thread.Sleep(1000);
-            Btnconnect();
-            // 等待  秒
-            Thread.Sleep(1000);
+            int MAXTRY = 1;
+            //Btndisconnect();
+            //// 等待  秒
+            ////Thread.Sleep(1000);
+            //Btnconnect();
+            //// 等待  秒
+            ////Thread.Sleep(1000);            
 
             if (!string.IsNullOrEmpty(textBoxCAL.Text))
             {
@@ -2179,7 +2185,16 @@ namespace TKWAREHOUSE
                 if (float.TryParse(textBoxCAL.Text, out result))
                 {
                     textBox3.Text = textBoxCAL.Text;
-                    Btndisconnect();
+
+                    while (MAXTRY <= 10 && !textBoxCAL.Text.Equals(textBox3.Text))
+                    {
+                        textBox3.Text = textBoxCAL.Text;
+
+                        MAXTRY = MAXTRY + 1;
+                        Thread.Sleep(10);
+                    }
+
+                    //Btndisconnect();
                 }
                 else
                 {
@@ -2190,10 +2205,13 @@ namespace TKWAREHOUSE
         }
         private void button9_Click(object sender, EventArgs e)
         {
-            Btndisconnect();
-            // 等待  秒
-            Thread.Sleep(1000);
-            Btnconnect();
+            int MAXTRY = 1;
+            //Btndisconnect();
+            //// 等待  秒
+            ////Thread.Sleep(1000);
+            //Btnconnect();
+            //// 等待  秒
+            ////Thread.Sleep(1000);
 
             if (!string.IsNullOrEmpty(textBoxCAL.Text))
             {
@@ -2201,7 +2219,16 @@ namespace TKWAREHOUSE
                 if (float.TryParse(textBoxCAL.Text, out result))
                 {
                     textBox4.Text = textBoxCAL.Text;
-                    Btndisconnect();
+
+                    while (MAXTRY <= 10 && !textBoxCAL.Text.Equals(textBox4.Text))
+                    {
+                        textBox4.Text = textBoxCAL.Text;
+
+                        MAXTRY = MAXTRY +1;
+                        Thread.Sleep(10);
+                    }
+
+                    //Btndisconnect();
                 }
                 else
                 {
@@ -2214,6 +2241,12 @@ namespace TKWAREHOUSE
         private void button10_Click(object sender, EventArgs e)
         {
             SETFASTREPORT(dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), comboBox5.Text);
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            Btndisconnect();
+            Btnconnect();
         }
 
 
