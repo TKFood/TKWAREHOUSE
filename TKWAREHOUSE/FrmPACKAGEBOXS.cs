@@ -892,7 +892,7 @@ namespace TKWAREHOUSE
                 // 選擇所需的解析度，例如，選擇第一個可用的解析度
                 if (availableResolutions.Length > 0)
                 {
-                    Cam.VideoResolution = availableResolutions[18];
+                    Cam.VideoResolution = availableResolutions[10];
                 }
 
                 Cam.NewFrame += Cam_NewFrame;//Press Tab  to   create
@@ -1275,11 +1275,11 @@ namespace TKWAREHOUSE
                     decimal difference = (decimal)(ALLWEIGHTS - PACKWEIGHTS);
                     textBox5.Text = difference.ToString("0.00"); // 保留小數第二位
 
-                    rates = (PACKWEIGHTS / ALLWEIGHTS) * 100;
+                    rates = (PACKWEIGHTS * 100 / ALLWEIGHTS * 100) ;
                     textBox6.Text = rates.ToString("0.00") + "%";
                 }
                 else
-                {
+                { 
                     MessageBox.Show("重量不是數字格式");
                 }
             }          
