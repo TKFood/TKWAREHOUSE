@@ -2074,6 +2074,7 @@ namespace TKWAREHOUSE
         private void button5_Click(object sender, EventArgs e)
         {
             NO = textBox9.Text;
+
             if (!string.IsNullOrEmpty(NO))
             {
                 TAKE_OPEN();
@@ -2087,7 +2088,8 @@ namespace TKWAREHOUSE
             {
                 MessageBox.Show("沒有對應 箱號，不能開啟相機");
             }
-                
+
+
         }
 
         private void button6_Click(object sender, EventArgs e)
