@@ -348,10 +348,12 @@ namespace TKWAREHOUSE
                         using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
                         {
                             pictureBox1.Image = Image.FromStream(ms);
+                            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                         }
                         using (MemoryStream ms = new MemoryStream(retrievedImageBytes2))
                         {
                             pictureBox2.Image = Image.FromStream(ms);
+                            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
                         }
                     }
                     catch
