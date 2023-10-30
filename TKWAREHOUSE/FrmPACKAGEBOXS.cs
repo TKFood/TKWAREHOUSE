@@ -351,7 +351,7 @@ namespace TKWAREHOUSE
                         }
                         using (MemoryStream ms = new MemoryStream(retrievedImageBytes2))
                         {
-                            pictureBox1.Image = Image.FromStream(ms);
+                            pictureBox2.Image = Image.FromStream(ms);
                         }
                     }
                     catch
@@ -2080,11 +2080,11 @@ namespace TKWAREHOUSE
                                 ,A.[CTIMES] AS '總重照片時間'
                                 ,B.[CTIMES] AS '毛重照片時間'
                                 ,A.[PHOTOS] AS '總重PHOTOS'
-                                ,B.[PHOTOS] AS '毛重PHOTOS'
+                                ,B.[PHOTOS] AS '箱重PHOTOS'
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
-                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='毛重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A233')
                                 AND TG003>='{0}' AND TG003<='{1}'
@@ -2112,11 +2112,11 @@ namespace TKWAREHOUSE
                                 ,A.[CTIMES] AS '總重照片時間'
                                 ,B.[CTIMES] AS '毛重照片時間'
                                 ,A.[PHOTOS] AS '總重PHOTOS'
-                                ,B.[PHOTOS] AS '毛重PHOTOS'
+                                ,B.[PHOTOS] AS '箱重PHOTOS'
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
-                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='毛重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A23A')
                                 AND TG004 IN ('A209400300')
