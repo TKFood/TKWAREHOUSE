@@ -2418,9 +2418,9 @@ namespace TKWAREHOUSE
                 //DisplayImageFromFolder("");
                 //pictureBox1.Image = null;
 
-                pictureBox2.Image.Dispose();
-                pictureBox2.Image = null;
-                pictureBox2.ImageLocation = null;
+                pictureBox1.Image.Dispose();
+                pictureBox1.Image = null;
+                pictureBox1.ImageLocation = null;
 
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
                 string imagePathNames = imagePath + "\\" + NO + "-總重.jpg";
