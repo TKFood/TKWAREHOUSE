@@ -1561,7 +1561,7 @@ namespace TKWAREHOUSE
                     decimal difference = (decimal)(ALLWEIGHTS - PACKWEIGHTS);
                     textBox5.Text = difference.ToString("0.00"); // 保留小數第二位
 
-                    rates = (PACKWEIGHTS * 100 / ALLWEIGHTS * 100) ;
+                    rates = (PACKWEIGHTS * 100 / ALLWEIGHTS * 100)/100 ;
                     textBox6.Text = rates.ToString("0.00") + "%";
                 }
                 else
