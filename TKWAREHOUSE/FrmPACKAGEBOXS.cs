@@ -2265,6 +2265,15 @@ namespace TKWAREHOUSE
             textBox1.Text = TG001TG002;
         }
 
+        private void button13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+
+        }
 
         #endregion
 
