@@ -2332,6 +2332,53 @@ namespace TKWAREHOUSE
 
             Search_PACKAGEBOXS(TG001TG002);
         }
+
+        public void AFTER_DELETE()
+        {
+            NO = textBox9.Text;
+            if (!string.IsNullOrEmpty(NO))
+            {
+                //DisplayImageFromFolder("");
+                //pictureBox1.Image = null;
+
+                pictureBox2.Image.Dispose();
+                pictureBox2.Image = null;
+                pictureBox2.ImageLocation = null;
+
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + "-箱重.jpg";
+
+                if (File.Exists(imagePathNames))
+                {
+                    DELETE_ImageIntoDatabase2(NO);
+                    DEL_IMAGES2(imagePathNames);
+
+
+                }
+            }
+           
+            if (!string.IsNullOrEmpty(NO))
+            {
+                //DisplayImageFromFolder("");
+                //pictureBox1.Image = null;
+
+                pictureBox1.Image.Dispose();
+                pictureBox1.Image = null;
+                pictureBox1.ImageLocation = null;
+
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + "-總重.jpg";
+
+                if (File.Exists(imagePathNames))
+                {
+                    DELETE_ImageIntoDatabase(NO);
+                    DEL_IMAGES(imagePathNames);
+
+
+                }
+
+            }
+        }
         #endregion
 
 
@@ -2411,6 +2458,8 @@ namespace TKWAREHOUSE
                 string NO = textBox9.Text;
                 if (!string.IsNullOrEmpty(NO))
                 {
+                    AFTER_DELETE();
+
                     TPACKAGEBOXS_DELETE(NO);
                     Search_PACKAGEBOXS(TG001TG002);
                 }
