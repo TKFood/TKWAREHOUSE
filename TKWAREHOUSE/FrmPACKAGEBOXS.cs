@@ -2265,6 +2265,39 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+
+        public void AFTER_UPDATE()
+        {
+            string NO = textBox9.Text;
+            string BOXNO = textBox2.Text;
+            string ALLWEIGHTS = textBox3.Text;
+            string PACKWEIGHTS = textBox4.Text;
+            string PRODUCTWEIGHTS = textBox5.Text;
+            string PACKRATES = textBox6.Text;
+            string RATECLASS = comboBox1.Text.ToString();
+            string CHECKRATES = comboBox2.Text.ToString();
+            string ISVALIDS = comboBox3.Text.ToString();
+            string PACKAGENAMES = comboBox4.Text;
+            string PACKAGEFROM = textBox8.Text;
+
+            PACKAGEBOXS_UPDATE(
+                NO
+                , TG001
+                , TG002
+                , BOXNO
+                , ALLWEIGHTS
+                , PACKWEIGHTS
+                , PRODUCTWEIGHTS
+                , PACKRATES
+                , RATECLASS
+                , CHECKRATES
+                , ISVALIDS
+                , PACKAGENAMES
+                , PACKAGEFROM
+                );
+
+            Search_PACKAGEBOXS(TG001TG002);
+        }
         #endregion
 
 
@@ -2319,6 +2352,8 @@ namespace TKWAREHOUSE
                     );
 
                 Search_PACKAGEBOXS(TG001TG002);
+
+                textBox9.Text = NO;
             }
 
 
@@ -2402,6 +2437,7 @@ namespace TKWAREHOUSE
 
         private void button6_Click(object sender, EventArgs e)
         {
+          
             NO = textBox9.Text;
             if (!string.IsNullOrEmpty(NO))
             {
@@ -2423,6 +2459,8 @@ namespace TKWAREHOUSE
                     Cam.Stop();  // WebCam stops capturing images.
                 }
                 catch { }
+
+                AFTER_UPDATE();
 
                 MessageBox.Show("拍照完成");
             }

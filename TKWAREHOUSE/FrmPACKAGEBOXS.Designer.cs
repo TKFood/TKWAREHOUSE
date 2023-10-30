@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle41 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle42 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle47 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle48 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -241,8 +241,8 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle41.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle41;
+            dataGridViewCellStyle47.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle47;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
@@ -277,8 +277,8 @@
             // 
             this.dataGridView2.AllowUserToAddRows = false;
             this.dataGridView2.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle42.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle42;
+            dataGridViewCellStyle48.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle48;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView2.Location = new System.Drawing.Point(0, 0);
@@ -326,21 +326,21 @@
             this.tableLayoutPanel2.Controls.Add(this.button8, 1, 5);
             this.tableLayoutPanel2.Controls.Add(this.comboBox4, 1, 11);
             this.tableLayoutPanel2.Controls.Add(this.textBoxCAL, 0, 3);
-            this.tableLayoutPanel2.Controls.Add(this.label12, 3, 4);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox6, 3, 3);
-            this.tableLayoutPanel2.Controls.Add(this.button11, 4, 3);
-            this.tableLayoutPanel2.Controls.Add(this.button3, 3, 2);
-            this.tableLayoutPanel2.Controls.Add(this.button4, 4, 2);
             this.tableLayoutPanel2.Controls.Add(this.button12, 4, 1);
             this.tableLayoutPanel2.Controls.Add(this.textBox1, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.button13, 3, 8);
-            this.tableLayoutPanel2.Controls.Add(this.button14, 4, 8);
-            this.tableLayoutPanel2.Controls.Add(this.button7, 4, 13);
-            this.tableLayoutPanel2.Controls.Add(this.button6, 3, 13);
-            this.tableLayoutPanel2.Controls.Add(this.pictureBox1, 3, 10);
-            this.tableLayoutPanel2.Controls.Add(this.pictureBox2, 3, 5);
-            this.tableLayoutPanel2.Controls.Add(this.button15, 4, 4);
-            this.tableLayoutPanel2.Controls.Add(this.button5, 4, 9);
+            this.tableLayoutPanel2.Controls.Add(this.button3, 5, 1);
+            this.tableLayoutPanel2.Controls.Add(this.button4, 5, 2);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox6, 3, 2);
+            this.tableLayoutPanel2.Controls.Add(this.button11, 4, 2);
+            this.tableLayoutPanel2.Controls.Add(this.label12, 3, 3);
+            this.tableLayoutPanel2.Controls.Add(this.button15, 4, 3);
+            this.tableLayoutPanel2.Controls.Add(this.pictureBox2, 3, 4);
+            this.tableLayoutPanel2.Controls.Add(this.button13, 3, 7);
+            this.tableLayoutPanel2.Controls.Add(this.button14, 4, 7);
+            this.tableLayoutPanel2.Controls.Add(this.button5, 4, 8);
+            this.tableLayoutPanel2.Controls.Add(this.pictureBox1, 3, 9);
+            this.tableLayoutPanel2.Controls.Add(this.button7, 4, 12);
+            this.tableLayoutPanel2.Controls.Add(this.button6, 3, 12);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
@@ -438,7 +438,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(112, 32);
             this.button2.TabIndex = 16;
-            this.button2.Text = "新增儲存-3";
+            this.button2.Text = "新增-1";
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -614,7 +614,7 @@
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(173, 32);
             this.button9.TabIndex = 82;
-            this.button9.Text = "量箱-1";
+            this.button9.Text = "量箱-2";
             this.button9.UseVisualStyleBackColor = false;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
@@ -627,7 +627,7 @@
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(173, 32);
             this.button8.TabIndex = 79;
-            this.button8.Text = "量總重-2";
+            this.button8.Text = "量總重-5";
             this.button8.UseVisualStyleBackColor = false;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
@@ -636,7 +636,7 @@
             this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.tableLayoutPanel2.SetColumnSpan(this.pictureBox1, 2);
-            this.pictureBox1.Location = new System.Drawing.Point(363, 403);
+            this.pictureBox1.Location = new System.Drawing.Point(363, 363);
             this.pictureBox1.Name = "pictureBox1";
             this.tableLayoutPanel2.SetRowSpan(this.pictureBox1, 3);
             this.pictureBox1.Size = new System.Drawing.Size(234, 114);
@@ -664,7 +664,7 @@
             // button7
             // 
             this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button7.Location = new System.Drawing.Point(484, 524);
+            this.button7.Location = new System.Drawing.Point(484, 484);
             this.button7.Margin = new System.Windows.Forms.Padding(4);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(112, 32);
@@ -677,7 +677,7 @@
             // 
             this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button6.BackColor = System.Drawing.Color.Orange;
-            this.button6.Location = new System.Drawing.Point(364, 524);
+            this.button6.Location = new System.Drawing.Point(364, 484);
             this.button6.Margin = new System.Windows.Forms.Padding(4);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(112, 32);
@@ -690,7 +690,7 @@
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button5.BackColor = System.Drawing.Color.Orange;
-            this.button5.Location = new System.Drawing.Point(484, 364);
+            this.button5.Location = new System.Drawing.Point(484, 324);
             this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(112, 32);
@@ -703,7 +703,7 @@
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(363, 172);
+            this.label12.Location = new System.Drawing.Point(363, 132);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(114, 16);
             this.label12.TabIndex = 71;
@@ -713,7 +713,7 @@
             // 
             this.comboBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Location = new System.Drawing.Point(363, 128);
+            this.comboBox6.Location = new System.Drawing.Point(363, 88);
             this.comboBox6.Name = "comboBox6";
             this.comboBox6.Size = new System.Drawing.Size(114, 24);
             this.comboBox6.TabIndex = 85;
@@ -721,7 +721,7 @@
             // button11
             // 
             this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button11.Location = new System.Drawing.Point(484, 124);
+            this.button11.Location = new System.Drawing.Point(484, 84);
             this.button11.Margin = new System.Windows.Forms.Padding(4);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(112, 32);
@@ -733,7 +733,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(364, 84);
+            this.button3.Location = new System.Drawing.Point(604, 44);
             this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(112, 32);
@@ -745,7 +745,7 @@
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(484, 84);
+            this.button4.Location = new System.Drawing.Point(604, 84);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(112, 32);
@@ -928,7 +928,7 @@
             this.pictureBox2.BackColor = System.Drawing.Color.White;
             this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.tableLayoutPanel2.SetColumnSpan(this.pictureBox2, 2);
-            this.pictureBox2.Location = new System.Drawing.Point(363, 203);
+            this.pictureBox2.Location = new System.Drawing.Point(363, 163);
             this.pictureBox2.Name = "pictureBox2";
             this.tableLayoutPanel2.SetRowSpan(this.pictureBox2, 3);
             this.pictureBox2.Size = new System.Drawing.Size(234, 114);
@@ -939,19 +939,19 @@
             // 
             this.button13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button13.BackColor = System.Drawing.Color.Orange;
-            this.button13.Location = new System.Drawing.Point(364, 324);
+            this.button13.Location = new System.Drawing.Point(364, 284);
             this.button13.Margin = new System.Windows.Forms.Padding(4);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(112, 32);
             this.button13.TabIndex = 89;
-            this.button13.Text = "拍照箱重-5";
+            this.button13.Text = "拍照箱重-4";
             this.button13.UseVisualStyleBackColor = false;
             this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // button14
             // 
             this.button14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button14.Location = new System.Drawing.Point(484, 324);
+            this.button14.Location = new System.Drawing.Point(484, 284);
             this.button14.Margin = new System.Windows.Forms.Padding(4);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(112, 32);
@@ -964,12 +964,12 @@
             // 
             this.button15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button15.BackColor = System.Drawing.Color.Orange;
-            this.button15.Location = new System.Drawing.Point(484, 164);
+            this.button15.Location = new System.Drawing.Point(484, 124);
             this.button15.Margin = new System.Windows.Forms.Padding(4);
             this.button15.Name = "button15";
             this.button15.Size = new System.Drawing.Size(112, 32);
             this.button15.TabIndex = 91;
-            this.button15.Text = "開相機箱重-4";
+            this.button15.Text = "開相機箱重-3";
             this.button15.UseVisualStyleBackColor = false;
             this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
