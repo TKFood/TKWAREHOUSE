@@ -982,7 +982,7 @@ namespace TKWAREHOUSE
                                     INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
                                     ([NO],[TYPES], [CTIMES], [PHOTOS])
                                     VALUES
-                                    (@NO, @CTIMES, @PHOTOS)
+                                    (@NO,@TYPES, @CTIMES, @PHOTOS)
                                     "
                                     );
 
