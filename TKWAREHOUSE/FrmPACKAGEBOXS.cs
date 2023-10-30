@@ -529,6 +529,7 @@ namespace TKWAREHOUSE
 
             // 清除 PictureBox 的图像
             pictureBox1.Image = null;
+            pictureBox2.Image = null; 
         }
         private void DisplayImageFromFolder(string NO)
         {
