@@ -296,10 +296,10 @@ namespace TKWAREHOUSE
                                 ,[TG002] AS '銷貨單號'
                                 ,[PACKAGEBOXS].[NO]
                                 ,A.[PHOTOS] AS '總重PHOTOS'
-                                ,B.[PHOTOS] AS '毛重PHOTOS'
+                                ,B.[PHOTOS] AS '箱重PHOTOS'
                                 FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
-                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='毛重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
                                 WHERE TG001+TG002='{0}'
                                 ORDER BY [BOXNO]
                                   ", TG001TG002);
@@ -343,7 +343,7 @@ namespace TKWAREHOUSE
 
                     try
                     {
-                        retrievedImageBytes = (byte[])row.Cells["毛重PHOTOS"].Value;
+                        retrievedImageBytes = (byte[])row.Cells["箱重PHOTOS"].Value;
                         retrievedImageBytes2 = (byte[])row.Cells["總重PHOTOS"].Value;
                         using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
                         {
