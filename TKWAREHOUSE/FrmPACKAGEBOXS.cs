@@ -52,6 +52,7 @@ namespace TKWAREHOUSE
 
         public FilterInfoCollection USB_Webcams = null;//FilterInfoCollection類別實體化
         public VideoCaptureDevice Cam;//攝像頭的初始化
+        public VideoCaptureDevice Cam2;//攝像頭的初始化
 
         public Thread ReadSerialDataThread;
         public string readseroaldata;
@@ -951,7 +952,7 @@ namespace TKWAREHOUSE
         }
 
         // 將位元組數組插入到資料庫的 BLOB 欄位中
-        private void InsertImageIntoDatabase(string NO, string CTIMES, byte[] imageBytes)
+        private void InsertImageIntoDatabase(string NO,string TYPES, string CTIMES, byte[] imageBytes)
         {
             SqlConnection sqlConn = new SqlConnection();
             SqlCommand sqlComm = new SqlCommand();
@@ -979,13 +980,14 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"
                                     INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
-                                    ([NO], [CTIMES], [PHOTOS])
+                                    ([NO],[TYPES], [CTIMES], [PHOTOS])
                                     VALUES
                                     (@NO, @CTIMES, @PHOTOS)
                                     "
                                     );
 
                 cmd.Parameters.AddWithValue("@NO", NO);
+                cmd.Parameters.AddWithValue("@TYPES", TYPES);
                 cmd.Parameters.AddWithValue("@CTIMES", CTIMES);
                 cmd.Parameters.AddWithValue("@PHOTOS", imageBytes);
 
@@ -1030,7 +1032,7 @@ namespace TKWAREHOUSE
             if (image != null)
             {
                 byte[] imageBytes = ImageToByteArray(image);
-                InsertImageIntoDatabase(NO, DateTime.Now.ToString("yyyyMMdd HH:MM:ss"), imageBytes);
+                InsertImageIntoDatabase(NO, "總重", DateTime.Now.ToString("yyyyMMdd HH:MM:ss"), imageBytes);
 
             }
             else
@@ -1068,7 +1070,8 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"
                                     DELETE [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
-                                    WHERE NO=@NO"
+                                    WHERE TYPES='總重'
+                                    AND NO=@NO"
                                     );
 
                 cmd.Parameters.AddWithValue("@NO", NO);
@@ -1147,7 +1150,278 @@ namespace TKWAREHOUSE
             }
         }
 
-   
+        public void TAKE_OPEN2()
+        {
+
+            USB_Webcams = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+
+
+            if (USB_Webcams.Count > 0)  // The quantity of WebCam must be more than 0.
+            {
+
+                Cam2 = new VideoCaptureDevice(USB_Webcams[0].MonikerString);
+                // 取得視訊設備的所有可用解析度
+                VideoCapabilities[] availableResolutions = Cam2.VideoCapabilities;
+                // 選擇所需的解析度，例如，選擇第一個可用的解析度
+                if (availableResolutions.Length > 0)
+                {
+                    Cam2.VideoResolution = availableResolutions[10];
+                }
+
+                Cam2.NewFrame += Cam_NewFrame2;//Press Tab  to   create
+            }
+            else
+            {
+
+                MessageBox.Show("No video input device is connected.");
+            }
+        }
+
+        public void TAKE_CLOSE2()
+        {
+            if (Cam2 != null)
+            {
+                if (Cam2.IsRunning)  // When Form1 closes itself, WebCam must stop, too.
+                {
+                    Cam2.Stop();   // WebCam stops capturing images.
+                }
+            }
+        }
+
+        void Cam_NewFrame2(object sender, NewFrameEventArgs eventArgs)
+        {
+            // 設定 PictureBox 的大小和模式
+            //pictureBox1.Size = new Size(Cam.VideoResolution.FrameSize.Width, Cam.VideoResolution.FrameSize.Height);
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            //throw new NotImplementedException();
+            pictureBox2.Image = (Bitmap)eventArgs.Frame.Clone();
+        }
+
+        //保存图片
+        private delegate void SaveImage2();
+        private void SaveImageHH2(string ImagePath)
+        {
+            if (this.pictureBox2.InvokeRequired)
+            {
+                SaveImage saveimage = delegate { this.pictureBox2.Image.Save(ImagePath); };
+                this.pictureBox2.Invoke(saveimage);
+            }
+            else
+            {
+                this.pictureBox2.Image.Save(ImagePath);
+            }
+
+        }
+
+        // 將 PictureBox 中的圖片轉換為位元組數組
+        private byte[] ImageToByteArray2(Image image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); // 或者使用其他圖像格式
+                return ms.ToArray();
+            }
+        }
+
+        // 將位元組數組插入到資料庫的 BLOB 欄位中
+        private void InsertImageIntoDatabase2(string NO,string TYPES, string CTIMES, byte[] imageBytes)
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
+                                    ([NO],[TYPES], [CTIMES], [PHOTOS])
+                                    VALUES
+                                    (@NO,@TYPES, @CTIMES, @PHOTOS)
+                                    "
+                                    );
+
+                cmd.Parameters.AddWithValue("@NO", NO);
+                cmd.Parameters.AddWithValue("@TYPES", TYPES);
+                cmd.Parameters.AddWithValue("@CTIMES", CTIMES);
+                cmd.Parameters.AddWithValue("@PHOTOS", imageBytes);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    MessageBox.Show("圖片存儲 失敗");
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    //MessageBox.Show("圖片已成功存儲到資料庫。");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        // 將 PictureBox 中的圖片存儲到資料庫
+        private void SaveImageToDatabase2(string NO)
+        {
+
+            // 替換為您的 PictureBox 控制項名稱
+            Image image = pictureBox2.Image;
+
+            if (image != null)
+            {
+                byte[] imageBytes = ImageToByteArray2(image);
+                InsertImageIntoDatabase2(NO,"箱重", DateTime.Now.ToString("yyyyMMdd HH:MM:ss"), imageBytes);
+
+            }
+            else
+            {
+                MessageBox.Show("pictureBox1是空的");
+            }
+        }
+
+
+        private void DELETE_ImageIntoDatabase2(string NO)
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"
+                                    DELETE [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO]
+                                    WHERE TYPES='箱重' AND NO=@NO"
+                                    );
+
+                cmd.Parameters.AddWithValue("@NO", NO);
+
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    //MessageBox.Show("圖片已成功存儲到資料庫。");
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void DEL_IMAGES2(string ImagePath)
+        {
+            //// 指定圖片的完整路徑，包括資料夾和檔案名稱
+            string imagePaths = ImagePath;
+
+            try
+            {
+                int maxRetryAttempts = 3;
+                int retryDelayMilliseconds = 1000; // 1秒
+
+                for (int i = 0; i < maxRetryAttempts; i++)
+                {
+                    try
+                    {
+                        File.Delete(imagePaths);
+                        imagePaths = null; // 设置为 null，以释放资源
+
+                        MessageBox.Show("完成-刪除照片 ");
+                        break; // 如果删除成功，退出循环
+                    }
+                    catch (IOException ex)
+                    {
+                        if (i < maxRetryAttempts - 1)
+                        {
+                            // 如果删除失败，等待一段时间后重试
+                            System.Threading.Thread.Sleep(retryDelayMilliseconds);
+                        }
+                        else
+                        {
+                            MessageBox.Show("失敗-刪除照片 請重開程式再刪除");
+                            // 如果达到最大重试次数仍然无法删除，处理异常或显示错误消息
+                            //MessageBox.Show("无法删除图像文件，因为它正在被其他进程使用。");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 处理其他异常
+            }
+        }
+
+
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
@@ -2115,7 +2389,7 @@ namespace TKWAREHOUSE
             {
                 //string imagePath = System.Environment.CurrentDirectory;
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
-                string imagePathNames = imagePath + "\\" + NO + ".jpg";
+                string imagePathNames = imagePath + "\\" + NO + "-總重.jpg";
                 if (!Directory.Exists(imagePath))
                 {
                     Directory.CreateDirectory(imagePath);
@@ -2144,12 +2418,12 @@ namespace TKWAREHOUSE
                 //DisplayImageFromFolder("");
                 //pictureBox1.Image = null;
 
-                pictureBox1.Image.Dispose();
-                pictureBox1.Image = null;
-                pictureBox1.ImageLocation = null;
+                pictureBox2.Image.Dispose();
+                pictureBox2.Image = null;
+                pictureBox2.ImageLocation = null;
 
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
-                string imagePathNames = imagePath + "\\" + NO + ".jpg";
+                string imagePathNames = imagePath + "\\" + NO + "-總重.jpg";
 
                 if (File.Exists(imagePathNames))
                 {
@@ -2267,11 +2541,73 @@ namespace TKWAREHOUSE
 
         private void button13_Click(object sender, EventArgs e)
         {
+            NO = textBox9.Text;
+            if (!string.IsNullOrEmpty(NO))
+            {
+                //string imagePath = System.Environment.CurrentDirectory;
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + "-箱重.jpg";
+                if (!Directory.Exists(imagePath))
+                {
+                    Directory.CreateDirectory(imagePath);
+                }
 
+                SaveImageToDatabase2(NO);
+                SaveImageHH2(imagePathNames);
+
+
+                TAKE_CLOSE2();
+                try
+                {
+                    Cam2.Stop();  // WebCam stops capturing images.
+                }
+                catch { }
+
+                MessageBox.Show("拍照完成");
+            }
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
+            NO = textBox9.Text;
+            if (!string.IsNullOrEmpty(NO))
+            {
+                //DisplayImageFromFolder("");
+                //pictureBox1.Image = null;
+
+                pictureBox2.Image.Dispose();
+                pictureBox2.Image = null;
+                pictureBox2.ImageLocation = null;
+
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + "-箱重.jpg";
+
+                if (File.Exists(imagePathNames))
+                {
+                    DELETE_ImageIntoDatabase2(NO);
+                    DEL_IMAGES2(imagePathNames);
+
+
+                }
+            }
+        }
+        private void button15_Click(object sender, EventArgs e)
+        {
+            NO = textBox9.Text;
+
+            if (!string.IsNullOrEmpty(NO))
+            {
+                TAKE_OPEN2();
+                try
+                {
+                    Cam2.Start();   // WebCam starts capturing images.     
+                }
+                catch { }
+            }
+            else
+            {
+                MessageBox.Show("沒有對應 箱號，不能開啟相機");
+            }
 
         }
 
