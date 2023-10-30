@@ -295,9 +295,11 @@ namespace TKWAREHOUSE
                                 ,[TG001] AS '銷貨單'
                                 ,[TG002] AS '銷貨單號'
                                 ,[PACKAGEBOXS].[NO]
-                                ,[PHOTOS]
+                                ,A.[PHOTOS] AS '總重PHOTOS'
+                                ,B.[PHOTOS] AS '毛重PHOTOS'
                                 FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
-                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] ON [PACKAGEBOXSPHOTO].NO=[PACKAGEBOXS].NO
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='毛重'
                                 WHERE TG001+TG002='{0}'
                                 ORDER BY [BOXNO]
                                   ", TG001TG002);
@@ -314,6 +316,8 @@ namespace TKWAREHOUSE
 
             DataGridView DV = dataGridView2;
             byte[] retrievedImageBytes;
+            byte[] retrievedImageBytes2;
+
 
             if (DV.CurrentRow != null)
             {
@@ -339,8 +343,13 @@ namespace TKWAREHOUSE
 
                     try
                     {
-                        retrievedImageBytes = (byte[])row.Cells["PHOTOS"].Value;
+                        retrievedImageBytes = (byte[])row.Cells["毛重PHOTOS"].Value;
+                        retrievedImageBytes2 = (byte[])row.Cells["總重PHOTOS"].Value;
                         using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
+                        {
+                            pictureBox1.Image = Image.FromStream(ms);
+                        }
+                        using (MemoryStream ms = new MemoryStream(retrievedImageBytes2))
                         {
                             pictureBox1.Image = Image.FromStream(ms);
                         }
@@ -2068,11 +2077,14 @@ namespace TKWAREHOUSE
                                 ,[ISVALIDS] AS '是否符合'
                                 ,[PACKAGENAMES] AS '使用包材名稱/規格'
                                 ,[PACKAGEFROM] AS '使用包材來源'
-                                ,[CTIMES] AS '照片時間'
-                                ,[PHOTOS] AS '照片'
+                                ,A.[CTIMES] AS '總重照片時間'
+                                ,B.[CTIMES] AS '毛重照片時間'
+                                ,A.[PHOTOS] AS '總重PHOTOS'
+                                ,B.[PHOTOS] AS '毛重PHOTOS'
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
-                                LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] ON [PACKAGEBOXSPHOTO].NO=[PACKAGEBOXS].NO
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='毛重'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A233')
                                 AND TG003>='{0}' AND TG003<='{1}'
@@ -2097,11 +2109,14 @@ namespace TKWAREHOUSE
                                 ,[ISVALIDS] AS '是否符合'
                                 ,[PACKAGENAMES] AS '使用包材名稱/規格'
                                 ,[PACKAGEFROM] AS '使用包材來源'
-                                ,[CTIMES] AS '照片時間'
-                                ,[PHOTOS] AS '照片'
+                                ,A.[CTIMES] AS '總重照片時間'
+                                ,B.[CTIMES] AS '毛重照片時間'
+                                ,A.[PHOTOS] AS '總重PHOTOS'
+                                ,B.[PHOTOS] AS '毛重PHOTOS'
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
-                                LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] ON [PACKAGEBOXSPHOTO].NO=[PACKAGEBOXS].NO
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='毛重'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A23A')
                                 AND TG004 IN ('A209400300')
