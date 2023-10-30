@@ -343,8 +343,8 @@ namespace TKWAREHOUSE
 
                     try
                     {
-                        retrievedImageBytes = (byte[])row.Cells["箱重PHOTOS"].Value;
-                        retrievedImageBytes2 = (byte[])row.Cells["總重PHOTOS"].Value;
+                        retrievedImageBytes = (byte[])row.Cells["總重PHOTOS"].Value;
+                        retrievedImageBytes2 = (byte[])row.Cells["箱重PHOTOS"].Value;
                         using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
                         {
                             pictureBox1.Image = Image.FromStream(ms);
