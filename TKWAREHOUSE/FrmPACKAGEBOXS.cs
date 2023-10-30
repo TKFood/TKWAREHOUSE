@@ -2266,6 +2266,40 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void AFTER_ADD()
+        {
+            string NO = TG001 + TG002 + "-" + textBox2.Text;
+            TG001 = TG001;
+            TG002 = TG002;
+            string BOXNO = textBox2.Text;
+            string ALLWEIGHTS = textBox3.Text;
+            string PACKWEIGHTS = textBox4.Text;
+            string PRODUCTWEIGHTS = textBox5.Text;
+            string PACKRATES = textBox6.Text;
+            string RATECLASS = comboBox1.Text.ToString();
+            string CHECKRATES = comboBox2.Text.ToString();
+            string ISVALIDS = comboBox3.Text.ToString();
+            string PACKAGENAMES = comboBox4.Text;
+            string PACKAGEFROM = textBox8.Text;
+
+            PACKAGEBOXS_ADD(
+                NO
+                , TG001
+                , TG002
+                , BOXNO
+                , ALLWEIGHTS
+                , PACKWEIGHTS
+                , PRODUCTWEIGHTS
+                , PACKRATES
+                , RATECLASS
+                , CHECKRATES
+                , ISVALIDS
+                , PACKAGENAMES
+                , PACKAGEFROM
+                );
+
+            Search_PACKAGEBOXS(TG001TG002);
+        }
         public void AFTER_UPDATE()
         {
             string NO = textBox9.Text;
@@ -2321,38 +2355,8 @@ namespace TKWAREHOUSE
                     textBox2.Text = "1";
                 }
 
+
                 string NO = TG001 + TG002 + "-" + textBox2.Text;
-                TG001 = TG001;
-                TG002 = TG002;
-                string BOXNO = textBox2.Text;
-                string ALLWEIGHTS = textBox3.Text;
-                string PACKWEIGHTS = textBox4.Text;
-                string PRODUCTWEIGHTS = textBox5.Text;
-                string PACKRATES = textBox6.Text;
-                string RATECLASS = comboBox1.Text.ToString();
-                string CHECKRATES = comboBox2.Text.ToString();
-                string ISVALIDS = comboBox3.Text.ToString();
-                string PACKAGENAMES = comboBox4.Text;
-                string PACKAGEFROM = textBox8.Text;
-
-                PACKAGEBOXS_ADD(
-                    NO
-                    , TG001
-                    , TG002
-                    , BOXNO
-                    , ALLWEIGHTS
-                    , PACKWEIGHTS
-                    , PRODUCTWEIGHTS
-                    , PACKRATES
-                    , RATECLASS
-                    , CHECKRATES
-                    , ISVALIDS
-                    , PACKAGENAMES
-                    , PACKAGEFROM
-                    );
-
-                Search_PACKAGEBOXS(TG001TG002);
-
                 textBox9.Text = NO;
             }
 
@@ -2459,8 +2463,6 @@ namespace TKWAREHOUSE
                     Cam.Stop();  // WebCam stops capturing images.
                 }
                 catch { }
-
-                AFTER_UPDATE();
 
                 MessageBox.Show("拍照完成");
             }
@@ -2665,6 +2667,10 @@ namespace TKWAREHOUSE
                 MessageBox.Show("沒有對應 箱號，不能開啟相機");
             }
 
+        }
+        private void button16_Click(object sender, EventArgs e)
+        {
+            AFTER_ADD();
         }
 
         #endregion
