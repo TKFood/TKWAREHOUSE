@@ -214,6 +214,8 @@ namespace TKWAREHOUSE
             sbSqlQuery1.Clear();
             sbSqlQuery2.Clear();
 
+            
+
             if (!string.IsNullOrEmpty(TG002))
             {
                 sbSqlQuery1.AppendFormat(@" AND TG002 LIKE '{0}%'", TG002);
@@ -2379,12 +2381,21 @@ namespace TKWAREHOUSE
 
             }
         }
+
+
+        public void SET_dataGridView()
+        {
+            dataGridView1.DataSource = null;
+            dataGridView2.DataSource = null;
+        }
         #endregion
 
 
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
+            SET_TEXT();
+            SET_dataGridView();
             Search_COPTG(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
