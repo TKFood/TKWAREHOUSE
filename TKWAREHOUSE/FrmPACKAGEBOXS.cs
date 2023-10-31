@@ -245,6 +245,7 @@ namespace TKWAREHOUSE
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
+            SET_TEXT();
             TG001TG002 = "";
 
             if (dataGridView1.CurrentRow != null)
