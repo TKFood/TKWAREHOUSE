@@ -3056,7 +3056,7 @@ namespace TKWAREHOUSE
         }
         private void button12_Click(object sender, EventArgs e)
         { 
-            SET_TEXT();
+            SET_TEXT(); 
             textBox1.Text = TG001TG002;
             DataTable dt = PACKAGEBOXS_FIND_MAX(TG001TG002);
             if (dt != null && dt.Rows.Count >= 1)
