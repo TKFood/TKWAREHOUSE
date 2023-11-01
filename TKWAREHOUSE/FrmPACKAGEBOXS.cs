@@ -537,7 +537,8 @@ namespace TKWAREHOUSE
 
             // 清除 PictureBox 的图像
             pictureBox1.Image = null;
-            pictureBox2.Image = null; 
+            pictureBox2.Image = null;
+            pictureBox3.Image = null;
         }
         private void DisplayImageFromFolder(string NO)
         {
@@ -2369,9 +2370,10 @@ namespace TKWAREHOUSE
                                 ,UDF02 AS 'UDF02'
                                 ,[PACKAGEBOXS].[NO] AS '編號'
                                 ,[BOXNO] AS '箱號'
-                                ,[ALLWEIGHTS] AS '秤總重(A+B)'
-                                ,[PACKWEIGHTS] AS '(非原箱)網購包材重量(KG)A'
-                                ,[PRODUCTWEIGHTS] AS '(非原箱)商品總重量(KG)B'
+                                ,[ALLWEIGHTS] AS '秤總重(A+B+C)'
+                                ,[BOXKWEIGHTS] AS '空箱重量(KG)A'
+                                ,[OTHERPACKWEIGHTS] AS '緩衝材重量(KG)B'
+                                ,[PRODUCTWEIGHTS] AS '商品總重量(KG)C'
                                 ,[PACKRATES] AS '實際比值'
                                 ,[RATECLASS] AS '商品總重量比值分類'
                                 ,[CHECKRATES] AS '規定比值'
@@ -2404,9 +2406,10 @@ namespace TKWAREHOUSE
                                 ,UDF02 AS 'UDF02'
                                 ,[PACKAGEBOXS].[NO] AS '編號'
                                 ,[BOXNO] AS '箱號'
-                                ,[ALLWEIGHTS] AS '秤總重(A+B)'
-                                ,[PACKWEIGHTS] AS '(非原箱)網購包材重量(KG)A'
-                                ,[PRODUCTWEIGHTS] AS '(非原箱)商品總重量(KG)B'
+                                ,[ALLWEIGHTS] AS '秤總重(A+B+C)'
+                                ,[BOXKWEIGHTS] AS '空箱重量(KG)A'
+                                ,[OTHERPACKWEIGHTS] AS '緩衝材重量(KG)B'
+                                ,[PRODUCTWEIGHTS] AS '商品總重量(KG)C'
                                 ,[PACKRATES] AS '實際比值'
                                 ,[RATECLASS] AS '商品總重量比值分類'
                                 ,[CHECKRATES] AS '規定比值'
