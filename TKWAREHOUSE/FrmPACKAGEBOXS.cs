@@ -302,9 +302,11 @@ namespace TKWAREHOUSE
                                 ,[PACKAGEBOXS].[NO]
                                 ,A.[PHOTOS] AS '總重PHOTOS'
                                 ,B.[PHOTOS] AS '箱重PHOTOS'
+                                ,C.[PHOTOS] AS '緩衝材PHOTOS'
                                 FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] C ON C.NO=[PACKAGEBOXS].NO AND C.TYPES='緩衝材'
                                 WHERE TG001+TG002='{0}'
                                 ORDER BY [BOXNO]
                                   ", TG001TG002);
@@ -325,6 +327,7 @@ namespace TKWAREHOUSE
             DataGridView DV = dataGridView2;
             byte[] retrievedImageBytes;
             byte[] retrievedImageBytes2;
+            byte[] retrievedImageBytes3;
 
 
             if (DV.CurrentRow != null)
@@ -354,6 +357,7 @@ namespace TKWAREHOUSE
                     {
                         retrievedImageBytes = (byte[])row.Cells["總重PHOTOS"].Value;
                         retrievedImageBytes2 = (byte[])row.Cells["箱重PHOTOS"].Value;
+                        retrievedImageBytes3 = (byte[])row.Cells["緩衝材PHOTOS"].Value;
                         using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
                         {
                             pictureBox1.Image = Image.FromStream(ms);
@@ -363,6 +367,11 @@ namespace TKWAREHOUSE
                         {
                             pictureBox2.Image = Image.FromStream(ms);
                             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+                        }
+                        using (MemoryStream ms = new MemoryStream(retrievedImageBytes3))
+                        {
+                            pictureBox3.Image = Image.FromStream(ms);
+                            pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
                         }
                     }
                     catch
@@ -1586,7 +1595,7 @@ namespace TKWAREHOUSE
         {
 
             // 替換為您的 PictureBox 控制項名稱
-            Image image = pictureBox2.Image;
+            Image image = pictureBox3.Image;
 
             if (image != null)
             {
@@ -2370,13 +2379,16 @@ namespace TKWAREHOUSE
                                 ,[PACKAGENAMES] AS '使用包材名稱/規格'
                                 ,[PACKAGEFROM] AS '使用包材來源'
                                 ,A.[CTIMES] AS '總重照片時間'
-                                ,B.[CTIMES] AS '毛重照片時間'
+                                ,B.[CTIMES] AS '箱重照片時間'
+                                ,C.[CTIMES] AS '緩衝材照片時間'
                                 ,A.[PHOTOS] AS '總重PHOTOS'
                                 ,B.[PHOTOS] AS '箱重PHOTOS'
+                                ,C.[PHOTOS] AS '緩衝材PHOTOS'
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] C ON C.NO=[PACKAGEBOXS].NO AND C.TYPES='緩衝材'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A233')
                                 AND TG003>='{0}' AND TG003<='{1}'
@@ -2401,14 +2413,17 @@ namespace TKWAREHOUSE
                                 ,[ISVALIDS] AS '是否符合'
                                 ,[PACKAGENAMES] AS '使用包材名稱/規格'
                                 ,[PACKAGEFROM] AS '使用包材來源'
-                                ,A.[CTIMES] AS '總重照片時間'
-                                ,B.[CTIMES] AS '毛重照片時間'
+                                 ,A.[CTIMES] AS '總重照片時間'
+                                ,B.[CTIMES] AS '箱重照片時間'
+                                ,C.[CTIMES] AS '緩衝材照片時間'
                                 ,A.[PHOTOS] AS '總重PHOTOS'
                                 ,B.[PHOTOS] AS '箱重PHOTOS'
+                                ,C.[PHOTOS] AS '緩衝材PHOTOS'
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
+                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] C ON C.NO=[PACKAGEBOXS].NO AND C.TYPES='緩衝材'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A23A')
                                 AND TG004 IN ('A209400300')
@@ -2903,9 +2918,13 @@ namespace TKWAREHOUSE
                 //DisplayImageFromFolder("");
                 //pictureBox1.Image = null;
 
-                pictureBox1.Image.Dispose();
-                pictureBox1.Image = null;
-                pictureBox1.ImageLocation = null;
+                if (pictureBox1.Image != null)
+                {
+                    pictureBox1.Image.Dispose();
+                    pictureBox1.Image = null;
+                    pictureBox1.ImageLocation = null;
+                }
+
 
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
                 string imagePathNames = imagePath + "\\" + NO + "-總重.jpg";
@@ -3068,10 +3087,13 @@ namespace TKWAREHOUSE
             {
                 //DisplayImageFromFolder("");
                 //pictureBox1.Image = null;
-
-                pictureBox2.Image.Dispose();
-                pictureBox2.Image = null;
-                pictureBox2.ImageLocation = null;
+                
+                if (pictureBox2.Image != null)
+                {
+                    pictureBox2.Image.Dispose();
+                    pictureBox2.Image = null;
+                    pictureBox2.ImageLocation = null;
+                }
 
                 string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
                 string imagePathNames = imagePath + "\\" + NO + "-箱重.jpg";
@@ -3163,12 +3185,58 @@ namespace TKWAREHOUSE
 
         private void button20_Click(object sender, EventArgs e)
         {
+            NO = textBox9.Text;
+            if (!string.IsNullOrEmpty(NO))
+            {
+                //string imagePath = System.Environment.CurrentDirectory;
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + "-緩衝材.jpg";
+                if (!Directory.Exists(imagePath))
+                {
+                    Directory.CreateDirectory(imagePath);
+                }
 
+                SaveImageToDatabase3(NO);
+                SaveImageHH3(imagePathNames);
+
+
+                TAKE_CLOSE3();
+                try
+                {
+                    Cam3.Stop();  // WebCam stops capturing images.
+                }
+                catch { }
+
+                MessageBox.Show("拍照完成");
+            }
         }
 
         private void button19_Click(object sender, EventArgs e)
         {
+            NO = textBox9.Text;
+            if (!string.IsNullOrEmpty(NO))
+            {
+                //DisplayImageFromFolder("");
+                //pictureBox1.Image = null;
+                
+                if (pictureBox3.Image != null)
+                {
+                    pictureBox3.Image.Dispose();
+                    pictureBox3.Image = null;
+                    pictureBox3.ImageLocation = null;
+                }
 
+                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                string imagePathNames = imagePath + "\\" + NO + "-緩衝材.jpg";
+
+                if (File.Exists(imagePathNames))
+                {
+                    DELETE_ImageIntoDatabase3(NO);
+                    DEL_IMAGES3(imagePathNames);
+
+
+                }
+            }
         }
 
         #endregion
