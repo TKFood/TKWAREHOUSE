@@ -3067,6 +3067,7 @@ namespace TKWAREHOUSE
             {
                 textBox2.Text = "1";
             }
+            textBox9.Text = TG001TG002 + "-" + textBox2.Text;
         }
 
         private void button13_Click(object sender, EventArgs e)
