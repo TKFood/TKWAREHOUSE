@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle49 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle50 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle65 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle66 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -250,8 +250,8 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle49.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle49;
+            dataGridViewCellStyle65.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle65;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
@@ -286,8 +286,8 @@
             // 
             this.dataGridView2.AllowUserToAddRows = false;
             this.dataGridView2.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle50.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle50;
+            dataGridViewCellStyle66.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle66;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView2.Location = new System.Drawing.Point(0, 0);
@@ -360,7 +360,7 @@
             this.tableLayoutPanel2.Controls.Add(this.button5, 3, 13);
             this.tableLayoutPanel2.Controls.Add(this.button6, 4, 13);
             this.tableLayoutPanel2.Controls.Add(this.button7, 5, 13);
-            this.tableLayoutPanel2.Controls.Add(this.button16, 3, 15);
+            this.tableLayoutPanel2.Controls.Add(this.button16, 3, 14);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
@@ -611,7 +611,7 @@
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(173, 32);
             this.button9.TabIndex = 82;
-            this.button9.Text = "量緩衝材-2";
+            this.button9.Text = "量緩衝材-5";
             this.button9.UseVisualStyleBackColor = false;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
@@ -624,7 +624,7 @@
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(173, 32);
             this.button8.TabIndex = 79;
-            this.button8.Text = "量總重-5";
+            this.button8.Text = "量總重-8";
             this.button8.UseVisualStyleBackColor = false;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
@@ -783,7 +783,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(110, 32);
             this.button5.TabIndex = 76;
-            this.button5.Text = "開機總重-6";
+            this.button5.Text = "開機總重-9";
             this.button5.UseVisualStyleBackColor = false;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -820,7 +820,7 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(98, 32);
             this.button6.TabIndex = 77;
-            this.button6.Text = "拍總重-7";
+            this.button6.Text = "拍總重-10";
             this.button6.UseVisualStyleBackColor = false;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
@@ -829,12 +829,12 @@
             this.button16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button16.BackColor = System.Drawing.Color.Orange;
             this.tableLayoutPanel2.SetColumnSpan(this.button16, 2);
-            this.button16.Location = new System.Drawing.Point(394, 604);
+            this.button16.Location = new System.Drawing.Point(394, 564);
             this.button16.Margin = new System.Windows.Forms.Padding(4);
             this.button16.Name = "button16";
             this.button16.Size = new System.Drawing.Size(216, 32);
             this.button16.TabIndex = 92;
-            this.button16.Text = "存檔-8";
+            this.button16.Text = "存檔-11";
             this.button16.UseVisualStyleBackColor = false;
             this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
@@ -1037,8 +1037,9 @@
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(110, 32);
             this.button18.TabIndex = 97;
-            this.button18.Text = "開機緩衝材-3";
+            this.button18.Text = "開機緩衝材-6";
             this.button18.UseVisualStyleBackColor = false;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
             // button19
             // 
@@ -1050,6 +1051,7 @@
             this.button19.TabIndex = 98;
             this.button19.Text = "刪除緩衝材照片";
             this.button19.UseVisualStyleBackColor = true;
+            this.button19.Click += new System.EventHandler(this.button19_Click);
             // 
             // button20
             // 
@@ -1060,8 +1062,9 @@
             this.button20.Name = "button20";
             this.button20.Size = new System.Drawing.Size(98, 32);
             this.button20.TabIndex = 99;
-            this.button20.Text = "拍緩衝材--4";
+            this.button20.Text = "拍緩衝材-7";
             this.button20.UseVisualStyleBackColor = false;
+            this.button20.Click += new System.EventHandler(this.button20_Click);
             // 
             // FrmPACKAGEBOXS
             // 
