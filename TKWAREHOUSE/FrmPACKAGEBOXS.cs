@@ -2785,6 +2785,24 @@ namespace TKWAREHOUSE
             }
 
         }
+
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox4.Text.Equals("原箱(商品原包裝運送)"))
+            {
+                textBox3.Text = "0";
+                textBox4.Text = "0";
+                textBox5.Text = "0";
+                textBox6.Text = "";
+                textBox7.Text = "0";
+
+                comboBox1.Text = "";
+                comboBox2.Text = "";
+                comboBox3.Text = "";
+            }
+        }
+
+
         #endregion
 
 
@@ -3257,8 +3275,9 @@ namespace TKWAREHOUSE
             }
         }
 
+
         #endregion
 
-
+      
     }
 }
