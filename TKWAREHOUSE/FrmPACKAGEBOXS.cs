@@ -286,9 +286,10 @@ namespace TKWAREHOUSE
             sbSql.AppendFormat(@"
                                 SELECT 
                                 [BOXNO] AS '箱號'
-                                ,[ALLWEIGHTS] AS '秤總重(A+B)'
-                                ,[PACKWEIGHTS] AS '網購包材重量(KG)A'
-                                ,[PRODUCTWEIGHTS] AS '商品總重量(KG)B'
+                                ,[ALLWEIGHTS] AS '秤總重(A+B+C)'
+                                ,[BOXKWEIGHTS] AS '空箱重量(KG)A'
+                                ,[OTHERPACKWEIGHTS] AS '緩衝材重量(KG)B'
+                                ,[PRODUCTWEIGHTS] AS '商品總重量(KG)C'
                                 ,[PACKRATES] AS '實際比值'
                                 ,[RATECLASS] AS '商品總重量比值分類'
                                 ,[CHECKRATES] AS '規定比值'
@@ -311,6 +312,9 @@ namespace TKWAREHOUSE
 
             SEARCH(sbSql.ToString(), dataGridView2, SortedColumn, SortedModel);
 
+            dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+            dataGridView2.DefaultCellStyle.Font = new Font("Tahoma", 10);
+
         }
 
         private void dataGridView2_SelectionChanged(object sender, EventArgs e)
@@ -330,10 +334,11 @@ namespace TKWAREHOUSE
                     DataGridViewRow row = DV.Rows[rowindex];
                     textBox1.Text = row.Cells["銷貨單"].Value.ToString()+ row.Cells["銷貨單號"].Value.ToString();
                     textBox2.Text = row.Cells["箱號"].Value.ToString();
-                    textBox3.Text = row.Cells["秤總重(A+B)"].Value.ToString();
-                    textBox4.Text = row.Cells["網購包材重量(KG)A"].Value.ToString();
-                    textBox5.Text = row.Cells["商品總重量(KG)B"].Value.ToString();
+                    textBox3.Text = row.Cells["秤總重(A+B+C)"].Value.ToString();
+                    textBox4.Text = row.Cells["緩衝材重量(KG)B"].Value.ToString();
+                    textBox5.Text = row.Cells["商品總重量(KG)C"].Value.ToString();
                     textBox6.Text = row.Cells["實際比值"].Value.ToString();
+                    textBox7.Text = row.Cells["空箱重量(KG)A"].Value.ToString();
                     comboBox4.Text = row.Cells["使用包材名稱/規格"].Value.ToString();
                     textBox8.Text = row.Cells["使用包材來源"].Value.ToString();
                     textBox9.Text = row.Cells["NO"].Value.ToString();
@@ -399,19 +404,7 @@ namespace TKWAREHOUSE
 
                 sbSql.AppendFormat(@"                                      
                                     SELECT 
-                                    [BOXNO] AS '箱號'
-                                    ,[ALLWEIGHTS] AS '秤總重(A+B)'
-                                    ,[PACKWEIGHTS] AS '網購包材重量(KG)A'
-                                    ,[PRODUCTWEIGHTS] AS '商品總重量(KG)B'
-                                    ,[PACKRATES] AS '實際比值'
-                                    ,[RATECLASS] AS '商品總重量比值分類'
-                                    ,[CHECKRATES] AS '規定比值'
-                                    ,[ISVALIDS] AS '是否符合'
-                                    ,[PACKAGENAMES] AS '使用包材名稱/規格'
-                                    ,[PACKAGEFROM] AS '使用包材來源'
-                                    ,[TG001] AS '銷貨單'
-                                    ,[TG002] AS '銷貨單號'
-                                    ,[NO]
+                                    *
                                     FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
                                     WHERE TG001+TG002='{0}'
                                     ORDER BY [BOXNO]
@@ -524,11 +517,11 @@ namespace TKWAREHOUSE
         {
             textBox1.Text = "";
             textBox2.Text = "";
-            textBox3.Text = "";
-            textBox4.Text = "";
+            textBox3.Text = "0";
+            textBox4.Text = "0";
             textBox5.Text = "";
             textBox6.Text = "";
-            //textBox7.Text = "";
+            textBox7.Text = "0";
             textBox8.Text = "";
             textBox9.Text = "";
 
@@ -606,7 +599,8 @@ namespace TKWAREHOUSE
                     , string TG002
                     , string BOXNO
                     , string ALLWEIGHTS
-                    , string PACKWEIGHTS
+                    , string BOXKWEIGHTS
+                    , string OTHERPACKWEIGHTS
                     , string PRODUCTWEIGHTS
                     , string PACKRATES
                     , string RATECLASS
@@ -647,7 +641,8 @@ namespace TKWAREHOUSE
                                     ,[TG002]
                                     ,[BOXNO]
                                     ,[ALLWEIGHTS]
-                                    ,[PACKWEIGHTS]
+                                    ,[BOXKWEIGHTS]
+                                    ,[OTHERPACKWEIGHTS]
                                     ,[PRODUCTWEIGHTS]
                                     ,[PACKRATES]
                                     ,[RATECLASS]
@@ -671,6 +666,7 @@ namespace TKWAREHOUSE
                                     ,'{10}'
                                     ,'{11}'
                                     ,'{12}'
+                                    ,'{13}'
                                     )                                        
                                         "
                                     , NO
@@ -678,7 +674,8 @@ namespace TKWAREHOUSE
                                     , TG002
                                     , BOXNO
                                     , ALLWEIGHTS
-                                    , PACKWEIGHTS
+                                    , BOXKWEIGHTS
+                                    , OTHERPACKWEIGHTS
                                     , PRODUCTWEIGHTS
                                     , PACKRATES
                                     , RATECLASS
@@ -727,7 +724,8 @@ namespace TKWAREHOUSE
                     , string TG002
                     , string BOXNO
                     , string ALLWEIGHTS
-                    , string PACKWEIGHTS
+                    , string BOXKWEIGHTS
+                    , string OTHERPACKWEIGHTS                   
                     , string PRODUCTWEIGHTS
                     , string PACKRATES
                     , string RATECLASS
@@ -768,14 +766,15 @@ namespace TKWAREHOUSE
                                     ,[TG002]='{2}'
                                     ,[BOXNO]='{3}'
                                     ,[ALLWEIGHTS]={4}
-                                    ,[PACKWEIGHTS]={5}
-                                    ,[PRODUCTWEIGHTS]={6}
-                                    ,[PACKRATES]='{7}'
-                                    ,[RATECLASS]='{8}'
-                                    ,[CHECKRATES]='{9}'
-                                    ,[ISVALIDS]='{10}'
-                                    ,[PACKAGENAMES]='{11}'
-                                    ,[PACKAGEFROM]='{12}'
+                                    ,[BOXKWEIGHTS]={5}
+                                    ,[OTHERPACKWEIGHTS]={6}
+                                    ,[PRODUCTWEIGHTS]={7}
+                                    ,[PACKRATES]='{8}'
+                                    ,[RATECLASS]='{9}'
+                                    ,[CHECKRATES]='{10}'
+                                    ,[ISVALIDS]='{11}'
+                                    ,[PACKAGENAMES]='{12}'
+                                    ,[PACKAGEFROM]='{13}'
                                     
                                     WHERE [NO]='{0}'
                                                                      
@@ -785,7 +784,8 @@ namespace TKWAREHOUSE
                                     , TG002
                                     , BOXNO
                                     , ALLWEIGHTS
-                                    , PACKWEIGHTS
+                                    , BOXKWEIGHTS
+                                    , OTHERPACKWEIGHTS
                                     , PRODUCTWEIGHTS
                                     , PACKRATES
                                     , RATECLASS
@@ -1484,6 +1484,8 @@ namespace TKWAREHOUSE
 
                 
             }
+
+            CHECK_RATE();
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
@@ -1503,6 +1505,8 @@ namespace TKWAREHOUSE
                     MessageBox.Show("重量不是數字格式");
                 }
             }
+
+            CHECK_RATE();
         }
 
         private void textBox5_TextChanged(object sender, EventArgs e)
@@ -1522,22 +1526,28 @@ namespace TKWAREHOUSE
                 }
             }
 
+         
+
         }
 
         public void CAL_ALLWEIGHTS()
         {
             float result;
-            string input1 = textBox4.Text;
-            string input2 = textBox3.Text;
-            float PACKWEIGHTS = 0;
+            string input1 = textBox3.Text;
+            string input2 = textBox4.Text;
+            string input3 = textBox7.Text;
+            float BOXWEIGHTS = 0;
+            float OTHERPACKWEIGHTS = 0;
             float ALLPRODUCTWEIGHTS = 0;
-            if (!string.IsNullOrEmpty(input1) && !string.IsNullOrEmpty(input2))
+
+            if (!string.IsNullOrEmpty(input1) && !string.IsNullOrEmpty(input2) && !string.IsNullOrEmpty(input3))
             {
-                if (float.TryParse(input1, out result) && float.TryParse(input2, out result))
+                if (float.TryParse(input1, out result) && float.TryParse(input2, out result) && float.TryParse(input3, out result))
                 {
-                    PACKWEIGHTS = float.Parse(input1);
-                    ALLPRODUCTWEIGHTS = float.Parse(input2);
-                    textBox5.Text = (ALLPRODUCTWEIGHTS - PACKWEIGHTS).ToString("0.000");
+                    BOXWEIGHTS = float.Parse(input3);
+                    OTHERPACKWEIGHTS = float.Parse(input2);                  
+                    ALLPRODUCTWEIGHTS = float.Parse(input1);
+                    textBox5.Text = (ALLPRODUCTWEIGHTS - BOXWEIGHTS - OTHERPACKWEIGHTS).ToString("0.000");
                 }
                 else
                 {
@@ -1550,21 +1560,24 @@ namespace TKWAREHOUSE
             float result;
             string input1 = textBox3.Text;
             string input2 = textBox4.Text;
-            float PACKWEIGHTS = 0;
-            float ALLWEIGHTS = 0;           
+            string input3 = textBox7.Text;
+            float BOXWEIGHTS = 0;
+            float OTHERPACKWEIGHTS = 0;
+            float ALLPRODUCTWEIGHTS = 0;
             float rates = 0;
 
-            if(!string.IsNullOrEmpty(input1)&& !string.IsNullOrEmpty(input2))
-            {                
-                if (float.TryParse(input1, out result)&& float.TryParse(input2, out result))
+            if (!string.IsNullOrEmpty(input1) && !string.IsNullOrEmpty(input2) && !string.IsNullOrEmpty(input3))
+            {
+                if (float.TryParse(input1, out result) && float.TryParse(input2, out result) && float.TryParse(input3, out result))
                 {
-                    ALLWEIGHTS = float.Parse(input1);
-                    PACKWEIGHTS = float.Parse(input2);
+                    BOXWEIGHTS = float.Parse(input3);
+                    OTHERPACKWEIGHTS = float.Parse(input2);
+                    ALLPRODUCTWEIGHTS = float.Parse(input1);
 
-                    decimal difference = (decimal)(ALLWEIGHTS - PACKWEIGHTS);
+                    decimal difference = (decimal)(ALLPRODUCTWEIGHTS - OTHERPACKWEIGHTS- BOXWEIGHTS);
                     textBox5.Text = difference.ToString("0.00"); // 保留小數第二位
 
-                    rates = (PACKWEIGHTS * 100 / ALLWEIGHTS * 100)/100 ;
+                    rates = ((OTHERPACKWEIGHTS+ BOXWEIGHTS) * 100 / ALLPRODUCTWEIGHTS * 100)/100 ;
                     textBox6.Text = rates.ToString("0.00") + "%";
                 }
                 else
@@ -1735,28 +1748,29 @@ namespace TKWAREHOUSE
         }
         private void textBox6_TextChanged(object sender, EventArgs e)
         {
-            comboBox3.Text = "不適用";
-            if(!string.IsNullOrEmpty(comboBox1.Text)&&!string.IsNullOrEmpty(textBox6.Text))
-            {
-                string input1 = comboBox1.Text;
-                string input2 = textBox6.Text.Replace("%","");
-                double ALLWEIGHT = Convert.ToDouble(textBox3.Text);
+            //comboBox3.Text = "不適用";
 
-                if (ALLWEIGHT < 0.25)
-                {
-                    comboBox3.Text = "不適用";
-                }
-                DataTable dt = SET_ISVALIDS(input1, input2);
-                if (dt != null && dt.Rows.Count >= 1)
-                {
-                    comboBox3.Text = "符合";
-                }
-                else
-                {
-                    comboBox3.Text = "不符合";
-                }
-            }
-            
+            //if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(textBox6.Text))
+            //{
+            //    string input1 = comboBox1.Text;
+            //    string input2 = textBox6.Text.Replace("%", "");
+            //    double ALLWEIGHT = Convert.ToDouble(textBox3.Text);   
+
+            //    if (ALLWEIGHT < 0.25)
+            //    {
+            //        comboBox3.Text = "不適用";
+            //    }
+            //    DataTable dt = SET_ISVALIDS(input1, input2);
+            //    if (dt != null && dt.Rows.Count >= 1)
+            //    {
+            //        comboBox3.Text = "符合";
+            //    }
+            //    else
+            //    {
+            //        comboBox3.Text = "不符合";
+            //    }
+            //}
+
         }
 
         public DataTable SET_ISVALIDS(string KEYS, string KEYS2)
@@ -2276,7 +2290,8 @@ namespace TKWAREHOUSE
             TG002 = TG002;
             string BOXNO = textBox2.Text;
             string ALLWEIGHTS = textBox3.Text;
-            string PACKWEIGHTS = textBox4.Text;
+            string BOXKWEIGHTS = textBox7.Text;
+            string OTHERPACKWEIGHTS = textBox4.Text;
             string PRODUCTWEIGHTS = textBox5.Text;
             string PACKRATES = textBox6.Text;
             string RATECLASS = comboBox1.Text.ToString();
@@ -2285,13 +2300,24 @@ namespace TKWAREHOUSE
             string PACKAGENAMES = comboBox4.Text;
             string PACKAGEFROM = textBox8.Text;
 
+            DataTable dt = PACKAGEBOXS_FIND_MAX(textBox1.Text);
+            if (dt != null && dt.Rows.Count >= 1)
+            {
+                textBox2.Text = (Convert.ToInt32(dt.Rows[0]["BOXNO"].ToString()) + 1).ToString();
+            }
+            else
+            {
+                textBox2.Text = "1";
+            }
+
             PACKAGEBOXS_ADD(
                 NO
                 , TG001
                 , TG002
                 , BOXNO
                 , ALLWEIGHTS
-                , PACKWEIGHTS
+                , BOXKWEIGHTS
+                , OTHERPACKWEIGHTS
                 , PRODUCTWEIGHTS
                 , PACKRATES
                 , RATECLASS
@@ -2308,7 +2334,8 @@ namespace TKWAREHOUSE
             string NO = textBox9.Text;
             string BOXNO = textBox2.Text;
             string ALLWEIGHTS = textBox3.Text;
-            string PACKWEIGHTS = textBox4.Text;
+            string BOXKWEIGHTS = textBox7.Text;
+            string OTHERPACKWEIGHTS = textBox4.Text;
             string PRODUCTWEIGHTS = textBox5.Text;
             string PACKRATES = textBox6.Text;
             string RATECLASS = comboBox1.Text.ToString();
@@ -2323,7 +2350,8 @@ namespace TKWAREHOUSE
                 , TG002
                 , BOXNO
                 , ALLWEIGHTS
-                , PACKWEIGHTS
+                , BOXKWEIGHTS
+                , OTHERPACKWEIGHTS
                 , PRODUCTWEIGHTS
                 , PACKRATES
                 , RATECLASS
@@ -2339,48 +2367,64 @@ namespace TKWAREHOUSE
         public void AFTER_DELETE()
         {
             NO = textBox9.Text;
-            if (!string.IsNullOrEmpty(NO))
+            try
             {
-                //DisplayImageFromFolder("");
-                //pictureBox1.Image = null;
-
-                pictureBox2.Image.Dispose();
-                pictureBox2.Image = null;
-                pictureBox2.ImageLocation = null;
-
-                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
-                string imagePathNames = imagePath + "\\" + NO + "-箱重.jpg";
-
-                if (File.Exists(imagePathNames))
+                if (!string.IsNullOrEmpty(NO))
                 {
-                    DELETE_ImageIntoDatabase2(NO);
-                    DEL_IMAGES2(imagePathNames);
+                    //DisplayImageFromFolder("");
+                    //pictureBox1.Image = null;
 
+                    if (pictureBox2.Image != null)
+                    {
+                        pictureBox2.Image.Dispose();
+                        pictureBox2.Image = null;
+                        pictureBox2.ImageLocation = null;
+                    }
+                 
+
+                    string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                    string imagePathNames = imagePath + "\\" + NO + "-箱重.jpg";
+
+                    if (File.Exists(imagePathNames))
+                    {
+                        DELETE_ImageIntoDatabase2(NO);
+                        DEL_IMAGES2(imagePathNames);
+
+
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(NO))
+                {
+                    //DisplayImageFromFolder("");
+                    //pictureBox1.Image = null;
+
+                    if (pictureBox1.Image != null)
+                    {
+                        pictureBox1.Image.Dispose();
+                        pictureBox1.Image = null;
+                        pictureBox1.ImageLocation = null;
+                    }
+                    
+
+                    string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
+                    string imagePathNames = imagePath + "\\" + NO + "-總重.jpg";
+
+                    if (File.Exists(imagePathNames))
+                    {
+                        DELETE_ImageIntoDatabase(NO);
+                        DEL_IMAGES(imagePathNames);
+
+
+                    }
 
                 }
             }
-           
-            if (!string.IsNullOrEmpty(NO))
-            {
-                //DisplayImageFromFolder("");
-                //pictureBox1.Image = null;
-
-                pictureBox1.Image.Dispose();
-                pictureBox1.Image = null;
-                pictureBox1.ImageLocation = null;
-
-                string imagePath = Path.Combine(Environment.CurrentDirectory, "Images", DateTime.Now.ToString("yyyy"));
-                string imagePathNames = imagePath + "\\" + NO + "-總重.jpg";
-
-                if (File.Exists(imagePathNames))
-                {
-                    DELETE_ImageIntoDatabase(NO);
-                    DEL_IMAGES(imagePathNames);
-
-
-                }
-
-            }
+            catch
+            { }
+            finally
+            { }
+            
         }
 
 
@@ -2388,6 +2432,54 @@ namespace TKWAREHOUSE
         {
             dataGridView1.DataSource = null;
             dataGridView2.DataSource = null;
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+            string input = textBox7.Text;
+            float result;
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                if (float.TryParse(input, out result))
+                {
+                    CAL_ALLWEIGHTS();
+                    CAL_RATES();
+                }
+                else
+                {
+                    MessageBox.Show("重量不是數字格式");
+                }
+            }
+
+            CHECK_RATE();
+        }
+
+        public void CHECK_RATE()
+        {
+            comboBox3.Text = "不適用";
+
+            if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(textBox6.Text))
+            {
+                string input1 = comboBox1.Text;
+                string input2 = textBox6.Text.Replace("%", "");
+                double ALLWEIGHT = Convert.ToDouble(textBox3.Text);
+
+                if (ALLWEIGHT < 0.25)
+                {
+                    comboBox3.Text = "不適用";
+                }
+                DataTable dt = SET_ISVALIDS(input1, input2);
+                if (dt != null && dt.Rows.Count >= 1)
+                {
+                    comboBox3.Text = "符合";
+                }
+                else
+                {
+                    comboBox3.Text = "不符合";
+                }
+            }
+
         }
         #endregion
 
@@ -2428,7 +2520,8 @@ namespace TKWAREHOUSE
             string NO = textBox9.Text;
             string BOXNO = textBox2.Text;
             string ALLWEIGHTS = textBox3.Text;
-            string PACKWEIGHTS = textBox4.Text;
+            string BOXKWEIGHTS = textBox7.Text;
+            string OTHERPACKWEIGHTS = textBox4.Text;
             string PRODUCTWEIGHTS = textBox5.Text;
             string PACKRATES = textBox6.Text;
             string RATECLASS = comboBox1.Text.ToString();
@@ -2443,7 +2536,8 @@ namespace TKWAREHOUSE
                 , TG002
                 , BOXNO
                 , ALLWEIGHTS
-                , PACKWEIGHTS
+                , BOXKWEIGHTS
+                , OTHERPACKWEIGHTS
                 , PRODUCTWEIGHTS
                 , PACKRATES
                 , RATECLASS
@@ -2656,6 +2750,15 @@ namespace TKWAREHOUSE
         {
             SET_TEXT();
             textBox1.Text = TG001TG002;
+            DataTable dt = PACKAGEBOXS_FIND_MAX(TG001TG002);
+            if (dt != null && dt.Rows.Count >= 1)
+            {
+                textBox2.Text = (Convert.ToInt32(dt.Rows[0]["BOXNO"].ToString()) + 1).ToString();
+            }
+            else
+            {
+                textBox2.Text = "1";
+            }
         }
 
         private void button13_Click(object sender, EventArgs e)
@@ -2733,9 +2836,43 @@ namespace TKWAREHOUSE
         {
             AFTER_ADD();
         }
+        private void button17_Click(object sender, EventArgs e)
+        {
+            int MAXTRY = 1;
+            //Btndisconnect();
+            //// 等待  秒
+            ////Thread.Sleep(1000);
+            //Btnconnect();
+            //// 等待  秒
+            ////Thread.Sleep(1000);
+
+            if (!string.IsNullOrEmpty(textBoxCAL.Text))
+            {
+                float result;
+                if (float.TryParse(textBoxCAL.Text, out result))
+                {
+                    textBox7.Text = textBoxCAL.Text;
+
+                    while (MAXTRY <= 10 && !textBoxCAL.Text.Equals(textBox7.Text))
+                    {
+                        textBox7.Text = textBoxCAL.Text;
+
+                        MAXTRY = MAXTRY + 1;
+                        Thread.Sleep(10);
+                    }
+
+                    //Btndisconnect();
+                }
+                else
+                {
+                    // textBoxCAL.Text 不是有效的浮點數
+                }
+            }
+        }
+
 
         #endregion
 
-
+      
     }
 }
