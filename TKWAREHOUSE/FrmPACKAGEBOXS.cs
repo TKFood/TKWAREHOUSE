@@ -355,24 +355,38 @@ namespace TKWAREHOUSE
 
                     try
                     {
-                        retrievedImageBytes = (byte[])row.Cells["總重PHOTOS"].Value;
-                        retrievedImageBytes2 = (byte[])row.Cells["箱重PHOTOS"].Value;
-                        retrievedImageBytes3 = (byte[])row.Cells["緩衝材PHOTOS"].Value;
-                        using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
+
+                        if((byte[])row.Cells["總重PHOTOS"].Value != null)
                         {
-                            pictureBox1.Image = Image.FromStream(ms);
-                            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                            retrievedImageBytes = (byte[])row.Cells["總重PHOTOS"].Value;
+                            using (MemoryStream ms = new MemoryStream(retrievedImageBytes))
+                            {
+                                pictureBox1.Image = Image.FromStream(ms);
+                                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                            }
                         }
-                        using (MemoryStream ms = new MemoryStream(retrievedImageBytes2))
+
+                        if ((byte[])row.Cells["箱重PHOTOS"].Value != null)
                         {
-                            pictureBox2.Image = Image.FromStream(ms);
-                            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+                            retrievedImageBytes2 = (byte[])row.Cells["箱重PHOTOS"].Value;
+                            using (MemoryStream ms = new MemoryStream(retrievedImageBytes2))
+                            {
+                                pictureBox2.Image = Image.FromStream(ms);
+                                pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+                            }
                         }
-                        using (MemoryStream ms = new MemoryStream(retrievedImageBytes3))
+                           
+
+                        if ((byte[])row.Cells["緩衝材PHOTOS"].Value != null )
                         {
-                            pictureBox3.Image = Image.FromStream(ms);
-                            pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+                            retrievedImageBytes3 = (byte[])row.Cells["緩衝材PHOTOS"].Value;
+                            using (MemoryStream ms = new MemoryStream(retrievedImageBytes3))
+                            {
+                                pictureBox3.Image = Image.FromStream(ms);
+                                pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+                            }
                         }
+                           
                     }
                     catch
                     {
