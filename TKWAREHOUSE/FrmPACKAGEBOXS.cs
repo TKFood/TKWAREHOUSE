@@ -1870,11 +1870,24 @@ namespace TKWAREHOUSE
                     OTHERPACKWEIGHTS = float.Parse(input2);
                     ALLPRODUCTWEIGHTS = float.Parse(input1);
 
-                    decimal difference = (decimal)(ALLPRODUCTWEIGHTS - OTHERPACKWEIGHTS- BOXWEIGHTS);
-                    textBox5.Text = difference.ToString("0.00"); // 保留小數第二位
+                    if(OTHERPACKWEIGHTS>0)
+                    {
+                        decimal difference = (decimal)(ALLPRODUCTWEIGHTS - OTHERPACKWEIGHTS );
+                        textBox5.Text = difference.ToString("0.00"); // 保留小數第二位
 
-                    rates = ((OTHERPACKWEIGHTS+ BOXWEIGHTS) * 100 / ALLPRODUCTWEIGHTS * 100)/100 ;
-                    textBox6.Text = rates.ToString("0.00") + "%";
+                        rates = (OTHERPACKWEIGHTS  * 100 / ALLPRODUCTWEIGHTS * 100) / 100;
+                        textBox6.Text = rates.ToString("0.00") + "%";
+                    }
+                    else
+                    {
+                        decimal difference = (decimal)(ALLPRODUCTWEIGHTS - BOXWEIGHTS);
+                        textBox5.Text = difference.ToString("0.00"); // 保留小數第二位
+
+                        rates = (BOXWEIGHTS * 100 / ALLPRODUCTWEIGHTS * 100) / 100;
+                        textBox6.Text = rates.ToString("0.00") + "%";
+                    }
+
+                   
                 }
                 else
                 { 
