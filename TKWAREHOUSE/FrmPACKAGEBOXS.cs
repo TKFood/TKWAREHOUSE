@@ -1841,9 +1841,18 @@ namespace TKWAREHOUSE
                 if (float.TryParse(input1, out result) && float.TryParse(input2, out result) && float.TryParse(input3, out result))
                 {
                     BOXWEIGHTS = float.Parse(input3);
-                    OTHERPACKWEIGHTS = float.Parse(input2);                  
+                    OTHERPACKWEIGHTS = float.Parse(input2);
                     ALLPRODUCTWEIGHTS = float.Parse(input1);
-                    textBox5.Text = (ALLPRODUCTWEIGHTS - BOXWEIGHTS - OTHERPACKWEIGHTS).ToString("0.000");
+
+
+                    if (OTHERPACKWEIGHTS > 0)
+                    {
+                        textBox5.Text = (ALLPRODUCTWEIGHTS  - OTHERPACKWEIGHTS).ToString("0.000");
+                    }
+                    else
+                    {
+                        textBox5.Text = (ALLPRODUCTWEIGHTS - BOXWEIGHTS ).ToString("0.000");
+                    }
                 }
                 else
                 {
