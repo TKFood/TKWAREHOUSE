@@ -71,6 +71,7 @@ namespace TKWAREHOUSE
             comboBox4load();
             comboBox5load();
             comboBox6load();
+            comboBox7load();
 
 
             DataTable DT = SET_Btnconnect();
@@ -204,6 +205,10 @@ namespace TKWAREHOUSE
         public void comboBox6load()
         {
             LoadComboBoxData(comboBox6, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='PortNameSELECT' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
+        }
+        public void comboBox7load()
+        {
+            LoadComboBoxData(comboBox7, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='REPORT1' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
         }
 
         public void Search_COPTG(string TG002)
@@ -2536,6 +2541,154 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
 
         }
+
+        public void SETFASTREPORT2(string SDAYE, string EDAYS, string REPORTS)
+        {
+            string SQL = "";
+            report1 = new Report();
+
+            if (REPORTS.Equals("現場空重比值明細秤重"))
+            {
+                report1.Load(@"REPORT\網購包材減量應填表單-現場空重比值明細秤重A23A.frx");
+
+                SQL = SETFASETSQL3(SDAYE, EDAYS);
+
+            }
+            else if (REPORTS.Equals("銷貨資料"))
+            {
+                report1.Load(@"REPORT\網購包材減量應填表單-銷貨資料A23A.frx");
+
+                SQL = SETFASETSQL4(SDAYE, EDAYS);
+
+            }
+
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+            Table.SelectCommand = SQL.ToString();
+
+            report1.Preview = previewControl2;
+            report1.Show();
+
+        }
+
+        public string SETFASETSQL3(string SDAYE, string EDAYS)
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            FASTSQL.AppendFormat(@"  
+                                    
+                                    SELECT 
+                                    訂單日期
+                                    ,TG029 AS '訂單編號'
+                                    ,TG001 AS '銷貨單別'
+                                    ,TG002 AS '銷貨單號'
+                                    ,TG003 AS '銷貨日'
+                                    ,TG020 AS '購物車編號'
+                                    ,'' AS '編號'
+                                    ,'1' AS '箱號'
+                                    ,秤總重 AS '秤總重(A+B+C)'
+                                    ,網購包材重量 AS '空箱重量(KG)A'
+                                    ,'0' AS '緩衝材重量(KG)B'
+                                    ,商品總重量 AS '商品總重量(KG)C'
+                                    ,實際比值 AS '實際比值'
+                                    ,商品總重量比值分類 AS '商品總重量比值分類'
+                                    ,'<'+CONVERT(NVARCHAR,CONVERT(INT,比值*100))+'%'  AS '規定比值'
+                                    ,(CASE WHEN 商品總重量比值分類!='＜0.25公斤' THEN (CASE WHEN 實際比值<比值 THEN '符合' ELSE '不符合' END) ELSE '不適用' END)  AS '是否符合'
+                                    ,(CASE WHEN 商品總重量比值分類='＜0.25公斤' THEN '回收箱小' WHEN 商品總重量比值分類='0.25公斤~1公斤' THEN '回收箱小' WHEN 商品總重量比值分類='1公斤~3公斤' THEN '回收箱中'  WHEN 商品總重量比值分類='3公斤(KG)以上' THEN '回收箱大' END )  AS '使用包材名稱/規格'
+                                    ,'' AS '使用包材來源'
+                                    FROM(
+
+                                    SELECT 訂單日期,TG029,TG001,TG002,TG003,TG020
+                                    ,( CASE  WHEN 商品總重量=0 THEN 0  WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量 AS '秤總重'
+                                    ,( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END) AS '網購包材重量'
+                                    ,商品總重量
+                                    ,CONVERT(decimal(16,4),(( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)/(( CASE WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量)) )AS '實際比值'
+                                    ,( CASE WHEN 商品總重量<0.25 THEN '＜0.25公斤' WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN '0.25公斤~1公斤'  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN '1公斤~3公斤' WHEN 商品總重量>=3 THEN '3公斤(KG)以上'  END) AS '商品總重量比值分類'
+                                    ,( CASE WHEN 商品總重量<0.25 THEN 0 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.4  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.3 WHEN 商品總重量>=3 THEN 0.15  END) AS '比值'
+                                    FROM 
+                                    (
+                                    SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029
+                                    ,TG001,TG002
+                                    ,0 AS  '秤總重(A+B)'
+                                    ,0 AS '網購包材重量(KG)A'
+                                    ,(SELECT ISNULL(SUM(CONVERT(FLOAT,MB012)*(TH008+TH024)),0)/1000 FROM [TK].dbo.COPTH,[TK].dbo.INVMB WHERE MB001=TH004 AND TG001=TH001 AND TG002=TH002 AND TH004 NOT LIKE '599%') AS '商品總重量'
+                                    ,TG003,TG020,UDF02
+                                    FROM [TK].dbo.COPTG
+                                    WHERE TG023='Y'
+                                    AND TG001 IN ('A23A')
+                                    AND TG003>='{0}' AND TG003<='{1}'
+                                    AND TG004 IN ('A209400300')
+                                    ) AS TEMP
+                                    ) AS TEMP2
+                                    WHERE 1=1
+
+                                    ORDER BY TG001,TG002,訂單日期
+                                    ", SDAYE, EDAYS);
+
+
+
+            return FASTSQL.ToString();
+
+        }
+
+        public string SETFASETSQL4(string SDAYE, string EDAYS)
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+
+            FASTSQL.AppendFormat(@"                                 
+                                    
+                                SELECT 
+                                訂單日期
+                                ,訂單號碼
+                                ,TG001  AS '銷貨單別'
+                                ,TG002  AS '銷貨單號'
+                                ,ISNULL((SELECT TOP 1 TA016 FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),'') AS 發票日期
+                                ,ISNULL(發票號碼,'') AS '發票號碼'
+                                ,品號
+                                ,品名
+                                ,銷貨數量
+                                ,銷貨含稅金額
+                                ,ISNULL((SELECT TOP 1 (TA017+TA018) FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),0) AS 發票金額
+                                FROM
+                                (
+                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029 AS 訂單號碼
+                                ,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼
+                                ,TH004 AS 品號
+                                ,TH005 AS 品名
+                                ,(TH008+TH024) AS 銷貨數量
+                                ,(TH037+TH038) AS 銷貨含稅金額
+                                ,TG001,TG002,TG003,TG029
+                                FROM [TK].dbo.COPTG,[TK].dbo.COPTH
+                                WHERE 1=1
+                                AND TG001=TH001 AND TG002=TH002
+                                AND TG023='Y'
+                                AND TG001 IN ('A23A')
+                                AND TG003>='{0}' AND TG003<='{1}'
+                                AND TG004 IN ('A209400300')
+                                ) AS TMEP 
+                                ORDER BY TG001,TG002,訂單日期
+                                    ", SDAYE, EDAYS);
+
+
+
+            return FASTSQL.ToString();
+
+        }
         public DataTable SET_Btnconnect()
         {
 
@@ -3297,9 +3450,13 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void button21_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT2(dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"), comboBox7.Text);
+        }
 
         #endregion
 
-      
+
     }
 }
