@@ -2436,43 +2436,7 @@ namespace TKWAREHOUSE
                                 AND COPTG.TG001 IN ('A233')
                                 AND TG003>='{0}' AND TG003<='{1}'
                                 AND ISNULL(TG029,'')<>''
-                                UNION ALL
-                                SELECT 
-                                '' AS '訂單日期'
-                                ,TG029 AS '訂單編號'
-                                ,COPTG.TG001  AS '銷貨單別'
-                                ,COPTG.TG002 AS '銷貨單號' 
-                                ,TG003 AS '銷貨日'
-                                ,TG020 AS '購物車編號'
-                                ,UDF02 AS 'UDF02'
-                                ,[PACKAGEBOXS].[NO] AS '編號'
-                                ,[BOXNO] AS '箱號'
-                                ,[ALLWEIGHTS] AS '秤總重(A+B+C)'
-                                ,[BOXKWEIGHTS] AS '空箱重量(KG)A'
-                                ,(CASE WHEN  [OTHERPACKWEIGHTS]>0 THEN ([OTHERPACKWEIGHTS]- [BOXKWEIGHTS] ) ELSE 0 END ) AS '緩衝材重量(KG)B'
-                                ,[PRODUCTWEIGHTS] AS '商品總重量(KG)C'
-                                ,[PACKRATES] AS '實際比值'
-                                ,[RATECLASS] AS '商品總重量比值分類'
-                                ,[CHECKRATES] AS '規定比值'
-                                ,[ISVALIDS] AS '是否符合'
-                                ,[PACKAGENAMES] AS '使用包材名稱/規格'
-                                ,[PACKAGEFROM] AS '使用包材來源'
-                                 ,A.[CTIMES] AS '總重照片時間'
-                                ,B.[CTIMES] AS '箱重照片時間'
-                                ,C.[CTIMES] AS '緩衝材照片時間'
-                                ,A.[PHOTOS] AS '總重PHOTOS'
-                                ,B.[PHOTOS] AS '箱重PHOTOS'
-                                ,C.[PHOTOS] AS '緩衝材PHOTOS'
-                                FROM [TK].dbo.COPTG
-                                LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
-                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
-                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
-                                LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] C ON C.NO=[PACKAGEBOXS].NO AND C.TYPES='緩衝材'
-                                WHERE TG023='Y'
-                                AND COPTG.TG001 IN ('A23A')
-                                AND TG004 IN ('A209400300')
-                                AND TG003>='{0}' AND TG003<='{1}'
-      
+                               
                                 ) AS TEMP
                                 ORDER BY 銷貨單別,銷貨單號
                                     ", SDAYE, EDAYS);
@@ -2516,22 +2480,7 @@ namespace TKWAREHOUSE
                                 AND TG003>='{0}' AND TG003<='{1}'
                                 AND ISNULL(TG029,'')<>''
 
-                                UNION ALL
-                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029 AS 訂單號碼
-                                ,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼
-                                ,TH004 AS 品號
-                                ,TH005 AS 品名
-                                ,(TH008+TH024) AS 銷貨數量
-                                ,(TH037+TH038) AS 銷貨含稅金額
-                                ,TG001,TG002,TG003,TG029
-                                FROM [TK].dbo.COPTG,[TK].dbo.COPTH
-                                WHERE 1=1
-                                AND TG001=TH001 AND TG002=TH002
-                                AND TG023='Y'
-                                AND TG001 IN ('A23A')
-                                AND TG002 LIKE '2023%'
-                                AND TG003>='{0}' AND TG003<='{1}'
-                                AND TG004 IN ('A209400300')
+                               
                                 ) AS TMEP 
                                 ORDER BY TG001,TG002,訂單日期
                                     ", SDAYE, EDAYS);
