@@ -2556,8 +2556,8 @@ namespace TKWAREHOUSE
                                     ,實際比值 AS '實際比值'
                                     ,商品總重量比值分類 AS '商品總重量比值分類'
                                     ,'<'+CONVERT(NVARCHAR,CONVERT(INT,比值*100))+'%'  AS '規定比值'
-                                    ,(CASE WHEN 商品總重量比值分類!='＜0.25公斤' THEN (CASE WHEN 實際比值<比值 THEN '符合' ELSE '不符合' END) ELSE '不適用' END)  AS '是否符合'
-                                    ,(CASE WHEN 商品總重量比值分類='＜0.25公斤' THEN '回收箱小' WHEN 商品總重量比值分類='0.25公斤~1公斤' THEN '回收箱小' WHEN 商品總重量比值分類='1公斤~3公斤' THEN '回收箱中'  WHEN 商品總重量比值分類='3公斤(KG)以上' THEN '回收箱大' END )  AS '使用包材名稱/規格'
+                                    ,(CASE WHEN 商品總重量比值分類!='<0.25公斤' THEN (CASE WHEN 實際比值<比值 THEN '符合' ELSE '不符合' END) ELSE '不適用' END)  AS '是否符合'
+                                    ,(CASE WHEN 商品總重量比值分類='<0.25公斤' THEN '回收箱小' WHEN 商品總重量比值分類='0.25公斤~1公斤' THEN '回收箱小' WHEN 商品總重量比值分類='1公斤~3公斤' THEN '回收箱中'  WHEN 商品總重量比值分類='3公斤(KG)以上' THEN '回收箱大' END )  AS '使用包材名稱/規格'
                                     ,'' AS '使用包材來源'
                                     FROM(
 
@@ -2566,7 +2566,7 @@ namespace TKWAREHOUSE
                                     ,( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END) AS '網購包材重量'
                                     ,商品總重量
                                     ,CONVERT(decimal(16,4),(( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)/(( CASE WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量)) )AS '實際比值'
-                                    ,( CASE WHEN 商品總重量<0.25 THEN '＜0.25公斤' WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN '0.25公斤~1公斤'  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN '1公斤~3公斤' WHEN 商品總重量>=3 THEN '3公斤(KG)以上'  END) AS '商品總重量比值分類'
+                                    ,( CASE WHEN 商品總重量<0.25 THEN '<0.25公斤' WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN '0.25公斤~1公斤'  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN '1公斤~3公斤' WHEN 商品總重量>=3 THEN '3公斤(KG)以上'  END) AS '商品總重量比值分類'
                                     ,( CASE WHEN 商品總重量<0.25 THEN 0 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.4  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.3 WHEN 商品總重量>=3 THEN 0.15  END) AS '比值'
                                     FROM 
                                     (
