@@ -2452,7 +2452,7 @@ namespace TKWAREHOUSE
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
-            FASTSQL.AppendFormat(@"                                  
+            FASTSQL.AppendFormat(@"                                   
                                 SELECT 訂單日期,訂單號碼
                                 ,TG001 AS '銷貨單別'
                                 ,TG002 AS '銷貨單號'
