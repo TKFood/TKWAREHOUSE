@@ -2438,7 +2438,7 @@ namespace TKWAREHOUSE
                                 AND ISNULL(TG029,'')<>''
                                
                                 ) AS TEMP
-                                ORDER BY 銷貨單別,銷貨單號
+                                ORDER BY 銷貨單別,銷貨單號 
                                     ", SDAYE, EDAYS);
 
 
