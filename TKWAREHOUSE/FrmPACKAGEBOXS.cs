@@ -2366,7 +2366,7 @@ namespace TKWAREHOUSE
             {
                 report1.Load(@"REPORT\網購包材減量應填表單-銷貨資料.frx");
 
-                SQL = SETFASETSQL2(SDAYE,EDAYS);
+                SQL = SETFASETSQL2(SDAYE,EDAYS); 
                
             }
 
