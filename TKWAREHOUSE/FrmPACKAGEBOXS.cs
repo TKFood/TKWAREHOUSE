@@ -2435,7 +2435,7 @@ namespace TKWAREHOUSE
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ('A233')
                                 AND TG003>='{0}' AND TG003<='{1}'
-                                AND ISNULL(TG029,'')<>''
+                                
                                
                                 ) AS TEMP
                                 ORDER BY 銷貨單別,銷貨單號 
@@ -2478,7 +2478,7 @@ namespace TKWAREHOUSE
                                 AND TG023='Y'
                                 AND TG001 IN ('A233')
                                 AND TG003>='{0}' AND TG003<='{1}'
-                                AND ISNULL(TG029,'')<>''
+                              
 
                                
                                 ) AS TMEP 
