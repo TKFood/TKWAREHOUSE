@@ -164,7 +164,6 @@ namespace TKWAREHOUSE
 
         public void SETFASTREPORT()
         {
-
             string SQL;
             report1 = new Report();
             report1.Load(@"REPORT\合併領料.frx");
@@ -272,7 +271,7 @@ namespace TKWAREHOUSE
             }
 
 
-            FASTSQL.AppendFormat(@"  ");
+            FASTSQL.AppendFormat(@"   ");
 
             return FASTSQL.ToString();
         }
