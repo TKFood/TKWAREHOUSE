@@ -2546,11 +2546,10 @@ namespace TKWAREHOUSE
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
-            FASTSQL.AppendFormat(@"  
-                                    
-                                    SELECT 
+            FASTSQL.AppendFormat(@"
+                                   SELECT 
                                     訂單日期
-                                    ,TG029 AS '訂單編號'
+                                    ,TG029 AS '購物車編號'
                                     ,TG001 AS '銷貨單別'
                                     ,TG002 AS '銷貨單號'
                                     ,TG003 AS '銷貨日'
@@ -2567,6 +2566,8 @@ namespace TKWAREHOUSE
                                     ,(CASE WHEN 商品總重量比值分類!='<0.25公斤' THEN (CASE WHEN 實際比值<比值 THEN '符合' ELSE '不符合' END) ELSE '不適用' END)  AS '是否符合'
                                     ,(CASE WHEN 商品總重量比值分類='<0.25公斤' THEN '回收箱小' WHEN 商品總重量比值分類='0.25公斤~1公斤' THEN '回收箱小' WHEN 商品總重量比值分類='1公斤~3公斤' THEN '回收箱中'  WHEN 商品總重量比值分類='3公斤(KG)以上' THEN '回收箱大' END )  AS '使用包材名稱/規格'
                                     ,'' AS '使用包材來源'
+                                    ,SUBSTRING(TH01415, 1, CHARINDEX('-', TH01415) - 1) AS '訂單單別'
+                                    ,SUBSTRING(TH01415, CHARINDEX('-', TH01415) + 1, LEN(TH01415) - CHARINDEX('-', TH01415)) AS '訂單編號'
                                     FROM(
 
                                     SELECT 訂單日期,TG029,TG001,TG002,TG003,TG020
@@ -2576,6 +2577,7 @@ namespace TKWAREHOUSE
                                     ,CONVERT(decimal(16,4),(( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)/(( CASE WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量)) )AS '實際比值'
                                     ,( CASE WHEN 商品總重量<0.25 THEN '<0.25公斤' WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN '0.25公斤~1公斤'  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN '1公斤~3公斤' WHEN 商品總重量>=3 THEN '3公斤(KG)以上'  END) AS '商品總重量比值分類'
                                     ,( CASE WHEN 商品總重量<0.25 THEN 0 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.4  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.3 WHEN 商品總重量>=3 THEN 0.15  END) AS '比值'
+                                    ,TH01415
                                     FROM 
                                     (
                                     SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029
@@ -2584,6 +2586,7 @@ namespace TKWAREHOUSE
                                     ,0 AS '網購包材重量(KG)A'
                                     ,(SELECT ISNULL(SUM(CONVERT(FLOAT,MB012)*(TH008+TH024)),0)/1000 FROM [TK].dbo.COPTH,[TK].dbo.INVMB WHERE MB001=TH004 AND TG001=TH001 AND TG002=TH002 AND TH004 NOT LIKE '599%') AS '商品總重量'
                                     ,TG003,TG020,UDF02
+                                    ,(SELECT TOP 1 TH014+'-'+TH015 FROM [TK].dbo.COPTH WHERE TH001=COPTG.TG001 AND TH002=COPTG.TG002) AS 'TH01415'
                                     FROM [TK].dbo.COPTG
                                     WHERE TG023='Y'
                                     AND TG001 IN ('A23A')
@@ -2592,7 +2595,7 @@ namespace TKWAREHOUSE
                                     ) AS TEMP
                                     ) AS TEMP2
                                     WHERE 1=1
-
+ 
                                     ORDER BY TG001,TG002,訂單日期
                                     ", SDAYE, EDAYS);
 
@@ -2611,7 +2614,7 @@ namespace TKWAREHOUSE
                                     
                                 SELECT 
                                 訂單日期
-                                ,訂單號碼
+                                ,購物車編號
                                 ,TG001  AS '銷貨單別'
                                 ,TG002  AS '銷貨單號'
                                 ,ISNULL((SELECT TOP 1 TA016 FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),'') AS 發票日期
@@ -2621,15 +2624,20 @@ namespace TKWAREHOUSE
                                 ,銷貨數量
                                 ,銷貨含稅金額
                                 ,ISNULL((SELECT TOP 1 (TA017+TA018) FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),0) AS 發票金額
+                                ,訂單單別
+                                ,訂單編號
                                 FROM
                                 (
-                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029 AS 訂單號碼
+                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期'
+                                ,TG029 AS 購物車編號
                                 ,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼
                                 ,TH004 AS 品號
                                 ,TH005 AS 品名
                                 ,(TH008+TH024) AS 銷貨數量
                                 ,(TH037+TH038) AS 銷貨含稅金額
                                 ,TG001,TG002,TG003,TG029
+                                ,TH014 AS '訂單單別'
+                                ,TH015 AS '訂單編號'
                                 FROM [TK].dbo.COPTG,[TK].dbo.COPTH
                                 WHERE 1=1
                                 AND TG001=TH001 AND TG002=TH002
