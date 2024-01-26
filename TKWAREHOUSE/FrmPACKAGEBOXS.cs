@@ -2456,7 +2456,7 @@ namespace TKWAREHOUSE
             StringBuilder STRQUERY = new StringBuilder();
 
             FASTSQL.AppendFormat(@"                                   
-                                SELECT 訂單日期,訂單號碼
+                                 SELECT 訂單日期,購物車編號
                                 ,TG001 AS '銷貨單別'
                                 ,TG002 AS '銷貨單號'
                                 ,ISNULL((SELECT TOP 1 TA016 FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),'') AS 發票日期
@@ -2466,15 +2466,20 @@ namespace TKWAREHOUSE
                                 ,銷貨數量
                                 ,銷貨含稅金額
                                 ,ISNULL((SELECT TOP 1 (TA017+TA018) FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),0) AS 發票金額
+                                ,訂單單別
+                                ,訂單編號
                                 FROM
                                 (
-                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029 AS 訂單號碼
+                                SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期'
+                                ,TG029 AS 購物車編號
                                 ,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼
                                 ,TH004 AS 品號
                                 ,TH005 AS 品名
                                 ,(TH008+TH024) AS 銷貨數量
                                 ,(TH037+TH038) AS 銷貨含稅金額
                                 ,TG001,TG002,TG003,TG029
+                                ,TH014 AS '訂單單別'
+                                ,TH015 AS '訂單編號'
                                 FROM [TK].dbo.COPTG,[TK].dbo.COPTH
                                 WHERE 1=1
                                 AND TG001=TH001 AND TG002=TH002
