@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="10/25/2023 15:39:23" ReportInfo.Modified="11/06/2023 13:53:34" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/25/2023 15:39:23" ReportInfo.Modified="01/26/2024 10:59:25" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUE+mOTnnEnimw2aQ6NWdgnq">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUHnPhOpqtZgylNPREwZKdZc">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT &#13;&#10;訂單日期&#13;&#10;,訂單號碼&#13;&#10;,TG001  AS '銷貨單別'&#13;&#10;,TG002  AS '銷貨單號'&#13;&#10;,ISNULL((SELECT TOP 1 TA016 FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),'') AS 發票日期&#13;&#10;,ISNULL(發票號碼,'') AS '發票號碼'&#13;&#10;,品號&#13;&#10;,品名&#13;&#10;,銷貨數量&#13;&#10;,銷貨含稅金額&#13;&#10;,ISNULL((SELECT TOP 1 (TA017+TA018) FROM [TK].dbo.ACRTA WHERE TA015=發票號碼),0) AS 發票金額&#13;&#10;FROM&#13;&#10;(&#13;&#10;SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')&lt;&gt;'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029 AS 訂單號碼&#13;&#10;,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼&#13;&#10;,TH004 AS 品號&#13;&#10;,TH005 AS 品名&#13;&#10;,(TH008+TH024) AS 銷貨數量&#13;&#10;,(TH037+TH038) AS 銷貨含稅金額&#13;&#10;,TG001,TG002,TG003,TG029&#13;&#10;FROM [TK].dbo.COPTG,[TK].dbo.COPTH&#13;&#10;WHERE 1=1&#13;&#10;AND TG001=TH001 AND TG002=TH002&#13;&#10;AND TG023='Y'&#13;&#10;AND TG001 IN ('A23A')&#13;&#10;AND TG003&gt;='20230701'&#13;&#10;AND TG004 IN ('A209400300')&#13;&#10;) AS TMEP &#13;&#10;ORDER BY TG001,TG002,訂單日期">
         <Column Name="訂單日期" DataType="System.String"/>
         <Column Name="訂單號碼" DataType="System.String"/>
@@ -21,7 +21,7 @@
     <ReportTitleBand Name="ReportTitle1" Width="1436.4" Height="37.8">
       <TextObject Name="Text1" Width="94.5" Height="18.9" Text="銷貨資料" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text3" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="訂單日期" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text5" Left="94.5" Top="18.9" Width="160.65" Height="18.9" Border.Lines="All" Text="訂單號碼" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="94.5" Top="18.9" Width="160.65" Height="18.9" Border.Lines="All" Text="購物車編號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text7" Left="255.15" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="銷貨單別" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text9" Left="349.65" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="銷貨單號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text11" Left="444.15" Top="18.9" Width="94.5" Height="18.9" Border.Lines="All" Text="發票日期" HorzAlign="Center" VertAlign="Center"/>

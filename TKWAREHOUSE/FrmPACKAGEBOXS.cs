@@ -2399,15 +2399,17 @@ namespace TKWAREHOUSE
 
             FASTSQL.AppendFormat(@"   
                                 SELECT *
+                                ,SUBSTRING(TH01415, 1, CHARINDEX('-', TH01415) - 1) AS '訂單單別'
+                                ,SUBSTRING(TH01415, CHARINDEX('-', TH01415) + 1, LEN(TH01415) - CHARINDEX('-', TH01415)) AS '訂單編號'
                                 FROM 
                                 (
                                 SELECT 
                                 ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期'
-                                ,TG029 AS '訂單編號'
+                                ,TG029 AS '購物車編號'
                                 ,COPTG.TG001  AS '銷貨單別'
                                 ,COPTG.TG002 AS '銷貨單號'
                                 ,TG003 AS '銷貨日'
-                                ,TG020 AS '購物車編號'
+                                ,TG020 AS '購物車編號2'
                                 ,UDF02 AS 'UDF02'
                                 ,[PACKAGEBOXS].[NO] AS '編號'
                                 ,[BOXNO] AS '箱號'
@@ -2427,6 +2429,7 @@ namespace TKWAREHOUSE
                                 ,A.[PHOTOS] AS '總重PHOTOS'
                                 ,B.[PHOTOS] AS '箱重PHOTOS'
                                 ,C.[PHOTOS] AS '緩衝材PHOTOS'
+                                ,(SELECT TOP 1 TH014+'-'+TH015 FROM [TK].dbo.COPTH WHERE TH001=COPTG.TG001 AND TH002=COPTG.TG002) AS 'TH01415'
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
