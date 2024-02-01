@@ -2508,6 +2508,7 @@ namespace TKWAREHOUSE
             {
                 report1.Load(@"REPORT\網購包材減量應填表單-現場空重比值明細秤重A23A.frx");
 
+                ADD_PACKAGEBOXSA23A(SDAYE, EDAYS);
                 SQL = SETFASETSQL3(SDAYE, EDAYS);
 
             }
@@ -2515,6 +2516,7 @@ namespace TKWAREHOUSE
             {
                 report1.Load(@"REPORT\網購包材減量應填表單-銷貨資料A23A.frx");
 
+               
                 SQL = SETFASETSQL4(SDAYE, EDAYS);
 
             }
@@ -2547,56 +2549,84 @@ namespace TKWAREHOUSE
             StringBuilder STRQUERY = new StringBuilder();
 
             FASTSQL.AppendFormat(@"
+                                   WITH RecursiveCTE AS (
                                    SELECT 
-                                    訂單日期
-                                    ,TG029 AS '購物車編號'
-                                    ,TG001 AS '銷貨單別'
-                                    ,TG002 AS '銷貨單號'
-                                    ,TG003 AS '銷貨日'
-                                    ,TG020 AS '購物車編號'
-                                    ,'' AS '編號'
-                                    ,'1' AS '箱號'
-                                    ,秤總重 AS '秤總重(A+B+C)'
-                                    ,網購包材重量 AS '空箱重量(KG)A'
-                                    ,'0' AS '緩衝材重量(KG)B'
-                                    ,商品總重量 AS '商品總重量(KG)C'
-                                    ,實際比值 AS '實際比值'
-                                    ,商品總重量比值分類 AS '商品總重量比值分類'
-                                    ,'<'+CONVERT(NVARCHAR,CONVERT(INT,比值*100))+'%'  AS '規定比值'
-                                    ,(CASE WHEN 商品總重量比值分類!='<0.25公斤' THEN (CASE WHEN 實際比值<比值 THEN '符合' ELSE '不符合' END) ELSE '不適用' END)  AS '是否符合'
-                                    ,(CASE WHEN 商品總重量比值分類='<0.25公斤' THEN '回收箱小' WHEN 商品總重量比值分類='0.25公斤~1公斤' THEN '回收箱小' WHEN 商品總重量比值分類='1公斤~3公斤' THEN '回收箱中'  WHEN 商品總重量比值分類='3公斤(KG)以上' THEN '回收箱大' END )  AS '使用包材名稱/規格'
-                                    ,'' AS '使用包材來源'
-                                    ,SUBSTRING(TH01415, 1, CHARINDEX('-', TH01415) - 1) AS '訂單單別'
-                                    ,SUBSTRING(TH01415, CHARINDEX('-', TH01415) + 1, LEN(TH01415) - CHARINDEX('-', TH01415)) AS '訂單編號'
-                                    FROM(
+                                        [訂單日期],
+                                        [購物車編號],
+                                        [銷貨單別],
+                                        [銷貨單號],
+                                        [銷貨日],
+                                        [購物車編號2],
+                                        [編號],
+                                        [箱號],
+                                        [秤總重(A+B+C)],
+                                        [空箱重量(KG)A],
+                                        [緩衝材重量(KG)B],
+                                        [商品總重量(KG)C],
+                                        [實際比值],
+                                        [商品總重量比值分類],
+                                        [規定比值],
+                                        [是否符合],
+                                        [使用包材名稱/規格],
+                                        [使用包材來源],
+                                        [訂單單別],
+                                        [訂單編號],
+                                        1 AS Iteration -- 遞迴計數器
+                                    FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSA23A]
 
-                                    SELECT 訂單日期,TG029,TG001,TG002,TG003,TG020
-                                    ,( CASE  WHEN 商品總重量=0 THEN 0  WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量 AS '秤總重'
-                                    ,( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END) AS '網購包材重量'
-                                    ,商品總重量
-                                    ,CONVERT(decimal(16,4),(( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)/(( CASE WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量)) )AS '實際比值'
-                                    ,( CASE WHEN 商品總重量<0.25 THEN '<0.25公斤' WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN '0.25公斤~1公斤'  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN '1公斤~3公斤' WHEN 商品總重量>=3 THEN '3公斤(KG)以上'  END) AS '商品總重量比值分類'
-                                    ,( CASE WHEN 商品總重量<0.25 THEN 0 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.4  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.3 WHEN 商品總重量>=3 THEN 0.15  END) AS '比值'
-                                    ,TH01415
-                                    FROM 
-                                    (
-                                    SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029
-                                    ,TG001,TG002
-                                    ,0 AS  '秤總重(A+B)'
-                                    ,0 AS '網購包材重量(KG)A'
-                                    ,(SELECT ISNULL(SUM(CONVERT(FLOAT,MB012)*(TH008+TH024)),0)/1000 FROM [TK].dbo.COPTH,[TK].dbo.INVMB WHERE MB001=TH004 AND TG001=TH001 AND TG002=TH002 AND TH004 NOT LIKE '599%') AS '商品總重量'
-                                    ,TG003,TG020,UDF02
-                                    ,(SELECT TOP 1 TH014+'-'+TH015 FROM [TK].dbo.COPTH WHERE TH001=COPTG.TG001 AND TH002=COPTG.TG002) AS 'TH01415'
-                                    FROM [TK].dbo.COPTG
-                                    WHERE TG023='Y'
-                                    AND TG001 IN ('A23A')
-                                    AND TG003>='{0}' AND TG003<='{1}'
-                                    AND TG004 IN ('A209400300')
-                                    ) AS TEMP
-                                    ) AS TEMP2
-                                    WHERE 1=1
- 
-                                    ORDER BY TG001,TG002,訂單日期
+                                    UNION ALL
+
+                                    SELECT 
+                                        [訂單日期],
+                                        [購物車編號],
+                                        [銷貨單別],
+                                        [銷貨單號],
+                                        [銷貨日],
+                                        [購物車編號2],
+                                        [編號],
+                                        [箱號],
+                                        [秤總重(A+B+C)],
+                                        [空箱重量(KG)A],
+                                        [緩衝材重量(KG)B],
+                                        [商品總重量(KG)C],
+                                        [實際比值],
+                                        [商品總重量比值分類],
+                                        [規定比值],
+                                        [是否符合],
+                                        [使用包材名稱/規格],
+                                        [使用包材來源],
+                                        [訂單單別],
+                                        [訂單編號],
+                                        Iteration + 1
+                                    FROM RecursiveCTE
+                                    WHERE Iteration * 30 < [秤總重(A+B+C)]
+                                )
+                                SELECT  
+                                        [訂單日期],
+                                        [購物車編號],
+                                        [銷貨單別],
+                                        [銷貨單號],
+                                        [銷貨日],
+                                        [購物車編號2],
+                                        [編號],
+                                        [箱號],
+                                        (CASE WHEN ([秤總重(A+B+C)]-(Iteration*30))>0 THEN 30 ELSE ([秤總重(A+B+C)]-(Iteration*30)+30) END) [秤總重(A+B+C)],
+                                        [空箱重量(KG)A],
+                                        [緩衝材重量(KG)B],
+                                         (CASE WHEN ([商品總重量(KG)C]-(Iteration*30))>0 THEN 30 ELSE ([秤總重(A+B+C)]-(Iteration*30)+30) END)-[空箱重量(KG)A]  [商品總重量(KG)C],
+                                        [實際比值],
+                                        [商品總重量比值分類],
+                                        [規定比值],
+                                        [是否符合],
+                                        [使用包材名稱/規格],
+                                        [使用包材來源],
+                                        [訂單單別],
+                                        [訂單編號],
+                                        Iteration
+		                                FROM RecursiveCTE
+                                ORDER BY [銷貨單別],[銷貨單號], Iteration
+
+
                                     ", SDAYE, EDAYS);
 
 
@@ -2942,7 +2972,143 @@ namespace TKWAREHOUSE
             }
         }
 
+        private void ADD_PACKAGEBOXSA23A(string SDAY,string EDAY)
+        {
+            SqlConnection sqlConn = new SqlConnection();
+            SqlCommand sqlComm = new SqlCommand();
+            SqlCommand cmd = new SqlCommand();
 
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@"
+                                    
+                                    DELETE [TKWAREHOUSE].[dbo].[PACKAGEBOXSA23A]
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[PACKAGEBOXSA23A]
+                                    (
+                                     [訂單日期]
+                                    ,[購物車編號]
+                                    ,[銷貨單別]
+                                    ,[銷貨單號]
+                                    ,[銷貨日]
+                                    ,[購物車編號2]
+                                    ,[編號]
+                                    ,[箱號]
+                                    ,[秤總重(A+B+C)]
+                                    ,[空箱重量(KG)A]
+                                    ,[緩衝材重量(KG)B]
+                                    ,[商品總重量(KG)C]
+                                    ,[實際比值]
+                                    ,[商品總重量比值分類]
+                                    ,[規定比值]
+                                    ,[是否符合]
+                                    ,[使用包材名稱/規格]
+                                    ,[使用包材來源]
+                                    ,[訂單單別]
+                                    ,[訂單編號]
+                                    )
+                                    SELECT 
+                                    訂單日期
+                                    ,TG029 AS '購物車編號'
+                                    ,TG001 AS '銷貨單別'
+                                    ,TG002 AS '銷貨單號'
+                                    ,TG003 AS '銷貨日'
+                                    ,TG020 AS '購物車編號2'
+                                    ,'' AS '編號'
+                                    ,'1' AS '箱號'
+                                    ,秤總重 AS '秤總重(A+B+C)'
+                                    ,網購包材重量 AS '空箱重量(KG)A'
+                                    ,'0' AS '緩衝材重量(KG)B'
+                                    ,商品總重量 AS '商品總重量(KG)C'
+                                    ,實際比值 AS '實際比值'
+                                    ,商品總重量比值分類 AS '商品總重量比值分類'
+                                    ,'<'+CONVERT(NVARCHAR,CONVERT(INT,比值*100))+'%'  AS '規定比值'
+                                    ,(CASE WHEN 商品總重量比值分類!='<0.25公斤' THEN (CASE WHEN 實際比值<比值 THEN '符合' ELSE '不符合' END) ELSE '不適用' END)  AS '是否符合'
+                                    ,(CASE WHEN 商品總重量比值分類='<0.25公斤' THEN '回收箱小' WHEN 商品總重量比值分類='0.25公斤~1公斤' THEN '回收箱小' WHEN 商品總重量比值分類='1公斤~3公斤' THEN '回收箱中'  WHEN 商品總重量比值分類='3公斤(KG)以上' THEN '回收箱大' END )  AS '使用包材名稱/規格'
+                                    ,'' AS '使用包材來源'
+                                    ,SUBSTRING(TH01415, 1, CHARINDEX('-', TH01415) - 1) AS '訂單單別'
+                                    ,SUBSTRING(TH01415, CHARINDEX('-', TH01415) + 1, LEN(TH01415) - CHARINDEX('-', TH01415)) AS '訂單編號'
+                                    FROM(
+
+	                                    SELECT 訂單日期,TG029,TG001,TG002,TG003,TG020
+	                                    ,( CASE  WHEN 商品總重量=0 THEN 0  WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量 AS '秤總重'
+	                                    ,( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END) AS '網購包材重量'
+	                                    ,商品總重量
+	                                    ,CONVERT(decimal(16,4),(( CASE WHEN 商品總重量=0 THEN 0 WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)/(( CASE WHEN 商品總重量<0.25 THEN 0.335 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.335 WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.640 WHEN 商品總重量>=3 THEN 0.775  END)+商品總重量)) )AS '實際比值'
+	                                    ,( CASE WHEN 商品總重量<0.25 THEN '<0.25公斤' WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN '0.25公斤~1公斤'  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN '1公斤~3公斤' WHEN 商品總重量>=3 THEN '3公斤(KG)以上'  END) AS '商品總重量比值分類'
+	                                    ,( CASE WHEN 商品總重量<0.25 THEN 0 WHEN 商品總重量>=0.25  AND 商品總重量 <1 THEN 0.4  WHEN 商品總重量>=1  AND 商品總重量 <3 THEN 0.3 WHEN 商品總重量>=3 THEN 0.15  END) AS '比值'
+	                                    ,TH01415
+	                                    FROM 
+	                                    (
+		                                    SELECT ( CASE WHEN ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) ELSE '' END )AS '訂單日期',TG029
+		                                    ,TG001,TG002
+		                                    ,0 AS  '秤總重(A+B)'
+		                                    ,0 AS '網購包材重量(KG)A'
+		                                    ,(SELECT ISNULL(SUM(CONVERT(FLOAT,MB012)*(TH008+TH024)),0)/1000 FROM [TK].dbo.COPTH,[TK].dbo.INVMB WHERE MB001=TH004 AND TG001=TH001 AND TG002=TH002 AND TH004 NOT LIKE '599%') AS '商品總重量'
+		                                    ,TG003,TG020,UDF02
+		                                    ,(SELECT TOP 1 TH014+'-'+TH015 FROM [TK].dbo.COPTH WHERE TH001=COPTG.TG001 AND TH002=COPTG.TG002) AS 'TH01415'
+		                                    FROM [TK].dbo.COPTG
+		                                    WHERE TG023='Y'
+		                                    AND TG001 IN ('A23A')
+		                                    AND TG003>='{0}' AND TG003<='{1}'
+		                                    AND TG004 IN ('A209400300')
+	                                    ) AS TEMP
+                                    ) AS TEMP2
+                                    WHERE 1=1
+ 
+                                    ORDER BY TG001,TG002,訂單日期"
+                                    , SDAY,EDAY);
+
+                //cmd.Parameters.AddWithValue("@NO", NO);
+
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    //MessageBox.Show("圖片已成功存儲到資料庫。");
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
 
@@ -3416,7 +3582,7 @@ namespace TKWAREHOUSE
         }
 
         private void button21_Click(object sender, EventArgs e)
-        {
+        {            
             SETFASTREPORT2(dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"), comboBox7.Text);
         }
 
