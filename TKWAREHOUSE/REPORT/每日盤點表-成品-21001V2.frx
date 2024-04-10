@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/09/2018 15:02:20" ReportInfo.Modified="04/10/2024 13:22:45" ReportInfo.CreatorVersion="2016.4.4.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+    string MESSAGE=null;
+   
+
+    private void Text25_BeforePrint(object sender, EventArgs e)
+    {
+      
+    
+    }
+  }
+}
+</ScriptText>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9K8Ts9FUg3OGmoLvfv+Iey5" CommandTimeout="300">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT &#13;&#10;品號,品名,規格,批號,庫存量,單位&#13;&#10;,CASE WHEN ISNULL(生產日期,'')&lt;&gt;'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END AS '生產日期'&#13;&#10;,CASE WHEN ISNULL(在倉日期,'')&lt;&gt;'' THEN 在倉日期 ELSE DATEDIFF(DAY,CASE WHEN ISNULL(生產日期,'')&lt;&gt;'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END,'20240410') END AS '在倉日期'&#13;&#10;,有效天數&#13;&#10;,狀態&#13;&#10;,CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END AS 'DAYS'                 &#13;&#10;FROM (&#13;&#10;SELECT &#13;&#10;品號,品名,規格,批號,庫存量,單位&#13;&#10;,生產日期&#13;&#10;,DATEDIFF(DAY,生產日期,'20240410') AS '在倉日期'&#13;&#10;,DATEDIFF(DAY,'20240410',有效日期)  AS '有效天數'&#13;&#10;,(CASE WHEN DATEDIFF(DAY,生產日期,'20240410')&gt;90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'20240410')&gt;30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'&#13;&#10;FROM ( &#13;&#10;&#13;&#10;SELECT  &#13;&#10;LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'&#13;&#10;,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'&#13;&#10;&#13;&#10;,(SELECT TOP 1 ME032&#13;&#10;FROM [TK].dbo.INVME&#13;&#10;WHERE ME001=LA001 AND ME002=LA016) AS '生產日期'&#13;&#10;,(SELECT TOP 1 ME009&#13;&#10;FROM [TK].dbo.INVME&#13;&#10;WHERE ME001=LA001 AND ME002=LA016) AS '有效日期'&#13;&#10;,ISDATE(LA016) AS LA016&#13;&#10;FROM [TK].dbo.INVLA WITH (NOLOCK)  &#13;&#10;LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   &#13;&#10;WHERE  (LA009='21001')   &#13;&#10;AND (LA001 LIKE '4%' OR LA001 LIKE '5%')&#13;&#10;&#13;&#10;AND LA016  NOT IN ('LotError')&#13;&#10;&#13;&#10;GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    &#13;&#10;HAVING SUM(LA005*LA011)&lt;&gt;0 &#13;&#10;) AS TEMP&#13;&#10;) AS TEMP2&#13;&#10;LEFT JOIN [TK].dbo.INVMB ON MB001=品號&#13;&#10;WHERE 品號 IN (SELECT LA001 FROM [TK].dbo.INVLA WHERE LA009 IN ('21001') GROUP BY LA001 HAVING SUM(LA005*LA011)&gt;0 )&#13;&#10;AND 品名 NOT LIKE '%試吃%'&#13;&#10;ORDER BY 品號,批號    &#13;&#10;   &#13;&#10;                                        ">
+        <Column Name="品號" DataType="System.String"/>
+        <Column Name="品名" DataType="System.String"/>
+        <Column Name="規格" DataType="System.String"/>
+        <Column Name="批號" DataType="System.String"/>
+        <Column Name="庫存量" DataType="System.Int32"/>
+        <Column Name="在倉日期" DataType="System.Decimal"/>
+        <Column Name="有效天數" DataType="System.Int32"/>
+        <Column Name="單位" DataType="System.String"/>
+        <Column Name="生產日期" DataType="System.String"/>
+        <Column Name="狀態" DataType="System.String"/>
+        <Column Name="DAYS" DataType="System.Decimal"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="400">
+    <ReportTitleBand Name="ReportTitle1" Width="1436.4" Height="66.15">
+      <TextObject Name="Text9" Width="1814.4" Height="18.9" Text="老楊食品大林廠-庫存表[Year([Date])]/[Month([Date])]/[Day([Date])]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="103.95" Top="18.9" Width="226.8" Height="47.25" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="481.95" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="批號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="557.55" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="庫存量" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="330.75" Top="18.9" Width="151.2" Height="47.25" Border.Lines="All" Text="規格" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text17" Left="784.35" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="在倉日期" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text19" Left="859.95" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="有效天數" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text2" Top="18.9" Width="103.95" Height="47.25" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text21" Left="633.15" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="單位" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text24" Left="935.55" Top="18.9" Width="217.35" Height="47.25" Border.Lines="All" Text="狀態" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text27" Left="708.75" Top="18.9" Width="75.6" Height="47.25" Border.Lines="All" Text="生產日期" HorzAlign="Center" VertAlign="Center"/>
+    </ReportTitleBand>
+    <DataBand Name="Data1" Top="70.75" Width="1436.4" Height="18.9" CanGrow="true" DataSource="Table">
+      <TextObject Name="Text1" Width="103.95" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text3" Left="103.95" Width="226.8" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="330.75" Width="151.2" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.規格]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="481.95" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.批號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="557.55" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.庫存量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="" Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text16" Left="784.35" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.在倉日期]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="" Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text18" Left="859.95" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.有效天數]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="" Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text20" Left="633.15" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.單位]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text25" Left="935.55" Width="217.35" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" BeforePrintEvent="Text25_BeforePrint" Text="[Table.狀態]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="" Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text15" Left="708.75" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.生產日期]" HorzAlign="Center" VertAlign="Center"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="94.25" Width="1436.4"/>
+  </ReportPage>
+</Report>

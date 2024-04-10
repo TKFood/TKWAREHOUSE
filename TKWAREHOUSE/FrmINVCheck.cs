@@ -529,29 +529,29 @@ namespace TKWAREHOUSE
 
         //}
 
-        public void SETFASTREPORT()
+        public void SETFASTREPORT(string KINDS)
         { 
 
             string SQL;
             report1 = new Report();
 
-            if (comboBox1.Text.Equals("20001     成品倉"))
+            if (KINDS.Equals("20001"))
             {
                 report1.Load(@"REPORT\每日盤點表-成品.frx");
             }
-            else if (comboBox1.Text.Equals("21001     方城市銷售倉"))
+            else if (KINDS.Equals("21001"))
             {
-                report1.Load(@"REPORT\每日盤點表-成品-21001.frx");
+                report1.Load(@"REPORT\每日盤點表-成品-21001V2.frx");
             }
-            else if(comboBox1.Text.Equals("20006     原料倉"))
+            else if(KINDS.Equals("20006"))
             {
                 report1.Load(@"REPORT\每日盤點表-原料.frx");
             }
-            else if (comboBox1.Text.Equals("20004     物料倉"))
+            else if (KINDS.Equals("20004"))
             {
                 report1.Load(@"REPORT\每日盤點表-物料.frx");
             }
-            else if (comboBox1.Text.Equals("20005     半成品倉"))
+            else if (KINDS.Equals("20005"))
             {
                 report1.Load(@"REPORT\每日盤點表-半成品.frx");
             }
@@ -578,14 +578,14 @@ namespace TKWAREHOUSE
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL();
+            SQL = SETFASETSQL(KINDS);
             Table.SelectCommand = SQL;
             report1.Preview = previewControl1;
             report1.Show(); 
              
         }
 
-        public string SETFASETSQL()
+        public string SETFASETSQL(string KINDS)
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
@@ -609,7 +609,7 @@ namespace TKWAREHOUSE
                 sbSqlQuery.Append(" ");
             }
 
-            if (comboBox1.Text.Equals("20001     成品倉"))
+            if (KINDS.Equals("20001"))
             {
                
                 FASTSQL.AppendFormat(@"  
@@ -756,32 +756,57 @@ namespace TKWAREHOUSE
 
                                         ", DateTime.Now.ToString("yyyyMMdd"));
             }
-            else if (comboBox1.Text.Equals("21001     方城市銷售倉"))
-            {
-                FASTSQL.AppendFormat(@" SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,在倉日期,有效天數,總訂單需求量,業務");
-                FASTSQL.AppendFormat(@" FROM (");
-                FASTSQL.AppendFormat(@" ");
-                FASTSQL.AppendFormat(@" SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'");
-                FASTSQL.AppendFormat(@" ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'");
-                FASTSQL.AppendFormat(@" ,0 AS '效期內的訂單需求量' ");
-                FASTSQL.AppendFormat(@" ,0 AS '效期內的訂單差異量' ");
-                //FASTSQL.AppendFormat(@" ,DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009) , '{0}' ) AS '在倉日期' ", DateTime.Now.ToString("yyyyMMdd"));
-                //FASTSQL.AppendFormat(@" ,CASE WHEN DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009) , '{0}' )<> NULL THEN DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009) , '{0}' ) ELSE DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016) , '{0}' ) END  AS '在倉日期' ", DateTime.Now.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,ISNULL ( DATEDIFF(DAY,(SELECT TOP 1 TF003 FROM [TK].dbo.MOCTF,[TK].dbo.MOCTG WHERE TF001=TG001 AND TF002=TG002 AND TG004=LA001 AND TG017=LA016 AND TG010=LA009),'{0}'),DATEDIFF(DAY,(SELECT TOP 1 LA004 FROM [TK].dbo.INVLA A WHERE A.LA001=INVLA.LA001 AND A.LA016=INVLA.LA016 AND A.LA005='1') ,'{0}') ) AS '在倉日期' ", DateTime.Now.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,(CASE WHEN isdate(LA016)=1 THEN DATEDIFF(DAY, '{0}',LA016  ) ELSE 0 END )  AS '有效天數'   ", DateTime.Now.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@" ,0 AS '總訂單需求量' ");
-                FASTSQL.AppendFormat(@" ,NULL AS '業務'");
-                FASTSQL.AppendFormat(@" FROM [TK].dbo.INVLA WITH (NOLOCK)  ");
-                FASTSQL.AppendFormat(@" LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   ");
-                FASTSQL.AppendFormat(@" WHERE  (LA009='21001')   ");
-                FASTSQL.AppendFormat(@" AND (LA001 LIKE '4%' OR LA001 LIKE '5%')");
-                FASTSQL.AppendFormat(@" GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    ");
-                FASTSQL.AppendFormat(@" HAVING SUM(LA005*LA011)<>0 ");
-                FASTSQL.AppendFormat(@" ) AS TEMP");
-                FASTSQL.AppendFormat(@" ORDER BY 品號,批號 ");
-                FASTSQL.AppendFormat(@" ");
+            else if (KINDS.Equals("21001"))
+            {                
+                FASTSQL.AppendFormat(@"                                         
+                                    SELECT 
+                                    品號,品名,規格,批號,庫存量,單位
+                                    ,CASE WHEN ISNULL(生產日期,'')<>'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END AS '生產日期'
+                                    ,CASE WHEN ISNULL(在倉日期,'')<>'' THEN 在倉日期 ELSE DATEDIFF(DAY,CASE WHEN ISNULL(生產日期,'')<>'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END,'{0}') END AS '在倉日期'
+                                    ,有效天數
+                                    ,狀態
+                                    ,CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END AS 'DAYS'                 
+                                    FROM (
+                                    SELECT 
+                                    品號,品名,規格,批號,庫存量,單位
+                                    ,生產日期
+                                    ,DATEDIFF(DAY,生產日期,'{0}') AS '在倉日期'
+                                    ,DATEDIFF(DAY,'{0}',有效日期)  AS '有效天數'
+                                    ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
+                                    FROM ( 
+
+                                    SELECT  
+                                    LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
+                                    ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'
+
+                                    ,(SELECT TOP 1 ME032
+                                    FROM [TK].dbo.INVME
+                                    WHERE ME001=LA001 AND ME002=LA016) AS '生產日期'
+                                    ,(SELECT TOP 1 ME009
+                                    FROM [TK].dbo.INVME
+                                    WHERE ME001=LA001 AND ME002=LA016) AS '有效日期'
+                                    ,ISDATE(LA016) AS LA016
+                                    FROM [TK].dbo.INVLA WITH (NOLOCK)  
+                                    LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
+                                    WHERE  (LA009='21001')   
+                                    AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
+
+                                    AND LA016  NOT IN ('LotError')
+
+                                    GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
+                                    HAVING SUM(LA005*LA011)<>0 
+                                    ) AS TEMP
+                                    ) AS TEMP2
+                                    LEFT JOIN [TK].dbo.INVMB ON MB001=品號
+                                    WHERE 品號 IN (SELECT LA001 FROM [TK].dbo.INVLA WHERE LA009 IN ('21001') GROUP BY LA001 HAVING SUM(LA005*LA011)>0 )
+                                    AND 品名 NOT LIKE '%試吃%'
+                                    ORDER BY 品號,批號    
+   
+                                        
+   
+                                        ", DateTime.Now.ToString("yyyyMMdd"));
             }
-            else if (comboBox1.Text.Equals("20006     原料倉"))
+            else if (KINDS.Equals("20006"))
             {
                 FASTSQL.AppendFormat(@"  
                                      SELECT 品號,品名,規格,批號,庫存量,單位,庫存金額,在倉日期,有效天數,業務
@@ -812,7 +837,7 @@ namespace TKWAREHOUSE
                 FASTSQL.AppendFormat(@" ");
 
             }
-            else if (comboBox1.Text.Equals("20004     物料倉"))
+            else if (KINDS.Equals("20004"))
             {
            
                 FASTSQL.AppendFormat(@"                                     
@@ -859,7 +884,7 @@ namespace TKWAREHOUSE
 
                 FASTSQL.AppendFormat(@" ");
             }
-            else if (comboBox1.Text.Equals("20005     半成品倉"))
+            else if (KINDS.Equals("20005"))
             {
 
                 FASTSQL.AppendFormat(@"   
@@ -1164,7 +1189,7 @@ namespace TKWAREHOUSE
         {
             //Search();
             
-            SETFASTREPORT();
+            SETFASTREPORT(comboBox1.SelectedValue.ToString().Trim());
         }
         private void button2_Click(object sender, EventArgs e)
         {
