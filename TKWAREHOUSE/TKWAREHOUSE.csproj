@@ -209,6 +209,12 @@
     <Compile Include="FrmMOCINV.Designer.cs">
       <DependentUpon>FrmMOCINV.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmMOCTATB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMOCTATB.Designer.cs">
+      <DependentUpon>FrmMOCTATB.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMOCTBINV.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -378,6 +384,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMOCINV.resx">
       <DependentUpon>FrmMOCINV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMOCTATB.resx">
+      <DependentUpon>FrmMOCTATB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMOCTBINV.resx">
       <DependentUpon>frmMOCTBINV.cs</DependentUpon>
