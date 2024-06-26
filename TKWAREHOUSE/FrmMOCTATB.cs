@@ -158,7 +158,7 @@ namespace TKWAREHOUSE
                                 WHERE TA001=TB001 AND TA002=TB002
                                 AND TA001='A513'
                                 AND TA013='Y'
-                                AND TA003='{0}'
+                                AND TA009='{0}'
                                 {1}
                                 ORDER BY TB003,TA001,TA002 
                                         
