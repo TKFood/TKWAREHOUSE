@@ -153,7 +153,7 @@ namespace TKWAREHOUSE
                                 ,TB012 AS '材料品名'
                                 ,(CASE WHEN TB003 LIKE '1%' OR TB003 LIKE '3%' THEN TB004 ELSE CONVERT(INT, TB004) END )AS '需領用量'
                                 ,TB007 AS '材料單位'
-                                ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20005','20006') AND  LA001=TB003)AS '庫存量'
+                                ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('21003') AND  LA001=TB003)AS '庫存量'
                                 FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB
                                 WHERE TA001=TB001 AND TA002=TB002
                                 AND TA001='A513'
