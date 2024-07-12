@@ -150,7 +150,7 @@ namespace TKWAREHOUSE
                                 ,TA015 AS '預計產量'
                                 ,TA007 AS '產品單位'
                                 ,TB003 AS '材料品號'
-                                ,TB012 AS '材料品名'
+                                ,TB012 AS '材料品名' 
                                 ,(CASE WHEN TB003 LIKE '1%' OR TB003 LIKE '3%' THEN TB004 ELSE CONVERT(INT, TB004) END )AS '需領用量'
                                 ,TB007 AS '材料單位'
                                 ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('21003') AND  LA001=TB003)AS '庫存量'
