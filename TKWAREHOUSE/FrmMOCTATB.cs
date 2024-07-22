@@ -96,7 +96,7 @@ namespace TKWAREHOUSE
 
         }
 
-        public void SETFASTREPORT(string yyyyMMdd,string KINDS)
+        public void SETFASTREPORT(string KINDS, string TA009, string TA012)
         {
             string SQL;
             report1 = new Report();
@@ -116,14 +116,14 @@ namespace TKWAREHOUSE
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL(yyyyMMdd, KINDS);
+            SQL = SETFASETSQL(KINDS, TA009, TA012);
 
             Table.SelectCommand = SQL;
             report1.Preview = previewControl1;
             report1.Show();
         }
 
-        public string SETFASETSQL(string yyyyMMdd,string KINDS)
+        public string SETFASETSQL(string KINDS, string TA009, string TA012)
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
@@ -131,13 +131,19 @@ namespace TKWAREHOUSE
             FASTSQL.Clear();
             sbSqlQuery.Clear();
 
-            if(KINDS.Equals("原料"))
+            //TA012 實際開工
+            if (KINDS.Equals("原料"))
             {
-                sbSqlQuery.AppendFormat(" AND TB003 NOT LIKE '2%' ");
+                sbSqlQuery.AppendFormat(@" AND TB003 NOT LIKE '2%' 
+                                         AND TA012 = '{0}'  
+                                        ", TA012);
             }
+            //TA009 預計開工
             else if (KINDS.Equals("物料"))
             {
-                sbSqlQuery.AppendFormat(" AND TB003 LIKE '2%' ");
+                sbSqlQuery.AppendFormat(@" AND TB003 LIKE '2%' 
+                                           AND TA009 = '{0}'  
+                                        ", TA009);
             }
 
             FASTSQL.AppendFormat(@"  
@@ -146,6 +152,8 @@ namespace TKWAREHOUSE
                                 ,TA002 AS '製令單號'
                                 ,TA003 AS '開單日期'
                                 ,TA006 AS '產品品號'
+                                ,TA009 AS '預計開工'
+                                ,TA012 AS '實際開工'
                                 ,TA034 AS '產品品名'
                                 ,TA015 AS '預計產量'
                                 ,TA007 AS '產品單位'
@@ -158,12 +166,13 @@ namespace TKWAREHOUSE
                                 WHERE TA001=TB001 AND TA002=TB002
                                 AND TA001='A513'
                                 AND TA013='Y'
-                                AND TA009='{0}'
-                                {1}
+                              
+                                {0}
+
                                 ORDER BY TB003,TA001,TA002 
                                         
 
-                                        ", yyyyMMdd, sbSqlQuery.ToString());
+                                        ", sbSqlQuery.ToString());
 
             return FASTSQL.ToString();
         }
@@ -173,7 +182,7 @@ namespace TKWAREHOUSE
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"),comboBox1.Text.ToString());
+            SETFASTREPORT(comboBox1.Text.ToString(), dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
         #endregion
 
