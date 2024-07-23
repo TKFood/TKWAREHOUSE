@@ -576,6 +576,7 @@ namespace TKWAREHOUSE
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = 180;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
             SQL = SETFASETSQL(KINDS);
