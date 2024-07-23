@@ -534,7 +534,7 @@ namespace TKWAREHOUSE
 
             string SQL;
             report1 = new Report(); 
-
+             
             if (KINDS.Equals("20001"))
             {
                 report1.Load(@"REPORT\每日盤點表-成品.frx");
