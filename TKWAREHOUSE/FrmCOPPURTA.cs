@@ -2768,7 +2768,15 @@ namespace TKWAREHOUSE
             //找出外倉，製令單身用此外倉代號
             string MAINMB001 = MB001;
             string MOCTB009 = SEARCHOUTPURSETMC001(textBoxID.Text.Trim(), MB001);
-
+            //找出最新的加工計價
+            DataTable DT_MOCTM_MOCTN = FIND_TK_MOCTM_MOCTN(MB001);
+            if(DT_MOCTM_MOCTN!=null && DT_MOCTM_MOCTN.Rows.Count>=1)
+            {
+                MOCTA.TA022 = DT_MOCTM_MOCTN.Rows[0]["TN009"].ToString();
+                MOCTA.TA023 = DT_MOCTM_MOCTN.Rows[0]["TN008"].ToString();
+                MOCTA.TA032 = DT_MOCTM_MOCTN.Rows[0]["TM004"].ToString();
+                MOCTA.TA042 = DT_MOCTM_MOCTN.Rows[0]["TM005"].ToString();
+            }
 
             const int MaxLength = 100;
             
@@ -2891,7 +2899,74 @@ namespace TKWAREHOUSE
             }
         }
 
+        //找最新的加工計價
+        public DataTable FIND_TK_MOCTM_MOCTN(string TN004)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            StringBuilder sbSqlQuery = new StringBuilder();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds = new DataSet();
 
+
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"  
+                                    SELECT  
+                                    TOP 1 TN004,TM004,TM005,TN008,TN009
+                                    FROM [TK].dbo.MOCTM,[TK].dbo.MOCTN
+                                    WHERE TM001=TN001 AND TM002=TN002
+                                    AND TM009='Y'
+                                    AND TN004='{0}'
+                                    ORDER BY TM002 DESC
+                                    ", TN004);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds.Clear();
+                adapter1.Fill(ds, "ds");
+                sqlConn.Close();
+
+
+                if (ds.Tables["ds"].Rows.Count >= 1)
+                {
+                    return ds.Tables["ds"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
 
         public MOCTADATA SETMOCTA()
         {
