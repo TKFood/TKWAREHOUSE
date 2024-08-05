@@ -96,7 +96,7 @@ namespace TKWAREHOUSE
 
         }
 
-        public void SETFASTREPORT(string KINDS, string TA009, string TA012)
+        public void SETFASTREPORT(string KINDS, string TA009, string TA009B, string TA012, string TA012B)
         {
             string SQL;
             report1 = new Report();
@@ -116,14 +116,14 @@ namespace TKWAREHOUSE
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL(KINDS, TA009, TA012);
+            SQL = SETFASETSQL(KINDS, TA009, TA009B, TA012, TA012B);
 
             Table.SelectCommand = SQL;
             report1.Preview = previewControl1;
             report1.Show();
         }
 
-        public string SETFASETSQL(string KINDS, string TA009, string TA012)
+        public string SETFASETSQL(string KINDS, string TA009, string TA009B, string TA012, string TA012B)
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
@@ -135,15 +135,15 @@ namespace TKWAREHOUSE
             if (KINDS.Equals("原料"))
             {
                 sbSqlQuery.AppendFormat(@" AND TB003 NOT LIKE '2%' 
-                                         AND TA012 = '{0}'  
-                                        ", TA012);
+                                         AND TA009 >='{0}'   AND TA009 <='{1}' 
+                                        ", TA009, TA009B);
             }
             //TA009 預計開工
             else if (KINDS.Equals("物料"))
             {
                 sbSqlQuery.AppendFormat(@" AND TB003 LIKE '2%' 
-                                           AND TA009 = '{0}'  
-                                        ", TA009);
+                                           AND TA012 >='{0}'  AND TA012 <='{1}'  
+                                        ", TA012, TA012B);
             }
 
             FASTSQL.AppendFormat(@"  
@@ -182,7 +182,7 @@ namespace TKWAREHOUSE
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT(comboBox1.Text.ToString(), dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            SETFASTREPORT(comboBox1.Text.ToString(), dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
         }
         #endregion
 
