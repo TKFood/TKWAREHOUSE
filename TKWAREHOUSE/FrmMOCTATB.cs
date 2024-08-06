@@ -563,68 +563,144 @@ namespace TKWAREHOUSE
                          )
         {
             DATA_MOCTC MOCTC = new DATA_MOCTC();
-            MOCTC.COMPANY = "";
-            MOCTC.CREATOR = "";
-            MOCTC.USR_GROUP = "";
-            MOCTC.CREATE_DATE = "";
-            MOCTC.MODIFIER = "";
-            MOCTC.MODI_DATE = "";
-            MOCTC.FLAG = "";
-            MOCTC.CREATE_TIME = "";
-            MOCTC.MODI_TIME = "";
-            MOCTC.TRANS_TYPE = "";
-            MOCTC.TRANS_NAME = "";
+            MOCTC.COMPANY = "TK";
+            MOCTC.CREATOR = "120024";
+            MOCTC.USR_GROUP = "122000";
+            MOCTC.CREATE_DATE = TC003;
+            MOCTC.MODIFIER = "120024";
+            MOCTC.MODI_DATE = TC003;
+            MOCTC.FLAG = "0";
+            MOCTC.CREATE_TIME = DateTime.Now.ToString("HH:mm:ss");
+            MOCTC.MODI_TIME = DateTime.Now.ToString("HH:mm:ss");
+            MOCTC.TRANS_TYPE = "P001";
+            MOCTC.TRANS_NAME = "MOCMI03";
             MOCTC.sync_date = "";
             MOCTC.sync_time = "";
             MOCTC.sync_mark = "";
-            MOCTC.sync_count = "";
+            MOCTC.sync_count = "0";
             MOCTC.DataUser = "";
-            MOCTC.DataGroup = "";
-            MOCTC.TC001 = "";
-            MOCTC.TC002 = "";
-            MOCTC.TC003 = "";
-            MOCTC.TC004 = "";
-            MOCTC.TC005 = "";
+            MOCTC.DataGroup = "122000";
+            MOCTC.TC001 = TC001;
+            MOCTC.TC002 = TC002;
+            MOCTC.TC003 = TC003;
+            MOCTC.TC004 = "20";
+            MOCTC.TC005 = "08";
             MOCTC.TC006 = "";
             MOCTC.TC007 = "";
-            MOCTC.TC008 = "";
-            MOCTC.TC009 = "";
-            MOCTC.TC010 = "";
-            MOCTC.TC011 = "";
-            MOCTC.TC012 = "";
-            MOCTC.TC013 = "";
-            MOCTC.TC014 = "";
+            MOCTC.TC008 = "54";
+            MOCTC.TC009 = "N";
+            MOCTC.TC010 = "0";
+            MOCTC.TC011 = "N";
+            MOCTC.TC012 = "1";
+            MOCTC.TC013 = "N";
+            MOCTC.TC014 = TC003;
             MOCTC.TC015 = "";
-            MOCTC.TC016 = "";
-            MOCTC.TC017 = "";
-            MOCTC.TC018 = "";
-            MOCTC.TC019 = "";
+            MOCTC.TC016 = "N";
+            MOCTC.TC017 = "N";
+            MOCTC.TC018 = "0";
+            MOCTC.TC019 = "0";
             MOCTC.TC020 = "";
             MOCTC.TC021 = "";
-            MOCTC.TC022 = "";
-            MOCTC.TC023 = "";
+            MOCTC.TC022 = "0";
+            MOCTC.TC023 = "0";
             MOCTC.TC024 = "";
             MOCTC.TC025 = "";
             MOCTC.TC026 = "";
             MOCTC.TC027 = "";
-            MOCTC.TC028 = "";
+            MOCTC.TC028 = "0";
             MOCTC.TC029 = "";
             MOCTC.TC030 = "";
             MOCTC.TC031 = "";
-            MOCTC.TC032 = "";
+            MOCTC.TC032 = "0";
             MOCTC.UDF01 = "";
             MOCTC.UDF02 = "";
             MOCTC.UDF03 = "";
             MOCTC.UDF04 = "";
             MOCTC.UDF05 = "";
-            MOCTC.UDF06 = "";
-            MOCTC.UDF07 = "";
-            MOCTC.UDF08 = "";
-            MOCTC.UDF09 = "";
-            MOCTC.UDF10 = "";
+            MOCTC.UDF06 = "0";
+            MOCTC.UDF07 = "0";
+            MOCTC.UDF08 = "0";
+            MOCTC.UDF09 = "0";
+            MOCTC.UDF10 = "0";
             MOCTC.TC200 = "";
             MOCTC.TC201 = "";
             MOCTC.TC202 = "";
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                sbSql.AppendFormat(@"                                  
+                                INSERT INTO [TK].[dbo].[MOCTC]
+                                (
+                                [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]
+                                ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup],[TC001],[TC002],[TC003]
+                                ,[TC004],[TC005],[TC006],[TC007],[TC008],[TC009],[TC010],[TC011],[TC012],[TC013]
+                                ,[TC014],[TC015],[TC016],[TC017],[TC018],[TC019],[TC020],[TC021],[TC022],[TC023]
+                                ,[TC024],[TC025],[TC026],[TC027],[TC028],[TC029],[TC030],[TC031],[TC032],[UDF01]
+                                ,[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10],[TC200]
+                                ,[TC201],[TC202]
+                                )
+                                VALUES
+                                (
+                                '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'
+                                ,'{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}'
+                                ,'{20}','{21}','{22}','{23}','{24}','{25}','{26}','{27}','{28}','{29}'
+                                ,'{30}','{31}','{32}','{33}','{34}','{35}','{36}','{37}','{38}','{39}'
+                                ,'{40}','{41}','{42}','{43}','{44}','{45}','{46}','{47}','{48}','{49}'
+                                ,'{50}','{51}','{52}','{53}','{54}','{55}','{56}','{57}','{58}','{59}'
+                                ,'{60}','{61}'
+                                )
+                                "
+                                , MOCTC.COMPANY, MOCTC.CREATOR, MOCTC.USR_GROUP, MOCTC.CREATE_DATE, MOCTC.MODIFIER, MOCTC.MODI_DATE, MOCTC.FLAG, MOCTC.CREATE_TIME, MOCTC.MODI_TIME, MOCTC.TRANS_TYPE
+                                , MOCTC.TRANS_NAME, MOCTC.sync_date, MOCTC.sync_time, MOCTC.sync_mark, MOCTC.sync_count, MOCTC.DataUser, MOCTC.DataGroup, MOCTC.TC001, MOCTC.TC002, MOCTC.TC003
+                                , MOCTC.TC004, MOCTC.TC005, MOCTC.TC006, MOCTC.TC007, MOCTC.TC008, MOCTC.TC009, MOCTC.TC010, MOCTC.TC011, MOCTC.TC012, MOCTC.TC013
+                                , MOCTC.TC014, MOCTC.TC015, MOCTC.TC016, MOCTC.TC017, MOCTC.TC018, MOCTC.TC019, MOCTC.TC020, MOCTC.TC021, MOCTC.TC022, MOCTC.TC023
+                                , MOCTC.TC024, MOCTC.TC025, MOCTC.TC026, MOCTC.TC027, MOCTC.TC028, MOCTC.TC029, MOCTC.TC030, MOCTC.TC031, MOCTC.TC032, MOCTC.UDF01
+                                , MOCTC.UDF02, MOCTC.UDF03, MOCTC.UDF04, MOCTC.UDF05, MOCTC.UDF06, MOCTC.UDF07, MOCTC.UDF08, MOCTC.UDF09, MOCTC.UDF10, MOCTC.TC200
+                                , MOCTC.TC201, MOCTC.TC202
+                                );
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
 
         }
 
