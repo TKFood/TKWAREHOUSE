@@ -287,7 +287,7 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
         }
 
-        public void SEARCH_TBMOCTCTDTE(string KINDS, string TA009, string TA009B, string TA012, string TA012B)
+        public void SEARCH_TBMOCTCTDTE(string KINDS, string TA003, string TA003B, string TA009, string TA012)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -309,36 +309,33 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                string SDAYS = "";
-                string EDAYS = "";
-
+               
                 if (KINDS.Equals("物料"))
                 {
-                    SDAYS = TA012;
-                    EDAYS = TA012B;
+                   
 
                 }
                 else
                 {
-                    SDAYS = TA009;
-                    EDAYS = TA009B;
-
+                   
                 }
 
                 sbSql.AppendFormat(@"  
-                                    SELECT
+                                    SELECT 
                                     [ID]
                                     ,[KINDS] AS '分類'
-                                    ,[SDAYS] AS '開始日期'
-                                    ,[EDAYS] AS '結束日期'
+                                    ,[TA003]  AS '開始日期'
+                                    ,[TA003B] AS '結束日期'
+                                    ,[TA009] AS '預計開工'
+                                    ,[TA012] AS '實際開工'
                                     ,[TC003] AS '領料單日期'
                                     ,[TC001] AS '領料單別'
                                     ,[TC002] AS '領料單號'
                                     FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
                                     WHERE [KINDS]='{0}'
-                                    AND [SDAYS]='{1}' AND [EDAYS]='{2}'
+                                    AND [TA003]='{1}' AND [TA003B]='{2}'
                                     ORDER BY [ID]
-                                    ", KINDS, SDAYS, EDAYS);
+                                    ", KINDS, TA003, TA003B);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -708,7 +705,7 @@ namespace TKWAREHOUSE
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            //SEARCH_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+            SEARCH_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
         }
         private void button2_Click(object sender, EventArgs e)
         {
