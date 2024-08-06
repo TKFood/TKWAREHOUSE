@@ -391,7 +391,93 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
-    
+        public string GETMAXTC002(string TC001,string TC003)
+        {
+            string TC002;
+
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds.Clear();
+
+                sbSql.AppendFormat(@" 
+                                        SELECT ISNULL(MAX(TC002),'00000000000') AS TC002
+                                        FROM [TK].[dbo].[MOCTC]
+                                        WHERE  TC001='{0}' AND TC002 LIKE '%{1}%' 
+                                        ", TC001, TC003);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        TC002 = SETTC002(TC003, ds1.Tables["ds1"].Rows[0]["TC002"].ToString());
+                        return TC002;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+        }
+        public string SETTC002(string TC003,string TC002)
+        {
+            if (TC002.Equals("00000000000"))
+            {
+                return TC003 + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(TC002.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return TC003 + temp.ToString();
+            }
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -405,7 +491,16 @@ namespace TKWAREHOUSE
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            ADD_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
+            string TC001 = "A543";
+            string TC002 = "";
+            string TC003 = dateTimePicker9.Value.ToString("yyyyMMdd");
+            TC002 = GETMAXTC002(TC001, TC003);
+
+            if (!string.IsNullOrEmpty(TC001)&&!string.IsNullOrEmpty(TC002))
+            {
+                //ADD_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
+            }
+            
             
         }
 
