@@ -242,41 +242,36 @@ namespace TKWAREHOUSE
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-               if(KINDS.Equals("物料"))
+                string SDAYS = "";
+                string EDAYS = "";
+
+                if (KINDS.Equals("物料"))
                 {
-                    sbSql.AppendFormat(@"  
-                                    SELECT
-                                    [ID]
-                                    ,[KINDS] AS '分類'
-                                    ,[SDAYS] AS '開始日期'
-                                    ,[EDAYS] AS '結束日期'
-                                    ,[TE003] AS '領料單日期'
-                                    ,[TC001] AS '領料單別'
-                                    ,[TC002] AS '領料單號'
-                                    FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
-                                    WHERE [KINDS]='{0}'
-                                    AND [SDAYS]='{1}' AND [EDAYS]='{2}'
-                                    ORDER BY [ID]
-                                    ", KINDS, TA012, TA012B);
-                }
-               else
-                {
-                    sbSql.AppendFormat(@"  
-                                    SELECT
-                                    [ID]
-                                    ,[KINDS] AS '分類'
-                                    ,[SDAYS] AS '開始日期'
-                                    ,[EDAYS] AS '結束日期'
-                                    ,[TE003] AS '領料單日期'
-                                    ,[TC001] AS '領料單別'
-                                    ,[TC002] AS '領料單號'
-                                    FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
-                                    WHERE [KINDS]='{0}'
-                                    AND [SDAYS]='{1}' AND [EDAYS]='{2}'
-                                    ORDER BY [ID]
-                                    ", KINDS, TA009, TA009B);
+                    SDAYS = TA012;
+                    EDAYS = TA012B;
 
                 }
+                else
+                {
+                    SDAYS = TA009;
+                    EDAYS = TA009B;
+
+                }
+
+                sbSql.AppendFormat(@"  
+                                    SELECT
+                                    [ID]
+                                    ,[KINDS] AS '分類'
+                                    ,[SDAYS] AS '開始日期'
+                                    ,[EDAYS] AS '結束日期'
+                                    ,[TC003] AS '領料單日期'
+                                    ,[TC001] AS '領料單別'
+                                    ,[TC002] AS '領料單號'
+                                    FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
+                                    WHERE [KINDS]='{0}'
+                                    AND [SDAYS]='{1}' AND [EDAYS]='{2}'
+                                    ORDER BY [ID]
+                                    ", KINDS, SDAYS, EDAYS);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -334,22 +329,39 @@ namespace TKWAREHOUSE
                 tran = sqlConn.BeginTransaction();
 
                 sbSql.Clear();
-
+                
+                string SDAYS = "";
+                string EDAYS = "";
 
                 if (KINDS.Equals("物料"))
                 {
-                    sbSql.AppendFormat(@"  
-                                   
-                                    ", KINDS, TA012, TA012B);
+                    SDAYS = TA012;
+                    EDAYS = TA012B;
+                   
                 }
                 else
                 {
-                    sbSql.AppendFormat(@"  
-                                   
-                                    ", KINDS, TA009, TA009B);
+                    SDAYS = TA009;
+                    EDAYS = TA009B; 
 
                 }
 
+                sbSql.AppendFormat(@"                                  
+                                        INSERT INTO [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
+                                        (
+                                        [KINDS]
+                                        ,[SDAYS]
+                                        ,[EDAYS]
+                                        ,[TE003]
+                                        )
+                                        VALUES
+                                        (
+                                        '{0}'
+                                        ,'{1}'
+                                        ,'{2}'
+                                        ,'{3}'
+                                        )"
+                                        , KINDS, SDAYS, EDAYS, TC003);
 
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
