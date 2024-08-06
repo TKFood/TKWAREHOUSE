@@ -551,7 +551,16 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADD_TK_MOCTC_MOCTD_MOCTE(string KINDS, string SDAYS, string EDAYS, string TC003, string TC001, string TC002)
+        public void ADD_TK_MOCTC_MOCTD_MOCTE(
+                        string KINDS
+                        , string TA003
+                        , string TA003B
+                        , string TA009
+                        , string TA012
+                        , string TC003
+                        , string TC001
+                        , string TC002
+                         )
         {
             DATA_MOCTC MOCTC = new DATA_MOCTC();
             MOCTC.COMPANY = "";
@@ -765,7 +774,16 @@ namespace TKWAREHOUSE
                         , TC002
                         );
                 //產生ERP的領料單
-                //ADD_TK_MOCTC_MOCTD_MOCTE(KINDS, SDAYS, EDAYS, TC003, TC001, TC002);
+                ADD_TK_MOCTC_MOCTD_MOCTE(
+                        KINDS
+                        , TA003
+                        , TA003B
+                        , TA009
+                        , TA012
+                        , TC003
+                        , TC001
+                        , TC002
+                        );
             }
 
             SEARCH_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
