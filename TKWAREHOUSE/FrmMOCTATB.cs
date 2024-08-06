@@ -626,6 +626,18 @@ namespace TKWAREHOUSE
             MOCTC.TC201 = "";
             MOCTC.TC202 = "";
 
+
+            StringBuilder TB003LIKE = new StringBuilder();
+            if (KINDS.Equals("物料"))
+            {
+                TB003LIKE.AppendFormat(@" TB003 LIKE '2%' ");
+
+            }
+            else
+            {
+                TB003LIKE.AppendFormat(@" TB003 NOT LIKE '2%' ");
+            }
+           
             try
             {
                 //20210902密
@@ -675,6 +687,155 @@ namespace TKWAREHOUSE
                                 , MOCTC.TC201, MOCTC.TC202
                                 );
 
+                sbSql.AppendFormat(@"
+                                    INSERT INTO [TK].dbo.MOCTD
+                                    (
+                                    [COMPANY]
+                                    ,[CREATOR]
+                                    ,[USR_GROUP]
+                                    ,[CREATE_DATE]
+                                    ,[MODIFIER]
+                                    ,[MODI_DATE]
+                                    ,[FLAG]
+                                    ,[CREATE_TIME]
+                                    ,[MODI_TIME]
+                                    ,[TRANS_TYPE]
+                                    ,[TRANS_NAME]
+                                    ,[sync_date]
+                                    ,[sync_time]
+                                    ,[sync_mark]
+                                    ,[sync_count]
+                                    ,[DataUser]
+                                    ,[DataGroup]
+                                    ,[TD001]
+                                    ,[TD002]
+                                    ,[TD003]
+                                    ,[TD004]
+                                    ,[TD005]
+                                    ,[TD006]
+                                    ,[TD007]
+                                    ,[TD008]
+                                    ,[TD009]
+                                    ,[TD010]
+                                    ,[TD011]
+                                    ,[TD012]
+                                    ,[TD013]
+                                    ,[TD014]
+                                    ,[TD015]
+                                    ,[TD016]
+                                    ,[TD017]
+                                    ,[TD018]
+                                    ,[TD019]
+                                    ,[TD020]
+                                    ,[TD021]
+                                    ,[TD022]
+                                    ,[TD023]
+                                    ,[TD024]
+                                    ,[TD025]
+                                    ,[TD026]
+                                    ,[TD027]
+                                    ,[TD028]
+                                    ,[TD500]
+                                    ,[TD501]
+                                    ,[TD502]
+                                    ,[TD503]
+                                    ,[TD504]
+                                    ,[TD505]
+                                    ,[TD506]
+                                    ,[UDF01]
+                                    ,[UDF02]
+                                    ,[UDF03]
+                                    ,[UDF04]
+                                    ,[UDF05]
+                                    ,[UDF06]
+                                    ,[UDF07]
+                                    ,[UDF08]
+                                    ,[UDF09]
+                                    ,[UDF10]
+                                    )
+                                    SELECT 
+                                    'TK' [COMPANY]
+                                    ,'120024' [CREATOR]
+                                    ,'122000' [USR_GROUP]
+                                    ,'{0}' [CREATE_DATE]
+                                    ,'' [MODIFIER]
+                                    ,'' [MODI_DATE]
+                                    ,'1' [FLAG]
+                                    ,'{1}' [CREATE_TIME]
+                                    ,'' [MODI_TIME]
+                                    ,'P001' [TRANS_TYPE]
+                                    ,'MOCMI03' [TRANS_NAME]
+                                    ,'' [sync_date]
+                                    ,'' [sync_time]
+                                    ,'' [sync_mark]
+                                    ,'0' [sync_count]
+                                    ,'' [DataUser]
+                                    ,'' [DataGroup]
+                                    ,'{2}' [TD001]
+                                    ,'{3}' [TD002]
+                                    ,製令單別 [TD003]
+                                    ,製令單號 [TD004]
+                                    ,'1' [TD005]
+                                    ,組數 [TD006]
+                                    ,'' [TD007]
+                                    ,'1' [TD008]
+                                    ,'' [TD009]
+                                    ,'' [TD010]
+                                    ,'' [TD011]
+                                    ,'' [TD012]
+                                    ,'N' [TD013]
+                                    ,'' [TD014]
+                                    ,'1' [TD015]
+                                    ,'' [TD016]
+                                    ,'1' [TD017]
+                                    ,'' [TD018]
+                                    ,'' [TD019]
+                                    ,'' [TD020]
+                                    ,'' [TD021]
+                                    ,'' [TD022]
+                                    ,'' [TD023]
+                                    ,'0' [TD024]
+                                    ,'0' [TD025]
+                                    ,'' [TD026]
+                                    ,'' [TD027]
+                                    ,'' [TD028]
+                                    ,'' [TD500]
+                                    ,'' [TD501]
+                                    ,'0' [TD502]
+                                    ,'' [TD503]
+                                    ,'' [TD504]
+                                    ,'' [TD505]
+                                    ,'0' [TD506]
+                                    ,'' [UDF01]
+                                    ,'' [UDF02]
+                                    ,'' [UDF03]
+                                    ,'' [UDF04]
+                                    ,'' [UDF05]
+                                    ,'0' [UDF06]
+                                    ,'0' [UDF07]
+                                    ,'0' [UDF08]
+                                    ,'0' [UDF09]
+                                    ,'0' [UDF10]
+                                    FROM 
+                                    (
+                                    SELECT 
+                                    TA001 AS '製令單別'
+                                    ,TA002 AS '製令單號'
+                                    ,TA015 AS '組數'
+                                    FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB
+                                    WHERE TA001=TB001 AND TA002=TB002
+                                    AND TA001='A513'
+                                    AND TA013='Y'
+                                    AND TA003>='{4}' AND TA003<='{5}'
+                                    AND {6}
+                                    AND TA012 ='{7}'
+                                    GROUP BY TA001,TA002,TA015
+
+                                    ) AS TEMP
+
+                                    ", MOCTC.TC003, MOCTC.CREATE_TIME, MOCTC.TC001, MOCTC.TC002
+                                    , TA003, TA003B, TB003LIKE, TA012);
+
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
                 cmd.CommandText = sbSql.ToString();
@@ -704,7 +865,15 @@ namespace TKWAREHOUSE
 
         }
 
-        public DataTable FIND_MOCTA_MOCTB(string KINDS, string SDAYS, string EDAYS)
+        public DataTable FIND_MOCTA_MOCTB(string KINDS
+                        , string TA003
+                        , string TA003B
+                        , string TA009
+                        , string TA012
+                        , string TC003
+                        , string TC001
+                        , string TC002
+            )
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -735,42 +904,44 @@ namespace TKWAREHOUSE
                 if (KINDS.Equals("原料"))
                 {
                     sbSqlQuery.AppendFormat(@" AND TB003 NOT LIKE '2%' 
-                                            AND TA009 >='{0}'   AND TA009 <='{1}' 
-                                            ", SDAYS, EDAYS);
+                                         AND TA009 ='{0}' 
+                                        ", TA009);
                 }
                 //TA009 預計開工
                 else if (KINDS.Equals("物料"))
                 {
                     sbSqlQuery.AppendFormat(@" AND TB003 LIKE '2%' 
-                                           AND TA012 >='{0}'  AND TA012 <='{1}'  
-                                             ", SDAYS, EDAYS);
+                                           AND TA012 ='{0}'
+                                        ", TA012);
                 }
-                sbSql.AppendFormat(@"                                      
-                                    SELECT 
-                                    TA001 AS '製令單別'
-                                    ,TA002 AS '製令單號'
-                                    ,TA003 AS '開單日期'
-                                    ,TA006 AS '產品品號'
-                                    ,TA009 AS '預計開工'
-                                    ,TA012 AS '實際開工'
-                                    ,TA034 AS '產品品名'
-                                    ,TA015 AS '預計產量'
-                                    ,TA007 AS '產品單位'
-                                    ,TB003 AS '材料品號'
-                                    ,TB012 AS '材料品名' 
-                                    ,(CASE WHEN TB003 LIKE '1%' OR TB003 LIKE '3%' THEN TB004 ELSE CONVERT(INT, TB004) END )AS '需領用量'
-                                    ,TB007 AS '材料單位'
-                                    ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('21003') AND  LA001=TB003)AS '庫存量'
-                                    FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB
-                                    WHERE TA001=TB001 AND TA002=TB002
-                                    AND TA001='A513'
-                                    AND TA013='Y'
-                              
-                                    {0}
 
-                                    ORDER BY TB003,TA001,TA002 
+                sbSql.AppendFormat(@"  
+                                SELECT 
+                                TA001 AS '製令單別'
+                                ,TA002 AS '製令單號'
+                                ,TA003 AS '開單日期'
+                                ,TA006 AS '產品品號'
+                                ,TA009 AS '預計開工'
+                                ,TA012 AS '實際開工'
+                                ,TA034 AS '產品品名'
+                                ,TA015 AS '預計產量'
+                                ,TA007 AS '產品單位'
+                                ,TB003 AS '材料品號'
+                                ,TB012 AS '材料品名' 
+                                ,(CASE WHEN TB003 LIKE '1%' OR TB003 LIKE '3%' THEN TB004 ELSE CONVERT(INT, TB004) END )AS '需領用量'
+                                ,TB007 AS '材料單位'
+                                ,(SELECT ISNULL(SUM(LA005*LA011),0) FROM [TK].dbo.INVLA WHERE LA009 IN ('21003') AND  LA001=TB003)AS '庫存量'
+                                FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB
+                                WHERE TA001=TB001 AND TA002=TB002
+                                AND TA001='A513'
+                                AND TA013='Y'
+                                AND TA003>='{0}' AND TA003<='{1}'
+                                {2}
+
+                                ORDER BY TB003,TA001,TA002 
                                         
-                                        ", sbSqlQuery.ToString());
+
+                                        ", TA003, TA003B, sbSqlQuery.ToString());
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
