@@ -373,7 +373,16 @@ namespace TKWAREHOUSE
             }
 
         }
-        public void ADD_TBMOCTCTDTE(string KINDS, string SDAYS, string EDAYS, string TC003, string TC001, string TC002)
+        public void ADD_TBMOCTCTDTE(
+                        string KINDS
+                        , string TA003
+                        , string TA003B
+                        , string TA009
+                        , string TA012
+                        , string TC003
+                        , string TC001
+                        , string TC002
+                        )
         {
             try
             {
@@ -399,8 +408,10 @@ namespace TKWAREHOUSE
                                         INSERT INTO [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
                                         (
                                         [KINDS]
-                                        ,[SDAYS]
-                                        ,[EDAYS]
+                                        ,[TA003]
+                                        ,[TA003B]
+                                        ,[TA009]
+                                        ,[TA012]
                                         ,[TC003]
                                         ,[TC001]
                                         ,[TC002]
@@ -413,8 +424,18 @@ namespace TKWAREHOUSE
                                         ,'{3}'
                                         ,'{4}'
                                         ,'{5}'
+                                        ,'{6}'
+                                        ,'{7}'
                                         )"
-                                        , KINDS, SDAYS, EDAYS, TC003, TC001, TC002);
+                                        , KINDS
+                                        , TA003
+                                        , TA003B
+                                        , TA009
+                                        , TA012
+                                        , TC003
+                                        , TC001
+                                        , TC002
+                                        );
 
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
@@ -709,37 +730,45 @@ namespace TKWAREHOUSE
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            //string TC001 = "A543";
-            //string TC002 = "";
-            //string TC003 = dateTimePicker9.Value.ToString("yyyyMMdd");
-            //TC002 = GETMAXTC002(TC001, TC003);
+            string TC001 = "A543";
+            string TC002 = "";
+            string TC003 = dateTimePicker9.Value.ToString("yyyyMMdd");
+            TC002 = GETMAXTC002(TC001, TC003);
 
-            //string KINDS = comboBox2.Text.ToString();
-            //string SDAYS = "";
-            //string EDAYS = "";
+            string KINDS = comboBox2.Text.ToString();
+            string TA003 = dateTimePicker5.Value.ToString("yyyyMMdd");
+            string TA003B = dateTimePicker6.Value.ToString("yyyyMMdd");
+            string TA009 = "";
+            string TA012 = "";
 
-            //if (KINDS.Equals("物料"))
-            //{
-            //    SDAYS = dateTimePicker7.Value.ToString("yyyyMMdd");
-            //    EDAYS = dateTimePicker8.Value.ToString("yyyyMMdd");
+            if (KINDS.Equals("物料"))
+            {                
+                TA012 = dateTimePicker8.Value.ToString("yyyyMMdd");
+            }
+            else
+            {
 
-            //}
-            //else
-            //{
-            //    SDAYS = dateTimePicker5.Value.ToString("yyyyMMdd");
-            //    EDAYS = dateTimePicker6.Value.ToString("yyyyMMdd");
+                TA009 = dateTimePicker7.Value.ToString("yyyyMMdd");
+            }
 
-            //}
+            if (!string.IsNullOrEmpty(TC001) && !string.IsNullOrEmpty(TC002))
+            {
+                //產生結果
+                ADD_TBMOCTCTDTE(
+                        KINDS
+                        , TA003
+                        , TA003B
+                        , TA009
+                        , TA012
+                        , TC003
+                        , TC001
+                        , TC002
+                        );
+                //產生ERP的領料單
+                //ADD_TK_MOCTC_MOCTD_MOCTE(KINDS, SDAYS, EDAYS, TC003, TC001, TC002);
+            }
 
-            //if (!string.IsNullOrEmpty(TC001)&&!string.IsNullOrEmpty(TC002))
-            //{
-            //    //產生結果
-            //    ADD_TBMOCTCTDTE(KINDS, SDAYS, EDAYS, TC003, TC001, TC002);
-            //    //產生ERP的領料單
-            //    ADD_TK_MOCTC_MOCTD_MOCTE(KINDS, SDAYS, EDAYS, TC003, TC001, TC002);
-            //}
-
-            //SEARCH_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+            SEARCH_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
         }
 
         #endregion
