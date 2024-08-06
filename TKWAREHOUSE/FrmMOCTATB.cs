@@ -51,6 +51,9 @@ namespace TKWAREHOUSE
 
             comboboxload1();
             comboBox1.Text = "原料";
+
+            comboboxload2();
+            comboBox2.Text = "物料";
         }
 
 
@@ -78,7 +81,9 @@ namespace TKWAREHOUSE
                                 ,[KEYS]
                                 ,[KEYS2]
                                 FROM[TKWAREHOUSE].[dbo].[TBPARAS]
-                                WHERE[KINDS] = 'FrmMOCTATB' ORDER BY[KEYS]");
+                                WHERE[KINDS] = 'FrmMOCTATB' 
+                                ORDER BY[KEYS]
+                                ");
 
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
@@ -90,9 +95,47 @@ namespace TKWAREHOUSE
             comboBox1.DataSource = dt.DefaultView;
             comboBox1.ValueMember = "NAMES";
             comboBox1.DisplayMember = "NAMES";
-            sqlConn.Close();
+            sqlConn.Close();           
 
-            comboBox1.SelectedValue = "20001";
+        }
+        public void comboboxload2()
+        {
+
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT  [ID]
+                                ,[KINDS]
+                                ,[NAMES]
+                                ,[KEYS]
+                                ,[KEYS2]
+                                FROM[TKWAREHOUSE].[dbo].[TBPARAS]
+                                WHERE[KINDS] = 'FrmMOCTATB' 
+                                ORDER BY[KEYS]
+                                ");
+
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("NAMES", typeof(string));
+
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "NAMES";
+            comboBox2.DisplayMember = "NAMES";
+            sqlConn.Close();
 
         }
 
@@ -177,6 +220,102 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
         }
 
+        public void SEARCH_TBMOCTCTDTE(string KINDS, string TA009, string TA009B, string TA012, string TA012B)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+               if(KINDS.Equals("物料"))
+                {
+                    sbSql.AppendFormat(@"  
+                                    SELECT
+                                    [ID]
+                                    ,[KINDS] AS '分類'
+                                    ,[SDAYS] AS '開始日期'
+                                    ,[EDAYS] AS '結束日期'
+                                    ,[TC001] AS '領料單別'
+                                    ,[TC002] AS '領料單號'
+                                    FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
+                                    WHERE [KINDS]='{0}'
+                                    AND [SDAYS]='{1}' AND [EDAYS]='{2}'
+                                    ORDER BY [ID]
+                                    ", KINDS, TA012, TA012B);
+                }
+               else
+                {
+                    sbSql.AppendFormat(@"  
+                                    SELECT
+                                    [ID]
+                                    ,[KINDS] AS '分類'
+                                    ,[SDAYS] AS '開始日期'
+                                    ,[EDAYS] AS '結束日期'
+                                    ,[TC001] AS '領料單別'
+                                    ,[TC002] AS '領料單號'
+                                    FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
+                                    WHERE [KINDS]='{0}'
+                                    AND [SDAYS]='{1}' AND [EDAYS]='{2}'
+                                    ORDER BY [ID]
+                                    ", KINDS, TA009, TA009B);
+
+                }
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["TEMPds1"].Rows.Count == 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["TEMPds1"].Rows.Count >= 1)
+                    {
+                        //dataGridView1.Rows.Clear();
+                        dataGridView1.DataSource = ds1.Tables["TEMPds1"];
+                        dataGridView1.AutoResizeColumns();
+                        //dataGridView1.CurrentCell = dataGridView1[0, rownum];
+
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+        }
+        public void ADD_TBMOCTCTDTE(string KINDS, string TA009, string TA009B, string TA012, string TA012B)
+        {
+
+        }
         #endregion
 
         #region BUTTON
@@ -184,7 +323,18 @@ namespace TKWAREHOUSE
         {
             SETFASTREPORT(comboBox1.Text.ToString(), dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
         }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SEARCH_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ADD_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+            
+        }
+
         #endregion
 
+      
     }
 }
