@@ -40,7 +40,7 @@ namespace TKWAREHOUSE
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
-
+        int result;
         DataTable dt = new DataTable();
 
         public Report report1 { get; private set; }
@@ -250,6 +250,7 @@ namespace TKWAREHOUSE
                                     ,[KINDS] AS '分類'
                                     ,[SDAYS] AS '開始日期'
                                     ,[EDAYS] AS '結束日期'
+                                    ,[TE003] AS '領料單日期'
                                     ,[TC001] AS '領料單別'
                                     ,[TC002] AS '領料單號'
                                     FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
@@ -266,6 +267,7 @@ namespace TKWAREHOUSE
                                     ,[KINDS] AS '分類'
                                     ,[SDAYS] AS '開始日期'
                                     ,[EDAYS] AS '結束日期'
+                                    ,[TE003] AS '領料單日期'
                                     ,[TC001] AS '領料單別'
                                     ,[TC002] AS '領料單號'
                                     FROM [TKWAREHOUSE].[dbo].[TBMOCTCTDTE]
@@ -312,10 +314,72 @@ namespace TKWAREHOUSE
             }
 
         }
-        public void ADD_TBMOCTCTDTE(string KINDS, string TA009, string TA009B, string TA012, string TA012B)
+        public void ADD_TBMOCTCTDTE(string KINDS, string TA009, string TA009B, string TA012, string TA012B,string TC003)
         {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+
+                if (KINDS.Equals("物料"))
+                {
+                    sbSql.AppendFormat(@"  
+                                   
+                                    ", KINDS, TA012, TA012B);
+                }
+                else
+                {
+                    sbSql.AppendFormat(@"  
+                                   
+                                    ", KINDS, TA009, TA009B);
+
+                }
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
+    
         #endregion
 
         #region BUTTON
@@ -329,7 +393,7 @@ namespace TKWAREHOUSE
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            ADD_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
+            ADD_TBMOCTCTDTE(comboBox2.Text.ToString(), dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
             
         }
 
