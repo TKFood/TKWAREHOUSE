@@ -839,6 +839,202 @@ namespace TKWAREHOUSE
                                     ", MOCTC.TC003, MOCTC.CREATE_TIME, MOCTC.TC001, MOCTC.TC002
                                     , TA003, TA003B, TB003LIKE, TA009TA012LIKE);
 
+                sbSql.AppendFormat(@"
+                                    INSERT INTO [TK].[dbo].[MOCTE]
+                                    (
+                                    [COMPANY]
+                                    ,[CREATOR]
+                                    ,[USR_GROUP]
+                                    ,[CREATE_DATE]
+                                    ,[MODIFIER]
+                                    ,[MODI_DATE]
+                                    ,[FLAG]
+                                    ,[CREATE_TIME]
+                                    ,[MODI_TIME]
+                                    ,[TRANS_TYPE]
+                                    ,[TRANS_NAME]
+                                    ,[sync_date]
+                                    ,[sync_time]
+                                    ,[sync_mark]
+                                    ,[sync_count]
+                                    ,[DataUser]
+                                    ,[DataGroup]
+                                    ,[TE001]
+                                    ,[TE002]
+                                    ,[TE003]
+                                    ,[TE004]
+                                    ,[TE005]
+                                    ,[TE006]
+                                    ,[TE007]
+                                    ,[TE008]
+                                    ,[TE009]
+                                    ,[TE010]
+                                    ,[TE011]
+                                    ,[TE012]
+                                    ,[TE013]
+                                    ,[TE014]
+                                    ,[TE015]
+                                    ,[TE016]
+                                    ,[TE017]
+                                    ,[TE018]
+                                    ,[TE019]
+                                    ,[TE020]
+                                    ,[TE021]
+                                    ,[TE022]
+                                    ,[TE023]
+                                    ,[TE024]
+                                    ,[TE025]
+                                    ,[TE026]
+                                    ,[TE027]
+                                    ,[TE028]
+                                    ,[TE029]
+                                    ,[TE030]
+                                    ,[TE031]
+                                    ,[TE032]
+                                    ,[TE033]
+                                    ,[TE034]
+                                    ,[TE035]
+                                    ,[TE036]
+                                    ,[TE037]
+                                    ,[TE038]
+                                    ,[TE039]
+                                    ,[TE040]
+                                    ,[TE500]
+                                    ,[TE501]
+                                    ,[TE502]
+                                    ,[TE503]
+                                    ,[TE504]
+                                    ,[TE505]
+                                    ,[TE506]
+                                    ,[TE507]
+                                    ,[TE508]
+                                    ,[UDF01]
+                                    ,[UDF02]
+                                    ,[UDF03]
+                                    ,[UDF04]
+                                    ,[UDF05]
+                                    ,[UDF06]
+                                    ,[UDF07]
+                                    ,[UDF08]
+                                    ,[UDF09]
+                                    ,[UDF10]
+                                    ,[TE200]
+                                    ,[TE201]
+                                    )
+                                    SELECT 
+                                    'TK' [COMPANY]
+                                    ,'120024' [CREATOR]
+                                    ,'122000' [USR_GROUP]
+                                    ,'{0}' [CREATE_DATE]
+                                    ,'' [MODIFIER]
+                                    ,'' [MODI_DATE]
+                                    ,'0' [FLAG]
+                                    ,'{1}' [CREATE_TIME]
+                                    ,'' [MODI_TIME]
+                                    ,'P001' [TRANS_TYPE]
+                                    ,'MOCMI03' [TRANS_NAME]
+                                    ,'' [sync_date]
+                                    ,'' [sync_time]
+                                    ,'' [sync_mark]
+                                    ,'0' [sync_count]
+                                    ,'' [DataUser]
+                                    ,'122000' [DataGroup]
+                                    ,'{2}' [TE001]
+                                    ,'{3}' [TE002]
+                                    ,流水號 [TE003]
+                                    ,材料品號 [TE004]
+                                    ,需領用量 [TE005]
+                                    ,材料單位 [TE006]
+                                    ,'' [TE007]
+                                    ,'21003' [TE008]
+                                    ,'****' [TE009]
+                                    ,'********************' [TE010]
+                                    ,製令單別 [TE011]
+                                    ,製令單號 [TE012]
+                                    ,'需領用量:'+CONVERT(NVARCHAR,需領用量) [TE013]
+                                    ,'' [TE014]
+                                    ,'' [TE015]
+                                    ,'1' [TE016]
+                                    ,材料品名 [TE017]
+                                    ,材料規格 [TE018]
+                                    ,'N' [TE019]
+                                    ,'' [TE020]
+                                    --,'0' [TE021]
+                                    ,'' [TE022]
+                                    ,'N' [TE023]
+                                    ,'' [TE024]
+                                    ,'0' [TE025]
+                                    ,'2' [TE026]
+                                    ,'' [TE027]
+                                    ,'****' [TE028]
+                                    ,'' [TE029]
+                                    ,'0' [TE030]
+                                    ,'0' [TE031]
+                                    ,'0' [TE032]
+                                    ,'0' [TE033]
+                                    ,'' [TE034]
+                                    ,'' [TE035]
+                                    ,'0' [TE036]
+                                    ,'0' [TE037]
+                                    ,'' [TE038]
+                                    ,'' [TE039]
+                                    ,'' [TE040]
+                                    ,'' [TE500]
+                                    ,'' [TE501]
+                                    ,'' [TE502]
+                                    ,'' [TE503]
+                                    ,'0' [TE504]
+                                    ,'' [TE505]
+                                    ,'' [TE506]
+                                    ,'' [TE507]
+                                    ,'0' [TE508]
+                                    ,'' [UDF01]
+                                    ,'' [UDF02]
+                                    ,'' [UDF03]
+                                    ,'' [UDF04]
+                                    ,'' [UDF05]
+                                    ,'0' [UDF06]
+                                    ,'0' [UDF07]
+                                    ,'0' [UDF08]
+                                    ,'0' [UDF09]
+                                    ,'0' [UDF10]
+                                    ,'0' [TE200]
+                                    ,'N' [TE201]
+                                    FROM 
+                                    (
+                                    SELECT 
+                                        TA001 AS '製令單別',
+                                        TA002 AS '製令單號',
+                                        TA003 AS '開單日期',
+                                        TA006 AS '產品品號',
+                                        TA009 AS '預計開工',
+                                        TA012 AS '實際開工',
+                                        TA034 AS '產品品名',
+                                        TA015 AS '預計產量',
+                                        TA007 AS '產品單位',
+                                        TB003 AS '材料品號',
+                                        TB012 AS '材料品名',
+	                                    TB013 AS '材料規格',
+                                        (CASE WHEN TB003 LIKE '1%' OR TB003 LIKE '3%' THEN TB004 ELSE CONVERT(INT, TB004) END) AS '需領用量',
+                                        TB007 AS '材料單位',
+                                        RIGHT('0000' + CAST((ROW_NUMBER() OVER (ORDER BY TB003, TA001, TA002) - 1) * 10 AS VARCHAR), 4) AS '流水號'
+                                    FROM 
+                                        [TK].dbo.MOCTA, 
+                                        [TK].dbo.MOCTB
+                                    WHERE 
+                                        TA001 = TB001 
+                                        AND TA002 = TB002
+                                        AND TA001 = 'A513'
+                                        AND TA013 = 'Y'
+                                        AND TA003 >= '{4}' 
+                                        AND TA003 <= '{5}'
+                                        AND TB003 LIKE '2%' 
+                                        AND {6}
+                                        AND {7}
+                                    ) AS TEMP
+                                    ", MOCTC.TC003, MOCTC.CREATE_TIME, MOCTC.TC001, MOCTC.TC002
+                                    , TA003, TA003B, TB003LIKE, TA009TA012LIKE);
+
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
                 cmd.CommandText = sbSql.ToString();
