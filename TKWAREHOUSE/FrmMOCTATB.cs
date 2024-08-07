@@ -959,7 +959,7 @@ namespace TKWAREHOUSE
                                     ,材料規格 [TE018]
                                     ,'N' [TE019]
                                     ,'' [TE020]
-                                    --,'0' [TE021]
+                                    ,'0' [TE021]
                                     ,'' [TE022]
                                     ,'N' [TE023]
                                     ,'' [TE024]
@@ -1028,7 +1028,6 @@ namespace TKWAREHOUSE
                                         AND TA013 = 'Y'
                                         AND TA003 >= '{4}' 
                                         AND TA003 <= '{5}'
-                                        AND TB003 LIKE '2%' 
                                         AND {6}
                                         AND {7}
                                     ) AS TEMP
