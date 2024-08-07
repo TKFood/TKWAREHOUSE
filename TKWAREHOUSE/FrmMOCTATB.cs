@@ -626,16 +626,19 @@ namespace TKWAREHOUSE
             MOCTC.TC201 = "";
             MOCTC.TC202 = "";
 
-
+            //TA012 ='{7}'
             StringBuilder TB003LIKE = new StringBuilder();
+            StringBuilder TA009TA012LIKE = new StringBuilder();
             if (KINDS.Equals("物料"))
             {
                 TB003LIKE.AppendFormat(@" TB003 LIKE '2%' ");
+                TA009TA012LIKE.AppendFormat(@" TA012='{0}'", TA012);
 
             }
             else
             {
                 TB003LIKE.AppendFormat(@" TB003 NOT LIKE '2%' ");
+                TA009TA012LIKE.AppendFormat(@" TA009='{0}'", TA009);
             }
            
             try
@@ -828,13 +831,13 @@ namespace TKWAREHOUSE
                                     AND TA013='Y'
                                     AND TA003>='{4}' AND TA003<='{5}'
                                     AND {6}
-                                    AND TA012 ='{7}'
+                                    AND {7}
                                     GROUP BY TA001,TA002,TA015
 
                                     ) AS TEMP
 
                                     ", MOCTC.TC003, MOCTC.CREATE_TIME, MOCTC.TC001, MOCTC.TC002
-                                    , TA003, TA003B, TB003LIKE, TA012);
+                                    , TA003, TA003B, TB003LIKE, TA009TA012LIKE);
 
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
