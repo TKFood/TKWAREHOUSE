@@ -2074,7 +2074,7 @@ namespace TKWAREHOUSE
             MOCTD.CREATE_TIME = dt.ToString("HH:mm:dd");
             MOCTD.MODI_TIME = dt.ToString("HH:mm:dd");
             MOCTD.TRANS_TYPE = "P001";
-            MOCTD.TRANS_NAME = "MOCMI03";
+            MOCTD.TRANS_NAME = "MOCMI04";
             MOCTD.sync_date = null;
             MOCTD.sync_time = null;
             MOCTD.sync_mark = null;
