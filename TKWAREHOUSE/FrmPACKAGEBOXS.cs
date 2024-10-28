@@ -241,7 +241,7 @@ namespace TKWAREHOUSE
                                 WHERE 1=1
                                 AND TG023 IN ('Y','N')
                                 {0}
-                                AND TG001 IN (SELECT [NAMES]  FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE KINDS='COPTGTG001')
+                                AND TG001 IN (SELECT [TG001]  FROM [TKWAREHOUSE].[dbo].[PACKAGETG001])
                                   ", sbSqlQuery1.ToString());
             sbSql.AppendFormat(@"  ");
 
