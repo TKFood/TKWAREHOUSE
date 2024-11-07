@@ -2393,7 +2393,9 @@ namespace TKWAREHOUSE
         }
 
         public string SETFASETSQL(string SDAYE, string EDAYS)
-        {           
+        {
+            //SELECT  [TG001]  FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSTG001]
+
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
@@ -2436,7 +2438,7 @@ namespace TKWAREHOUSE
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] C ON C.NO=[PACKAGEBOXS].NO AND C.TYPES='緩衝材'
                                 WHERE TG023='Y'
-                                AND COPTG.TG001 IN ('A233')
+                                AND COPTG.TG001 IN ( SELECT  [TG001]  FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSTG001] )
                                 AND TG003>='{0}' AND TG003<='{1}'
                                 
                                
@@ -2452,6 +2454,8 @@ namespace TKWAREHOUSE
 
         public string SETFASETSQL2(string SDAYE, string EDAYS)
         {
+            //SELECT  [TG001]  FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSTG001]
+
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
@@ -2484,7 +2488,7 @@ namespace TKWAREHOUSE
                                 WHERE 1=1
                                 AND TG001=TH001 AND TG002=TH002
                                 AND TG023='Y'
-                                AND TG001 IN ('A233')
+                                AND TG001 IN (SELECT  [TG001]  FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSTG001])
                                 AND TG003>='{0}' AND TG003<='{1}'
                               
 
