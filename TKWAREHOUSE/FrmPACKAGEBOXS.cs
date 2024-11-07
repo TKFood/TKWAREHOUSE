@@ -30,6 +30,7 @@ namespace TKWAREHOUSE
 {
     public partial class FrmPACKAGEBOXS : Form
     {
+        int CommandTimeout = 180;
         StringBuilder sbSql = new StringBuilder();
         SqlConnection sqlConn = new SqlConnection();
         SqlDataAdapter adapter = new SqlDataAdapter();
@@ -2383,6 +2384,7 @@ namespace TKWAREHOUSE
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = CommandTimeout;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
             Table.SelectCommand = SQL.ToString();
@@ -2545,6 +2547,7 @@ namespace TKWAREHOUSE
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = CommandTimeout;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
             Table.SelectCommand = SQL.ToString();
