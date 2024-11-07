@@ -2408,9 +2408,9 @@ namespace TKWAREHOUSE
                                 FROM 
                                 (
                                 SELECT 
-                                ( CASE WHEN COPTG.TG001 IN ('A233') AND ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) 
-                                      WHEN COPTG.TG001 IN ('A234') THEN ''
-                                      ELSE '' END ) AS '訂單日期'
+                               ( CASE WHEN COPTG.TG001 IN ('A233') AND ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) 
+                                  WHEN COPTG.TG001 IN ('A234') AND ISNULL(SUBSTRING(TG029,1,6),'')<>'' THEN  '20'+SUBSTRING(TG029,1,6) 
+                                  ELSE '' END ) AS '訂單日期'
                                 ,TG029 AS '購物車編號'
                                 ,COPTG.TG001  AS '銷貨單別'
                                 ,COPTG.TG002 AS '銷貨單號'
@@ -2482,7 +2482,7 @@ namespace TKWAREHOUSE
                                 (
                                 SELECT 
                                 ( CASE WHEN COPTG.TG001 IN ('A233') AND ISNULL(SUBSTRING(TG029,3,6),'')<>'' THEN  '20'+SUBSTRING(TG029,3,6) 
-                                      WHEN COPTG.TG001 IN ('A234') THEN ''
+                                      WHEN COPTG.TG001 IN ('A234') AND ISNULL(SUBSTRING(TG029,1,6),'')<>'' THEN  '20'+SUBSTRING(TG029,1,6) 
                                       ELSE '' END ) AS '訂單日期'
                                 ,TG029 AS 購物車編號
                                 ,(SELECT TOP 1 TA015 FROM [TK].dbo.ACRTA,[TK].dbo.ACRTB WHERE TA001=TB001 AND TA002=TB002 AND TB005+TB006=TG001+TG002) AS 發票號碼
