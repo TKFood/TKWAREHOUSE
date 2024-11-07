@@ -2531,7 +2531,7 @@ namespace TKWAREHOUSE
 
                
                 SQL = SETFASETSQL4(SDAYE, EDAYS);
-
+                 
             }
 
 
