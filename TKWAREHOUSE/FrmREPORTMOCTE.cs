@@ -624,7 +624,7 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
         }
 
-        #endregion
+        #endregion 
 
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
