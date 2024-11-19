@@ -510,7 +510,7 @@ namespace TKWAREHOUSE
 
         public void SETFASTREPORT3(string MOCTA001002,string MD002)
         {
-
+             
             string SQL;
             report1 = new Report();
             report1.Load(@"REPORT\單次合併領料.frx");

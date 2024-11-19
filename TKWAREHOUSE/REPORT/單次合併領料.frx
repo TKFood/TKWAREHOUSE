@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="05/23/2022 14:34:06" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="11/19/2024 09:57:14" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9JFoTMDn4mwk4AdKGQZX0DW">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9JgxmF1nTQ96NPOCIspHMw1">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 &#13;&#10;,(SELECT ISNULL(TB004,0) FROM [TK].dbo.MOCTB WHERE TB001=TE011 AND TB002=TE012 AND TB003=TE004) AS '應領料量'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' &#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' &#13;&#10;,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量' &#13;&#10;FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]&#13;&#10;WHERE MQ001=TE001&#13;&#10;AND MD003 IN ('20') &#13;&#10;AND MD001=TC005 &#13;&#10;AND TC001=TE001 AND TC002=TE002 &#13;&#10;AND (TE004 LIKE '2%' )   &#13;&#10;AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN ('A51020220524001' )&#13;&#10;&#13;&#10;&#13;&#10;GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 &#13;&#10;ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 ">
         <Column Name="MD002" DataType="System.String"/>
         <Column Name="TE004" DataType="System.String"/>
@@ -30,7 +30,7 @@
     <ReportTitleBand Name="ReportTitle1" Width="737.1" Height="18.9">
       <TextObject Name="Text17" Width="756" Height="18.9" Text="老楊食品股份有限公司-領料單合併領料撿料表" HorzAlign="Center" VertAlign="Center"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="23.39" Width="737.1" Height="66.15">
+    <PageHeaderBand Name="PageHeader1" Top="23.5" Width="737.1" Height="66.15">
       <TextObject Name="Text38" Width="274.05" Height="18.9" Text="製表日期:[FormatDateTime([Date],&quot;yyyy/MM/dd&quot;)]" VertAlign="Center"/>
       <TextObject Name="Text39" Left="604.8" Width="132.3" Height="18.9" Text="第[Page]頁" HorzAlign="Right" VertAlign="Center"/>
       <TextObject Name="Text1" Left="75.6" Top="18.9" Width="661.5" Height="18.9" Border.Lines="All" Text="[Table.MD002]" HorzAlign="Center" VertAlign="Center"/>
@@ -47,9 +47,9 @@
       <TextObject Name="Text40" Left="406.35" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="補料數量" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text41" Left="538.65" Top="37.8" Width="66.15" Height="28.35" Border.Lines="All" Text="庫存數量" HorzAlign="Center" VertAlign="Center"/>
     </PageHeaderBand>
-    <ColumnHeaderBand Name="ColumnHeader1" Top="94.04" Width="737.1"/>
-    <GroupHeaderBand Name="GroupHeader1" Top="98.53" Width="737.1" Condition="[Table.TE004]">
-      <DataBand Name="Data1" Top="103.03" Width="737.1" Height="18.9" CanGrow="true" DataSource="Table">
+    <ColumnHeaderBand Name="ColumnHeader1" Top="94.25" Width="737.1"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="98.84" Width="737.1" Condition="[Table.TE004]">
+      <DataBand Name="Data1" Top="103.44" Width="737.1" Height="18.9" CanGrow="true" DataSource="Table">
         <TextObject Name="Text3" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.TE004]" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text5" Left="75.6" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.TE017]" VertAlign="Center"/>
         <TextObject Name="Text7" Left="151.2" Width="37.8" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.TE011]" HorzAlign="Center" VertAlign="Center"/>
@@ -62,7 +62,7 @@
         <TextObject Name="Text35" Left="670.95" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text11" Left="406.35" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.補料]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
       </DataBand>
-      <GroupFooterBand Name="GroupFooter1" Top="126.42" Width="737.1" Height="18.9">
+      <GroupFooterBand Name="GroupFooter1" Top="126.94" Width="737.1" Height="18.9">
         <TextObject Name="Text15" Left="340.2" Width="66.15" Height="18.9" Border.Lines="All" Text="[Total應領料量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" Font="宋体, 8pt"/>
         <TextObject Name="Text16" Left="274.05" Width="66.15" Height="18.9" Border.Lines="All" Text="小計:" HorzAlign="Center" VertAlign="Center"/>
         <TextObject Name="Text27" Width="75.6" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
@@ -76,10 +76,11 @@
         <TextObject Name="Text43" Left="670.95" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
       </GroupFooterBand>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="163.76" Width="737.1" Height="18.9">
-      <TextObject Name="Text31" Width="897.75" Height="18.9" Text="倉管:       :              領料人員: :                    退料人員:           :          主管:       " VertAlign="Center"/>
+    <ReportSummaryBand Name="ReportSummary1" Top="164.48" Width="737.1" Height="37.8">
+      <TextObject Name="Text31" Width="737.1" Height="18.9" Text="倉管:                                  領料人員:                                 主管:       " VertAlign="Center"/>
+      <TextObject Name="Text44" Top="18.9" Width="670.95" Height="18.9" Text="倉管:                                  補/退料人員:                              主管:       " VertAlign="Center"/>
     </ReportSummaryBand>
-    <ColumnFooterBand Name="ColumnFooter1" Top="149.82" Width="737.1" Height="9.45"/>
-    <PageFooterBand Name="PageFooter1" Top="187.16" Width="737.1" Height="18.9"/>
+    <ColumnFooterBand Name="ColumnFooter1" Top="150.44" Width="737.1" Height="9.45"/>
+    <PageFooterBand Name="PageFooter1" Top="206.88" Width="737.1" Height="18.9"/>
   </ReportPage>
 </Report>

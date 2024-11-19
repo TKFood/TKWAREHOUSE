@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" DoublePass="true" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="12/11/2023 11:20:53" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" DoublePass="true" ReportInfo.Created="11/14/2017 16:32:55" ReportInfo.Modified="11/19/2024 09:57:10" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9LCQ0fxzfWe7Y4PyKML6W8r">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9JfjjeBi8Gq8aTLw0Keq0J8">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT MD002,TE004,TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 &#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010  AND TE.TE001='A541' ) AS '領料'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'&#13;&#10;,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料'&#13;&#10;,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量'&#13;&#10;&#13;&#10;FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ]&#13;&#10;WHERE MQ001=TE001&#13;&#10;AND MD002 LIKE '新%' &#13;&#10;AND MD001=TC005 &#13;&#10;AND TC001=TE001 AND TC002=TE002 &#13;&#10;AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '3010000%' AND LEN(TE004)=10))   &#13;&#10;AND TC003&gt;='20191025' AND TC003&lt;='20191025'&#13;&#10;AND MD002='新廠製二組'&#13;&#10;GROUP BY MD002,TE004,TE017 ,TE011,TE012,TE010 &#13;&#10;ORDER BY MD002,TE004,TE017 ,TE011,TE012,TE010 ">
         <Column Name="MD002" DataType="System.String"/>
         <Column Name="TE004" DataType="System.String"/>
@@ -74,10 +74,11 @@
         <TextObject Name="Text43" Left="670.95" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
       </GroupFooterBand>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="164.48" Width="737.1" Height="18.9">
-      <TextObject Name="Text31" Width="897.75" Height="18.9" Text="倉管:       :              領料人員: :                    退料人員:           :          主管:       " VertAlign="Center"/>
+    <ReportSummaryBand Name="ReportSummary1" Top="164.48" Width="737.1" Height="37.8">
+      <TextObject Name="Text31" Width="737.1" Height="18.9" Text="倉管:                                  領料人員:                                 主管:       " VertAlign="Center"/>
+      <TextObject Name="Text44" Top="18.9" Width="652.05" Height="18.9" Text="倉管:                                  補/退料人員:                              主管:       " VertAlign="Center"/>
     </ReportSummaryBand>
     <ColumnFooterBand Name="ColumnFooter1" Top="150.44" Width="737.1" Height="9.45"/>
-    <PageFooterBand Name="PageFooter1" Top="187.98" Width="737.1" Height="18.9"/>
+    <PageFooterBand Name="PageFooter1" Top="206.88" Width="737.1" Height="18.9"/>
   </ReportPage>
 </Report>
