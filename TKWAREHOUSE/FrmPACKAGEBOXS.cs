@@ -1741,53 +1741,58 @@ namespace TKWAREHOUSE
 
 
         private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-            string input = textBox3.Text;
-            double ALLWEIGHT;
-            float result;
-
-            if(!string.IsNullOrEmpty(input))
-            {
-                if (float.TryParse(input, out result))
-                {
-                    ALLWEIGHT = Convert.ToDouble(input);
-
-                    if(ALLWEIGHT<0.25)
-                    {
-                        comboBox4.Text = "回收箱小";
-                    }
-                    else if(ALLWEIGHT>=0.25 && ALLWEIGHT<1)
-                    {
-                        comboBox4.Text = "回收箱小";
-                    }
-                    else if (ALLWEIGHT >= 1 && ALLWEIGHT < 3)
-                    {
-                        comboBox4.Text = "回收箱中";
-                    }
-                    else if (ALLWEIGHT >= 3 )
-                    {
-                        comboBox4.Text = "回收箱大";
-                    }
-
-                    CAL_RATES();
-
-                    DataTable dt = SET_RATECLASS(input);
-                    if (dt != null && dt.Rows.Count >= 1)
-                    {
-                        comboBox1.Text = dt.Rows[0]["NAMES"].ToString();
-                    }   
-                    
-                                   
-                }
-                else
-                {
-                    MessageBox.Show("重量不是數字格式");
-                }
-
-                
-            }
-
+        {            
+            //填入秤總重後，計算商品重、比值
+            //用比值比對是否符合
+            CAL_RATES();
             CHECK_RATE();
+
+            //string input = textBox3.Text;
+            //double ALLWEIGHT;
+            //float result;
+
+            //if(!string.IsNullOrEmpty(input))
+            //{
+            //    if (float.TryParse(input, out result))
+            //    {
+            //        ALLWEIGHT = Convert.ToDouble(input);
+
+            //        if(ALLWEIGHT<0.25)
+            //        {
+            //            comboBox4.Text = "回收箱小";
+            //        }
+            //        else if(ALLWEIGHT>=0.25 && ALLWEIGHT<1)
+            //        {
+            //            comboBox4.Text = "回收箱小";
+            //        }
+            //        else if (ALLWEIGHT >= 1 && ALLWEIGHT < 3)
+            //        {
+            //            comboBox4.Text = "回收箱中";
+            //        }
+            //        else if (ALLWEIGHT >= 3 )
+            //        {
+            //            comboBox4.Text = "回收箱大";
+            //        }
+
+
+
+            //        DataTable dt = SET_RATECLASS(input);
+            //        if (dt != null && dt.Rows.Count >= 1)
+            //        {
+            //            comboBox1.Text = dt.Rows[0]["NAMES"].ToString();
+            //        }   
+
+
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("重量不是數字格式");
+            //    }
+
+
+            //}
+
+            //CHECK_RATE();
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
@@ -1813,8 +1818,11 @@ namespace TKWAREHOUSE
 
         private void textBox5_TextChanged(object sender, EventArgs e)
         {
+            //計算商品重
             string input = textBox5.Text; 
             float result;
+            double PRODUCT_WEIGHT = 0;
+
             if (!string.IsNullOrEmpty(input))
             {
                 if (float.TryParse(input, out result))
@@ -1828,7 +1836,49 @@ namespace TKWAREHOUSE
                 }
             }
 
-         
+            //商品總重量比值分類
+            if (!string.IsNullOrEmpty(input))
+            {
+                if (float.TryParse(input, out result))
+                {
+                    PRODUCT_WEIGHT = Convert.ToDouble(input);
+
+                    if (PRODUCT_WEIGHT < 0.25)
+                    {
+                        comboBox4.Text = "回收箱小";
+                    }
+                    else if (PRODUCT_WEIGHT >= 0.25 && PRODUCT_WEIGHT < 1)
+                    {
+                        comboBox4.Text = "回收箱小";
+                    }
+                    else if (PRODUCT_WEIGHT >= 1 && PRODUCT_WEIGHT < 3)
+                    {
+                        comboBox4.Text = "回收箱中";
+                    }
+                    else if (PRODUCT_WEIGHT >= 3)
+                    {
+                        comboBox4.Text = "回收箱大";
+                    }
+
+
+
+                    DataTable dt = SET_RATECLASS(input);
+                    if (dt != null && dt.Rows.Count >= 1)
+                    {
+                        comboBox1.Text = dt.Rows[0]["NAMES"].ToString();
+                    }
+
+
+                }
+                else
+                {
+                    MessageBox.Show("重量不是數字格式");
+                }
+
+
+            }
+
+           
 
         }
 
@@ -2951,21 +3001,25 @@ namespace TKWAREHOUSE
             {
                 string input1 = comboBox1.Text;
                 string input2 = textBox6.Text.Replace("%", "");
-                double ALLWEIGHT = Convert.ToDouble(textBox3.Text);
+                double PRODUCT_WEIGHT = Convert.ToDouble(textBox5.Text);
 
-                if (ALLWEIGHT < 0.25)
+                if (PRODUCT_WEIGHT < 0.25)
                 {
                     comboBox3.Text = "不適用";
                 }
-                DataTable dt = SET_ISVALIDS(input1, input2);
-                if (dt != null && dt.Rows.Count >= 1)
-                {
-                    comboBox3.Text = "符合";
-                }
                 else
                 {
-                    comboBox3.Text = "不符合";
+                    DataTable dt = SET_ISVALIDS(input1, input2);
+                    if (dt != null && dt.Rows.Count >= 1)
+                    {
+                        comboBox3.Text = "符合";
+                    }
+                    else
+                    {
+                        comboBox3.Text = "不符合";
+                    }
                 }
+               
             }
 
         }
