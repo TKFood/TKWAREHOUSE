@@ -73,6 +73,7 @@ namespace TKWAREHOUSE
             comboBox5load();
             comboBox6load();
             comboBox7load();
+            comboBox8load();
 
 
             DataTable DT = SET_Btnconnect();
@@ -210,6 +211,10 @@ namespace TKWAREHOUSE
         public void comboBox7load()
         {
             LoadComboBoxData(comboBox7, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='REPORT1' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
+        }
+        public void comboBox8load()
+        {
+            LoadComboBoxData(comboBox8, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='ISORIGINALBOX' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
         }
 
         public void Search_COPTG(string TG002)
@@ -639,6 +644,7 @@ namespace TKWAREHOUSE
                     , string ISVALIDS
                     , string PACKAGENAMES
                     , string PACKAGEFROM
+                    , string ISORIGINALBOX
             )
         {
             SqlConnection sqlConn = new SqlConnection();
@@ -681,6 +687,7 @@ namespace TKWAREHOUSE
                                     ,[ISVALIDS]
                                     ,[PACKAGENAMES]
                                     ,[PACKAGEFROM]
+                                    ,[ISORIGINALBOX]
                                     )
                                     VALUES
                                     (
@@ -698,6 +705,7 @@ namespace TKWAREHOUSE
                                     ,'{11}'
                                     ,'{12}'
                                     ,'{13}'
+                                    ,'{14}'
                                     )                                        
                                         "
                                     , NO
@@ -714,6 +722,7 @@ namespace TKWAREHOUSE
                                     , ISVALIDS
                                     , PACKAGENAMES
                                     , PACKAGEFROM
+                                    , ISORIGINALBOX
                                         );
 
 
@@ -2486,6 +2495,8 @@ namespace TKWAREHOUSE
                                 ,B.[PHOTOS] AS '箱重PHOTOS'
                                 ,C.[PHOTOS] AS '緩衝材PHOTOS'
                                 ,(SELECT TOP 1 TH014+'-'+TH015 FROM [TK].dbo.COPTH WHERE TH001=COPTG.TG001 AND TH002=COPTG.TG002) AS 'TH01415'
+                                ,[ISORIGINALBOX] AS '原箱備註'
+
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
@@ -2635,6 +2646,7 @@ namespace TKWAREHOUSE
                                         [使用包材來源],
                                         [訂單單別],
                                         [訂單編號],
+                                        [是否原箱],
                                         1 AS Iteration -- 遞迴計數器
                                     FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSA23A]
 
@@ -2661,6 +2673,7 @@ namespace TKWAREHOUSE
                                         [使用包材來源],
                                         [訂單單別],
                                         [訂單編號],
+                                        [是否原箱],
                                         Iteration + 1
                                     FROM RecursiveCTE
                                     WHERE Iteration * 30 < [秤總重(A+B+C)]
@@ -2685,7 +2698,8 @@ namespace TKWAREHOUSE
                                         [使用包材名稱/規格],
                                         [使用包材來源],
                                         [訂單單別],
-                                        [訂單編號],
+                                        [訂單編號],    
+                                        [是否原箱],
                                         Iteration
 		                                FROM RecursiveCTE
                                 ORDER BY [銷貨單別],[銷貨單號], Iteration
@@ -2837,6 +2851,7 @@ namespace TKWAREHOUSE
             string ISVALIDS = comboBox3.Text.ToString();
             string PACKAGENAMES = comboBox4.Text;
             string PACKAGEFROM = textBox8.Text;
+            string ISORIGINALBOX = comboBox8.Text.ToString();
 
             DataTable dt = PACKAGEBOXS_FIND_MAX(textBox1.Text);
             if (dt != null && dt.Rows.Count >= 1)
@@ -2863,6 +2878,7 @@ namespace TKWAREHOUSE
                 , ISVALIDS
                 , PACKAGENAMES
                 , PACKAGEFROM
+                , ISORIGINALBOX
                 );
 
             Search_PACKAGEBOXS(TG001TG002);
@@ -3091,6 +3107,7 @@ namespace TKWAREHOUSE
                                     ,[使用包材來源]
                                     ,[訂單單別]
                                     ,[訂單編號]
+                                    ,[是否原箱]
                                     )
                                     SELECT 
                                     訂單日期
@@ -3113,6 +3130,7 @@ namespace TKWAREHOUSE
                                     ,'' AS '使用包材來源'
                                     ,SUBSTRING(TH01415, 1, CHARINDEX('-', TH01415) - 1) AS '訂單單別'
                                     ,SUBSTRING(TH01415, CHARINDEX('-', TH01415) + 1, LEN(TH01415) - CHARINDEX('-', TH01415)) AS '訂單編號'
+                                    ,'' AS '是否原箱'
                                     FROM(
 
 	                                    SELECT 訂單日期,TG029,TG001,TG002,TG003,TG020
