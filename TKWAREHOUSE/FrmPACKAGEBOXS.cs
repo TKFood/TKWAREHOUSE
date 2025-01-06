@@ -314,6 +314,8 @@ namespace TKWAREHOUSE
                                 ,A.[PHOTOS] AS '總重PHOTOS'
                                 ,B.[PHOTOS] AS '箱重PHOTOS'
                                 ,C.[PHOTOS] AS '緩衝材PHOTOS'
+                                ,[ISORIGINALBOX] AS '原箱備註'
+
                                 FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXS]
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] A ON A.NO=[PACKAGEBOXS].NO AND A.TYPES='總重'
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] B ON B.NO=[PACKAGEBOXS].NO AND B.TYPES='箱重'
@@ -361,6 +363,7 @@ namespace TKWAREHOUSE
                     comboBox1.Text = row.Cells["商品總重量比值分類"].Value.ToString();
                     comboBox2.Text = row.Cells["規定比值"].Value.ToString();
                     comboBox3.Text = row.Cells["是否符合"].Value.ToString();
+                    comboBox8.Text = row.Cells["原箱備註"].Value.ToString();
 
                     NO = row.Cells["NO"].Value.ToString();
 
