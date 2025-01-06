@@ -3105,7 +3105,7 @@ namespace TKWAREHOUSE
                                     ,網購包材重量 AS '空箱重量(KG)A'
                                     ,'0' AS '緩衝材重量(KG)B'
                                     ,商品總重量 AS '商品總重量(KG)C'
-                                    ,實際比值 AS '實際比值'
+                                    ,CONVERT(NVARCHAR,CONVERT(decimal(16,2),實際比值*100))+'%' AS '實際比值'
                                     ,商品總重量比值分類 AS '商品總重量比值分類'
                                     ,'<'+CONVERT(NVARCHAR,CONVERT(INT,比值*100))+'%'  AS '規定比值'
                                     ,(CASE WHEN 商品總重量比值分類!='<0.25公斤' THEN (CASE WHEN 實際比值<比值 THEN '符合' ELSE '不符合' END) ELSE '不適用' END)  AS '是否符合'
