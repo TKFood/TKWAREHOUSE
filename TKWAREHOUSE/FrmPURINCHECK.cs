@@ -47,6 +47,13 @@ namespace TKWAREHOUSE
             InitializeComponent();
         }
 
+        public FrmPURINCHECK(string ID)
+        {
+            InitializeComponent();
+
+            textBox1.Text = ID;
+        }
+
         #region FUNCTION
 
         #endregion

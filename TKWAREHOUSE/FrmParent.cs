@@ -132,7 +132,21 @@ namespace TKWAREHOUSE
                         frmShow.MdiParent = this;
                         frmShow.WindowState = FormWindowState.Maximized;
                         //frmShow.ControlBox = false;
-                        frmShow.Show();
+
+                        //透過反射建立 Form (傳遞參數)
+                        //傳入登入ID給FORM
+                        if (frmShow.Name.Equals("FrmPURINCHECK"))
+                        {
+                            // 透過反射建立 Form (傳遞參數)
+                            frmShow = (Form)Activator.CreateInstance(type, UserName);
+                            frmShow.Show();
+
+                        }
+                        else
+                        {
+                            frmShow.Show();
+                        }
+                       
                     }
                 }
             }
