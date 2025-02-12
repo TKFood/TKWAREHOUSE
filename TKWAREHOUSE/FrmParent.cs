@@ -139,6 +139,8 @@ namespace TKWAREHOUSE
                         {
                             // 透過反射建立 Form (傳遞參數)
                             frmShow = (Form)Activator.CreateInstance(type, UserName);
+                            frmShow.MdiParent = this;
+                            frmShow.WindowState = FormWindowState.Maximized;
                             frmShow.Show();
 
                         }
