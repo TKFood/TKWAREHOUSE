@@ -245,6 +245,12 @@
     <Compile Include="FrmPURCOPCOMMENT.Designer.cs">
       <DependentUpon>FrmPURCOPCOMMENT.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmPURINCHECK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmPURINCHECK.Designer.cs">
+      <DependentUpon>FrmPURINCHECK.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmPURTAB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -402,6 +408,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmPURCOPCOMMENT.resx">
       <DependentUpon>FrmPURCOPCOMMENT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmPURINCHECK.resx">
+      <DependentUpon>FrmPURINCHECK.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmPURTAB.resx">
       <DependentUpon>FrmPURTAB.cs</DependentUpon>
