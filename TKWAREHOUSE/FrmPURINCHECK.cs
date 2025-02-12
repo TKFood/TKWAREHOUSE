@@ -144,6 +144,7 @@ namespace TKWAREHOUSE
                                     ,TD005  AS '品名'
                                     ,TD006  AS '規格'
                                     ,TD008  AS '採購量'
+                                    ,TD007  AS '庫別'
                                     ,TD009  AS '單位'
                                     ,(TD008-TD015-ISNULL(TEMP.TH007,0)) AS '未到貨量'
                                     ,TD015  AS '已到貨'
@@ -203,6 +204,7 @@ namespace TKWAREHOUSE
                         dataGridView1.Columns["規格"].Width = 100;
                         dataGridView1.Columns["採購量"].Width = 100;
                         dataGridView1.Columns["單位"].Width = 60;
+                        dataGridView1.Columns["庫別"].Width = 60;
                         dataGridView1.Columns["未到貨量"].Width = 100;
                         dataGridView1.Columns["已到貨"].Width = 100;
                         dataGridView1.Columns["已入庫"].Width = 100;
@@ -259,7 +261,7 @@ namespace TKWAREHOUSE
                         tran = sqlConn.BeginTransaction();
 
                         sbSql.Clear();
-                        
+                        //dr.Cells["單別"].Value.ToString()
                         sbSql.AppendFormat(@" 
                 
                                             ");
