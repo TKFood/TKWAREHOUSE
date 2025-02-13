@@ -57,6 +57,9 @@ namespace TKWAREHOUSE
         {
             SETDATE();
             SETGRIDVIEW();
+
+            combobox1load();
+            combobox2load();
         }
         #region FUNCTION
         public void SETGRIDVIEW()
@@ -99,6 +102,76 @@ namespace TKWAREHOUSE
                 dr.Cells[0].Value = ((CheckBox)dataGridView1.Controls.Find("checkboxHeader", true)[0]).Checked;
 
             }
+
+        }
+        public void combobox1load()
+        {
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT
+                                [ID]
+                                ,[KINDS]
+                                ,[NAMES]
+                                ,[KEYS]
+                                ,[KEYS2]
+                                FROM [TKWAREHOUSE].[dbo].[TBPARAS]
+                                WHERE [KINDS]='FrmPURINCHECK'");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("NAMES", typeof(string));
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "NAMES";
+            comboBox1.DisplayMember = "NAMES";
+            sqlConn.Close();
+
+
+
+        }
+
+        public void combobox2load()
+        {
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT MC001,MC002 FROM [TK].dbo.CMSMC WHERE MC001 LIKE '2%' ORDER BY MC001");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("MC001", typeof(string));
+            dt.Columns.Add("MC002", typeof(string));
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "MC001";
+            comboBox2.DisplayMember = "MC002";
+            sqlConn.Close();
+
+
 
         }
         public void SETDATE()
