@@ -136,10 +136,11 @@ namespace TKWAREHOUSE
 
                 SLQURY.Clear();
 
-               
+
                 sbSql.AppendFormat(@" 
                                     SELECT 
-                                    MA002  AS '廠商'
+                                    TD008  AS '收貨數量'
+                                    ,MA002  AS '廠商'
                                     ,TD012  AS '預計到貨日'
                                     ,TD005  AS '品名'
                                     ,TD006  AS '規格'
@@ -224,7 +225,6 @@ namespace TKWAREHOUSE
                     }
 
                 }
-
             }
             catch
             {
@@ -236,12 +236,14 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADD()
+        public void ADD_TBPURINCHECK()
         {
             foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
                 if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
                 {
+                    MessageBox.Show(dr.Cells["收貨數量"].Value.ToString()); 
+
                     try
                     {
                         //20210902密
@@ -306,7 +308,8 @@ namespace TKWAREHOUSE
         }
         private void button2_Click(object sender, EventArgs e)
         {
-
+            ADD_TBPURINCHECK();
+            MessageBox.Show("完成");
         }
         #endregion
 
