@@ -143,6 +143,10 @@ namespace TKWAREHOUSE
 
         }
 
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            textBox4.Text = comboBox2.SelectedValue.ToString();
+        }
         public void combobox2load()
         {
 
@@ -384,8 +388,9 @@ namespace TKWAREHOUSE
             ADD_TBPURINCHECK();
             MessageBox.Show("完成");
         }
+
         #endregion
 
-
+    
     }
 }
