@@ -348,14 +348,33 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADD_TBPURINCHECK()
+        public void ADD_TBPURINCHECK(
+            string TC001,
+            string TC002,
+            string TD003,
+            string TD004,
+            string TD005,
+            string NUMS,
+            string MA002,
+            string STOCKS ,
+            string ISIN ,
+            string INVOICES,
+            string INNO,
+            string INNAMES
+            )
         {
             foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
                 if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
                 {
-                    MessageBox.Show(dr.Cells["收貨數量"].Value.ToString()); 
-
+                    //MessageBox.Show(dr.Cells["收貨數量"].Value.ToString()); 
+                    TC001 = dr.Cells["採購單別"].Value.ToString();
+                    TC002 = dr.Cells["採購單號"].Value.ToString();
+                    TD003 = dr.Cells["序號"].Value.ToString();
+                    TD004 = dr.Cells["品號"].Value.ToString();
+                    TD005 = dr.Cells["品名"].Value.ToString();
+                    NUMS = dr.Cells["收貨數量"].Value.ToString();                
+                    MA002 = dr.Cells["廠商"].Value.ToString();
                     try
                     {
                         //20210902密
@@ -376,9 +395,51 @@ namespace TKWAREHOUSE
 
                         sbSql.Clear();
                         //dr.Cells["單別"].Value.ToString()
-                        sbSql.AppendFormat(@" 
-                
-                                            ");
+                        sbSql.AppendFormat(@"
+                                            INSERT INTO [TKWAREHOUSE].[dbo].[TBPURINCHECK]
+                                            (
+                                            [TC001]
+                                            ,[TC002]
+                                            ,[TD003]
+                                            ,[TD004]
+                                            ,[TD005]
+                                            ,[NUMS]
+                                            ,[MA002]
+                                            ,[STOCKS]
+                                            ,[ISIN]
+                                            ,[INVOICES]
+                                            ,[INNO]
+                                            ,[INNAMES]
+                                            )
+                                            VALUES
+                                            (
+                                            '{0}'
+                                            ,'{1}'
+                                            ,'{2}'
+                                            ,'{3}'
+                                            ,'{4}'
+                                            ,'{5}'
+                                            ,'{6}'
+                                            ,'{7}'
+                                            ,'{8}'
+                                            ,'{9}'
+                                            ,'{10}'
+                                            ,'{11}'
+                                            )
+
+                                            ",TC001
+                                            ,TC002
+                                            ,TD003
+                                            ,TD004
+                                            ,TD005
+                                            ,NUMS
+                                            ,MA002
+                                            ,STOCKS
+                                            ,ISIN
+                                            ,INVOICES
+                                            ,INNO
+                                            ,INNAMES
+                                            );
 
 
                         cmd.Connection = sqlConn;
@@ -420,7 +481,33 @@ namespace TKWAREHOUSE
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            ADD_TBPURINCHECK();
+            string TC001="";
+            string TC002 = "";
+            string TD003 = "";
+            string TD004 = "";
+            string TD005 = "";
+            string NUMS= "";           
+            string MA002 = "";
+            string STOCKS = comboBox2.Text.ToString();
+            string ISIN = comboBox1.Text.ToString();
+            string INVOICES = textBox2.Text.ToString();
+            string INNO = textBox3.Text.ToString();
+            string INNAMES = comboBox3.Text.ToString();
+
+            ADD_TBPURINCHECK(
+                 TC001,
+                 TC002,
+                 TD003,
+                 TD004,
+                 TD005,
+                 NUMS,                 
+                 MA002,
+                 STOCKS,
+                 ISIN,
+                 INVOICES,
+                 INNO,
+                 INNAMES
+                );
             MessageBox.Show("完成");
         }
 
