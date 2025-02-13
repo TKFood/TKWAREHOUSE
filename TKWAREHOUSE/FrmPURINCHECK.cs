@@ -61,6 +61,7 @@ namespace TKWAREHOUSE
             combobox1load();
             combobox2load();
             combobox3load();
+            combobox4load();
         }
         #region FUNCTION
         public void SETGRIDVIEW()
@@ -213,6 +214,43 @@ namespace TKWAREHOUSE
             comboBox3.DisplayMember = "NAMES";
             sqlConn.Close();
         }
+        public void combobox4load()
+        {
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT
+                                [ID]
+                                ,[KINDS]
+                                ,[NAMES]
+                                ,[KEYS]
+                                ,[KEYS2]
+                                FROM [TKWAREHOUSE].[dbo].[TBPARAS]
+                                WHERE [KINDS]='FrmPURINCHECKSTATUS'
+                                ORDER BY [KEYS2]");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("NAMES", typeof(string));
+
+            da.Fill(dt);
+            comboBox4.DataSource = dt.DefaultView;
+            comboBox4.ValueMember = "NAMES";
+            comboBox4.DisplayMember = "NAMES";
+            sqlConn.Close();
+        }
         public void SETDATE()
         {
             DateTime today = DateTime.Today;
@@ -225,7 +263,7 @@ namespace TKWAREHOUSE
             dateTimePicker2.Value = lastDay;
         }
 
-        public void Search(string SDATES,string EDATES)
+        public void Search(string SDATES,string EDATES,string STATUS)
         {
             StringBuilder SLQURY = new StringBuilder();
             StringBuilder SLQURY2 = new StringBuilder();
@@ -248,45 +286,66 @@ namespace TKWAREHOUSE
 
                 SLQURY.Clear();
 
-
+                if(STATUS.Equals("未進"))
+                {
+                    SLQURY.AppendFormat(@"
+                                        AND PURTC.[TC001]+PURTC.[TC002]+PURTD.[TD003] NOT IN (SELECT [TC001]+[TC002]+[TD003] FROM [TKWAREHOUSE].[dbo].[TBPURINCHECK])
+                                        ");
+                }
+                else if (STATUS.Equals("已進"))
+                {
+                    SLQURY.AppendFormat(@"
+                                        AND PURTC.[TC001]+PURTC.[TC002]+PURTD.[TD003]  IN (SELECT [TC001]+[TC002]+[TD003] FROM [TKWAREHOUSE].[dbo].[TBPURINCHECK])
+                                        ");
+                }
+                else if (STATUS.Equals("全部"))
+                {
+                    SLQURY.AppendFormat(@"
+                                        
+                                        ");
+                }
                 sbSql.AppendFormat(@" 
-                                    SELECT 
-                                    TD008  AS '收貨數量'
-                                    ,MA002  AS '廠商'
-                                    ,TD012  AS '預計到貨日'
-                                    ,TD005  AS '品名'
-                                    ,TD006  AS '規格'
-                                    ,TD008  AS '採購量'
-                                    ,TD007  AS '庫別'
-                                    ,TD009  AS '單位'
-                                    ,(TD008-TD015-ISNULL(TEMP.TH007,0)) AS '未到貨量'
-                                    ,TD015  AS '已到貨'
-                                    ,ISNULL(TEMP.TH007,0) AS '已入庫'
-                                    ,TC001  AS '採購單別'
-                                    ,TC002  AS '採購單號'
-                                    ,TD003  AS '序號'
-                                    ,TD004  AS '品號'
+                                SELECT 
+                                (CASE WHEN [TBPURINCHECK].NUMS>0 THEN [TBPURINCHECK].NUMS ELSE  TD008 END) AS '收貨數量'
+                                ,PURMA.MA002  AS '廠商'
+                                ,TD012  AS '預計到貨日'
+                                ,PURTD.TD005  AS '品名'
+                                ,TD006  AS '規格'
+                                ,TD008  AS '採購量'
+                                ,TD007  AS '庫別'
+                                ,TD009  AS '單位'
+                                ,(TD008-TD015-ISNULL(TEMP.TH007,0)) AS '未到貨量'
+                                ,TD015  AS '已到貨'
+                                ,ISNULL(TEMP.TH007,0) AS '已入庫'
+                                ,PURTC.TC001  AS '採購單別'
+                                ,PURTC.TC002  AS '採購單號'
+                                ,PURTD.TD003  AS '序號'
+                                ,PURTD.TD004  AS '品號'
+                                , [TBPURINCHECK].NUMS
+                                FROM [TK].dbo.PURTC,[TK].dbo.PURTD
+                                LEFT JOIN [TKWAREHOUSE].[dbo].[TBPURINCHECK] ON [TBPURINCHECK].TC001+[TBPURINCHECK].TC002+[TBPURINCHECK].TD003=PURTD.TD001+PURTD.TD002+PURTD.TD003
+                                LEFT JOIN 
+                                (SELECT TH011,TH012,TH013,TH004,SUM(TH007) AS TH007
+                                FROM [TK].dbo.PURTG,[TK].dbo.PURTH
+                                WHERE TG001=TH001 AND TG002=TH002
+                                AND TG013 IN ('Y','N')
+                                GROUP BY TH011,TH012,TH013,TH004
+                                ) AS TEMP ON TH011=PURTD.TD001 AND TH012=PURTD.TD002 AND TH013=PURTD.TD003
+                                ,[TK].dbo.PURMA
 
-                                    FROM [TK].dbo.PURTC,[TK].dbo.PURTD
-                                    LEFT JOIN 
-                                    (SELECT TH011,TH012,TH013,TH004,SUM(TH007) AS TH007
-                                    FROM [TK].dbo.PURTG,[TK].dbo.PURTH
-                                    WHERE TG001=TH001 AND TG002=TH002
-                                    AND TG013 IN ('Y','N')
-                                    GROUP BY TH011,TH012,TH013,TH004
-                                    ) AS TEMP ON TH011=TD001 AND TH012=TD002 AND TH013=TD003
-                                    ,[TK].dbo.PURMA
-                                    WHERE TC001=TD001 AND TC002=TD002
-                                    AND MA001=TC004
-                                    AND TC014='Y'
-                                    AND TD016='N'
-                                    AND TD008>0
-                                    AND TD008-TD015-ISNULL(TEMP.TH007,0)>0
-                                    AND TD012>='20250201'
-                                    AND TD012<='20250228'
-                                    ORDER BY MA002,TD012
+                                WHERE PURTC.TC001=PURTD.TD001 AND PURTC.TC002=PURTD.TD002
+                                AND MA001=TC004
+                                AND TC014='Y'
+                                AND TD016='N'
+                                AND TD008>0
+                                AND TD008-TD015-ISNULL(TEMP.TH007,0)>0
+                                AND TD012>='{0}'
+                                AND TD012<='{1}'
+                                {2}
+
+                                ORDER BY PURMA.MA002,TD012
                                     
-                                    ");
+                                ", SDATES,EDATES, SLQURY.ToString());
 
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -477,7 +536,7 @@ namespace TKWAREHOUSE
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
-            Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"),comboBox4.Text.ToString());
         }
         private void button2_Click(object sender, EventArgs e)
         {
