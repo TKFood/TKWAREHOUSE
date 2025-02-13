@@ -60,6 +60,7 @@ namespace TKWAREHOUSE
 
             combobox1load();
             combobox2load();
+            combobox3load();
         }
         #region FUNCTION
         public void SETGRIDVIEW()
@@ -174,9 +175,43 @@ namespace TKWAREHOUSE
             comboBox2.ValueMember = "MC001";
             comboBox2.DisplayMember = "MC002";
             sqlConn.Close();
+        }
 
+        public void combobox3load()
+        {
 
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT
+                                [ID]
+                                ,[KINDS]
+                                ,[NAMES]
+                                ,[KEYS]
+                                ,[KEYS2]
+                                FROM [TKWAREHOUSE].[dbo].[TBPARAS]
+                                WHERE [KINDS]='FrmPURINCHECKNAMES'");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("NAMES", typeof(string));
+
+            da.Fill(dt);
+            comboBox3.DataSource = dt.DefaultView;
+            comboBox3.ValueMember = "NAMES";
+            comboBox3.DisplayMember = "NAMES";
+            sqlConn.Close();
         }
         public void SETDATE()
         {
