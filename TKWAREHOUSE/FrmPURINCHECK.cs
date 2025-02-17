@@ -304,6 +304,9 @@ namespace TKWAREHOUSE
                                         
                                         ");
                 }
+                
+                //採購單已核或未核
+                //且結案碼=N
                 sbSql.AppendFormat(@" 
                                 SELECT 
                                 (CASE WHEN [TBPURINCHECK].NUMS>0 THEN [TBPURINCHECK].NUMS ELSE  TD008 END) AS '收貨數量'
