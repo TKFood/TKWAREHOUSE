@@ -312,6 +312,9 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" 
                                 SELECT 
                                 (CASE WHEN [TBPURINCHECK].NUMS>0 THEN [TBPURINCHECK].NUMS ELSE  TD008 END) AS '收貨數量'
+                                ,INNAMES  AS '收貨人員'
+                                ,[INVOICES] AS '發票'
+                                ,[INNO] AS '貨單'
                                 ,PURMA.MA002  AS '廠商'
                                 ,TD012  AS '預計到貨日'
                                 ,PURTD.TD005  AS '品名'
@@ -535,6 +538,99 @@ namespace TKWAREHOUSE
                 }
             }
         }
+
+       public void UPDATE_TBPURINCHECK(
+           string TC001,
+           string TC002,
+           string TD003,
+           string TD004,
+           string TD005,
+           string NUMS,
+           string MA002,
+           string STOCKS,
+           string ISIN,
+           string INVOICES,
+           string INNO,
+           string INNAMES
+           )
+        {
+            foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+            {
+                if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
+                {
+                    //MessageBox.Show(dr.Cells["收貨數量"].Value.ToString()); 
+                    TC001 = dr.Cells["採購單別"].Value.ToString();
+                    TC002 = dr.Cells["採購單號"].Value.ToString();
+                    TD003 = dr.Cells["序號"].Value.ToString();
+                    TD004 = dr.Cells["品號"].Value.ToString();
+                    TD005 = dr.Cells["品名"].Value.ToString();
+                    NUMS = dr.Cells["收貨數量"].Value.ToString();
+                    MA002 = dr.Cells["廠商"].Value.ToString();
+                    try
+                    {
+                        //20210902密
+                        Class1 TKID = new Class1();//用new 建立類別實體
+                        SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                        //資料庫使用者密碼解密
+                        sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                        sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                        String connectionString;
+                        sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                        sqlConn.Close();
+                        sqlConn.Open();
+                        tran = sqlConn.BeginTransaction();
+
+                        sbSql.Clear();
+                        //dr.Cells["單別"].Value.ToString()
+                        sbSql.AppendFormat(@"
+                                           UPDATE [TKWAREHOUSE].[dbo].[TBPURINCHECK]
+                                            SET [NUMS]='{3}',[INVOICES]='{4}' ,[INNO]='{5}',[INNAMES]='{6}'
+                                            WHERE [TC001]='{0}' AND [TC002]='{1}' AND [TD003]='{2}'
+
+                                            ", TC001
+                                            , TC002
+                                            , TD003                                           
+                                            , NUMS                                            
+                                            , INVOICES
+                                            , INNO
+                                            , INNAMES
+                                            );
+
+
+                        cmd.Connection = sqlConn;
+                        cmd.CommandTimeout = 60;
+                        cmd.CommandText = sbSql.ToString();
+                        cmd.Transaction = tran;
+                        result = cmd.ExecuteNonQuery();
+
+                        if (result == 0)
+                        {
+                            tran.Rollback();    //交易取消
+                        }
+                        else
+                        {
+                            tran.Commit();      //執行交易  
+
+
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+
+                    finally
+                    {
+                        sqlConn.Close();
+                    }
+                }
+            }
+        }
+
         #endregion
 
 
@@ -575,11 +671,49 @@ namespace TKWAREHOUSE
 
             comboBox3.Text = "";
 
+            Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), comboBox4.Text.ToString());
+
             MessageBox.Show("完成");
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string TC001 = "";
+            string TC002 = "";
+            string TD003 = "";
+            string TD004 = "";
+            string TD005 = "";
+            string NUMS = "";
+            string MA002 = "";
+            string STOCKS = comboBox2.Text.ToString();
+            string ISIN = comboBox1.Text.ToString();
+            string INVOICES = textBox2.Text.ToString();
+            string INNO = textBox3.Text.ToString();
+            string INNAMES = comboBox3.Text.ToString();
+
+            UPDATE_TBPURINCHECK(
+                 TC001,
+                 TC002,
+                 TD003,
+                 TD004,
+                 TD005,
+                 NUMS,
+                 MA002,
+                 STOCKS,
+                 ISIN,
+                 INVOICES,
+                 INNO,
+                 INNAMES
+                );
+
+            comboBox3.Text = "";
+
+            Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), comboBox4.Text.ToString());
+
+            MessageBox.Show("完成");
+        }
         #endregion
 
-    
+
     }
 }
