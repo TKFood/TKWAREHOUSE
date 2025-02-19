@@ -201,7 +201,9 @@ namespace TKWAREHOUSE
                                 ,[KEYS]
                                 ,[KEYS2]
                                 FROM [TKWAREHOUSE].[dbo].[TBPARAS]
-                                WHERE [KINDS]='FrmPURINCHECKNAMES'");
+                                WHERE [KINDS]='FrmPURINCHECKNAMES'
+                                ORDER BY [NAMES]
+                                ");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -570,6 +572,9 @@ namespace TKWAREHOUSE
                  INNO,
                  INNAMES
                 );
+
+            comboBox3.Text = "";
+
             MessageBox.Show("完成");
         }
 
