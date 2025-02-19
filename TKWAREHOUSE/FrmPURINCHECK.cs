@@ -322,9 +322,8 @@ namespace TKWAREHOUSE
                                 ,TD008  AS '採購量'
                                 ,TD007  AS '庫別'
                                 ,TD009  AS '單位'
-                                ,(TD008-TD015-ISNULL(TEMP.TH007,0)) AS '未到貨量'
-                                ,TD015  AS '已到貨'
-                                ,ISNULL(TEMP.TH007,0) AS '已入庫'
+                                ,(TD008-ISNULL(TEMP.TH007,0)) AS '還未到貨量'
+                                ,ISNULL(TEMP.TH007,0) AS '已進貨單量'
                                 ,PURTC.TC001  AS '採購單別'
                                 ,PURTC.TC002  AS '採購單號'
                                 ,PURTD.TD003  AS '序號'
@@ -384,9 +383,8 @@ namespace TKWAREHOUSE
                         dataGridView1.Columns["採購量"].Width = 100;
                         dataGridView1.Columns["單位"].Width = 60;
                         dataGridView1.Columns["庫別"].Width = 60;
-                        dataGridView1.Columns["未到貨量"].Width = 100;
-                        dataGridView1.Columns["已到貨"].Width = 100;
-                        dataGridView1.Columns["已入庫"].Width = 100;
+                        dataGridView1.Columns["還未到貨量"].Width = 100;
+                        dataGridView1.Columns["已進貨單量"].Width = 100;                      
                         dataGridView1.Columns["採購單別"].Width = 100;
                         dataGridView1.Columns["採購單號"].Width = 100;
                         dataGridView1.Columns["序號"].Width = 100;
@@ -394,12 +392,10 @@ namespace TKWAREHOUSE
 
                         dataGridView1.Columns["採購量"].DefaultCellStyle.Format = "#,##0.000";
                         dataGridView1.Columns["採購量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        dataGridView1.Columns["未到貨量"].DefaultCellStyle.Format = "#,##0.000";
-                        dataGridView1.Columns["未到貨量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        dataGridView1.Columns["已到貨"].DefaultCellStyle.Format = "#,##0.000";
-                        dataGridView1.Columns["已到貨"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        dataGridView1.Columns["已入庫"].DefaultCellStyle.Format = "#,##0.000";
-                        dataGridView1.Columns["已入庫"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Format = "#,##0.000";
+                        dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;                    
+                        dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Format = "#,##0.000";
+                        dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                     }
 
                 }
