@@ -345,8 +345,7 @@ namespace TKWAREHOUSE
                                 AND MA001=TC004
                                 AND TC014='Y'
                                 AND TD016='N'
-                                AND TD008>0
-                                AND TD008-TD015-ISNULL(TEMP.TH007,0)>0
+                                AND TD008>0                               
                                 AND TD012>='{0}'
                                 AND TD012<='{1}'
                                 {2}
