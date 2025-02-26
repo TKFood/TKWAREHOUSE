@@ -886,8 +886,152 @@ namespace TKWAREHOUSE
 
             }
         }
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox7.Text)&& !string.IsNullOrEmpty(textBox8.Text))
+            {
+                string TC001 = textBox7.Text.Trim();
+                string TC002 = textBox8.Text.Trim();
+
+                FIND_MA002(TC001, TC002);
+            }
+        }
+        private void textBox8_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBox7.Text) && !string.IsNullOrEmpty(textBox8.Text))
+            {
+                string TC001= textBox7.Text.Trim();
+                string TC002 = textBox8.Text.Trim();
+
+                FIND_MA002(TC001, TC002);
+            }
+        }
+        private void textBox9_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBox7.Text) && !string.IsNullOrEmpty(textBox8.Text) && !string.IsNullOrEmpty(textBox9.Text))
+            {
+                string TC001 = textBox7.Text.Trim();
+                string TC002 = textBox8.Text.Trim();
+                string TD003 = textBox9.Text.Trim();
+                FIND_MB002(TC001, TC002, TD003);
+            }
+        }
+
+        public void FIND_MA002(string TC001,string TC002)
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            StringBuilder SLQURY2 = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
 
+                sbSql.Clear();
+
+                SLQURY.Clear();
+
+                sbSql.AppendFormat(@" 
+                                   SELECT 
+                                    MA002
+                                    FROM [TK].dbo.PURTC,[TK].dbo.PURMA
+                                    WHERE TC004=MA001
+                                    AND TC001='{0}' AND TC002='{1}'
+                                    
+                                ", TC001, TC002);
+
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds");
+                sqlConn.Close();
+
+                if (ds.Tables["TEMPds"].Rows.Count >= 1)
+                {
+                    textBox13.Text = ds.Tables["TEMPds"].Rows[0]["MA002"].ToString();
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void FIND_MB002(string TC001, string TC002,string TD003)
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            StringBuilder SLQURY2 = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+
+                SLQURY.Clear();
+
+                sbSql.AppendFormat(@" 
+                                   SELECT 
+                                    TD004,TD005,TD008          
+                                    FROM [TK].dbo.PURTC,[TK].dbo.PURTD
+                                    WHERE TC001=TD001 AND TC002=TD002
+                                    AND TC001='{0}' AND TC002='{1}' AND TD003='{2}'
+                                    
+                                ", TC001, TC002, TD003);
+
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds");
+                sqlConn.Close();
+
+                if (ds.Tables["TEMPds"].Rows.Count >= 1)
+                {
+                    textBox10.Text = ds.Tables["TEMPds"].Rows[0]["TD004"].ToString();
+                    textBox11.Text = ds.Tables["TEMPds"].Rows[0]["TD005"].ToString();
+                    textBox12.Text = ds.Tables["TEMPds"].Rows[0]["TD008"].ToString();
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         #endregion
 
 
@@ -1004,8 +1148,11 @@ namespace TKWAREHOUSE
             Search_TBPURINCHECKPLAN(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
         }
 
+
+
+
         #endregion
 
-
+      
     }
 }
