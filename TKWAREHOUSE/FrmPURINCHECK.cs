@@ -268,6 +268,7 @@ namespace TKWAREHOUSE
 
         public void Search(string SDATES, string EDATES, string STATUS)
         {
+            DataSet ds = new DataSet();
             StringBuilder SLQURY = new StringBuilder();
             StringBuilder SLQURY2 = new StringBuilder();
 
@@ -630,6 +631,7 @@ namespace TKWAREHOUSE
 
         public void SEARCH_TBPURINCHECK(string TC002)
         {
+            DataSet ds = new DataSet();
             StringBuilder SLQURY = new StringBuilder();
             StringBuilder SLQURY2 = new StringBuilder();
 
@@ -801,6 +803,7 @@ namespace TKWAREHOUSE
     
         public void Search_TBPURINCHECKPLAN(string SDATES,string EDATES)
         {
+            DataSet ds = new DataSet();
             StringBuilder SLQURY = new StringBuilder();
             StringBuilder SLQURY2 = new StringBuilder();
 
@@ -1032,6 +1035,98 @@ namespace TKWAREHOUSE
 
             }
         }
+
+        public void ADD_TBPURINCHECKPLAN(
+            string TC001,
+            string TC002,
+            string TD003,
+            string TD004,
+            string TD005,
+            string PLANINDATE,
+            string PLANNUMS
+            )
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                //dr.Cells["單別"].Value.ToString()
+                sbSql.AppendFormat(@"
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[TBPURINCHECKPLAN]
+                                    (
+                                    TC001
+                                    ,TC002
+                                    ,TD003
+                                    ,TD004
+                                    ,TD005
+                                    ,PLANINDATE
+                                    ,PLANNUMS
+                                    )
+                                    VALUES
+                                    (
+                                    '{0}'
+                                    ,'{1}'
+                                    ,'{2}'
+                                    ,'{3}'
+                                    ,'{4}'
+                                    ,'{5}'
+                                    ,'{6}'
+                                    )
+
+                                    ", TC001
+                                    , TC002
+                                    , TD003
+                                    , TD004
+                                    , TD005
+                                    , PLANINDATE
+                                    , PLANNUMS
+
+                                    );
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         #endregion
 
 
@@ -1148,11 +1243,42 @@ namespace TKWAREHOUSE
             Search_TBPURINCHECKPLAN(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
         }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string TC001 = "";
+            string TC002 = "";
+            string TD003 = "";
+            string TD004 = "";
+            string TD005 = "";
+            string PLANINDATE = "";
+            string PLANNUMS = "";
+
+            TC001 = textBox7.Text.Trim();
+            TC002 = textBox8.Text.Trim();
+            TD003 = textBox9.Text.Trim();
+            TD004 = textBox10.Text.Trim();
+            TD005 = textBox11.Text.Trim();
+            PLANNUMS = textBox12.Text.Trim();
+            PLANINDATE = dateTimePicker6.Value.ToString("yyyy/MM/dd");
+
+            ADD_TBPURINCHECKPLAN(
+                                TC001,
+                                TC002,
+                                TD003,
+                                TD004,
+                                TD005,
+                                PLANINDATE,
+                                PLANNUMS
+                                );
+
+            Search_TBPURINCHECKPLAN(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
+            MessageBox.Show("完成");
+        }
 
 
 
         #endregion
 
-      
+
     }
 }
