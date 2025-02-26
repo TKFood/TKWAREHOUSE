@@ -654,7 +654,7 @@ namespace TKWAREHOUSE
                 sbSql.AppendFormat(@" 
                                     SELECT 
                                     CONVERT(NVARCHAR,[INDATES],112) AS '收貨日'
-                                    ,[TC001] AS '採購單'
+                                    ,[TC001] AS '採購單別'
                                     ,[TC002] AS '採購單號'
                                     ,[TD003] AS '採購序號'
                                     ,[TD004] AS '品號'
@@ -694,7 +694,7 @@ namespace TKWAREHOUSE
                     //dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
 
                     dataGridView2.Columns["收貨日"].Width = 100;
-                    dataGridView2.Columns["採購單"].Width = 100;
+                    dataGridView2.Columns["採購單別"].Width = 100;
                     dataGridView2.Columns["採購單號"].Width = 100;
                     dataGridView2.Columns["採購序號"].Width = 60;
                     dataGridView2.Columns["品號"].Width = 100;
@@ -799,6 +799,94 @@ namespace TKWAREHOUSE
             }
         }
     
+        public void Search_TBPURINCHECKPLAN(string SDATES,string EDATES)
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            StringBuilder SLQURY2 = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+
+                SLQURY.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    SELECT 
+                                    CONVERT(NVARCHAR,[PLANINDATE],112 ) AS '預計到貨日'
+                                    ,PURMA.MA002 AS '廠商'
+                                    ,[TBPURINCHECKPLAN].[TC001] AS '採購單別'
+                                    ,[TBPURINCHECKPLAN].[TC002] AS '採購單號'
+                                    ,[TD003] AS '採購序號'
+                                    ,[TD004] AS '品號'
+                                    ,[TD005] AS '品名'
+                                    ,[PLANNUMS] AS '預計到貨數量'
+                                    ,[ID]
+
+                                    FROM [TKWAREHOUSE].[dbo].[TBPURINCHECKPLAN]
+                                    LEFT JOIN [TK].dbo.PURTC ON PURTC.TC001=[TBPURINCHECKPLAN].TC001 AND PURTC.TC002=[TBPURINCHECKPLAN].TC002
+                                    LEFT JOIN [TK].dbo.PURMA ON PURTC.TC004=PURMA.MA001          
+                                    WHERE 1=1
+                                    AND CONVERT(NVARCHAR,[PLANINDATE],112 )>='{0}' AND CONVERT(NVARCHAR,[PLANINDATE],112 )<='{0}'
+                                    ORDER BY [TBPURINCHECKPLAN].[TC001],[TBPURINCHECKPLAN].[TC002],[TD004]
+                                    
+                                ", SDATES, EDATES);
+
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds");
+                sqlConn.Close();
+
+                dataGridView3.DataSource = null;
+
+                if (ds.Tables["TEMPds"].Rows.Count >= 1)
+                {
+                    dataGridView3.DataSource = ds.Tables["TEMPds"];
+                    dataGridView3.AutoResizeColumns();
+
+                    //dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+                    //dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
+
+                    dataGridView3.Columns["預計到貨日"].Width = 100;
+                    dataGridView3.Columns["廠商"].Width = 100;
+                    dataGridView3.Columns["採購單別"].Width = 100;
+                    dataGridView3.Columns["採購單號"].Width = 100;
+                    dataGridView3.Columns["採購序號"].Width = 60;
+                    dataGridView3.Columns["品號"].Width = 100;
+                    dataGridView3.Columns["品名"].Width = 200;
+                    dataGridView3.Columns["預計到貨數量"].Width = 100;
+
+                    dataGridView3.Columns["預計到貨數量"].DefaultCellStyle.Format = "#,##0.000";
+                    dataGridView3.Columns["預計到貨數量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
 
         #endregion
 
@@ -910,6 +998,10 @@ namespace TKWAREHOUSE
 
             }
            
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Search_TBPURINCHECKPLAN(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
         }
 
         #endregion
