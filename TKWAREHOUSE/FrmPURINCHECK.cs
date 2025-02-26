@@ -67,6 +67,7 @@ namespace TKWAREHOUSE
         public void SETGRIDVIEW()
         {
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;      //奇數列顏色
+            dataGridView2.AlternatingRowsDefaultCellStyle.BackColor = Color.PaleTurquoise;      //奇數列顏色
 
             //先建立個 CheckBox 欄
             DataGridViewCheckBoxColumn cbCol = new DataGridViewCheckBoxColumn();
@@ -626,6 +627,98 @@ namespace TKWAREHOUSE
             }
         }
 
+
+        public void SEARCH_TBPURINCHECK(string TC002)
+        {
+            StringBuilder SLQURY = new StringBuilder();
+            StringBuilder SLQURY2 = new StringBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+
+                SLQURY.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    SELECT 
+                                    CONVERT(NVARCHAR,[INDATES],112) AS '收貨日'
+                                    ,[TC001] AS '採購單'
+                                    ,[TC002] AS '採購單號'
+                                    ,[TD003] AS '採購序號'
+                                    ,[TD004] AS '品號'
+                                    ,[TD005] AS '品名'
+                                    ,[NUMS] AS '到貨數量'
+                                    ,[MA002] AS '廠商'
+                                    ,[STOCKS] AS '庫別'
+                                    ,[ISIN] AS '是否到貨'
+                                    ,[INVOICES] AS '發票'
+                                    ,[INNO] AS '貨單'
+                                    ,[INNAMES] AS '收貨人員'
+                                    , [ID]
+                                    FROM [TKWAREHOUSE].[dbo].[TBPURINCHECK]
+                                    WHERE 1=1
+                                    AND [TC002] LIKE '%{0}%'
+                                    ORDER BY [TC001],[TC002]
+                                    
+                                ", TC002);
+
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds");
+                sqlConn.Close();
+
+                dataGridView2.DataSource = null;
+
+                if (ds.Tables["TEMPds"].Rows.Count >= 1)
+                {
+                    dataGridView2.DataSource = ds.Tables["TEMPds"];
+                    dataGridView2.AutoResizeColumns();
+
+                    //dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+                    //dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
+
+                    dataGridView2.Columns["收貨日"].Width = 100;
+                    dataGridView2.Columns["採購單"].Width = 100;
+                    dataGridView2.Columns["採購單號"].Width = 100;
+                    dataGridView2.Columns["採購序號"].Width = 60;
+                    dataGridView2.Columns["品號"].Width = 100;
+                    dataGridView2.Columns["品名"].Width = 200;                    
+                    dataGridView2.Columns["到貨數量"].Width = 100;
+                    dataGridView2.Columns["廠商"].Width = 100;
+                    dataGridView2.Columns["庫別"].Width = 60;
+
+                    dataGridView2.Columns["到貨數量"].DefaultCellStyle.Format = "#,##0.000";
+                    dataGridView2.Columns["到貨數量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
         #endregion
 
 
@@ -707,6 +800,11 @@ namespace TKWAREHOUSE
 
             MessageBox.Show("完成");
         }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SEARCH_TBPURINCHECK(textBox5.Text);
+        }
+
         #endregion
 
 
