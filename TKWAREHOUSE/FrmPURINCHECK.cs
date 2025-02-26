@@ -1126,6 +1126,80 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+        private void dataGridView3_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox21.Text = null;
+
+            if (dataGridView3.CurrentRow != null)
+            {
+                int rowindex = dataGridView3.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView3.Rows[rowindex];
+
+                    textBox21.Text = row.Cells["ID"].Value.ToString().Trim();
+                }
+            }
+        }
+        public void DELETE_TBPURINCHECKPLAN(string ID)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                //dr.Cells["單別"].Value.ToString()
+                sbSql.AppendFormat(@"
+                                    DELETE [TKWAREHOUSE].[dbo].[TBPURINCHECKPLAN]
+                                    where [ID]='{0}'                                    
+
+                                    ", ID                                   
+
+                                    );
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
 
         #endregion
 
@@ -1276,9 +1350,42 @@ namespace TKWAREHOUSE
         }
 
 
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+            Search_TBPURINCHECKPLAN(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
+            MessageBox.Show("完成");
+        }
+        private void button9_Click(object sender, EventArgs e)
+        {        
+
+            // 顯示確認對話框
+            DialogResult result = MessageBox.Show("確定要執行此操作嗎？", "確認", MessageBoxButtons.OKCancel);
+
+            // 檢查使用者是否按下了確定按鈕
+            if (result == DialogResult.OK)
+            {
+                // 確認後執行的動作
+                // TODO: 在這裡執行您的程式碼
+                // 例如：
+                string ID = textBox21.Text;
+
+                if (!string.IsNullOrEmpty(ID))
+                {
+                    DELETE_TBPURINCHECKPLAN(ID);
+
+                    Search_TBPURINCHECKPLAN(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
+                    MessageBox.Show("完成");
+                }
+
+
+            }
+        }
+
+
 
         #endregion
 
-
+     
     }
 }
