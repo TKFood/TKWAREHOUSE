@@ -266,7 +266,7 @@ namespace TKWAREHOUSE
             dateTimePicker2.Value = lastDay;
         }
 
-        public void Search(string SDATES,string EDATES,string STATUS)
+        public void Search(string SDATES, string EDATES, string STATUS)
         {
             StringBuilder SLQURY = new StringBuilder();
             StringBuilder SLQURY2 = new StringBuilder();
@@ -289,7 +289,7 @@ namespace TKWAREHOUSE
 
                 SLQURY.Clear();
 
-                if(STATUS.Equals("未進"))
+                if (STATUS.Equals("未進"))
                 {
                     SLQURY.AppendFormat(@"
                                         AND PURTC.[TC001]+PURTC.[TC002]+PURTD.[TD003] NOT IN (SELECT [TC001]+[TC002]+[TD003] FROM [TKWAREHOUSE].[dbo].[TBPURINCHECK])
@@ -307,7 +307,7 @@ namespace TKWAREHOUSE
                                         
                                         ");
                 }
-                
+
                 //採購單已核或未核
                 //且結案碼=N
                 sbSql.AppendFormat(@" 
@@ -352,7 +352,7 @@ namespace TKWAREHOUSE
 
                                 ORDER BY PURMA.MA002,TD012
                                     
-                                ", SDATES,EDATES, SLQURY.ToString());
+                                ", SDATES, EDATES, SLQURY.ToString());
 
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -385,7 +385,7 @@ namespace TKWAREHOUSE
                         dataGridView1.Columns["單位"].Width = 60;
                         dataGridView1.Columns["庫別"].Width = 60;
                         dataGridView1.Columns["還未到貨量"].Width = 100;
-                        dataGridView1.Columns["已進貨單量"].Width = 100;                      
+                        dataGridView1.Columns["已進貨單量"].Width = 100;
                         dataGridView1.Columns["採購單別"].Width = 100;
                         dataGridView1.Columns["採購單號"].Width = 100;
                         dataGridView1.Columns["序號"].Width = 100;
@@ -394,7 +394,7 @@ namespace TKWAREHOUSE
                         dataGridView1.Columns["採購量"].DefaultCellStyle.Format = "#,##0.000";
                         dataGridView1.Columns["採購量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Format = "#,##0.000";
-                        dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;                    
+                        dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Format = "#,##0.000";
                         dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                     }
@@ -419,8 +419,8 @@ namespace TKWAREHOUSE
             string TD005,
             string NUMS,
             string MA002,
-            string STOCKS ,
-            string ISIN ,
+            string STOCKS,
+            string ISIN,
             string INVOICES,
             string INNO,
             string INNAMES
@@ -436,7 +436,7 @@ namespace TKWAREHOUSE
                     TD003 = dr.Cells["序號"].Value.ToString();
                     TD004 = dr.Cells["品號"].Value.ToString();
                     TD005 = dr.Cells["品名"].Value.ToString();
-                    NUMS = dr.Cells["收貨數量"].Value.ToString();                
+                    NUMS = dr.Cells["收貨數量"].Value.ToString();
                     MA002 = dr.Cells["廠商"].Value.ToString();
                     try
                     {
@@ -490,18 +490,18 @@ namespace TKWAREHOUSE
                                             ,'{11}'
                                             )
 
-                                            ",TC001
-                                            ,TC002
-                                            ,TD003
-                                            ,TD004
-                                            ,TD005
-                                            ,NUMS
-                                            ,MA002
-                                            ,STOCKS
-                                            ,ISIN
-                                            ,INVOICES
-                                            ,INNO
-                                            ,INNAMES
+                                            ", TC001
+                                            , TC002
+                                            , TD003
+                                            , TD004
+                                            , TD005
+                                            , NUMS
+                                            , MA002
+                                            , STOCKS
+                                            , ISIN
+                                            , INVOICES
+                                            , INNO
+                                            , INNAMES
                                             );
 
 
@@ -535,20 +535,20 @@ namespace TKWAREHOUSE
             }
         }
 
-       public void UPDATE_TBPURINCHECK(
-           string TC001,
-           string TC002,
-           string TD003,
-           string TD004,
-           string TD005,
-           string NUMS,
-           string MA002,
-           string STOCKS,
-           string ISIN,
-           string INVOICES,
-           string INNO,
-           string INNAMES
-           )
+        public void UPDATE_TBPURINCHECK(
+            string TC001,
+            string TC002,
+            string TD003,
+            string TD004,
+            string TD005,
+            string NUMS,
+            string MA002,
+            string STOCKS,
+            string ISIN,
+            string INVOICES,
+            string INNO,
+            string INNAMES
+            )
         {
             foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
@@ -589,8 +589,8 @@ namespace TKWAREHOUSE
 
                                             ", TC001
                                             , TC002
-                                            , TD003                                           
-                                            , NUMS                                            
+                                            , TD003
+                                            , NUMS
                                             , INVOICES
                                             , INNO
                                             , INNAMES
@@ -698,14 +698,14 @@ namespace TKWAREHOUSE
                     dataGridView2.Columns["採購單號"].Width = 100;
                     dataGridView2.Columns["採購序號"].Width = 60;
                     dataGridView2.Columns["品號"].Width = 100;
-                    dataGridView2.Columns["品名"].Width = 200;                    
+                    dataGridView2.Columns["品名"].Width = 200;
                     dataGridView2.Columns["到貨數量"].Width = 100;
                     dataGridView2.Columns["廠商"].Width = 100;
                     dataGridView2.Columns["庫別"].Width = 60;
 
                     dataGridView2.Columns["到貨數量"].DefaultCellStyle.Format = "#,##0.000";
                     dataGridView2.Columns["到貨數量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                    
+
                 }
 
             }
@@ -718,6 +718,87 @@ namespace TKWAREHOUSE
 
             }
         }
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox6.Text = null;
+
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+
+                    textBox6.Text = row.Cells["ID"].Value.ToString().Trim();
+
+
+                    //SEARCH2(row.Cells["品號"].Value.ToString().Trim());
+                    //SEARCH3(row.Cells["品號"].Value.ToString().Trim());
+
+                    //SETFASTREPORT(row.Cells["品號"].Value.ToString().Trim());
+                }
+            }
+        }
+
+        public void DELETE_TBPURINCHECK(string ID)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                //dr.Cells["單別"].Value.ToString()
+                sbSql.AppendFormat(@"
+                                    DELETE [TKWAREHOUSE].[dbo].[TBPURINCHECK]                                            
+                                    WHERE [ID]='{0}' 
+
+                                    ", ID
+
+                                    );
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+    
 
         #endregion
 
@@ -803,6 +884,32 @@ namespace TKWAREHOUSE
         private void button4_Click(object sender, EventArgs e)
         {
             SEARCH_TBPURINCHECK(textBox5.Text);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+            // 顯示確認對話框
+            DialogResult result = MessageBox.Show("確定要執行此操作嗎？", "確認", MessageBoxButtons.OKCancel);
+
+            // 檢查使用者是否按下了確定按鈕
+            if (result == DialogResult.OK)
+            {
+                // 確認後執行的動作
+                // TODO: 在這裡執行您的程式碼
+                // 例如：
+                string ID = textBox6.Text;
+                if (!string.IsNullOrEmpty(ID))
+                {
+                    DELETE_TBPURINCHECK(ID);
+
+                    SEARCH_TBPURINCHECK(textBox5.Text);
+                    MessageBox.Show("完成");
+                }
+
+
+            }
+           
         }
 
         #endregion
