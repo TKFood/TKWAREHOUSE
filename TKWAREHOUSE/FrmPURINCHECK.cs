@@ -1129,6 +1129,13 @@ namespace TKWAREHOUSE
         private void dataGridView3_SelectionChanged(object sender, EventArgs e)
         {
             textBox21.Text = null;
+            textBox14.Text = null;
+            textBox15.Text = null;
+            textBox16.Text = null;
+            textBox17.Text = null;
+            textBox18.Text = null;
+            textBox19.Text = null;
+            textBox20.Text = null;
 
             if (dataGridView3.CurrentRow != null)
             {
@@ -1138,6 +1145,29 @@ namespace TKWAREHOUSE
                     DataGridViewRow row = dataGridView3.Rows[rowindex];
 
                     textBox21.Text = row.Cells["ID"].Value.ToString().Trim();
+                    textBox14.Text = row.Cells["採購單別"].Value.ToString().Trim();
+                    textBox15.Text = row.Cells["採購單號"].Value.ToString().Trim();
+                    textBox16.Text = row.Cells["採購序號"].Value.ToString().Trim();
+                    textBox17.Text = row.Cells["品號"].Value.ToString().Trim();
+                    textBox18.Text = row.Cells["品名"].Value.ToString().Trim();
+                    textBox19.Text = row.Cells["預計到貨數量"].Value.ToString().Trim();
+                    textBox20.Text = row.Cells["廠商"].Value.ToString().Trim();
+
+                    if (row.Cells["預計到貨日"].Value != null)
+                    {
+                        DateTime tempDate;
+                        string dateStr = row.Cells["預計到貨日"].Value.ToString().Trim();
+
+                        if (dateStr.Length == 8 && DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out tempDate))
+                        {
+                            dateTimePicker5.Value = tempDate;
+                        }
+                        else
+                        {
+                            // 若轉換失敗，處理預設值，例如設為當前日期
+                            dateTimePicker5.Value = DateTime.Today;
+                        }
+                    }
                 }
             }
         }
@@ -1168,6 +1198,89 @@ namespace TKWAREHOUSE
                                     where [ID]='{0}'                                    
 
                                     ", ID                                   
+
+                                    );
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void UPDATE_TBPURINCHECKPLAN(
+               string ID,
+               string TC001,
+               string TC002,
+               string TD003,
+               string TD004,
+               string TD005,
+               string PLANINDATE,
+               string PLANNUMS
+           )
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                //dr.Cells["單別"].Value.ToString()
+                sbSql.AppendFormat(@"
+                                    UPDATE [TKWAREHOUSE].[dbo].[TBPURINCHECKPLAN]
+                                    SET
+                                    TC001='{1}'
+                                    ,TC002='{2}'
+                                    ,TD003='{3}'
+                                    ,TD004='{4}'
+                                    ,TD005='{5}'
+                                    ,PLANINDATE='{6}'
+                                    ,PLANNUMS='{7}'
+                                    WHERE [ID]='{0}'    
+                                    "
+
+                                    , ID
+                                    , TC001
+                                    , TC002
+                                    , TD003
+                                    , TD004
+                                    , TD005
+                                    , PLANINDATE
+                                    , PLANNUMS
 
                                     );
 
@@ -1352,6 +1465,34 @@ namespace TKWAREHOUSE
 
         private void button8_Click(object sender, EventArgs e)
         {
+            string ID = "";
+            string TC001 = "";
+            string TC002 = "";
+            string TD003 = "";
+            string TD004 = "";
+            string TD005 = "";
+            string PLANINDATE = "";
+            string PLANNUMS = "";
+
+            ID = textBox21.Text;
+            TC001 = textBox14.Text.Trim();
+            TC002 = textBox15.Text.Trim();
+            TD003 = textBox16.Text.Trim();
+            TD004 = textBox17.Text.Trim();
+            TD005 = textBox18.Text.Trim();
+            PLANNUMS = textBox19.Text.Trim();
+            PLANINDATE = dateTimePicker5.Value.ToString("yyyy/MM/dd");
+
+            UPDATE_TBPURINCHECKPLAN(
+                                ID,
+                                TC001,
+                                TC002,
+                                TD003,
+                                TD004,
+                                TD005,
+                                PLANINDATE,
+                                PLANNUMS
+                                );
 
             Search_TBPURINCHECKPLAN(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
             MessageBox.Show("完成");
