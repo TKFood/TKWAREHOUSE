@@ -895,8 +895,10 @@ namespace TKWAREHOUSE
             {
                 string TC001 = textBox7.Text.Trim();
                 string TC002 = textBox8.Text.Trim();
+                string TD003 = textBox9.Text.Trim();
 
                 FIND_MA002(TC001, TC002);
+                FIND_MB002(TC001, TC002, TD003);
             }
         }
         private void textBox8_TextChanged(object sender, EventArgs e)
@@ -905,8 +907,10 @@ namespace TKWAREHOUSE
             {
                 string TC001= textBox7.Text.Trim();
                 string TC002 = textBox8.Text.Trim();
+                string TD003 = textBox9.Text.Trim();
 
                 FIND_MA002(TC001, TC002);
+                FIND_MB002(TC001, TC002, TD003);
             }
         }
         private void textBox9_TextChanged(object sender, EventArgs e)
@@ -982,6 +986,9 @@ namespace TKWAREHOUSE
             StringBuilder SLQURY = new StringBuilder();
             StringBuilder SLQURY2 = new StringBuilder();
 
+            textBox10.Text = "";
+            textBox11.Text = "";
+            textBox12.Text = "";
             try
             {
                 //20210902密
