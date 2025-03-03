@@ -841,7 +841,7 @@ namespace TKWAREHOUSE
                                     LEFT JOIN [TK].dbo.PURTC ON PURTC.TC001=[TBPURINCHECKPLAN].TC001 AND PURTC.TC002=[TBPURINCHECKPLAN].TC002
                                     LEFT JOIN [TK].dbo.PURMA ON PURTC.TC004=PURMA.MA001          
                                     WHERE 1=1
-                                    AND CONVERT(NVARCHAR,[PLANINDATE],112 )>='{0}' AND CONVERT(NVARCHAR,[PLANINDATE],112 )<='{0}'
+                                    AND CONVERT(NVARCHAR,[PLANINDATE],112 )>='{0}' AND CONVERT(NVARCHAR,[PLANINDATE],112 )<='{1}'
                                     ORDER BY [TBPURINCHECKPLAN].[TC001],[TBPURINCHECKPLAN].[TC002],[TD004]
                                     
                                 ", SDATES, EDATES);
