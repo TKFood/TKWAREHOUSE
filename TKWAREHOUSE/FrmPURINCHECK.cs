@@ -274,44 +274,45 @@ namespace TKWAREHOUSE
 
             try
             {
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
-
-                //資料庫使用者密碼解密
-                sqlsb.Password = TKID.Decryption(sqlsb.Password);
-                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
-
-                sbSql.Clear();
-
-                SLQURY.Clear();
-
-                if (STATUS.Equals("未進"))
                 {
-                    SLQURY.AppendFormat(@"
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                    sbSql.Clear();
+
+                    SLQURY.Clear();
+
+                    if (STATUS.Equals("未進"))
+                    {
+                        SLQURY.AppendFormat(@"
                                         AND PURTC.[TC001]+PURTC.[TC002]+PURTD.[TD003] NOT IN (SELECT [TC001]+[TC002]+[TD003] FROM [TKWAREHOUSE].[dbo].[TBPURINCHECK])
                                         ");
-                }
-                else if (STATUS.Equals("已進"))
-                {
-                    SLQURY.AppendFormat(@"
+                    }
+                    else if (STATUS.Equals("已進"))
+                    {
+                        SLQURY.AppendFormat(@"
                                         AND PURTC.[TC001]+PURTC.[TC002]+PURTD.[TD003]  IN (SELECT [TC001]+[TC002]+[TD003] FROM [TKWAREHOUSE].[dbo].[TBPURINCHECK])
                                         ");
-                }
-                else if (STATUS.Equals("全部"))
-                {
-                    SLQURY.AppendFormat(@"
+                    }
+                    else if (STATUS.Equals("全部"))
+                    {
+                        SLQURY.AppendFormat(@"
                                         
                                         ");
-                }
+                    }
 
-                //採購單已核或未核
-                //且結案碼=N
-                sbSql.AppendFormat(@" 
+                    //採購單已核或未核
+                    //且結案碼=N
+                    sbSql.AppendFormat(@" 
                                 SELECT 
                                 (CASE WHEN [TBPURINCHECK].NUMS>0 THEN [TBPURINCHECK].NUMS ELSE  TD008 END) AS '收貨數量'
                                 ,INNAMES  AS '收貨人員'
@@ -362,50 +363,51 @@ namespace TKWAREHOUSE
                                 ", SDATES, EDATES, SLQURY.ToString());
 
 
-                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+                    adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
-                sqlCmdBuilder = new SqlCommandBuilder(adapter);
-                sqlConn.Open();
-                ds.Clear();
-                adapter.Fill(ds, "TEMPds");
-                sqlConn.Close();
+                    sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                    sqlConn.Open();
+                    ds.Clear();
+                    adapter.Fill(ds, "TEMPds");
+                    sqlConn.Close();
 
 
-                if (ds.Tables["TEMPds"].Rows.Count == 0)
-                {
-                    dataGridView1.DataSource = null;
-                }
-                else
-                {
-                    if (ds.Tables["TEMPds"].Rows.Count >= 1)
+                    if (ds.Tables["TEMPds"].Rows.Count == 0)
                     {
-                        dataGridView1.DataSource = ds.Tables["TEMPds"];
-                        dataGridView1.AutoResizeColumns();
-
-                        //dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
-                        //dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
-                        dataGridView1.Columns["廠商"].Width = 100;
-                        dataGridView1.Columns["預計到貨日"].Width = 100;
-                        dataGridView1.Columns["品名"].Width = 200;
-                        dataGridView1.Columns["規格"].Width = 100;
-                        dataGridView1.Columns["採購量"].Width = 100;
-                        dataGridView1.Columns["單位"].Width = 60;
-                        dataGridView1.Columns["庫別"].Width = 60;
-                        dataGridView1.Columns["還未到貨量"].Width = 100;
-                        dataGridView1.Columns["已進貨單量"].Width = 100;
-                        dataGridView1.Columns["採購單別"].Width = 100;
-                        dataGridView1.Columns["採購單號"].Width = 100;
-                        dataGridView1.Columns["序號"].Width = 100;
-                        dataGridView1.Columns["品號"].Width = 100;
-
-                        dataGridView1.Columns["採購量"].DefaultCellStyle.Format = "#,##0.000";
-                        dataGridView1.Columns["採購量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Format = "#,##0.000";
-                        dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Format = "#,##0.000";
-                        dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        dataGridView1.DataSource = null;
                     }
+                    else
+                    {
+                        if (ds.Tables["TEMPds"].Rows.Count >= 1)
+                        {
+                            dataGridView1.DataSource = ds.Tables["TEMPds"];
+                            dataGridView1.AutoResizeColumns();
 
+                            //dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+                            //dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
+                            dataGridView1.Columns["廠商"].Width = 100;
+                            dataGridView1.Columns["預計到貨日"].Width = 100;
+                            dataGridView1.Columns["品名"].Width = 200;
+                            dataGridView1.Columns["規格"].Width = 100;
+                            dataGridView1.Columns["採購量"].Width = 100;
+                            dataGridView1.Columns["單位"].Width = 60;
+                            dataGridView1.Columns["庫別"].Width = 60;
+                            dataGridView1.Columns["還未到貨量"].Width = 100;
+                            dataGridView1.Columns["已進貨單量"].Width = 100;
+                            dataGridView1.Columns["採購單別"].Width = 100;
+                            dataGridView1.Columns["採購單號"].Width = 100;
+                            dataGridView1.Columns["序號"].Width = 100;
+                            dataGridView1.Columns["品號"].Width = 100;
+
+                            dataGridView1.Columns["採購量"].DefaultCellStyle.Format = "#,##0.000";
+                            dataGridView1.Columns["採購量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                            dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Format = "#,##0.000";
+                            dataGridView1.Columns["還未到貨量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                            dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Format = "#,##0.000";
+                            dataGridView1.Columns["已進貨單量"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+
+                    }
                 }
             }
             catch
@@ -635,7 +637,7 @@ namespace TKWAREHOUSE
         }
 
 
-        public void SEARCH_TBPURINCHECK(string TC002)
+        public void SEARCH_TBPURINCHECK(string TC002,string INDATES)
         {
             DataSet ds = new DataSet();
             StringBuilder SLQURY = new StringBuilder();
@@ -659,7 +661,29 @@ namespace TKWAREHOUSE
 
                 SLQURY.Clear();
 
-                sbSql.AppendFormat(@" 
+                if(!string.IsNullOrEmpty(TC002))
+                {
+                    SLQURY.AppendFormat(@"
+                                        AND [TC002] LIKE '%{0}%' ", TC002);
+                }
+                else
+                {
+                    SLQURY.AppendFormat(@" ");
+
+                    if (!string.IsNullOrEmpty(INDATES))
+                    {
+                        SLQURY2.AppendFormat(@"
+                                        AND CONVERT(NVARCHAR,[INDATES],112) LIKE '%{0}%' ", INDATES);
+                    }
+                    else
+                    {
+                        SLQURY2.AppendFormat(@" ");
+                    }
+                }
+
+                
+
+                sbSql.AppendFormat(@"
                                     SELECT 
                                     CONVERT(NVARCHAR,[INDATES],112) AS '收貨日'
                                     ,[TC001] AS '採購單別'
@@ -677,10 +701,11 @@ namespace TKWAREHOUSE
                                     , [ID]
                                     FROM [TKWAREHOUSE].[dbo].[TBPURINCHECK]
                                     WHERE 1=1
-                                    AND [TC002] LIKE '%{0}%'
+                                    {0}
+                                    {1}
                                     ORDER BY [TC001],[TC002]
                                     
-                                ", TC002);
+                                ", SLQURY.ToString(), SLQURY2.ToString());
 
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1410,7 +1435,7 @@ namespace TKWAREHOUSE
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            SEARCH_TBPURINCHECK(textBox5.Text);
+            SEARCH_TBPURINCHECK(textBox5.Text, dateTimePicker7.Value.ToString("yyyyMMdd"));
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -1430,7 +1455,7 @@ namespace TKWAREHOUSE
                 {
                     DELETE_TBPURINCHECK(ID);
 
-                    SEARCH_TBPURINCHECK(textBox5.Text);
+                    SEARCH_TBPURINCHECK(textBox5.Text, dateTimePicker7.Value.ToString("yyyyMMdd"));
                     MessageBox.Show("完成");
                 }
 
