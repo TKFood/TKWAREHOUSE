@@ -201,7 +201,7 @@ namespace TKWAREHOUSE
         }
         public void comboBox5load()
         {
-            LoadComboBoxData(comboBox5, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='REPORT1' GROUP BY [ID],[NAMES]  ", "NAMES", "NAMES");
+            LoadComboBoxData(comboBox5, "SELECT [ID],[NAMES] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE [KINDS]='REPORT1' ORDER BY KEYS2  ", "NAMES", "NAMES"); 
         }
 
         public void comboBox6load()
@@ -2424,6 +2424,13 @@ namespace TKWAREHOUSE
 
                 SQL = SETFASETSQL(SDAYE,EDAYS);
               
+            }
+            else if (REPORTS.Equals("現場空重比值明細秤重(無照片)"))
+            {
+                report1.Load(@"REPORT\網購包材減量應填表單-現場空重比值明細秤重(無照片).frx");
+
+                SQL = SETFASETSQL(SDAYE, EDAYS);
+
             }
             else if (REPORTS.Equals("銷貨資料")) 
             {
