@@ -2498,7 +2498,7 @@ namespace TKWAREHOUSE
                                 ,B.[PHOTOS] AS '箱重PHOTOS'
                                 ,C.[PHOTOS] AS '緩衝材PHOTOS'
                                 ,(SELECT TOP 1 TH014+'-'+TH015 FROM [TK].dbo.COPTH WHERE TH001=COPTG.TG001 AND TH002=COPTG.TG002) AS 'TH01415'
-                                ,[ISORIGINALBOX] AS '原箱備註'
+                                ,ISNULL([ISORIGINALBOX],'') AS '原箱備註'
 
                                 FROM [TK].dbo.COPTG
                                 LEFT JOIN [TKWAREHOUSE].[dbo].[PACKAGEBOXS] ON [PACKAGEBOXS].TG001=COPTG.TG001 AND [PACKAGEBOXS].TG002=COPTG.TG002
