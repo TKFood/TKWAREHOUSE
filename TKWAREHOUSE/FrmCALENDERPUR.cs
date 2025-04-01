@@ -216,37 +216,44 @@ namespace TKWAREHOUSE
 
             if(string.IsNullOrEmpty(textBox1.Text))
             {
-                FASTSQL.AppendFormat(@"  SELECT TD012 AS '預交日',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014 ");
-                FASTSQL.AppendFormat(@"  ,(SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') AS COMMENT1");
-                FASTSQL.AppendFormat(@"  ,(CASE WHEN ISNULL(TD014,'')<>'' THEN TD014 ELSE (SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') END )AS '備註'");
-                FASTSQL.AppendFormat(@"  ,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'");
-                FASTSQL.AppendFormat(@"  ,TD026 AS '請購單別',TD027 AS '請購單號',TD028 AS '請購序號'");
-                FASTSQL.AppendFormat(@"  FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA ");
-                FASTSQL.AppendFormat(@"  WHERE TC001=TD001 AND TC002=TD002");
-                FASTSQL.AppendFormat(@"  AND MA001=TC004");
-                FASTSQL.AppendFormat(@"  AND TD012>='{0}' AND TD012<='{1}'", dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@"  AND TD018='Y'");
-                FASTSQL.AppendFormat(@"  ORDER BY TD012,TD001,TD002,TD003");
-                FASTSQL.AppendFormat(@"  ");
-                FASTSQL.AppendFormat(@"  ");
-                FASTSQL.AppendFormat(@"  ");
+  
+                FASTSQL.AppendFormat(@"  
+                                    SELECT 
+                                    TD012 AS '預交日',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014 
+                                    ,(SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') AS COMMENT1
+                                    ,(CASE WHEN ISNULL(TD014,'')<>'' THEN TD014 ELSE (SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') END )AS '備註'
+                                    ,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'
+                                    ,TD026 AS '請購單別',TD027 AS '請購單號',TD028 AS '請購序號'
+                                    FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA 
+                                    WHERE TC001=TD001 AND TC002=TD002
+                                    AND MA001=TC004
+                                    AND TD012>='{0}' AND TD012<='{1}'
+                                    AND TD018='Y'
+                                    ORDER BY TD012,MA002,TD001,TD002,TD003"
+                                    , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd")
+                                    );
+                                        
             }
             else
             {
-                FASTSQL.AppendFormat(@"  SELECT TD012 AS '預交日',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014 ");
-                FASTSQL.AppendFormat(@"  ,(SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') AS COMMENT1");
-                FASTSQL.AppendFormat(@"  ,(CASE WHEN ISNULL(TD014,'')<>'' THEN TD014 ELSE (SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') END )AS '備註'");
-                FASTSQL.AppendFormat(@"  ,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'");
-                FASTSQL.AppendFormat(@"  ,TD026 AS '請購單別',TD027 AS '請購單號',TD028 AS '請購序號'");
-                FASTSQL.AppendFormat(@"  FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA ");
-                FASTSQL.AppendFormat(@"  WHERE TC001=TD001 AND TC002=TD002");
-                FASTSQL.AppendFormat(@"  AND MA001=TC004");
-                FASTSQL.AppendFormat(@"  AND TD012>='{0}' AND TD012<='{1}'",dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"));
-                FASTSQL.AppendFormat(@"  AND TD018='Y'");
-                FASTSQL.AppendFormat(@"  AND (TD005 LIKE '%{0}%' OR TD004 LIKE '%{0}%')", textBox1.Text.Trim());
-                FASTSQL.AppendFormat(@"  ORDER BY TD012,TD001,TD002,TD003");
-                FASTSQL.AppendFormat(@"  ");
-                FASTSQL.AppendFormat(@"  ");
+
+                FASTSQL.AppendFormat(@"  
+                                    SELECT 
+                                    TD012 AS '預交日',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014
+                                    , (SELECT TOP 1 TD014 FROM[TK].dbo.PURTD A WHERE A.TD001 = PURTD.TD001 AND A.TD002 = PURTD.TD002 AND A.TD003 = '0001') AS COMMENT
+                                    ,(CASE WHEN ISNULL(TD014,'')<> '' THEN TD014 ELSE(SELECT TOP 1 TD014 FROM[TK].dbo.PURTD A WHERE A.TD001 = PURTD.TD001 AND A.TD002 = PURTD.TD002 AND A.TD003 = '0001') END )AS '備註'
+                                    ,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'
+                                    ,TD026 AS '請購單別',TD027 AS '請購單號',TD028 AS '請購序號'
+                                    FROM[TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA 
+                                    WHERE TC001 = TD001 AND TC002 = TD002
+                                    AND MA001 = TC004
+                                    AND TD012>='{0}' AND TD012<='{1}'
+                                    AND TD018 = 'Y'
+                                    AND(TD005 LIKE '%{2}%' OR TD004 LIKE '%{2}%')
+                                    ORDER BY TD012,MA002,TD001,TD002,TD003
+                                    "
+                                     , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text.Trim());
+                    
             }
             FASTSQL.AppendFormat(@"   ");
             FASTSQL.AppendFormat(@"  ");
