@@ -229,7 +229,7 @@ namespace TKWAREHOUSE
                                     AND MA001=TC004
                                     AND TD012>='{0}' AND TD012<='{1}'
                                     AND TD018='Y'
-                                    ORDER BY TD012,MA002,TD001,TD002,TD003"
+                                    ORDER BY TD012,MA002,TD004,TD001,TD002,TD003"
                                     , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd")
                                     );
                                         
@@ -250,7 +250,7 @@ namespace TKWAREHOUSE
                                     AND TD012>='{0}' AND TD012<='{1}'
                                     AND TD018 = 'Y'
                                     AND(TD005 LIKE '%{2}%' OR TD004 LIKE '%{2}%')
-                                    ORDER BY TD012,MA002,TD001,TD002,TD003
+                                    ORDER BY TD012,MA002,TD004,TD001,TD002,TD003
                                     "
                                      , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text.Trim());
                     
