@@ -325,10 +325,11 @@ namespace TKWAREHOUSE
                                 ,TD008  AS '採購量'
                                 ,ISNULL((
                                 SELECT 
-                                [PLANNUMS]
+                                SUM([PLANNUMS])
                                 FROM [TKWAREHOUSE].[dbo].[TBPURINCHECKPLAN]
                                 WHERE [TBPURINCHECKPLAN].TC001=PURTD.TD001 AND   [TBPURINCHECKPLAN].TC002=PURTD.TD002  AND  [TBPURINCHECKPLAN].TD003=PURTD.TD003 
                                 ),0) AS '預計分批到貨數量'
+
                                 ,TD007  AS '庫別'
                                 ,TD009  AS '單位'
                                 ,(TD008-ISNULL(TEMP.TH007,0)) AS '還未到貨量'
