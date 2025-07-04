@@ -191,7 +191,7 @@ namespace TKWAREHOUSE
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
-            StringBuilder STRQUERYNOTIN = new StringBuilder();
+            StringBuilder STRQUERYIN = new StringBuilder();
 
             //限定品號
             DataTable DT = FIND_FrmREPORTMOC();
@@ -214,23 +214,23 @@ namespace TKWAREHOUSE
                 STRQUERY.Append(")");
             }
             //NOT IN 品號
-            DataTable DTNOTIN = FIND_FrmREPORTMOCNOTIN();
-            if (DTNOTIN != null && DTNOTIN.Rows.Count >= 1)
+            DataTable DTIN = FIND_FrmREPORTMOCNOTIN();
+            if (DTIN != null && DTIN.Rows.Count >= 1)
             {
-                STRQUERYNOTIN.Append("AND TB003 NOT IN (");
+                STRQUERYIN.Append("AND TB003  IN (");
 
-                for (int i = 0; i < DTNOTIN.Rows.Count; i++)
+                for (int i = 0; i < DTIN.Rows.Count; i++)
                 {
-                    string TB003 = DTNOTIN.Rows[i]["TB003"].ToString();
-                    STRQUERYNOTIN.AppendFormat("'{0}'", TB003);
+                    string TB003 = DTIN.Rows[i]["TB003"].ToString();
+                    STRQUERYIN.AppendFormat("'{0}'", TB003);
 
-                    if (i < DTNOTIN.Rows.Count - 1)
+                    if (i < DTIN.Rows.Count - 1)
                     {
-                        STRQUERYNOTIN.Append(", ");
+                        STRQUERYIN.Append(", ");
                     }
                 }
 
-                STRQUERYNOTIN.Append(")");
+                STRQUERYIN.Append(")");
             }
 
             FASTSQL.AppendFormat(@"  
@@ -245,7 +245,7 @@ namespace TKWAREHOUSE
                                  AND TA003>='{0}' AND TA003<='{1}'
                                  GROUP BY MD002,TA003,TB003,TB012,TB007
                                  ORDER BY MD002,TA003,TB003,TB012,TB007  
-                                ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), STRQUERY.ToString(), STRQUERYNOTIN.ToString());
+                                ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), STRQUERY.ToString(), STRQUERYIN.ToString());
 
             return FASTSQL.ToString();
         }
