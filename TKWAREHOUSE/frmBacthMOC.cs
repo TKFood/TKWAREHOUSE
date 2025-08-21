@@ -1360,20 +1360,46 @@ namespace TKWAREHOUSE
                     tran = sqlConn.BeginTransaction();
 
                     sbSql.Clear();
-
                    
-                    sbSql.AppendFormat(" INSERT INTO  [TKWAREHOUSE].[dbo].[BACTHMOCTE]");
-                    sbSql.AppendFormat(" ([ID],[TE004],[MB002],[TE010],[SUMTE005],[ATE005])");
-                    sbSql.AppendFormat(" SELECT '{0}',TB003,TB012,(SELECT TOP 1 TE010 FROM [TK].dbo.MOCTE WHERE TE004=TB003 AND  TE011+TE012 IN (SELECT TOP 1 TA001+TA002 FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] WHERE ID='{1}' ORDER BY  TA001+TA002 DESC)),ISNULL(SUM(LA011*LA005*-1),0),0", ID, ID);
-                    sbSql.AppendFormat(" FROM [TK].dbo.MOCTB");
-                    sbSql.AppendFormat(" LEFT JOIN [TK].dbo.MOCTE ON TE004=TB003 AND TE011=TB001 AND TE012=TB002 AND TE019='Y'");
-                    sbSql.AppendFormat(" LEFT JOIN [TK].dbo.INVLA ON LA006=TE001 AND LA007=TE002 AND LA008=TE003");
-                    sbSql.AppendFormat(" WHERE TB001+TB002 IN (SELECT TA001+TA002 FROM [TKWAREHOUSE].[dbo].[BACTHMOCTA] WHERE ID='{0}')", ID);
-                    sbSql.AppendFormat(" AND (TB003 LIKE '1%' OR TB003 LIKE '301%') ");
-                    sbSql.AppendFormat(" GROUP BY TB003,TB012  ");
-                    sbSql.AppendFormat(" ORDER BY TB003,TB012    ");
-                    sbSql.AppendFormat(" ");
-                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(@" 
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[BACTHMOCTE]
+                                    ([ID],[TE004],[MB002],[TE010],[SUMTE005],[ATE005])
+                                    SELECT 
+                                        '{0}' AS ID,
+                                        TB.TB003,
+                                        TB.TB012,
+                                        TE0.TE010,
+                                        ISNULL(SUM(LA.LA011*LA.LA005*-1),0) AS SUMTE005,
+                                        0 AS ATE005
+                                    FROM [TK].dbo.MOCTB TB
+                                    INNER JOIN [TKWAREHOUSE].[dbo].[BACTHMOCTA] TA
+                                        ON TB.TB001 = TA.TA001 AND TB.TB002 = TA.TA002
+                                       AND TA.ID = '{0}'
+                                    LEFT JOIN [TK].dbo.MOCTE TE 
+                                        ON TE.TE004 = TB.TB003 
+                                       AND TE.TE011 = TB.TB001 
+                                       AND TE.TE012 = TB.TB002 
+                                       AND TE.TE019 = 'Y'
+                                    OUTER APPLY (
+                                        SELECT TOP 1 TE010
+                                        FROM [TK].dbo.MOCTE
+                                        WHERE TE004 = TB.TB003
+                                          AND TE011 = TA.TA001 AND TE012 = TA.TA002
+                                        ORDER BY TE011+TE012 DESC
+                                    ) TE0
+                                    LEFT JOIN [TK].dbo.INVLA LA 
+                                        ON LA.LA006 = TE.TE001 
+                                       AND LA.LA007 = TE.TE002 
+                                       AND LA.LA008 = TE.TE003
+                                    WHERE 
+                                        TB.TB003 LIKE '1%' 
+                                     OR TB.TB003 LIKE '301%' 
+                                     OR TB.TB003 LIKE '3110100102%' 
+                                     OR TB.TB003 LIKE '41004070020001%'
+                                    GROUP BY TB.TB003, TB.TB012, TE0.TE010
+                                    ORDER BY TB.TB003, TB.TB012;
+                                    ", ID);
+
 
 
                     cmd.Connection = sqlConn;
