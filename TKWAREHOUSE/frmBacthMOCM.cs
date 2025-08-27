@@ -1412,6 +1412,7 @@ namespace TKWAREHOUSE
                                            AND LA.LA007 = TE.TE002
                                            AND LA.LA008 = TE.TE003
                                         WHERE TB.TB003 LIKE '2%'
+                                        AND TE0.TE010 IS NOT NULL
                                         GROUP BY TB.TB003, TB.TB012, TE0.TE010
                                         ORDER BY TB.TB003, TB.TB012
                                     ", ID);

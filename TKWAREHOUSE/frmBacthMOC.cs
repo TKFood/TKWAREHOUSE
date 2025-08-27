@@ -1391,11 +1391,13 @@ namespace TKWAREHOUSE
                                         ON LA.LA006 = TE.TE001 
                                        AND LA.LA007 = TE.TE002 
                                        AND LA.LA008 = TE.TE003
-                                    WHERE 
-                                        TB.TB003 LIKE '1%' 
-                                     OR TB.TB003 LIKE '301%' 
-                                     OR TB.TB003 LIKE '3110100102%' 
-                                     OR TB.TB003 LIKE '41004070020001%'
+                                    WHERE 1=1
+                                    AND (
+	                                    TB.TB003 LIKE '1%' 
+	                                    OR TB.TB003 LIKE '301%' 
+	                                    OR TB.TB003 LIKE '3110100102%' 
+	                                    OR TB.TB003 LIKE '41004070020001%')
+                                    AND TE0.TE010 IS NOT NULL
                                     GROUP BY TB.TB003, TB.TB012, TE0.TE010
                                     ORDER BY TB.TB003, TB.TB012;
                                     ", ID);
@@ -1415,16 +1417,12 @@ namespace TKWAREHOUSE
                     else
                     {
                         tran.Commit();      //執行交易  
-
-
                     }
-
                 }
-                catch
+                catch (Exception EX)
                 {
 
                 }
-
                 finally
                 {
                     sqlConn.Close();
