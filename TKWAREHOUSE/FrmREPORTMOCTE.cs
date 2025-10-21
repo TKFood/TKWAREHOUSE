@@ -164,29 +164,41 @@ namespace TKWAREHOUSE
 
         public void SETFASTREPORT()
         {
-            string SQL;
-            report1 = new Report();
-            report1.Load(@"REPORT\合併領料.frx");
+            try
+            {
+                string SQL;
+                report1 = new Report();
+                report1.Load(@"REPORT\合併領料.frx");
 
-            //20210902密
-            Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
-            //資料庫使用者密碼解密
-            sqlsb.Password = TKID.Decryption(sqlsb.Password);
-            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
 
-            String connectionString;
-            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
-            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+                report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
 
 
-            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL();
-            Table.SelectCommand = SQL;
-            report1.Preview = previewControl1;
-            report1.Show();
+                TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+                SQL = SETFASETSQL();
+                Table.SelectCommand = SQL;
+                report1.Preview = previewControl1;
+                report1.Show();
+            }
+            catch (Exception EX)
+            {
+
+            }
+            finally
+            {
+
+            }
+            
 
         }
 
@@ -199,46 +211,165 @@ namespace TKWAREHOUSE
             {
                
                 FASTSQL.AppendFormat(@"    
-                                    SELECT MD002,TE004, MB002 AS TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
-                                    ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量' 
-                                    FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ] ,[TK].dbo.INVMB
-                                    WHERE 1=1
-                                    AND MQ001=TE001
-                                    AND TE004=MB001
-                                    AND MD003 IN ('20') 
-                                    AND MD001=TC005 
-                                    AND TC001=TE001 AND TC002=TE002 
-                                    AND ((TE004 LIKE '1%' ) OR (TE004 LIKE '301%' AND LEN(TE004)=10))   
-                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND  TA003>='{0}' AND TA003<='{1}' AND MD002='{2}')
+                                    SELECT
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002 AS TE017,
+                                    T.TE011,
+                                    T.TE012,
+                                    SUM(MQ.MQ010 * T.TE005) * -1 AS TE005,
+                                    T.TE010,
+                                    -- 條件彙總 (Conditional Aggregation) 優化: 取代四個相關子查詢
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A541' THEN T.TE005 ELSE 0 END), 0) AS '領料',
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A542' THEN T.TE005 ELSE 0 END), 0) AS '補料',
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A561' THEN T.TE005 ELSE 0 END), 0) AS '退料',
+                                    -- 使用 LEFT JOIN 或 OUTER APPLY 取得庫存量 (請參考下方 #優化庫存量獲取)
+                                    ISNULL(INV.庫存量, 0) AS '庫存量'
 
-                                    GROUP BY MD002,TE004,MB002 ,TE011,TE012,TE010 
-                                    ORDER BY MD002,TE004,MB002 ,TE011,TE012,TE010 
+                                    -- **使用明確連線 (Explicit Joins) 取代逗號連線**
+                                    FROM [TK].dbo.MOCTE AS T
+                                    INNER JOIN [TK].dbo.CMSMQ AS MQ ON MQ.MQ001 = T.TE001
+                                    INNER JOIN [TK].dbo.INVMB AS MB ON T.TE004 = MB.MB001
+                                    INNER JOIN [TK].dbo.MOCTC AS TC ON TC.TC001 = T.TE001 AND TC.TC002 = T.TE002
+                                    INNER JOIN [TK].dbo.CMSMD AS MD ON MD.MD001 = TC.TC005
+
+                                    -- **將 IN 子句轉換為 INNER JOIN 以優化篩選**
+                                    INNER JOIN (
+                                        SELECT
+                                            LTRIM(RTRIM(TA001)) AS Clean_TA001,
+                                            LTRIM(RTRIM(TA002)) AS Clean_TA002
+                                        FROM [TK].dbo.MOCTA AS TA
+                                        INNER JOIN [TK].dbo.CMSMD AS MD_A ON TA.TA021 = MD_A.MD001
+                                        -- **重要: 針對日期和 MD002 欄位建立索引**
+                                        WHERE TA.TA003 >= '{0}'
+                                          AND TA.TA003 <= '{1}'
+                                          AND MD_A.MD002 = '{2}'
+                                        GROUP BY LTRIM(RTRIM(TA001)), LTRIM(RTRIM(TA002)) -- 確保唯一性
+                                    ) AS FilterData
+                                        ON LTRIM(RTRIM(T.TE011)) = FilterData.Clean_TA001
+                                        AND LTRIM(RTRIM(T.TE012)) = FilterData.Clean_TA002
+
+                                    -- **優化庫存量 (Inventory) 查詢：將其預先彙總後 LEFT JOIN**
+                                    LEFT JOIN (
+                                        SELECT
+                                            LA001,
+                                            SUM(LA005 * LA011) AS 庫存量
+                                        FROM [TK].dbo.INVLA
+                                        -- **重要: 針對 LA009 和 LA001 建立索引**
+                                        WHERE LA009 IN ('20004', '20006')
+                                        GROUP BY LA001
+                                    ) AS INV ON INV.LA001 = T.TE004
+
+                                    WHERE 1=1
+                                        -- 來自舊式 CMSMD 的篩選條件
+                                        AND MD.MD003 IN ('20')
+
+                                        -- TE004 模糊查詢條件 (請注意：LIKE '%...' 還是會讓索引失效)
+                                        AND (T.TE004 LIKE '1%' OR (T.TE004 LIKE '301%' AND LEN(T.TE004) = 10))
+
+                                    GROUP BY
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002,
+                                    T.TE011,
+                                    T.TE012,
+                                    T.TE010,
+                                    -- 修正：將 '庫存量' 的表達式加入 GROUP BY
+                                    ISNULL(INV.庫存量, 0)
+
+                                -- **ORDER BY 欄位**
+                                ORDER BY
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002,
+                                    T.TE011,
+                                    T.TE012,
+                                    T.TE010,
+                                    -- 修正：將 '庫存量' 的表達式加入 ORDER BY
+                                    ISNULL(INV.庫存量, 0);
+                              
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), comboBox2.Text.ToString());
                 
             }
             else if (comboBox1.Text.ToString().Equals("物料"))
             {
                 FASTSQL.AppendFormat(@"   
-                                    SELECT MD002,TE004, MB002 AS TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
-                                    ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量' 
-                                    FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ],[TK].dbo.INVMB
-                                    WHERE 1=1
-                                    AND MQ001=TE001
-                                    AND TE004=MB001
-                                    AND MD003 IN ('20') 
-                                    AND MD001=TC005 
-                                    AND TC001=TE001 AND TC002=TE002 
-                                    AND (TE004 LIKE '2%' )   
-                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND  TA003>='{0}' AND TA003<='{1}' AND MD002='{2}')
+                                    SELECT
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002 AS TE017,
+                                    T.TE011,
+                                    T.TE012,
+                                    SUM(MQ.MQ010 * T.TE005) * -1 AS TE005,
+                                    T.TE010,
+                                    -- 條件彙總 (Conditional Aggregation) 優化: 取代四個相關子查詢
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A541' THEN T.TE005 ELSE 0 END), 0) AS '領料',
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A542' THEN T.TE005 ELSE 0 END), 0) AS '補料',
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A561' THEN T.TE005 ELSE 0 END), 0) AS '退料',
+                                    -- 使用 LEFT JOIN 或 OUTER APPLY 取得庫存量 (請參考下方 #優化庫存量獲取)
+                                    ISNULL(INV.庫存量, 0) AS '庫存量'
 
-                                    GROUP BY MD002,TE004,MB002 ,TE011,TE012,TE010 
-                                    ORDER BY MD002,TE004,MB002 ,TE011,TE012,TE010 
+                                    -- **使用明確連線 (Explicit Joins) 取代逗號連線**
+                                    FROM [TK].dbo.MOCTE AS T
+                                    INNER JOIN [TK].dbo.CMSMQ AS MQ ON MQ.MQ001 = T.TE001
+                                    INNER JOIN [TK].dbo.INVMB AS MB ON T.TE004 = MB.MB001
+                                    INNER JOIN [TK].dbo.MOCTC AS TC ON TC.TC001 = T.TE001 AND TC.TC002 = T.TE002
+                                    INNER JOIN [TK].dbo.CMSMD AS MD ON MD.MD001 = TC.TC005
+
+                                    -- **將 IN 子句轉換為 INNER JOIN 以優化篩選**
+                                    INNER JOIN (
+                                        SELECT
+                                            LTRIM(RTRIM(TA001)) AS Clean_TA001,
+                                            LTRIM(RTRIM(TA002)) AS Clean_TA002
+                                        FROM [TK].dbo.MOCTA AS TA
+                                        INNER JOIN [TK].dbo.CMSMD AS MD_A ON TA.TA021 = MD_A.MD001
+                                        -- **重要: 針對日期和 MD002 欄位建立索引**
+                                        WHERE TA.TA003 >= '{0}'
+                                          AND TA.TA003 <= '{1}'
+                                          AND MD_A.MD002 = '{2}'
+                                        GROUP BY LTRIM(RTRIM(TA001)), LTRIM(RTRIM(TA002)) -- 確保唯一性
+                                    ) AS FilterData
+                                        ON LTRIM(RTRIM(T.TE011)) = FilterData.Clean_TA001
+                                        AND LTRIM(RTRIM(T.TE012)) = FilterData.Clean_TA002
+
+                                    -- **優化庫存量 (Inventory) 查詢：將其預先彙總後 LEFT JOIN**
+                                    LEFT JOIN (
+                                        SELECT
+                                            LA001,
+                                            SUM(LA005 * LA011) AS 庫存量
+                                        FROM [TK].dbo.INVLA
+                                        -- **重要: 針對 LA009 和 LA001 建立索引**
+                                        WHERE LA009 IN ('20004', '20006')
+                                        GROUP BY LA001
+                                    ) AS INV ON INV.LA001 = T.TE004
+
+                                    WHERE 1=1
+                                        -- 來自舊式 CMSMD 的篩選條件
+                                        AND MD.MD003 IN ('20')
+
+                                        -- TE004 模糊查詢條件 (請注意：LIKE '%...' 還是會讓索引失效)
+                                        AND (T.TE004 LIKE '2%' )
+
+                                    GROUP BY
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002,
+                                    T.TE011,
+                                    T.TE012,
+                                    T.TE010,
+                                    -- 修正：將 '庫存量' 的表達式加入 GROUP BY
+                                    ISNULL(INV.庫存量, 0)
+
+                                -- **ORDER BY 欄位**
+                                ORDER BY
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002,
+                                    T.TE011,
+                                    T.TE012,
+                                    T.TE010,
+                                    -- 修正：將 '庫存量' 的表達式加入 ORDER BY
+                                    ISNULL(INV.庫存量, 0);
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), comboBox2.Text.ToString());
 
 
@@ -247,23 +378,82 @@ namespace TKWAREHOUSE
             else if (comboBox1.Text.ToString().Equals("原料+物料"))
             {
                 FASTSQL.AppendFormat(@"   
-                                    SELECT MD002,TE004, MB002 AS TE017 ,TE011,TE012,SUM(MQ010*TE005)*-1  AS TE005,TE010 
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A541' ) AS '領料' 
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A542' ) AS '補料'
-                                    ,(SELECT ISNULL(SUM(TE005),0) FROM [TK].dbo.MOCTE TE WHERE TE.TE004=MOCTE.TE004 AND TE.TE011=MOCTE.TE011 AND TE.TE012=MOCTE.TE012 AND TE.TE010=MOCTE.TE010 AND TE.TE001='A561' ) AS '退料' 
-                                    ,(SELECT SUM(LA005*LA011) FROM [TK].dbo.INVLA WHERE LA009 IN ('20004','20006')  AND LA001=TE004 ) AS '庫存量' 
-                                    FROM [TK].dbo.CMSMD, [TK].dbo.MOCTC,[TK].dbo.MOCTE,[TK].dbo.[CMSMQ],[TK].dbo.INVMB
-                                     WHERE 1=1
-                                    AND MQ001=TE001
-                                    AND TE004=MB001
-                                    AND MD003 IN ('20') 
-                                    AND MD001=TC005 
-                                    AND TC001=TE001 AND TC002=TE002 
-                                    AND (TE004 LIKE '1%' OR TE004 LIKE '2%' OR (TE004 LIKE '301%' AND LEN(TE004)=10))  
-                                    AND LTRIM(RTRIM(TE011))+ LTRIM(RTRIM(TE012)) IN (SELECT LTRIM(RTRIM(TA001))+ LTRIM(RTRIM(TA002)) FROM [TK].dbo.MOCTA,[TK].dbo.CMSMD WHERE TA021=MD001 AND  TA003>='{0}' AND TA003<='{1}' AND MD002='{2}')
+                                    SELECT
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002 AS TE017,
+                                    T.TE011,
+                                    T.TE012,
+                                    SUM(MQ.MQ010 * T.TE005) * -1 AS TE005,
+                                    T.TE010,
+                                    -- 條件彙總 (Conditional Aggregation) 優化: 取代四個相關子查詢
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A541' THEN T.TE005 ELSE 0 END), 0) AS '領料',
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A542' THEN T.TE005 ELSE 0 END), 0) AS '補料',
+                                    ISNULL(SUM(CASE WHEN T.TE001 = 'A561' THEN T.TE005 ELSE 0 END), 0) AS '退料',
+                                    -- 使用 LEFT JOIN 或 OUTER APPLY 取得庫存量 (請參考下方 #優化庫存量獲取)
+                                    ISNULL(INV.庫存量, 0) AS '庫存量'
 
-                                    GROUP BY MD002,TE004,MB002 ,TE011,TE012,TE010 
-                                    ORDER BY MD002,TE004,MB002 ,TE011,TE012,TE010 
+                                    -- **使用明確連線 (Explicit Joins) 取代逗號連線**
+                                    FROM [TK].dbo.MOCTE AS T
+                                    INNER JOIN [TK].dbo.CMSMQ AS MQ ON MQ.MQ001 = T.TE001
+                                    INNER JOIN [TK].dbo.INVMB AS MB ON T.TE004 = MB.MB001
+                                    INNER JOIN [TK].dbo.MOCTC AS TC ON TC.TC001 = T.TE001 AND TC.TC002 = T.TE002
+                                    INNER JOIN [TK].dbo.CMSMD AS MD ON MD.MD001 = TC.TC005
+
+                                    -- **將 IN 子句轉換為 INNER JOIN 以優化篩選**
+                                    INNER JOIN (
+                                        SELECT
+                                            LTRIM(RTRIM(TA001)) AS Clean_TA001,
+                                            LTRIM(RTRIM(TA002)) AS Clean_TA002
+                                        FROM [TK].dbo.MOCTA AS TA
+                                        INNER JOIN [TK].dbo.CMSMD AS MD_A ON TA.TA021 = MD_A.MD001
+                                        -- **重要: 針對日期和 MD002 欄位建立索引**
+                                        WHERE TA.TA003 >= '{0}'
+                                          AND TA.TA003 <= '{1}'
+                                          AND MD_A.MD002 = '{2}'
+                                        GROUP BY LTRIM(RTRIM(TA001)), LTRIM(RTRIM(TA002)) -- 確保唯一性
+                                    ) AS FilterData
+                                        ON LTRIM(RTRIM(T.TE011)) = FilterData.Clean_TA001
+                                        AND LTRIM(RTRIM(T.TE012)) = FilterData.Clean_TA002
+
+                                    -- **優化庫存量 (Inventory) 查詢：將其預先彙總後 LEFT JOIN**
+                                    LEFT JOIN (
+                                        SELECT
+                                            LA001,
+                                            SUM(LA005 * LA011) AS 庫存量
+                                        FROM [TK].dbo.INVLA
+                                        -- **重要: 針對 LA009 和 LA001 建立索引**
+                                        WHERE LA009 IN ('20004', '20006')
+                                        GROUP BY LA001
+                                    ) AS INV ON INV.LA001 = T.TE004
+
+                                    WHERE 1=1
+                                        -- 來自舊式 CMSMD 的篩選條件
+                                        AND MD.MD003 IN ('20')
+
+                                        -- TE004 模糊查詢條件 (請注意：LIKE '%...' 還是會讓索引失效)
+                                        AND (T.TE004 LIKE '1%' OR T.TE004 LIKE '2%' OR (T.TE004 LIKE '301%' AND LEN(T.TE004) = 10))
+
+                                    GROUP BY
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002,
+                                    T.TE011,
+                                    T.TE012,
+                                    T.TE010,
+                                    -- 修正：將 '庫存量' 的表達式加入 GROUP BY
+                                    ISNULL(INV.庫存量, 0)
+
+                                -- **ORDER BY 欄位**
+                                ORDER BY
+                                    MD.MD002,
+                                    T.TE004,
+                                    MB.MB002,
+                                    T.TE011,
+                                    T.TE012,
+                                    T.TE010,
+                                    -- 修正：將 '庫存量' 的表達式加入 ORDER BY
+                                    ISNULL(INV.庫存量, 0);
                                     ", dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), comboBox2.Text.ToString());
 
 
