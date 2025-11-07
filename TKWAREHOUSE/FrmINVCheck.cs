@@ -626,7 +626,7 @@ namespace TKWAREHOUSE
                                         ,狀態
                                         ,CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END AS 'DAYS'
                                         ,CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) AS '外購品的生產日'
-                                    
+                                        ,庫別
                                         ,(
                                         SELECT  (Key1+'-'+Key2+': '+CONVERT(NVARCHAR,Key3)+' '+M_MF002)+ CHAR(10)
                                         FROM ( 
@@ -728,36 +728,38 @@ namespace TKWAREHOUSE
                                         ) AS NOS
 
                                         FROM (
-                                        SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
-                                        ,生產日期
-                                        ,DATEDIFF(DAY,生產日期,'{0}') AS '在倉日期'
-                                        ,DATEDIFF(DAY,'{0}',有效日期)  AS '有效天數'
-                                        ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
-                                        FROM ( 
+	                                        SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
+	                                        ,生產日期
+	                                        ,DATEDIFF(DAY,生產日期,'{0}') AS '在倉日期'
+	                                        ,DATEDIFF(DAY,'{0}',有效日期)  AS '有效天數'
+	                                        ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
+	                                        ,LA009 AS '庫別'
+	                                        FROM ( 
 
-                                        SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
-                                        ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'
-                                        ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'     
-                                        ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' 
-                                        ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='20210812') AS INT) AS '總訂單需求量' 
-                                        ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
-                                        ,(SELECT TOP 1 ME032
-                                        FROM [TK].dbo.INVME
-                                        WHERE ME001=LA001 AND ME002=LA016) AS '生產日期'
-                                        ,(SELECT TOP 1 ME009
-                                        FROM [TK].dbo.INVME
-                                        WHERE ME001=LA001 AND ME002=LA016) AS '有效日期'
-                                        ,ISDATE(LA016) AS LA016
-                                        FROM [TK].dbo.INVLA WITH (NOLOCK)  
-                                        LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
-                                        WHERE  (LA009='20001')   
-                                        AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
-                                        GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
-                                        HAVING SUM(LA005*LA011)<>0 
-                                        ) AS TEMP
+		                                        SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
+		                                        ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'
+		                                        ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'     
+		                                        ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' 
+		                                        ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}') AS INT) AS '總訂單需求量' 
+		                                        ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
+		                                        ,(SELECT TOP 1 ME032
+		                                        FROM [TK].dbo.INVME
+		                                        WHERE ME001=LA001 AND ME002=LA016) AS '生產日期'
+		                                        ,(SELECT TOP 1 ME009
+		                                        FROM [TK].dbo.INVME
+		                                        WHERE ME001=LA001 AND ME002=LA016) AS '有效日期'
+		                                        ,ISDATE(LA016) AS LA016
+		                                        ,LA009
+		                                        FROM [TK].dbo.INVLA WITH (NOLOCK)  
+		                                        LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
+		                                        WHERE  (LA009='20001')   
+		                                        AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
+		                                        GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
+		                                        HAVING SUM(LA005*LA011)<>0 
+	                                        ) AS TEMP
                                         ) AS TEMP2
                                         LEFT JOIN [TK].dbo.INVMB ON MB001=品號
-                                        ORDER BY 品號,批號       
+                                        ORDER BY 品號,批號          
 
                                         ", DateTime.Now.ToString("yyyyMMdd"));
             }
@@ -773,7 +775,7 @@ namespace TKWAREHOUSE
                                         ,狀態
                                         ,CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END AS 'DAYS'
                                         ,CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) AS '外購品的生產日'
-                                    
+                                        ,庫別
                                         ,(
                                         SELECT  (Key1+'-'+Key2+': '+CONVERT(NVARCHAR,Key3)+' '+M_MF002)+ CHAR(10)
                                         FROM ( 
@@ -875,37 +877,38 @@ namespace TKWAREHOUSE
                                         ) AS NOS
 
                                         FROM (
-                                        SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
-                                        ,生產日期
-                                        ,DATEDIFF(DAY,生產日期,'{0}') AS '在倉日期'
-                                        ,DATEDIFF(DAY,'{0}',有效日期)  AS '有效天數'
-                                        ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
-                                        FROM ( 
+	                                        SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
+	                                        ,生產日期
+	                                        ,DATEDIFF(DAY,生產日期,'{0}') AS '在倉日期'
+	                                        ,DATEDIFF(DAY,'{0}',有效日期)  AS '有效天數'
+	                                        ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
+	                                        ,LA009 AS '庫別'
+	                                        FROM ( 
 
-                                        SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
-                                        ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'
-                                        ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'     
-                                        ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' 
-                                        ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='20210812') AS INT) AS '總訂單需求量' 
-                                        ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
-                                        ,(SELECT TOP 1 ME032
-                                        FROM [TK].dbo.INVME
-                                        WHERE ME001=LA001 AND ME002=LA016) AS '生產日期'
-                                        ,(SELECT TOP 1 ME009
-                                        FROM [TK].dbo.INVME
-                                        WHERE ME001=LA001 AND ME002=LA016) AS '有效日期'
-                                        ,ISDATE(LA016) AS LA016
-                                        FROM [TK].dbo.INVLA WITH (NOLOCK)  
-                                        LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
-                                        WHERE  (LA009='20028')   
-                                        AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
-                                        GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
-                                        HAVING SUM(LA005*LA011)<>0 
-                                        ) AS TEMP
+		                                        SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
+		                                        ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'
+		                                        ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'     
+		                                        ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' 
+		                                        ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}') AS INT) AS '總訂單需求量' 
+		                                        ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
+		                                        ,(SELECT TOP 1 ME032
+		                                        FROM [TK].dbo.INVME
+		                                        WHERE ME001=LA001 AND ME002=LA016) AS '生產日期'
+		                                        ,(SELECT TOP 1 ME009
+		                                        FROM [TK].dbo.INVME
+		                                        WHERE ME001=LA001 AND ME002=LA016) AS '有效日期'
+		                                        ,ISDATE(LA016) AS LA016
+		                                        ,LA009
+		                                        FROM [TK].dbo.INVLA WITH (NOLOCK)  
+		                                        LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
+		                                        WHERE  (LA009='20028')   
+		                                        AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
+		                                        GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
+		                                        HAVING SUM(LA005*LA011)<>0 
+	                                        ) AS TEMP
                                         ) AS TEMP2
                                         LEFT JOIN [TK].dbo.INVMB ON MB001=品號
-                                        ORDER BY 品號,批號       
-
+                                        ORDER BY 品號,批號      
                                         ", DateTime.Now.ToString("yyyyMMdd"));
             }
             else if (KINDS.Equals("21001"))
