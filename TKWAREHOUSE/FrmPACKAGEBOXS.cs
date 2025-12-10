@@ -2513,6 +2513,7 @@ namespace TKWAREHOUSE
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] C ON C.NO=[PACKAGEBOXS].NO AND C.TYPES='緩衝材'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ( SELECT  [TG001]  FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSTG001] )
+                                AND A.[PHOTOS] IS NOT NULL AND B.[PHOTOS] IS NOT NULL
                                 AND TG003>='{0}' AND TG003<='{1}'
                                 
                                
@@ -3257,6 +3258,7 @@ namespace TKWAREHOUSE
                                 LEFT JOIN  [TKWAREHOUSE].[dbo].[PACKAGEBOXSPHOTO] C ON C.NO=[PACKAGEBOXS].NO AND C.TYPES='緩衝材'
                                 WHERE TG023='Y'
                                 AND COPTG.TG001 IN ( SELECT  [TG001]  FROM [TKWAREHOUSE].[dbo].[PACKAGEBOXSTG001] )
+                                AND A.[PHOTOS] IS NOT NULL AND B.[PHOTOS] IS NOT NULL
                                 AND TG003>='{0}' AND TG003<='{1}'
 
                                 AND ([PRODUCTWEIGHTS] <=0 OR ISNULL([PRODUCTWEIGHTS],0)=0)
