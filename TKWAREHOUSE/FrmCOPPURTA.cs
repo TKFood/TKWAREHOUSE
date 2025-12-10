@@ -3441,6 +3441,86 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCH_COPTC_COPTD(string SDATES, string EDATES)
+        {
+            // 使用 try-catch 區塊來處理連線和查詢錯誤
+            try
+            {
+                // --- 1. 資料庫連線字串解密與建立 ---
+                // 20210902密：使用 new Class1() 實體進行解密
+                Class1 TKID = new Class1();
+
+                // 從配置檔讀取連線字串並使用 SqlConnectionStringBuilder 處理
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(
+                    ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString
+                );
+
+                // 資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                StringBuilder sqlQuery = new StringBuilder();
+                sqlQuery.AppendFormat(@"
+                                       SELECT 
+                                        TC001 AS '單別'
+                                        ,TC002 AS '單號'
+                                        ,TC003 AS '日期'
+                                        ,TD003 AS '序號'
+                                        ,TD004 AS '品號'
+                                        ,TD005 AS '品名'
+                                        ,TD008 AS '數量'
+                                        ,TD010 AS '單位'
+                                        ,TD013 AS '預交日'
+
+                                        FROM [TK].dbo.COPTC,[TK].dbo.COPTD
+                                        WHERE TC001=TD001 AND TC002=TD002
+                                        AND TC003>='{0}' AND TC003<='{1}'
+                                        AND TD004 LIKE '5%'
+                                        AND TD004 NOT LIKE '599%'
+                                        ORDER BY TC001,TC002,TD003
+
+                                        ", SDATES, EDATES);
+
+
+                // 使用 using 確保 SqlConnection 在完成後或發生錯誤時會自動關閉和釋放
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    // --- 2. 執行查詢並填充 DataSet ---
+                    // 移除不必要的 SqlCommandBuilder 和多餘的 StringBuilder 宣告/清除
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(sqlQuery.ToString(), sqlConn))
+                    using (DataSet ds = new DataSet())
+                    {
+                        // Fill 方法會自動開啟連線，完成後自動關閉（如果連線最初是關閉的）
+                        adapter.Fill(ds, "ds1");
+
+                        // --- 3. 資料繫結邏輯 ---
+                        if (ds.Tables.Count > 0 && ds.Tables["ds1"].Rows.Count > 0)
+                        {
+                            dataGridView7.DataSource = ds.Tables["ds1"];
+                            dataGridView7.AutoResizeColumns();
+                        }
+                        else
+                        {
+                            // 查詢結果為空
+                            dataGridView7.DataSource = null;
+                        }
+                    } // adapter 和 ds 會在這裡被 Dispose
+                } // sqlConn 會在這裡被 Dispose 和 Close
+            }
+            catch (Exception ex)
+            {
+                // ❌ 重要的優化：避免使用空的 catch 區塊。
+                // 應該記錄錯誤或提示使用者。
+                System.Windows.Forms.MessageBox.Show("資料查詢失敗，請檢查配置或連線。\n錯誤訊息: " + ex.Message);
+
+                // 發生錯誤時清空資料顯示
+                if (dataGridView7 != null)
+                {
+                    dataGridView7.DataSource = null;
+                }
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -3683,6 +3763,12 @@ namespace TKWAREHOUSE
             string SDATES = dateTimePicker3.Value.ToString("yyyyMMdd");
             string EDATES = dateTimePicker4.Value.ToString("yyyyMMdd");
             SEARCH_COPTE_COPTF(SDATES, EDATES);
+        }
+        private void button20_Click(object sender, EventArgs e)
+        {
+            string SDATES = dateTimePicker5.Value.ToString("yyyyMMdd");
+            string EDATES = dateTimePicker6.Value.ToString("yyyyMMdd");
+            SEARCH_COPTC_COPTD(SDATES, EDATES);
         }
 
         #endregion
