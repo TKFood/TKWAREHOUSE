@@ -3551,8 +3551,81 @@ namespace TKWAREHOUSE
                     DataGridViewRow row = dataGridView9.Rows[rowindex];
                     textBox12.Text = row.Cells["採購單別"].Value.ToString();
                     textBox13.Text = row.Cells["採購單號"].Value.ToString();
+
+                    SEARCH_TKPUR_PURTATBCHAGE(textBox12.Text, textBox13.Text);
                 }
                 
+            }
+        }
+
+        public void SEARCH_TKPUR_PURTATBCHAGE(string TA001, string TA002)
+        {
+            // 使用 try-catch 區塊來處理連線和查詢錯誤
+            try
+            {
+                // --- 1. 資料庫連線字串解密與建立 ---
+                // 20210902密：使用 new Class1() 實體進行解密
+                Class1 TKID = new Class1();
+
+                // 從配置檔讀取連線字串並使用 SqlConnectionStringBuilder 處理
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(
+                    ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString
+                );
+
+                // 資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                StringBuilder sqlQuery = new StringBuilder();
+                sqlQuery.AppendFormat(@"
+                                       SELECT  
+                                        TA001 AS '採購單別'
+                                        ,TA002  AS '採購單號'
+                                        ,VERSIONS  AS '變更版次'
+                                        FROM [TKPUR].[dbo].[PURTATBCHAGE]
+                                        WHERE 1=1
+                                        AND [TA001] = '{0}'
+                                        AND [TA002] = '{1}'
+
+                                        ", TA001, TA002);
+
+
+                // 使用 using 確保 SqlConnection 在完成後或發生錯誤時會自動關閉和釋放
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    // --- 2. 執行查詢並填充 DataSet ---
+                    // 移除不必要的 SqlCommandBuilder 和多餘的 StringBuilder 宣告/清除
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(sqlQuery.ToString(), sqlConn))
+                    using (DataSet ds = new DataSet())
+                    {
+                        // Fill 方法會自動開啟連線，完成後自動關閉（如果連線最初是關閉的）
+                        adapter.Fill(ds, "ds1");
+
+                        // --- 3. 資料繫結邏輯 ---
+                        if (ds.Tables.Count > 0 && ds.Tables["ds1"].Rows.Count > 0)
+                        {
+                            dataGridView10.DataSource = ds.Tables["ds1"];
+                            dataGridView10.AutoResizeColumns();
+                        }
+                        else
+                        {
+                            // 查詢結果為空
+                            dataGridView10.DataSource = null;
+                        }
+                    } // adapter 和 ds 會在這裡被 Dispose
+                } // sqlConn 會在這裡被 Dispose 和 Close
+            }
+            catch (Exception ex)
+            {
+                // ❌ 重要的優化：避免使用空的 catch 區塊。
+                // 應該記錄錯誤或提示使用者。
+                System.Windows.Forms.MessageBox.Show("資料查詢失敗，請檢查配置或連線。\n錯誤訊息: " + ex.Message);
+
+                // 發生錯誤時清空資料顯示
+                if (dataGridView10 != null)
+                {
+                    dataGridView10.DataSource = null;
+                }
             }
         }
         public void SEARCH_COPTC_COPTD(string SDATES, string EDATES)
@@ -3962,14 +4035,12 @@ namespace TKWAREHOUSE
             else
             {
                 tran.Commit();      //執行交易  
-
-
             }
         }
         public string GET_MAX_PURTCHANGES_VERSIONS(string TA001, string TA002) // 假設 MOCTA003 是從某處傳入的參數
         {
             string sqlQuery = @"
-                                SELECT ISNULL(MAX(VERSIONS), '0000') AS VERSIONS
+                                SELECT ISNULL(MAX(VERSIONS), '0') AS VERSIONS
                                 FROM [TKPUR].[dbo].[PURTATBCHAGE]
                                 WHERE 1=1
                                 AND [TA001] = @TA001
@@ -4019,7 +4090,7 @@ namespace TKWAREHOUSE
         {
             if (string.IsNullOrEmpty(MAXID) || MAXID.Equals("0"))
             {               
-                return  "0001";
+                return  "1";
             }
 
             string sernoString = MAXID;
@@ -4038,7 +4109,102 @@ namespace TKWAREHOUSE
                 throw new FormatException(String.Format("MAXID 的序列號部分 ('{0}') 無法轉換為數字。", sernoString));
             }
         }
+        public void ADD_TKPUR_PURTATBCHAGE(string TA001,string TA002,string VERSIONS)
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            sqlConn.Close();
+            sqlConn.Open();
+            tran = sqlConn.BeginTransaction();
+
+            sbSql.Clear();
+            //UPDATE TB039='N'
+
+            sbSql.AppendFormat(@" 
+                               INSERT INTO [TKPUR].[dbo].[PURTATBCHAGE]
+                                (
+                                [VERSIONS]
+                                ,[TA001]
+                                ,[TA002]
+                                ,[TA003]
+                                ,[TA006]
+                                ,[TA012]
+                                ,[TB003]
+                                ,[TB004]
+                                ,[TB005]
+                                ,[TB006]
+                                ,[TB007]
+                                ,[TB009]
+                                ,[TB010]
+                                ,[TB011]
+                                ,[TB012]
+                                ,[USER_GUID]
+                                ,[NAME]
+                                ,[GROUP_ID]
+                                ,[TITLE_ID]
+                                ,[MA002]
+                                )
+                                SELECT 
+                                '{0}'[VERSIONS]
+                                ,PURTA.TA001 [TA001]
+                                ,PURTA.TA002 [TA002]
+                                ,PURTA.TA003 [TA003]
+                                ,PURTA.TA006 [TA006]
+                                ,PURTA.TA012 [TA012]
+                                ,PURTB.TB003 [TB003]
+                                ,COPTF.TF004 [TB004]
+                                ,COPTF.TF005 [TB005]
+                                ,COPTF.TF006 [TB006]
+                                ,COPTF.TF010 [TB007]
+                                ,COPTF.TF009 [TB009]
+                                ,PURTB.TB010 [TB010]
+                                ,COPTF.TF015 [TB011]
+                                ,COPTF.TF032 [TB012]
+                                ,[TB_EB_USER].USER_GUID [USER_GUID]
+                                ,[TB_EB_USER].NAME [NAME]
+                                ,[TB_EB_EMPL_DEP].GROUP_ID [GROUP_ID]
+                                ,[TB_EB_EMPL_DEP].TITLE_ID [TITLE_ID]
+                                ,PURMA.MA002 [MA002]
+                                FROM  [TK].dbo.COPTE
+                                LEFT JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_USER] ON [ACCOUNT]=COPTE.CREATOR COLLATE Chinese_Taiwan_Stroke_BIN
+                                LEFT JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_EMPL_DEP] ON [TB_EB_USER].[USER_GUID]=[TB_EB_EMPL_DEP].[USER_GUID]
+                                LEFT JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_GROUP] ON [TB_EB_EMPL_DEP].[GROUP_ID]=[TB_EB_GROUP].[GROUP_ID] AND ISNULL([TB_EB_GROUP].[GROUP_CODE],'')<>''
+                                ,[TK].dbo.COPTF
+                                LEFT JOIN [TK].dbo.PURTB ON TB029=TF001 AND TB030=TF002 AND TB031=TF104
+                                LEFT JOIN [TK].dbo.PURTA ON TA001=TB001 AND TA002=TB002
+                                LEFT JOIN [TK].dbo.PURMA ON MA001=TB010
+                                WHERE 1=1
+                                AND TE001=TF001 AND TE002=TF002
+                                AND TA001='{1}' AND TA002='{2}'
+                                ",VERSIONS, TA001, TA002);
+
+
+            cmd.Connection = sqlConn;
+            cmd.CommandTimeout = 60;
+            cmd.CommandText = sbSql.ToString();
+            cmd.Transaction = tran;
+            result = cmd.ExecuteNonQuery();
+
+            if (result == 0)
+            {
+                tran.Rollback();    //交易取消
+
+
+            }
+            else
+            {
+                tran.Commit();      //執行交易  
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -4314,6 +4480,7 @@ namespace TKWAREHOUSE
 
             if (!string.IsNullOrEmpty(TA001)&& !string.IsNullOrEmpty(TA002))
             {
+                ADD_TKPUR_PURTATBCHAGE(TA001, TA002, VERSIONS);
                 MessageBox.Show(TA001+" "+ TA002+" "+ VERSIONS);
             }
             else
