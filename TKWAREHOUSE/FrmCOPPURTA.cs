@@ -3446,7 +3446,106 @@ namespace TKWAREHOUSE
                 }
             }
         }
+        private void dataGridView6_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView6.CurrentRow != null)
+            {
+                int rowindex = dataGridView6.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView6.Rows[rowindex];
+                    string TE001 = row.Cells["單別"].Value.ToString();
+                    string TE002 = row.Cells["單號"].Value.ToString();
 
+                    SEARCH_COPTE_COPTF_PURTA_PURTB(TE001, TE002);
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        public void SEARCH_COPTE_COPTF_PURTA_PURTB(string TE001, string TE002)
+        {
+            // 使用 try-catch 區塊來處理連線和查詢錯誤
+            try
+            {
+                // --- 1. 資料庫連線字串解密與建立 ---
+                // 20210902密：使用 new Class1() 實體進行解密
+                Class1 TKID = new Class1();
+
+                // 從配置檔讀取連線字串並使用 SqlConnectionStringBuilder 處理
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(
+                    ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString
+                );
+
+                // 資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                StringBuilder sqlQuery = new StringBuilder();
+                sqlQuery.AppendFormat(@"
+                                       SELECT 
+                                        TE001 AS '訂單單別'
+                                        ,TE002  AS '訂單單號'
+                                        ,TE003  AS '變更版次'
+                                        ,PURTA.TA001 AS '採購單別'
+                                        ,PURTA.TA002  AS '採購單號'
+
+                                        FROM  [TK].dbo.COPTE
+                                        LEFT JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_USER] ON [ACCOUNT]=COPTE.CREATOR COLLATE Chinese_Taiwan_Stroke_BIN
+                                        LEFT JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_EMPL_DEP] ON [TB_EB_USER].[USER_GUID]=[TB_EB_EMPL_DEP].[USER_GUID]
+                                        LEFT JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_GROUP] ON [TB_EB_EMPL_DEP].[GROUP_ID]=[TB_EB_GROUP].[GROUP_ID] AND ISNULL([TB_EB_GROUP].[GROUP_CODE],'')<>''
+                                        ,[TK].dbo.COPTF
+                                        LEFT JOIN [TK].dbo.PURTB ON TB029=TF001 AND TB030=TF002 AND TB031=TF104
+                                        LEFT JOIN [TK].dbo.PURTA ON TA001=TB001 AND TA002=TB002
+                                        LEFT JOIN [TK].dbo.PURMA ON MA001=TB010
+                                        WHERE 1=1
+                                        AND TE001=TF001 AND TE002=TF002
+                                        AND TE001='{0}' AND TE002='{1}'
+
+                                        ", TE001, TE002);
+
+
+                // 使用 using 確保 SqlConnection 在完成後或發生錯誤時會自動關閉和釋放
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    // --- 2. 執行查詢並填充 DataSet ---
+                    // 移除不必要的 SqlCommandBuilder 和多餘的 StringBuilder 宣告/清除
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(sqlQuery.ToString(), sqlConn))
+                    using (DataSet ds = new DataSet())
+                    {
+                        // Fill 方法會自動開啟連線，完成後自動關閉（如果連線最初是關閉的）
+                        adapter.Fill(ds, "ds1");
+
+                        // --- 3. 資料繫結邏輯 ---
+                        if (ds.Tables.Count > 0 && ds.Tables["ds1"].Rows.Count > 0)
+                        {
+                            dataGridView9.DataSource = ds.Tables["ds1"];
+                            dataGridView9.AutoResizeColumns();
+                        }
+                        else
+                        {
+                            // 查詢結果為空
+                            dataGridView9.DataSource = null;
+                        }
+                    } // adapter 和 ds 會在這裡被 Dispose
+                } // sqlConn 會在這裡被 Dispose 和 Close
+            }
+            catch (Exception ex)
+            {
+                // ❌ 重要的優化：避免使用空的 catch 區塊。
+                // 應該記錄錯誤或提示使用者。
+                System.Windows.Forms.MessageBox.Show("資料查詢失敗，請檢查配置或連線。\n錯誤訊息: " + ex.Message);
+
+                // 發生錯誤時清空資料顯示
+                if (dataGridView9 != null)
+                {
+                    dataGridView9.DataSource = null;
+                }
+            }
+        }
         public void SEARCH_COPTC_COPTD(string SDATES, string EDATES)
         {
             // 使用 try-catch 區塊來處理連線和查詢錯誤
@@ -4127,8 +4226,9 @@ namespace TKWAREHOUSE
         }
 
 
+
         #endregion
 
-       
+      
     }
 }
