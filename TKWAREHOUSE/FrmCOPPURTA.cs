@@ -3539,6 +3539,7 @@ namespace TKWAREHOUSE
                     textBox10.Text = row.Cells["單別"].Value.ToString();
                     textBox11.Text = row.Cells["單號"].Value.ToString();
 
+                    SEARCH_PURTA_PURTB(textBox10.Text, textBox11.Text);
                 }
                 else
                 {
@@ -3549,6 +3550,77 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCH_PURTA_PURTB(string TC001, string TC002)
+        {
+            // 使用 try-catch 區塊來處理連線和查詢錯誤
+            try
+            {
+                // --- 1. 資料庫連線字串解密與建立 ---
+                // 20210902密：使用 new Class1() 實體進行解密
+                Class1 TKID = new Class1();
+
+                // 從配置檔讀取連線字串並使用 SqlConnectionStringBuilder 處理
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(
+                    ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString
+                );
+
+                // 資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                StringBuilder sqlQuery = new StringBuilder();
+
+                string TA005 = TC001.Trim() + TC002.Trim();
+                sqlQuery.AppendFormat(@"
+                                        SELECT 
+                                        TA001 AS '請購單別'
+                                        ,TA002 AS '請購單號'
+                                        ,TA005 AS '訂單'
+
+                                        FROM [TK].dbo.PURTA
+                                        WHERE TA005='{0}'
+
+                                        ", TA005);
+
+
+                // 使用 using 確保 SqlConnection 在完成後或發生錯誤時會自動關閉和釋放
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    // --- 2. 執行查詢並填充 DataSet ---
+                    // 移除不必要的 SqlCommandBuilder 和多餘的 StringBuilder 宣告/清除
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(sqlQuery.ToString(), sqlConn))
+                    using (DataSet ds = new DataSet())
+                    {
+                        // Fill 方法會自動開啟連線，完成後自動關閉（如果連線最初是關閉的）
+                        adapter.Fill(ds, "ds1");
+
+                        // --- 3. 資料繫結邏輯 ---
+                        if (ds.Tables.Count > 0 && ds.Tables["ds1"].Rows.Count > 0)
+                        {
+                            dataGridView8.DataSource = ds.Tables["ds1"];
+                            dataGridView8.AutoResizeColumns();
+                        }
+                        else
+                        {
+                            // 查詢結果為空
+                            dataGridView8.DataSource = null;
+                        }
+                    } // adapter 和 ds 會在這裡被 Dispose
+                } // sqlConn 會在這裡被 Dispose 和 Close
+            }
+            catch (Exception ex)
+            {
+                // ❌ 重要的優化：避免使用空的 catch 區塊。
+                // 應該記錄錯誤或提示使用者。
+                System.Windows.Forms.MessageBox.Show("資料查詢失敗，請檢查配置或連線。\n錯誤訊息: " + ex.Message);
+
+                // 發生錯誤時清空資料顯示
+                if (dataGridView8 != null)
+                {
+                    dataGridView8.DataSource = null;
+                }
+            }
+        }
         public void ADDMOCTAB_BY_COPTC_COPTD(string COPTC_TC001, string COPTC_TC002, string PURTA_TA001, string PURTA_TA002, string PURTA_TA003)
         {
             try
@@ -3559,6 +3631,7 @@ namespace TKWAREHOUSE
                 PURTA.TA001 = PURTA_TA001;
                 PURTA.TA002 = PURTA_TA002;
                 PURTA.TA003 = PURTA_TA003;
+                PURTA.TA005 = COPTC_TC001.Trim() + COPTC_TC002.Trim();
                 PURTA.TA013 = PURTA_TA003;
                 PURTA.UDF01 = "Y";
                 //20210902密
@@ -4046,11 +4119,11 @@ namespace TKWAREHOUSE
             string PURTA_TA002 = GETMAXMOCTA002(PURTA_TA001, PURTA_TA003);
 
             ADDMOCTAB_BY_COPTC_COPTD(COPTC_TC001, COPTC_TC002, PURTA_TA001, PURTA_TA002, PURTA_TA003);
-
+            SEARCH_PURTA_PURTB(COPTC_TC001, COPTC_TC002);
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
-            MessageBox.Show("已完成請購單" + PURTA_TA001 + " " + PURTA_TA002);
+            MessageBox.Show("已完成請購單:" + PURTA_TA001 + " " + PURTA_TA002);
         }
 
 
