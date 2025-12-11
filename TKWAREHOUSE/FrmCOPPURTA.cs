@@ -966,84 +966,90 @@ namespace TKWAREHOUSE
             }
         }
 
-        public string GETMAXMOCTA002(string MOCTA001)
-        {
+        public string GETMAXMOCTA002(string MOCTA001, string MOCTA003) // 假設 MOCTA003 是從某處傳入的參數
+        {            
+            string sqlQuery = @"
+                                SELECT ISNULL(MAX(TA002), '00000000000') AS ID
+                                FROM [TK].[dbo].[PURTA]
+                                WHERE 1=1
+                                AND [TA001] = @MOCTA_001
+                                AND [TA003] = @MOCTA_003";
+
             try
             {
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                Class1 TKID = new Class1();
 
-                //資料庫使用者密碼解密
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(
+                    ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString
+                );
+                
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
                 sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
-
-                StringBuilder sbSql = new StringBuilder();
-                sbSql.Clear();
-                sbSqlQuery.Clear();
-                ds4.Clear();
-
-                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TA002),'00000000000') AS ID ");
-                sbSql.AppendFormat(@"  FROM [TK].[dbo].[PURTA] ");
-                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
-                sbSql.AppendFormat(@"  WHERE [TA003]='{0}'", MOCTA003);
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
-
-                adapter4 = new SqlDataAdapter(@"" + sbSql, sqlConn);
-
-                sqlCmdBuilder4 = new SqlCommandBuilder(adapter4);
-                sqlConn.Open();
-                ds4.Clear();
-                adapter4.Fill(ds4, "ds4");
-                sqlConn.Close();
-
-
-                if (ds4.Tables["ds4"].Rows.Count == 0)
+                
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
                 {
-                    return null;
-                }
-                else
-                {
-                    if (ds4.Tables["ds4"].Rows.Count >= 1)
+                    sqlConn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, sqlConn))
                     {
-                        MAXID = SETIDSTRING(ds4.Tables["ds4"].Rows[0]["ID"].ToString(), MOCTA003);
-                        return MAXID;
+                        cmd.Parameters.AddWithValue("@MOCTA_001", MOCTA001);
+                        cmd.Parameters.AddWithValue("@MOCTA_003", MOCTA003);
 
-                    }
-                    return null;
-                }
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            string maxIDFromDB = result.ToString();
+                            string maxID = SETIDSTRING(maxIDFromDB, MOCTA003);
 
+                            return maxID;
+                        }
+                        return null;
+                    } 
+                } 
             }
-            catch
+            catch (Exception ex)
             {
+               
+                System.Diagnostics.Debug.WriteLine($"Error in GETMAXMOCTA002: {ex.Message}");
                 return null;
             }
-            finally
-            {
-                sqlConn.Close();
-            }
-
+            
         }
 
+        /// <summary>
+        /// 根據現有的最大 ID (序列號) 和一個日期字串，產生新的編號。
+        /// <para>此版本符合 C# 5.0 語法規範。</para>
+        /// </summary>
+        /// <param name="MAXID">從資料庫查詢到的最大 ID，例如: '20251211001' 或 '00000000000'。</param>
+        /// <param name="dt">當前的日期/前綴字串，例如: '20251211'。</param>
+        /// <returns>返回新的序列號字串 (例如: '20251211002')。</returns>
+        /// <exception cref="FormatException">當 MAXID 格式不正確或無法解析序列號時拋出。</exception>
         public string SETIDSTRING(string MAXID, string dt)
-        {
-            if (MAXID.Equals("00000000000"))
+        {          
+            if (string.IsNullOrEmpty(MAXID) || MAXID.Equals("00000000000"))
             {
+                // 情況 1: 新的一天或第一筆資料
                 return dt + "001";
             }
+            
+            if (MAXID.Length < 11)
+            {
+                throw new FormatException("MAXID 格式不正確，長度應至少為 11。");
+            }
+            
+            string sernoString = MAXID.Substring(MAXID.Length - 3, 3);
 
+            int serno;
+            if (Int32.TryParse(sernoString, out serno))
+            {
+                serno++;
+                
+                string sernoFormatted = String.Format("{0:D3}", serno);
+                // 組合新 ID
+                return dt + sernoFormatted;
+            }
             else
             {
-                int serno = Convert.ToInt16(MAXID.Substring(8, 3));
-                serno = serno + 1;
-                string temp = serno.ToString();
-                temp = temp.PadLeft(3, '0');
-                return dt + temp.ToString();
+                throw new FormatException(String.Format("MAXID 的序列號部分 ('{0}') 無法轉換為數字。", sernoString));
             }
         }
 
@@ -3543,6 +3549,10 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void ADDMOCTAB_BY_COPTC_COPTD(string COPTC_TC001, string COPTC_TC002, string PURTC_TC001, string PURTC_TC002, string PURTC_TC003)
+        {
+
+        }
         #endregion
 
         #region BUTTON
@@ -3590,7 +3600,7 @@ namespace TKWAREHOUSE
         {
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDMOCTAB(textBoxID.Text.Trim(),"2");
 
@@ -3605,7 +3615,7 @@ namespace TKWAREHOUSE
         {
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDMOCTAB(textBoxID.Text.Trim(),"3");
 
@@ -3645,7 +3655,7 @@ namespace TKWAREHOUSE
         {
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDMOCTAB(textBoxID.Text.Trim(), "1");
 
@@ -3659,7 +3669,7 @@ namespace TKWAREHOUSE
         {
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDMOCTAB2(textBoxID.Text.Trim());
 
@@ -3673,7 +3683,7 @@ namespace TKWAREHOUSE
         {
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDMOCTAB3(textBoxID.Text.Trim(), "1", "2");
 
@@ -3687,7 +3697,7 @@ namespace TKWAREHOUSE
         {
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDMOCTAB(textBoxID.Text.Trim(), "4");
 
@@ -3701,7 +3711,7 @@ namespace TKWAREHOUSE
         {
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDPURTAB(textBoxID.Text.Trim(), "3");
 
@@ -3770,7 +3780,7 @@ namespace TKWAREHOUSE
 
             MOCTA001 = "A311";
             MOCTA003 = dateTimePicker1.Value.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+            MOCTA002 = GETMAXMOCTA002(MOCTA001, MOCTA003);
 
             ADDMOCTAB4(textBoxID.Text.Trim());
 
@@ -3795,17 +3805,18 @@ namespace TKWAREHOUSE
         private void button21_Click(object sender, EventArgs e)
         {
             //轉ERP的請購單並送簽
+            string COPTC_TC001 = textBox10.Text;
+            string COPTC_TC002 = textBox11.Text;
+            string PURTC_TC001 = "A311";
+            string PURTC_TC003 = DateTime.Now.ToString("yyyyMMdd");
+            string PURTC_TC002 = GETMAXMOCTA002(PURTC_TC001, PURTC_TC003);
 
-            MOCTA001 = "A311";
-            MOCTA003 = DateTime.Now.ToString("yyyyMMdd");
-            MOCTA002 = GETMAXMOCTA002(MOCTA001);
-
-            ADDMOCTAB(textBoxID.Text.Trim(), "4");
+            ADDMOCTAB_BY_COPTC_COPTD(COPTC_TC001, COPTC_TC002, PURTC_TC001, PURTC_TC002, PURTC_TC003);
 
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
-            MessageBox.Show("已完成請購單" + MOCTA001 + " " + MOCTA002);
+            MessageBox.Show("已完成請購單" + PURTC_TC001 + " " + PURTC_TC002);
         }
 
 
