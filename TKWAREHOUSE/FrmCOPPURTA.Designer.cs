@@ -1394,7 +1394,7 @@
             // 
             this.splitContainer12.Panel2.Controls.Add(this.splitContainer16);
             this.splitContainer12.Size = new System.Drawing.Size(976, 219);
-            this.splitContainer12.SplitterDistance = 420;
+            this.splitContainer12.SplitterDistance = 419;
             this.splitContainer12.TabIndex = 0;
             // 
             // tableLayoutPanel9
@@ -1493,7 +1493,7 @@
             this.dataGridView9.Name = "dataGridView9";
             this.dataGridView9.ReadOnly = true;
             this.dataGridView9.RowTemplate.Height = 24;
-            this.dataGridView9.Size = new System.Drawing.Size(416, 215);
+            this.dataGridView9.Size = new System.Drawing.Size(415, 215);
             this.dataGridView9.TabIndex = 6;
             this.dataGridView9.SelectionChanged += new System.EventHandler(this.dataGridView9_SelectionChanged);
             // 
@@ -1512,7 +1512,7 @@
             // splitContainer16.Panel2
             // 
             this.splitContainer16.Panel2.Controls.Add(this.dataGridView10);
-            this.splitContainer16.Size = new System.Drawing.Size(552, 219);
+            this.splitContainer16.Size = new System.Drawing.Size(553, 219);
             this.splitContainer16.SplitterDistance = 117;
             this.splitContainer16.TabIndex = 0;
             // 
@@ -1528,7 +1528,7 @@
             this.dataGridView10.Name = "dataGridView10";
             this.dataGridView10.ReadOnly = true;
             this.dataGridView10.RowTemplate.Height = 24;
-            this.dataGridView10.Size = new System.Drawing.Size(548, 94);
+            this.dataGridView10.Size = new System.Drawing.Size(549, 94);
             this.dataGridView10.TabIndex = 7;
             // 
             // tableLayoutPanel10
@@ -1553,7 +1553,7 @@
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(548, 113);
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(549, 113);
             this.tableLayoutPanel10.TabIndex = 6;
             // 
             // button22

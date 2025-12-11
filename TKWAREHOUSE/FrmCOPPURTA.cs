@@ -1014,15 +1014,7 @@ namespace TKWAREHOUSE
             }
             
         }
-
-        /// <summary>
-        /// 根據現有的最大 ID (序列號) 和一個日期字串，產生新的編號。
-        /// <para>此版本符合 C# 5.0 語法規範。</para>
-        /// </summary>
-        /// <param name="MAXID">從資料庫查詢到的最大 ID，例如: '20251211001' 或 '00000000000'。</param>
-        /// <param name="dt">當前的日期/前綴字串，例如: '20251211'。</param>
-        /// <returns>返回新的序列號字串 (例如: '20251211002')。</returns>
-        /// <exception cref="FormatException">當 MAXID 格式不正確或無法解析序列號時拋出。</exception>
+               
         public string SETIDSTRING(string MAXID, string dt)
         {          
             if (string.IsNullOrEmpty(MAXID) || MAXID.Equals("00000000000"))
@@ -3974,7 +3966,78 @@ namespace TKWAREHOUSE
 
             }
         }
+        public string GET_MAX_PURTCHANGES_VERSIONS(string TA001, string TA002) // 假設 MOCTA003 是從某處傳入的參數
+        {
+            string sqlQuery = @"
+                                SELECT ISNULL(MAX(VERSIONS), '0000') AS VERSIONS
+                                FROM [TKPUR].[dbo].[PURTATBCHAGE]
+                                WHERE 1=1
+                                AND [TA001] = @TA001
+                                AND [TA002] = @TA002";
 
+            try
+            {
+                Class1 TKID = new Class1();
+
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(
+                    ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString
+                );
+
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    sqlConn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, sqlConn))
+                    {
+                        cmd.Parameters.AddWithValue("@TA001", TA001);
+                        cmd.Parameters.AddWithValue("@TA002", TA002);
+
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            string maxIDFromDB = result.ToString();
+                            string maxID = SETIDSTRING_VERSIONS(maxIDFromDB);
+
+                            return maxID;
+                        }
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                System.Diagnostics.Debug.WriteLine($"Error in GETMAXMOCTA002: {ex.Message}");
+                return null;
+            }
+
+        }
+
+        public string SETIDSTRING_VERSIONS(string MAXID)
+        {
+            if (string.IsNullOrEmpty(MAXID) || MAXID.Equals("0"))
+            {               
+                return  "0001";
+            }
+
+            string sernoString = MAXID;
+
+            int serno;
+            if (Int32.TryParse(sernoString, out serno))
+            {
+                serno++;
+
+                string sernoFormatted = String.Format("{0:D4}", serno);
+                // 組合新 ID
+                return sernoFormatted;
+            }
+            else
+            {
+                throw new FormatException(String.Format("MAXID 的序列號部分 ('{0}') 無法轉換為數字。", sernoString));
+            }
+        }
 
         #endregion
 
@@ -4247,10 +4310,11 @@ namespace TKWAREHOUSE
             //轉請購變更單並送簽
             string TA001 = textBox12.Text;
             string TA002 = textBox13.Text;
+            string VERSIONS = GET_MAX_PURTCHANGES_VERSIONS(TA001, TA002);
 
-            if(!string.IsNullOrEmpty(TA001)&& !string.IsNullOrEmpty(TA002))
+            if (!string.IsNullOrEmpty(TA001)&& !string.IsNullOrEmpty(TA002))
             {
-
+                MessageBox.Show(TA001+" "+ TA002+" "+ VERSIONS);
             }
             else
             {
