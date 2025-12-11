@@ -3549,9 +3549,194 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void ADDMOCTAB_BY_COPTC_COPTD(string COPTC_TC001, string COPTC_TC002, string PURTC_TC001, string PURTC_TC002, string PURTC_TC003)
+        public void ADDMOCTAB_BY_COPTC_COPTD(string COPTC_TC001, string COPTC_TC002, string PURTA_TA001, string PURTA_TA002, string PURTA_TA003)
         {
+            try
+            {
+                PURTA PURTA = new PURTA();     
+                PURTA = SETPURTA();
+              
+                PURTA.TA001 = PURTA_TA001;
+                PURTA.TA002 = PURTA_TA002;
+                PURTA.TA003 = PURTA_TA003;
+                PURTA.TA013 = PURTA_TA003;
+                PURTA.UDF01 = "Y";
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    INSERT INTO [TK].[dbo].[PURTA]
+                                    (
+                                        [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],
+                                        [MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE],
+                                        [TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],
+                                        [DataUser],[DataGroup],
+                                        [TA001],[TA002],[TA003],[TA004],[TA005],
+                                        [TA006],[TA007],[TA008],[TA009],[TA010],
+                                        [TA011],[TA012],[TA013],[TA014],[TA015],
+                                        [TA016],[TA017],[TA018],[TA019],[TA020],
+                                        [TA021],[TA022],[TA023],[TA024],[TA025],
+                                        [TA026],[TA027],[TA028],[TA029],[TA030],
+                                        [TA031],[TA032],[TA033],[TA034],[TA035],
+                                        [TA036],[TA037],[TA038],[TA039],[TA040],
+                                        [TA041],[TA042],[TA043],[TA044],[TA045],
+                                        [TA046],[UDF01],[UDF02],[UDF03],[UDF04],
+                                        [UDF05],[UDF06],[UDF07],[UDF08],[UDF09],
+                                        [UDF10]
+                                    )
+                                    VALUES 
+                                    (
+                                        '{0}','{1}','{2}','{3}','{4}',
+                                        '{5}','{6}','{7}','{8}','{9}',
+                                        '{10}','{11}','{12}','{13}','{14}',
+                                        '{15}','{16}',
+                                        '{17}','{18}','{19}','{20}','{21}',
+                                        '{22}','{23}','{24}','{25}','{26}',
+                                        '{27}','{28}','{29}','{30}','{31}',
+                                        '{32}','{33}','{34}','{35}','{36}',
+                                        '{37}','{38}','{39}','{40}','{41}',
+                                        '{42}','{43}','{44}','{45}','{46}',
+                                        '{47}','{48}','{49}','{50}','{51}',
+                                        '{52}','{53}','{54}','{55}','{56}',
+                                        '{57}','{58}','{59}','{60}','{61}',
+                                        '{62}','{63}','{64}','{65}','{66}',
+                                        '{67}','{68}','{69}','{70}','{71}',
+                                        '{72}'
+                                    )",
+                                    PURTA.COMPANY, PURTA.CREATOR, PURTA.USR_GROUP, PURTA.CREATE_DATE, PURTA.MODIFIER,
+                                    PURTA.MODI_DATE, PURTA.FLAG, PURTA.CREATE_TIME, PURTA.MODI_TIME, PURTA.TRANS_TYPE,
+                                    PURTA.TRANS_NAME, PURTA.sync_date, PURTA.sync_time, PURTA.sync_mark, PURTA.sync_count,
+                                    PURTA.DataUser, PURTA.DataGroup,
+
+                                    // 索引 17 - 62: TA 欄位 (46 個)
+                                    PURTA.TA001, PURTA.TA002, PURTA.TA003, PURTA.TA004, PURTA.TA005,
+                                    PURTA.TA006, PURTA.TA007, PURTA.TA008, PURTA.TA009, PURTA.TA010,
+                                    PURTA.TA011, PURTA.TA012, PURTA.TA013, PURTA.TA014, PURTA.TA015,
+                                    PURTA.TA016, PURTA.TA017, PURTA.TA018, PURTA.TA019, PURTA.TA020,
+                                    PURTA.TA021, PURTA.TA022, PURTA.TA023, PURTA.TA024, PURTA.TA025,
+                                    PURTA.TA026, PURTA.TA027, PURTA.TA028, PURTA.TA029, PURTA.TA030,
+                                    PURTA.TA031, PURTA.TA032, PURTA.TA033, PURTA.TA034, PURTA.TA035,
+                                    PURTA.TA036, PURTA.TA037, PURTA.TA038, PURTA.TA039, PURTA.TA040,
+                                    PURTA.TA041, PURTA.TA042, PURTA.TA043, PURTA.TA044, PURTA.TA045,
+                                    PURTA.TA046,
+
+                                    // 索引 63 - 72: UDF 欄位 (10 個)
+                                    PURTA.UDF01, PURTA.UDF02, PURTA.UDF03, PURTA.UDF04,
+                                    PURTA.UDF05, PURTA.UDF06, PURTA.UDF07, PURTA.UDF08, PURTA.UDF09,
+                                    PURTA.UDF10
+                                    );
+          
+                sbSql.AppendFormat(@" 
+                                     INSERT INTO [TK].[dbo].[PURTB]
+                                    (
+                                    [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER]
+                                    ,[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]
+                                    ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count]
+                                    ,[DataUser],[DataGroup]
+                                    ,[TB001],[TB002],[TB003],[TB004],[TB005]
+                                    ,[TB006],[TB007],[TB008],[TB009],[TB010]
+                                    ,[TB011],[TB012],[TB013],[TB014],[TB015]
+                                    ,[TB016],[TB017],[TB018],[TB019],[TB020]
+                                    ,[TB021],[TB022],[TB023],[TB024],[TB025]
+                                    ,[TB026],[TB027],[TB028],[TB029],[TB030]
+                                    ,[TB031],[TB032],[TB033],[TB034],[TB035]
+                                    ,[TB036],[TB037],[TB038],[TB039],[TB040]
+                                    ,[TB041],[TB042],[TB043],[TB044],[TB045]
+                                    ,[TB046],[TB047],[TB048],[TB049],[TB050]
+                                    ,[TB051],[TB052],[TB053],[TB054],[TB055]
+                                    ,[TB056],[TB057],[TB058],[TB059],[TB060]
+                                    ,[TB061],[TB062],[TB063],[TB064],[TB065]
+                                    ,[TB066],[TB067],[TB068],[TB069],[TB070]
+                                    ,[TB071],[TB072],[TB073],[TB074],[TB075]
+                                    ,[TB076],[TB077],[TB078],[TB079],[TB080]
+                                    ,[TB081],[TB082],[TB083],[TB084],[TB085]
+                                    ,[TB086],[TB087],[TB088],[TB089],[TB090]
+                                    ,[TB091],[TB092],[TB093],[TB094],[TB095]
+                                    ,[TB096],[TB097],[TB098],[TB099],[UDF01]
+                                    ,[UDF02],[UDF03],[UDF04],[UDF05],[UDF06]
+                                    ,[UDF07],[UDF08],[UDF09],[UDF10]
+                                    )
+
+                                    SELECT 
+                                    'TK'[COMPANY],'120025' [CREATOR],'103400' [USR_GROUP],CONVERT(NVARCHAR,GETDATE(),112) [CREATE_DATE],'160115' [MODIFIER]
+                                    ,CONVERT(NVARCHAR,GETDATE(),112) [MODI_DATE],0 [FLAG],CONVERT(NVARCHAR,GETDATE(),108) [CREATE_TIME],CONVERT(NVARCHAR,GETDATE(),108) [MODI_TIME],'P001' [TRANS_TYPE]
+                                    ,'PURI05' [TRANS_NAME],'' [sync_date],'' [sync_time],'' [sync_mark],0 [sync_count]
+                                    ,'' [DataUser],'103400' [DataGroup]
+                                    ,'{0}' [TB001],'{1}' [TB002],RIGHT(REPLICATE('0', 4) + CONVERT(VARCHAR, ROW_NUMBER() OVER (ORDER BY TD003)), 4) [TB003],TD004 [TB004],TD005 [TB005]
+                                    ,TD006 [TB006],TD010 [TB007],MB017 [TB008],(TD008+TD024) [TB009],MB032 [TB010]
+                                    ,TD013 [TB011],'' [TB012],'' [TB013],0 [TB014],'' [TB015]
+                                    ,'NTD' [TB016],0 [TB017],0 [TB018],'' [TB019],'N' [TB020]
+                                    ,'N' [TB021],'' [TB022],'' [TB023],'' [TB024],'N' [TB025]
+                                    ,(CASE WHEN MB100='Y' THEN '1' ELSE '2' END) [TB026],'' [TB027] ,'' [TB028],'' [TB029],'' [TB030]
+                                    ,'' [TB031],'N' [TB032],'0001' [TB033],0 [TB034],0 [TB035]
+                                    ,'' [TB036],'' [TB037],'' [TB038],'N' [TB039],0 [TB040]
+                                    ,0 [TB041],'' [TB042],'' [TB043],'' [TB044],'' [TB045]
+                                    ,'' [TB046],'' [TB047],'' [TB048],0 [TB049],'' [TB050]
+                                    ,0 [TB051],0 [TB052],0 [TB053],'' [TB054],'' [TB055]
+                                    ,'' [TB056],'' [TB057],'1' [TB058],'' [TB059],'' [TB060]
+                                    ,'' [TB061],'' [TB062],0 [TB063],'N' [TB064],'1' [TB065]
+                                    ,'' [TB066],'2' [TB067],0 [TB068],0 [TB069],'' [TB070]
+                                    ,'' [TB071],'' [TB072],'' [TB073],'' [TB074],0 [TB075]
+                                    ,'' [TB076],0 [TB077],'' [TB078],'' [TB079],'' [TB080]
+                                    ,0 [TB081],0 [TB082],0 [TB083],0 [TB084],0 [TB085]
+                                    ,'' [TB086],'' [TB087],0 [TB088],'1' [TB089],0 [TB090]
+                                    ,0 [TB091],0 [TB092],0 [TB093],'' [TB094],'' [TB095]
+                                    ,'' [TB096],'' [TB097],'' [TB098],'' [TB099]
+                                    ,'Y' [UDF01]
+                                    ,'' [UDF02],'' [UDF03],'' [UDF04],'' [UDF05]
+                                    ,0 [UDF06],0 [UDF07],0 [UDF08],0 [UDF09],0 [UDF10]
+                                    FROM [TK].dbo.COPTC,[TK].dbo.COPTD,[TK].dbo.INVMB
+                                    WHERE TC001=TD001 AND TC002=TD002
+                                    AND TD004=MB001
+                                    AND TC001='{2}' AND TC002='{3}'
+                                    AND TD004 LIKE '5%'
+                                    ", PURTA_TA001, PURTA_TA002, COPTC_TC001, COPTC_TC002);
+    
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+
+
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+                    UPDATEPURTA();
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
         #endregion
 
@@ -3807,16 +3992,16 @@ namespace TKWAREHOUSE
             //轉ERP的請購單並送簽
             string COPTC_TC001 = textBox10.Text;
             string COPTC_TC002 = textBox11.Text;
-            string PURTC_TC001 = "A311";
-            string PURTC_TC003 = DateTime.Now.ToString("yyyyMMdd");
-            string PURTC_TC002 = GETMAXMOCTA002(PURTC_TC001, PURTC_TC003);
+            string PURTA_TA001 = "A311";
+            string PURTA_TA003 = DateTime.Now.ToString("yyyyMMdd");
+            string PURTA_TA002 = GETMAXMOCTA002(PURTA_TA001, PURTA_TA003);
 
-            ADDMOCTAB_BY_COPTC_COPTD(COPTC_TC001, COPTC_TC002, PURTC_TC001, PURTC_TC002, PURTC_TC003);
+            ADDMOCTAB_BY_COPTC_COPTD(COPTC_TC001, COPTC_TC002, PURTA_TA001, PURTA_TA002, PURTA_TA003);
 
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
-            MessageBox.Show("已完成請購單" + PURTC_TC001 + " " + PURTC_TC002);
+            MessageBox.Show("已完成請購單" + PURTA_TA001 + " " + PURTA_TA003);
         }
 
 
