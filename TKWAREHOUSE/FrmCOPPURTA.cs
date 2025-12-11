@@ -3546,6 +3546,23 @@ namespace TKWAREHOUSE
                 }
             }
         }
+        private void dataGridView9_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox12.Text = null;
+            textBox13.Text = null;
+
+            if (dataGridView9.CurrentRow != null)
+            {
+                int rowindex = dataGridView9.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView9.Rows[rowindex];
+                    textBox12.Text = row.Cells["採購單別"].Value.ToString();
+                    textBox13.Text = row.Cells["採購單號"].Value.ToString();
+                }
+                
+            }
+        }
         public void SEARCH_COPTC_COPTD(string SDATES, string EDATES)
         {
             // 使用 try-catch 區塊來處理連線和查詢錯誤
@@ -3958,7 +3975,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        
+
         #endregion
 
         #region BUTTON
@@ -4224,11 +4241,26 @@ namespace TKWAREHOUSE
 
             MessageBox.Show("已完成請購單:" + PURTA_TA001 + " " + PURTA_TA002);
         }
+        
+        private void button22_Click(object sender, EventArgs e)
+        {
+            //轉請購變更單並送簽
+            string TA001 = textBox12.Text;
+            string TA002 = textBox13.Text;
 
+            if(!string.IsNullOrEmpty(TA001)&& !string.IsNullOrEmpty(TA002))
+            {
 
+            }
+            else
+            {
+                MessageBox.Show("沒有產生ERP的請購單，可以直接修改訂單再拋成請購單");
+            }
+        }
+       
 
         #endregion
 
-      
+
     }
 }
