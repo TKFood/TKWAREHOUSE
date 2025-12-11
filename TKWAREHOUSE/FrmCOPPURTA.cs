@@ -3725,7 +3725,7 @@ namespace TKWAREHOUSE
                 {
                     tran.Commit();      //執行交易  
 
-                    UPDATEPURTA();
+                    UPDATEPURTA_BY_COPTC_COPTD(PURTA_TA001, PURTA_TA002);
                 }
             }
             catch
@@ -3738,6 +3738,55 @@ namespace TKWAREHOUSE
                 sqlConn.Close();
             }
         }
+        public void UPDATEPURTA_BY_COPTC_COPTD(string TA001,string TA002)
+        { 
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+            
+            sqlConn.Close();
+            sqlConn.Open();
+            tran = sqlConn.BeginTransaction();
+
+            sbSql.Clear();
+            //UPDATE TB039='N'
+               
+            sbSql.AppendFormat(@" 
+                                UPDATE  [TK].dbo.PURTB SET TB039='N' WHERE ISNULL(TB039,'')=''
+                                UPDATE  [TK].dbo.PURTA
+                                SET TA011=(SELECT SUM(TB009) FROM [TK].dbo.PURTB WHERE PURTA.TA001=PURTB.TB001 AND  PURTA.TA002=PURTB.TB002)
+                                WHERE TA001='{0}' AND TA002='{1}'
+                                ", TA001, TA002);
+
+
+            cmd.Connection = sqlConn;
+            cmd.CommandTimeout = 60;
+            cmd.CommandText = sbSql.ToString();
+            cmd.Transaction = tran;
+            result = cmd.ExecuteNonQuery();
+
+            if (result == 0)
+            {
+                tran.Rollback();    //交易取消
+
+
+            }
+            else
+            {
+                tran.Commit();      //執行交易  
+
+
+            }
+        }
+
+        
         #endregion
 
         #region BUTTON
@@ -4001,7 +4050,7 @@ namespace TKWAREHOUSE
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
-            MessageBox.Show("已完成請購單" + PURTA_TA001 + " " + PURTA_TA003);
+            MessageBox.Show("已完成請購單" + PURTA_TA001 + " " + PURTA_TA002);
         }
 
 
