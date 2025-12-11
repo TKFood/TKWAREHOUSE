@@ -3521,6 +3521,28 @@ namespace TKWAREHOUSE
             }
         }
 
+
+        private void dataGridView7_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView7.CurrentRow != null)
+            {
+                int rowindex = dataGridView7.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView7.Rows[rowindex];
+                    textBox10.Text = row.Cells["單別"].Value.ToString();
+                    textBox11.Text = row.Cells["單號"].Value.ToString();
+
+                }
+                else
+                {
+                    textBox10.Text = null;
+                    textBox11.Text = null;
+
+                }
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -3770,9 +3792,25 @@ namespace TKWAREHOUSE
             string EDATES = dateTimePicker6.Value.ToString("yyyyMMdd");
             SEARCH_COPTC_COPTD(SDATES, EDATES);
         }
+        private void button21_Click(object sender, EventArgs e)
+        {
+            //轉ERP的請購單並送簽
+
+            MOCTA001 = "A311";
+            MOCTA003 = DateTime.Now.ToString("yyyyMMdd");
+            MOCTA002 = GETMAXMOCTA002(MOCTA001);
+
+            ADDMOCTAB(textBoxID.Text.Trim(), "4");
+
+            //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
+            //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
+
+            MessageBox.Show("已完成請購單" + MOCTA001 + " " + MOCTA002);
+        }
+
 
         #endregion
 
-
+       
     }
 }
