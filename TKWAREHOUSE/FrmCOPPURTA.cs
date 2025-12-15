@@ -3394,7 +3394,7 @@ namespace TKWAREHOUSE
 
                                         FROM [TK].dbo.COPTE,[TK].dbo.COPTF
                                         WHERE TE001=TF001 AND TE002=TF002
-                                        AND TE004>='{0}' AND TE004<='{1}'
+                                        AND TE038>='{0}' AND TE038<='{1}'
                                         ORDER BY TE001,TE002,TE003
 
                                         ", SDATES,EDATES);
@@ -3582,6 +3582,16 @@ namespace TKWAREHOUSE
                                         TA001 AS '採購單別'
                                         ,TA002  AS '採購單號'
                                         ,VERSIONS  AS '變更版次'
+                                        ,(
+                                        SELECT TOP 1
+                                        [View_TB_WKF_TASK].[DOC_NBR]
+                                        FROM [192.168.1.223].[UOF].[dbo].[View_TB_WKF_TASK]
+                                        ,[192.168.1.223].[UOF].[dbo].[View_TB_WKF_EXTERNAL_TASK_ALL]
+                                        WHERE [View_TB_WKF_TASK].[DOC_NBR] LIKE '%PURTACHANGE%'
+                                        AND [View_TB_WKF_TASK].[DOC_NBR]=[View_TB_WKF_EXTERNAL_TASK_ALL].[DOC_NBR]
+                                        AND [View_TB_WKF_EXTERNAL_TASK_ALL].[EXTERNAL_FORM_NBR] = TA001+TA002+CONVERT(NVARCHAR,VERSIONS) COLLATE Chinese_Taiwan_Stroke_BIN
+                                        ORDER BY [DOC_NBR] DESC
+                                        ) AS 'DOC_NBR'
                                         FROM [TKPUR].[dbo].[PURTATBCHAGE]
                                         WHERE 1=1
                                         AND [TA001] = '{0}'
@@ -4482,6 +4492,31 @@ namespace TKWAREHOUSE
             {
                 ADD_TKPUR_PURTATBCHAGE(TA001, TA002, VERSIONS);
                 MessageBox.Show(TA001+" "+ TA002+" "+ VERSIONS);
+
+                string ISUOFSTATUS = "N";
+                string DOC_NBR = "";
+
+                //ISUOFSTATUS = SERACHlDOC_NBR_CHECK(textBox11.Text + textBox12.Text + textBox10.Text);
+                //textBox26.Text = SERACHlDOC_NBR(textBox11.Text + textBox12.Text + textBox10.Text);
+                //DOC_NBR = SERACHlDOC_NBR(textBox11.Text + textBox12.Text + textBox10.Text);
+
+
+                ////沒有產生過UOF表單
+                //if (string.IsNullOrEmpty(DOC_NBR))
+                //{
+                //    ADDTB_WKF_EXTERNAL_TASK(textBox11.Text.Trim(), textBox12.Text.Trim(), textBox10.Text.Trim());
+                //}
+                ////UOF表單是否沒有在簽核中
+                //else if (!string.IsNullOrEmpty(DOC_NBR) && ISUOFSTATUS.Equals("N"))
+                //{
+                //    ADDTB_WKF_EXTERNAL_TASK(textBox11.Text.Trim(), textBox12.Text.Trim(), textBox10.Text.Trim());
+                //}
+                //else
+                //{
+                //    MessageBox.Show(textBox11.Text + textBox12.Text + textBox10.Text + "已發出請購變更單" + DOC_NBR + " ，但未完成簽核。");
+
+                //}
+
             }
             else
             {
