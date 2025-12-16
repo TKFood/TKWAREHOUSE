@@ -5284,6 +5284,7 @@ namespace TKWAREHOUSE
             string PURTA_TA001 = "A311";
             string PURTA_TA003 = DateTime.Now.ToString("yyyyMMdd");
             string PURTA_TA002 = GETMAXMOCTA002(PURTA_TA001, PURTA_TA003);
+    
 
             ADDMOCTAB_BY_COPTC_COPTD(COPTC_TC001, COPTC_TC002, PURTA_TA001, PURTA_TA002, PURTA_TA003);           
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
