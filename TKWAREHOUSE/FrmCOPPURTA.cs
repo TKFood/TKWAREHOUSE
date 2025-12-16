@@ -18,6 +18,7 @@ using System.Threading;
 using System.Globalization;
 using Calendar.NET;
 using TKITDLL;
+using System.Xml;
 
 namespace TKWAREHOUSE
 {
@@ -4215,6 +4216,598 @@ namespace TKWAREHOUSE
                 tran.Commit();      //執行交易  
             }
         }
+
+        public string SERACHlDOC_NBR_CHECK(string EXTERNAL_FORM_NBR)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                    SELECT TOP 1 EXTERNAL_FORM_NBR,[TB_WKF_EXTERNAL_TASK].DOC_NBR,TB_WKF_TASK.TASK_RESULT
+                                    FROM [UOF].[dbo].[TB_WKF_EXTERNAL_TASK],[UOF].[dbo].TB_WKF_TASK 
+                                    WHERE [TB_WKF_EXTERNAL_TASK].DOC_NBR=TB_WKF_TASK.DOC_NBR
+                                    AND ISNULL(TB_WKF_TASK.TASK_RESULT,'-1') NOT IN ('0','1','2')
+                                    AND EXTERNAL_FORM_NBR LIKE '%{0}%'
+                                    ORDER BY DOC_NBR DESC
+                                    ", EXTERNAL_FORM_NBR);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return "Y";
+
+                }
+                else
+                {
+                    return "N";
+                }
+
+            }
+            catch
+            {
+                return "N";
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string SERACHlDOC_NBR(string EXTERNAL_FORM_NBR)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                    SELECT TOP 1 EXTERNAL_FORM_NBR,DOC_NBR
+                                    FROM [UOF].[dbo].[TB_WKF_EXTERNAL_TASK]
+                                    WHERE EXTERNAL_FORM_NBR='{0}'
+                                    ORDER BY DOC_NBR DESC
+                                    ",  EXTERNAL_FORM_NBR);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"].Rows[0]["DOC_NBR"].ToString();
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void ADDTB_WKF_EXTERNAL_TASK(string TA001, string TA002, string VERSIONS)
+        {
+            string PURCHID = SEARCHFORM_UOF_VERSION_ID("PUR20.請購單變更單");
+            //string PURCHID = SEARCHFORM_VERSION_ID("PUR20.請購單變更單");
+
+            DataTable DT = SEARCHPURTAPURTB(TA001, TA002, VERSIONS);
+            DataTable DTUPFDEP = SEARCHUOFDEP(DT.Rows[0]["TA012"].ToString());
+
+            string EXTERNAL_FORM_NBR = DT.Rows[0]["TA001"].ToString().Trim() + DT.Rows[0]["TA002"].ToString().Trim() + DT.Rows[0]["VERSIONS"].ToString().Trim();
+
+            string account = DT.Rows[0]["TA012"].ToString();
+            string jobTitleId = DT.Rows[0]["TITLE_ID"].ToString();
+            string fillerName = DT.Rows[0]["NAME"].ToString();
+            string fillerUserGuid = DT.Rows[0]["USER_GUID"].ToString();
+            string DEPNAME = DTUPFDEP.Rows[0]["DEPNAME"].ToString();
+            string DEPNO = DTUPFDEP.Rows[0]["DEPNO"].ToString();
+            string groupId = DTUPFDEP.Rows[0]["GROUP_ID"].ToString();
+
+            if (DTUPFDEP.Rows.Count >= 1)
+            {
+                foreach (DataRow DR in DTUPFDEP.Rows)
+                {
+                    if (DR["GROUP_CODE"].ToString().Equals(DT.Rows[0]["TA004"].ToString()))
+                    {
+                        groupId = DR["GROUP_ID"].ToString();
+                        DEPNAME = DR["DEPNAME"].ToString();
+                        DEPNO = DR["DEPNO"].ToString();
+
+                    }
+                }
+
+            }
+
+            string CALLQC = "N";
+            int rowscounts = 0;
+
+            XmlDocument xmlDoc = new XmlDocument();
+            //建立根節點
+            XmlElement Form = xmlDoc.CreateElement("Form");
+
+            //正式的id
+            Form.SetAttribute("formVersionId", PURCHID);
+
+            Form.SetAttribute("urgentLevel", "2");
+            //加入節點底下
+            xmlDoc.AppendChild(Form);
+
+            ////建立節點Applicant
+            XmlElement Applicant = xmlDoc.CreateElement("Applicant");
+            Applicant.SetAttribute("account", account);
+            Applicant.SetAttribute("groupId", groupId);
+            Applicant.SetAttribute("jobTitleId", jobTitleId);
+            //加入節點底下
+            Form.AppendChild(Applicant);
+
+            //建立節點 Comment
+            XmlElement Comment = xmlDoc.CreateElement("Comment");
+            Comment.InnerText = "申請者意見";
+            //加入至節點底下
+            Applicant.AppendChild(Comment);
+
+            //建立節點 FormFieldValue
+            XmlElement FormFieldValue = xmlDoc.CreateElement("FormFieldValue");
+            //加入至節點底下
+            Form.AppendChild(FormFieldValue);
+
+            // 假設您已經定義了 xmlDoc, FormFieldValue, DT.Rows[0], account, fillerName, fillerUserGuid, DEPNAME, DEPNO, CALLQC, rowscounts
+
+            DataRow dr = DT.Rows[0];
+            // ID 表單編號	
+            AddFieldItem(xmlDoc, FormFieldValue, "ID", "", fillerName, fillerUserGuid, account);
+
+            // CALLQC (fieldValue=CALLQC, realValue=CALLQC)
+            AddFieldItem(xmlDoc, FormFieldValue, "CALLQC", CALLQC, fillerName, fillerUserGuid, account, realValue: CALLQC);
+
+            // DEPNO 變更版本 (fieldValue=DEPNAME, realValue=DEPNO)
+            AddFieldItem(xmlDoc, FormFieldValue, "DEPNO", DEPNAME, fillerName, fillerUserGuid, account, realValue: DEPNO);
+
+            // VERSIONS 變更版本	
+            AddFieldItem(xmlDoc, FormFieldValue, "VERSIONS", dr["VERSIONS"].ToString(), fillerName, fillerUserGuid, account);
+
+            // TA001 表單編號	
+            AddFieldItem(xmlDoc, FormFieldValue, "TA001", dr["TA001"].ToString(), fillerName, fillerUserGuid, account);
+
+            // TA002 表單編號	
+            AddFieldItem(xmlDoc, FormFieldValue, "TA002", dr["TA002"].ToString(), fillerName, fillerUserGuid, account);
+
+            // TA003 表單編號	
+            AddFieldItem(xmlDoc, FormFieldValue, "TA003", dr["TA003"].ToString(), fillerName, fillerUserGuid, account);
+
+            // TA012 表單編號	
+            AddFieldItem(xmlDoc, FormFieldValue, "TA012", dr["TA012"].ToString(), fillerName, fillerUserGuid, account);
+
+            // MV002 姓名	
+            AddFieldItem(xmlDoc, FormFieldValue, "MV002", dr["NAME"].ToString(), fillerName, fillerUserGuid, account);
+
+            // TA006 單頭備註	
+            AddFieldItem(xmlDoc, FormFieldValue, "TA006", dr["TA006"].ToString(), fillerName, fillerUserGuid, account);
+
+            // TB (DataGrid 容器)
+            XmlElement dataGridFieldItem = AddFieldItem(xmlDoc, FormFieldValue, "TB", "", fillerName, fillerUserGuid, account);
+
+            // 建立節點 DataGrid
+            XmlElement DataGrid = xmlDoc.CreateElement("DataGrid");
+            // DataGrid 加入至 TB 節點底下
+            dataGridFieldItem.AppendChild(DataGrid);
+
+
+            // ==========================================================
+            // 2. DataGrid/Cell 建立 (使用 AppendCellToRow 統一處理)
+            // ==========================================================
+
+            foreach (DataRow od in DT.Rows)
+            {
+                // 新增 Row
+                XmlElement Row = xmlDoc.CreateElement("Row");
+                Row.SetAttribute("order", (rowscounts).ToString());
+
+                // Row	TB003
+                AppendCellToRow(xmlDoc, Row, od, "TB003");
+
+                // Row	TB004
+                AppendCellToRow(xmlDoc, Row, od, "TB004");
+
+                // Row	TB005
+                AppendCellToRow(xmlDoc, Row, od, "TB005");
+
+                // Row	TB006
+                AppendCellToRow(xmlDoc, Row, od, "TB006");
+
+                // Row	TB007
+                AppendCellToRow(xmlDoc, Row, od, "TB007");
+
+                // Row	TB009
+                AppendCellToRow(xmlDoc, Row, od, "TB009");
+
+                // Row	TB011
+                AppendCellToRow(xmlDoc, Row, od, "TB011");
+
+                // Row	TB010
+                AppendCellToRow(xmlDoc, Row, od, "TB010");
+
+                // Row	MA002
+                AppendCellToRow(xmlDoc, Row, od, "MA002");
+
+                // Row	TB012
+                AppendCellToRow(xmlDoc, Row, od, "TB012");
+
+                // Row	TD001002003
+                AppendCellToRow(xmlDoc, Row, od, "TD001002003");
+
+                rowscounts = rowscounts + 1;
+
+                // DataGrid 節點
+                DataGrid.AppendChild(Row);
+            }
+
+            ////用ADDTACK，直接啟動起單
+            //ADDTACK(Form);
+
+            //ADD TO DB
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+            StringBuilder queryString = new StringBuilder();
+
+            queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+                                         (EXTERNAL_TASK_ID,FORM_INFO,STATUS,EXTERNAL_FORM_NBR)
+                                        VALUES (NEWID(),@XML,2,'{0}')
+                                        ",  EXTERNAL_FORM_NBR);
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(sqlsb.ConnectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = Form.OuterXml;
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                    MessageBox.Show("已送出UOF");
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+
+        }
+
+        public string SEARCHFORM_UOF_VERSION_ID(string FORM_NAME)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+
+            SqlTransaction tran;
+            SqlCommand cmd = new SqlCommand();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                //sqlConn = new SqlConnection(connectionString);
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@" 
+                                   SELECT TOP 1 RTRIM(LTRIM(TB_WKF_FORM_VERSION.FORM_VERSION_ID)) FORM_VERSION_ID,TB_WKF_FORM_VERSION.FORM_ID,TB_WKF_FORM_VERSION.VERSION,TB_WKF_FORM_VERSION.ISSUE_CTL
+                                    ,TB_WKF_FORM.FORM_NAME
+                                    FROM [UOF].dbo.TB_WKF_FORM_VERSION,[UOF].dbo.TB_WKF_FORM
+                                    WHERE 1=1
+                                    AND TB_WKF_FORM_VERSION.FORM_ID=TB_WKF_FORM.FORM_ID
+                                    AND TB_WKF_FORM_VERSION.ISSUE_CTL=1
+                                    AND FORM_NAME='{0}'
+                                    ORDER BY TB_WKF_FORM_VERSION.FORM_ID,TB_WKF_FORM_VERSION.VERSION DESC
+
+                                    ", FORM_NAME);
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"].Rows[0]["FORM_VERSION_ID"].ToString();
+                }
+                else
+                {
+                    return "";
+                }
+
+            }
+            catch
+            {
+                return "";
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public DataTable SEARCHPURTAPURTB(string TA001, string TA002, string VERSIONS)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    [PURTATBCHAGE].[VERSIONS],[PURTATBCHAGE].[TA001],[PURTATBCHAGE].[TA002],[PURTATBCHAGE].[TA003],[PURTATBCHAGE].[TA006],[PURTATBCHAGE].[TA012],[PURTATBCHAGE].[TB003],[PURTATBCHAGE].[TB004],[PURTATBCHAGE].[TB005],[PURTATBCHAGE].[TB006],[PURTATBCHAGE].[TB007],[PURTATBCHAGE].[TB009],[PURTATBCHAGE].[TB010],[PURTATBCHAGE].[TB011],[PURTATBCHAGE].[TB012],[PURTATBCHAGE].[USER_GUID],[PURTATBCHAGE].[NAME],[PURTATBCHAGE].[GROUP_ID],[PURTATBCHAGE].[TITLE_ID],[PURTATBCHAGE].[MA002]
+                                    ,(SELECT TD001+' '+TD002+' '+TD003+CHAR(10) FROM [TK].dbo.PURTD WHERE  TD026=[PURTATBCHAGE].[TA001] AND TD027=[PURTATBCHAGE].[TA002] AND TD028=[PURTATBCHAGE].[TB003] FOR XML PATH('')) AS TD001002003
+                                    ,PURTA.TA004
+                                    FROM [TKPUR].[dbo].[PURTATBCHAGE]
+                                    LEFT JOIN [TK].dbo.PURTA ON PURTA.TA001=[PURTATBCHAGE].TA001 AND PURTA.TA002=[PURTATBCHAGE].TA002
+                                    WHERE  [PURTATBCHAGE].[TA001]='{0}' AND  [PURTATBCHAGE].[TA002]='{1}' AND  [PURTATBCHAGE].[VERSIONS]='{2}'
+                                    ORDER BY [PURTATBCHAGE].[VERSIONS],[PURTATBCHAGE].[TA001],[PURTATBCHAGE].[TA002],[PURTATBCHAGE].[TB003]
+                              
+                                    ", TA001, TA002, VERSIONS);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public DataTable SEARCHUOFDEP(string ACCOUNT)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                     SELECT 
+                                    [GROUP_NAME] AS 'DEPNAME'
+                                    ,[TB_EB_EMPL_DEP].[GROUP_ID]+','+[GROUP_NAME]+',False' AS 'DEPNO'
+                                    ,[TB_EB_USER].[USER_GUID]
+                                    ,[ACCOUNT]
+                                    ,[NAME]
+                                    ,[TB_EB_EMPL_DEP].[GROUP_ID]
+                                    ,[TITLE_ID]     
+                                    ,[GROUP_NAME]
+                                    ,[GROUP_CODE]
+                                    ,[TB_EB_EMPL_DEP].ORDERS
+                                    FROM [192.168.1.223].[UOF].[dbo].[TB_EB_USER],[192.168.1.223].[{0}].[dbo].[TB_EB_EMPL_DEP],[192.168.1.223].[{0}].[dbo].[TB_EB_GROUP]
+                                    WHERE [TB_EB_USER].[USER_GUID]=[TB_EB_EMPL_DEP].[USER_GUID]
+                                    AND [TB_EB_EMPL_DEP].[GROUP_ID]=[TB_EB_GROUP].[GROUP_ID]
+                                    AND ISNULL([TB_EB_GROUP].[GROUP_CODE],'')<>''
+                                    AND [ACCOUNT]='{0}'
+                                    ORDER BY [TB_EB_EMPL_DEP].ORDERS
+                              
+                                    ", ACCOUNT);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        private XmlElement AddFieldItem(XmlDocument xmlDoc, XmlElement parent, string fieldId, string fieldValue, string fillerName, string fillerUserGuid, string fillerAccount, string realValue = "", string customValue = "")
+        {
+            XmlElement fieldItem = xmlDoc.CreateElement("FieldItem");
+            fieldItem.SetAttribute("fieldId", fieldId);
+            fieldItem.SetAttribute("fieldValue", fieldValue);
+            fieldItem.SetAttribute("realValue", realValue);
+            fieldItem.SetAttribute("customValue", customValue);
+            fieldItem.SetAttribute("enableSearch", "True");
+            fieldItem.SetAttribute("fillerName", fillerName);
+            fieldItem.SetAttribute("fillerUserGuid", fillerUserGuid);
+            fieldItem.SetAttribute("fillerAccount", fillerAccount);
+            fieldItem.SetAttribute("fillSiteId", "");
+            parent.AppendChild(fieldItem);
+            return fieldItem;
+        }
+
+        /// <summary>
+        /// 建立 Cell
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="row"></param>
+        /// <param name="od"></param>
+        /// <param name="fid"></param>
+        /// <param name="fid"></param>
+        /// <param name="withFieldMessage"></param>
+        private void AppendCellToRow(XmlDocument xmlDoc, XmlElement row, DataRow od, string fid, bool withFieldMessage = false, string cellfieldValue = "", string customValue = "")
+        {
+            string value = od.Table.Columns.Contains(fid) ? od[fid].ToString() : "";
+
+            if (!string.IsNullOrEmpty(cellfieldValue))
+            {
+                value = cellfieldValue;
+            }
+
+
+            XmlElement cell = xmlDoc.CreateElement("Cell");
+            cell.SetAttribute("fieldId", fid);
+            cell.SetAttribute("fieldValue", value);
+            cell.SetAttribute("realValue", "");
+            cell.SetAttribute("customValue", customValue);
+            cell.SetAttribute("enableSearch", "True");
+
+            if (withFieldMessage)
+            {
+                cell.SetAttribute("fieldMessage", "Y");
+            }
+            // *** 關鍵修改：使用傳入的 customValue 覆寫預設值 "" ***   
+
+            row.AppendChild(cell);
+        }
         #endregion
 
         #region BUTTON
@@ -4496,26 +5089,26 @@ namespace TKWAREHOUSE
                 string ISUOFSTATUS = "N";
                 string DOC_NBR = "";
 
-                //ISUOFSTATUS = SERACHlDOC_NBR_CHECK(textBox11.Text + textBox12.Text + textBox10.Text);
-                //textBox26.Text = SERACHlDOC_NBR(textBox11.Text + textBox12.Text + textBox10.Text);
-                //DOC_NBR = SERACHlDOC_NBR(textBox11.Text + textBox12.Text + textBox10.Text);
+                ISUOFSTATUS = SERACHlDOC_NBR_CHECK(TA001 + TA002 + VERSIONS);
+                DOC_NBR = SERACHlDOC_NBR(TA001 + TA002 + VERSIONS);
+                textBox14.Text = DOC_NBR;                
 
 
-                ////沒有產生過UOF表單
-                //if (string.IsNullOrEmpty(DOC_NBR))
-                //{
-                //    ADDTB_WKF_EXTERNAL_TASK(textBox11.Text.Trim(), textBox12.Text.Trim(), textBox10.Text.Trim());
-                //}
-                ////UOF表單是否沒有在簽核中
-                //else if (!string.IsNullOrEmpty(DOC_NBR) && ISUOFSTATUS.Equals("N"))
-                //{
-                //    ADDTB_WKF_EXTERNAL_TASK(textBox11.Text.Trim(), textBox12.Text.Trim(), textBox10.Text.Trim());
-                //}
-                //else
-                //{
-                //    MessageBox.Show(textBox11.Text + textBox12.Text + textBox10.Text + "已發出請購變更單" + DOC_NBR + " ，但未完成簽核。");
+                //沒有產生過UOF表單
+                if (string.IsNullOrEmpty(DOC_NBR))
+                {
+                    ADDTB_WKF_EXTERNAL_TASK(TA001.Trim(), TA002.Trim(), VERSIONS.Trim());
+                }
+                //UOF表單是否沒有在簽核中
+                else if (!string.IsNullOrEmpty(DOC_NBR) && ISUOFSTATUS.Equals("N"))
+                {
+                    ADDTB_WKF_EXTERNAL_TASK(TA001.Trim(), TA002.Trim(), VERSIONS.Trim());
+                }
+                else
+                {
+                    MessageBox.Show(TA001 + TA002 + VERSIONS + "已發出請購變更單" + DOC_NBR + " ，但未完成簽核。");
 
-                //}
+                }
 
             }
             else
