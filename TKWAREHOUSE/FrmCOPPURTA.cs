@@ -3825,7 +3825,7 @@ namespace TKWAREHOUSE
                 PURTA.TA003 = PURTA_TA003;
                 PURTA.TA005 = COPTC_TC001.Trim() + COPTC_TC002.Trim();
                 PURTA.TA013 = PURTA_TA003;
-                PURTA.UDF01 = "Y";
+                PURTA.UDF01 = "UOF";
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
                 SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
@@ -5285,13 +5285,14 @@ namespace TKWAREHOUSE
             string PURTA_TA003 = DateTime.Now.ToString("yyyyMMdd");
             string PURTA_TA002 = GETMAXMOCTA002(PURTA_TA001, PURTA_TA003);
 
-            ADDMOCTAB_BY_COPTC_COPTD(COPTC_TC001, COPTC_TC002, PURTA_TA001, PURTA_TA002, PURTA_TA003);
-            SEARCH_PURTA_PURTB(COPTC_TC001, COPTC_TC002);
+            ADDMOCTAB_BY_COPTC_COPTD(COPTC_TC001, COPTC_TC002, PURTA_TA001, PURTA_TA002, PURTA_TA003);           
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
             //將ERP的請購單，轉入UOF的請購單
             ADDTB_WKF_EXTERNAL_TASK_PURTAB(PURTA_TA001, PURTA_TA002);
+
+            SEARCH_PURTA_PURTB(COPTC_TC001, COPTC_TC002);
         }
         
         private void button22_Click(object sender, EventArgs e)
