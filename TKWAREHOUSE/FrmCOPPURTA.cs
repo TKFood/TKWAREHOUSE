@@ -4707,7 +4707,7 @@ namespace TKWAREHOUSE
                                     ,[GROUP_NAME]
                                     ,[GROUP_CODE]
                                     ,[TB_EB_EMPL_DEP].ORDERS
-                                    FROM [192.168.1.223].[UOF].[dbo].[TB_EB_USER],[192.168.1.223].[{0}].[dbo].[TB_EB_EMPL_DEP],[192.168.1.223].[{0}].[dbo].[TB_EB_GROUP]
+                                    FROM [192.168.1.223].[UOF].[dbo].[TB_EB_USER],[192.168.1.223].[UOF].[dbo].[TB_EB_EMPL_DEP],[192.168.1.223].[UOF].[dbo].[TB_EB_GROUP]
                                     WHERE [TB_EB_USER].[USER_GUID]=[TB_EB_EMPL_DEP].[USER_GUID]
                                     AND [TB_EB_EMPL_DEP].[GROUP_ID]=[TB_EB_GROUP].[GROUP_ID]
                                     AND ISNULL([TB_EB_GROUP].[GROUP_CODE],'')<>''
