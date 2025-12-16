@@ -3773,7 +3773,7 @@ namespace TKWAREHOUSE
                                         [View_TB_WKF_TASK].[DOC_NBR]
                                         FROM [192.168.1.223].[UOF].[dbo].[View_TB_WKF_TASK]
                                         ,[192.168.1.223].[UOF].[dbo].[View_TB_WKF_EXTERNAL_TASK_ALL]
-                                        WHERE [View_TB_WKF_TASK].[DOC_NBR] LIKE '%PURTACHANGE%'
+                                        WHERE [View_TB_WKF_TASK].[DOC_NBR] LIKE '%PURTA%'
                                         AND [View_TB_WKF_TASK].[DOC_NBR]=[View_TB_WKF_EXTERNAL_TASK_ALL].[DOC_NBR]
                                         AND [View_TB_WKF_EXTERNAL_TASK_ALL].[EXTERNAL_FORM_NBR] = TA001+TA002 COLLATE Chinese_Taiwan_Stroke_BIN
                                         ORDER BY [DOC_NBR] DESC
