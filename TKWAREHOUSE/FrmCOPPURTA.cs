@@ -4411,34 +4411,24 @@ namespace TKWAREHOUSE
             DataRow dr = DT.Rows[0];
             // ID 表單編號	
             AddFieldItem(xmlDoc, FormFieldValue, "ID", "", fillerName, fillerUserGuid, account);
-
             // CALLQC (fieldValue=CALLQC, realValue=CALLQC)
             AddFieldItem(xmlDoc, FormFieldValue, "CALLQC", CALLQC, fillerName, fillerUserGuid, account, realValue: CALLQC);
-
             // DEPNO 變更版本 (fieldValue=DEPNAME, realValue=DEPNO)
             AddFieldItem(xmlDoc, FormFieldValue, "DEPNO", DEPNAME, fillerName, fillerUserGuid, account, realValue: DEPNO);
-
             // VERSIONS 變更版本	
             AddFieldItem(xmlDoc, FormFieldValue, "VERSIONS", dr["VERSIONS"].ToString(), fillerName, fillerUserGuid, account);
-
             // TA001 表單編號	
             AddFieldItem(xmlDoc, FormFieldValue, "TA001", dr["TA001"].ToString(), fillerName, fillerUserGuid, account);
-
             // TA002 表單編號	
             AddFieldItem(xmlDoc, FormFieldValue, "TA002", dr["TA002"].ToString(), fillerName, fillerUserGuid, account);
-
             // TA003 表單編號	
             AddFieldItem(xmlDoc, FormFieldValue, "TA003", dr["TA003"].ToString(), fillerName, fillerUserGuid, account);
-
             // TA012 表單編號	
             AddFieldItem(xmlDoc, FormFieldValue, "TA012", dr["TA012"].ToString(), fillerName, fillerUserGuid, account);
-
             // MV002 姓名	
             AddFieldItem(xmlDoc, FormFieldValue, "MV002", dr["NAME"].ToString(), fillerName, fillerUserGuid, account);
-
             // TA006 單頭備註	
             AddFieldItem(xmlDoc, FormFieldValue, "TA006", dr["TA006"].ToString(), fillerName, fillerUserGuid, account);
-
             // TB (DataGrid 容器)
             XmlElement dataGridFieldItem = AddFieldItem(xmlDoc, FormFieldValue, "TB", "", fillerName, fillerUserGuid, account);
 
@@ -4457,40 +4447,28 @@ namespace TKWAREHOUSE
                 // 新增 Row
                 XmlElement Row = xmlDoc.CreateElement("Row");
                 Row.SetAttribute("order", (rowscounts).ToString());
-
                 // Row	TB003
                 AppendCellToRow(xmlDoc, Row, od, "TB003");
-
                 // Row	TB004
                 AppendCellToRow(xmlDoc, Row, od, "TB004");
-
                 // Row	TB005
                 AppendCellToRow(xmlDoc, Row, od, "TB005");
-
                 // Row	TB006
                 AppendCellToRow(xmlDoc, Row, od, "TB006");
-
                 // Row	TB007
                 AppendCellToRow(xmlDoc, Row, od, "TB007");
-
                 // Row	TB009
                 AppendCellToRow(xmlDoc, Row, od, "TB009");
-
                 // Row	TB011
                 AppendCellToRow(xmlDoc, Row, od, "TB011");
-
                 // Row	TB010
                 AppendCellToRow(xmlDoc, Row, od, "TB010");
-
                 // Row	MA002
                 AppendCellToRow(xmlDoc, Row, od, "MA002");
-
                 // Row	TB012
                 AppendCellToRow(xmlDoc, Row, od, "TB012");
-
                 // Row	TD001002003
                 AppendCellToRow(xmlDoc, Row, od, "TD001002003");
-
                 rowscounts = rowscounts + 1;
 
                 // DataGrid 節點
@@ -4808,6 +4786,247 @@ namespace TKWAREHOUSE
 
             row.AppendChild(cell);
         }
+        public void ADDTB_WKF_EXTERNAL_TASK_PURTAB(string TA001, string TA002)
+        {
+            string EXTERNAL_FORM_NBR = TA001 + TA002;
+            DataTable dt = SEARCHPURTAPURTB(TA001, TA002);
+            DataTable dtUofDep = SEARCHUOFDEP(dt.Rows[0]["TA012"].ToString());
+
+            string account = dt.Rows[0]["TA012"].ToString();
+            string jobTitleId = dt.Rows[0]["TITLE_ID"].ToString();
+            string fillerName = dt.Rows[0]["MV002"].ToString();
+            string fillerUserGuid = dt.Rows[0]["USER_GUID"].ToString();
+
+            string depName;
+            string depNo;
+            string groupId = GetGroupId(dtUofDep, dt.Rows[0]["TA004"].ToString(), out depName, out depNo);
+
+            string externalFormNbr = dt.Rows[0]["TA001"].ToString().Trim() + dt.Rows[0]["TA002"].ToString().Trim();
+
+            //找出表單的最新版號
+            string purId = SEARCHFORM_UOF_VERSION_ID("PUR10.請購單申請");
+
+            //建立XML
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement form = xmlDoc.CreateElement("Form");
+            if (!string.IsNullOrEmpty(purId)) form.SetAttribute("formVersionId", purId);
+            form.SetAttribute("urgentLevel", "2");
+            xmlDoc.AppendChild(form);
+            //建立XML的 applicant 節點
+            ////建立節點Applicant
+            XmlElement Applicant = xmlDoc.CreateElement("Applicant");
+            Applicant.SetAttribute("account", account);
+            Applicant.SetAttribute("groupId", groupId);
+            Applicant.SetAttribute("jobTitleId", jobTitleId);
+            //加入節點底下
+            form.AppendChild(Applicant);
+
+            //建立節點 Comment
+            XmlElement Comment = xmlDoc.CreateElement("Comment");
+            Comment.InnerText = "申請者意見";
+            //加入至節點底下
+            Applicant.AppendChild(Comment);
+            //建立XML的 FormFieldValue 節點
+            XmlElement formFieldValue = xmlDoc.CreateElement("FormFieldValue");
+            form.AppendChild(formFieldValue);
+
+            // 建立 FieldItem
+            AddFieldItem(xmlDoc, formFieldValue, "ID", "", fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "QC", dt.Rows[0]["QC"].ToString(), fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "DEPNO", depName, fillerName, fillerUserGuid, account, depNo);
+            AddFieldItem(xmlDoc, formFieldValue, "TA004", dt.Rows[0]["ME002"].ToString(), fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "TA001", dt.Rows[0]["TA001"].ToString(), fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "TA002", dt.Rows[0]["TA002"].ToString(), fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "TA003", dt.Rows[0]["TA003"].ToString(), fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "TA012", dt.Rows[0]["TA012"].ToString(), fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "MV002", dt.Rows[0]["MV002"].ToString(), fillerName, fillerUserGuid, account);
+            AddFieldItem(xmlDoc, formFieldValue, "TA006", dt.Rows[0]["TA006"].ToString(), fillerName, fillerUserGuid, account);
+
+            // 建立 DataGrid
+            XmlElement tbField = AddFieldItem(xmlDoc, formFieldValue, "TB", "", fillerName, fillerUserGuid, account);
+            XmlElement dataGrid = xmlDoc.CreateElement("DataGrid");
+            tbField.AppendChild(dataGrid);
+
+            int rowIndex = 0;
+            foreach (DataRow od in dt.Rows)
+            {
+                XmlElement row = xmlDoc.CreateElement("Row");
+                row.SetAttribute("order", rowIndex.ToString());
+
+                AppendCellToRow(xmlDoc, row, od, "TB004");
+                AppendCellToRow(xmlDoc, row, od, "TB005");
+                AppendCellToRow(xmlDoc, row, od, "TB006");
+                AppendCellToRow(xmlDoc, row, od, "TB007");
+                AppendCellToRow(xmlDoc, row, od, "TB009");
+                AppendCellToRow(xmlDoc, row, od, "SUMLA011");
+                AppendCellToRow(xmlDoc, row, od, "TB011");
+                AppendCellToRow(xmlDoc, row, od, "TB010");
+                AppendCellToRow(xmlDoc, row, od, "MA002");
+                AppendCellToRow(xmlDoc, row, od, "TB012");
+                AppendCellToRow(xmlDoc, row, od, "LASTTB");
+                AppendCellToRow(xmlDoc, row, od, "LASTTH");
+
+                dataGrid.AppendChild(row);
+                rowIndex++;
+            }
+
+            // 資料庫連線與儲存
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+            StringBuilder queryString = new StringBuilder();
+
+            queryString.AppendFormat(@" INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+                                         (EXTERNAL_TASK_ID,FORM_INFO,STATUS,EXTERNAL_FORM_NBR)
+                                        VALUES (NEWID(),@XML,2,'{0}')
+                                        ", EXTERNAL_FORM_NBR);
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(sqlsb.ConnectionString))
+                {
+
+                    SqlCommand command = new SqlCommand(queryString.ToString(), connection);
+                    command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = form.OuterXml;
+
+                    command.Connection.Open();
+
+                    int count = command.ExecuteNonQuery();
+
+                    connection.Close();
+                    connection.Dispose();
+
+                    MessageBox.Show("已送出UOF");
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        DataTable SEARCHPURTAPURTB(string TA001, string TA002)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string connectionString = BuildDecryptedConnection("dberp");
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = string.Format(@"
+                                                SELECT 
+                                                    CREATOR, TA001, TA002, TA003, TA004, TA012, TB004, TB005, TB006, TB007, TB009, TB011, TA006, TB012, MV002, UDF03 AS QC,
+                                                    USER_GUID, NAME,
+                                                    (SELECT TOP 1 GROUP_ID FROM [192.168.1.223].[UOF].dbo.TB_EB_EMPL_DEP WHERE USER_GUID=TEMP.USER_GUID) AS GROUP_ID,
+                                                    (SELECT TOP 1 TITLE_ID FROM [192.168.1.223].[UOF].dbo.TB_EB_EMPL_DEP WHERE USER_GUID=TEMP.USER_GUID) AS TITLE_ID,
+                                                    TB010, MA002, SUMLA011, ME002,
+                                                    (
+                                                        SELECT TOP 1 
+                                                            '請購日:' + TA003 + ' ，請購單:' + TB001 + TB002 + TB003 +
+                                                            ' ，請購數量:' + CONVERT(NVARCHAR, TB009) + ' ' + TB007 +
+                                                            ' ，廠商:' + MA002 + ' ，請購人:' + MV002
+                                                        FROM [TK].dbo.PURTA, [TK].dbo.PURTB, [TK].dbo.PURMA, [TK].dbo.CMSMV
+                                                        WHERE TA001 = TB001 AND TA002 = TB002
+                                                          AND TB010 = MA001
+                                                          AND TA012 = MV001
+                                                          AND TA007 NOT IN ('V')
+                                                          AND TB004 = TEMP.TB004
+                                                          AND TA001 + TA002 <> TEMP.TA001 + TEMP.TA002
+                                                        ORDER BY TA003 DESC
+                                                    ) AS LASTTB,
+                                                    (
+                                                        SELECT TOP 1 
+                                                            '進貨日:' + TG003 + ' ，進貨單:' + TH001 + TH002 + TH003 +
+                                                            ' ，進貨數量:' + CONVERT(NVARCHAR, TH007) + ' ' + TH008 +
+                                                            ' ，廠商:' + MA002
+                                                        FROM [TK].dbo.PURTG, [TK].dbo.PURTH, [TK].dbo.PURMA
+                                                        WHERE TG001 = TH001 AND TG002 = TH002
+                                                          AND TG005 = MA001
+                                                          AND TG013 IN ('Y')
+                                                          AND TH004 = TEMP.TB004
+                                                        ORDER BY TG003 DESC
+                                                    ) AS LASTTH
+                                                FROM (
+                                                    SELECT 
+                                                        PURTA.CREATOR, TA001, TA002, TA003, TA004, TA012, TB004, TB005, TB006, TB007, TB009, TB011, TA006, TB012, TB010, PURTA.UDF03,
+                                                        U.USER_GUID, U.NAME,
+                                                        (SELECT TOP 1 MV002 FROM [TK].dbo.CMSMV WHERE MV001 = TA012) AS MV002,
+                                                        (SELECT TOP 1 MA002 FROM [TK].dbo.PURMA WHERE MA001 = TB010) AS MA002,
+                                                        (SELECT ISNULL(SUM(LA005 * LA011), 0) 
+                                                         FROM [TK].dbo.INVLA WITH(NOLOCK) 
+                                                         WHERE LA001 = TB004 AND LA009 IN ('20004','20006','20008','20019','20020')) AS SUMLA011,
+                                                        ME002
+                                                    FROM [TK].dbo.PURTB
+                                                    JOIN [TK].dbo.PURTA ON TA001 = TB001 AND TA002 = TB002
+                                                    LEFT JOIN [192.168.1.223].[UOF].dbo.TB_EB_USER U ON U.ACCOUNT = TA012 COLLATE Chinese_Taiwan_Stroke_BIN
+                                                    LEFT JOIN [TK].dbo.CMSME ON ME001 = TA004
+                                                    WHERE TA001 = '{0}' AND TA002 = '{1}'
+                                                ) AS TEMP
+                                            ", TA001, TA002);
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dt);
+                }
+
+                return dt.Rows.Count > 0 ? dt : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 找出申請者的GROUP_ID
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="targetGroupCode"></param>
+        /// <param name="depName"></param>
+        /// <param name="depNo"></param>
+        /// <returns></returns>
+        private string GetGroupId(DataTable dt, string targetGroupCode, out string depName, out string depNo)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                if (row["GROUP_CODE"].ToString() == targetGroupCode)
+                {
+                    depName = row["DEPNAME"].ToString();
+                    depNo = row["DEPNO"].ToString();
+                    return row["GROUP_ID"].ToString();
+                }
+            }
+            depName = dt.Rows[0]["DEPNAME"].ToString();
+            depNo = dt.Rows[0]["DEPNO"].ToString();
+            return dt.Rows[0]["GROUP_ID"].ToString();
+        }
+        /// <summary>
+        /// 建立資料庫連線
+        /// </summary>
+        /// <param name="configName"></param>
+        /// <returns></returns>
+        private string BuildDecryptedConnection(string configName)
+        {
+            Class1 tkid = new Class1();
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings[configName].ConnectionString);
+            builder.Password = tkid.Decryption(builder.Password);
+            builder.UserID = tkid.Decryption(builder.UserID);
+            return builder.ConnectionString;
+        }
         #endregion
 
         #region BUTTON
@@ -5071,7 +5290,8 @@ namespace TKWAREHOUSE
             //ADDCOPPURBATCHPUR(textBoxID.Text.Trim(), MOCTA001, MOCTA002);
             //SEARCHCOPPURBATCHPUR(textBoxID.Text.Trim());
 
-            MessageBox.Show("已完成請購單:" + PURTA_TA001 + " " + PURTA_TA002);
+            //將ERP的請購單，轉入UOF的請購單
+            ADDTB_WKF_EXTERNAL_TASK_PURTAB(PURTA_TA001, PURTA_TA002);
         }
         
         private void button22_Click(object sender, EventArgs e)
