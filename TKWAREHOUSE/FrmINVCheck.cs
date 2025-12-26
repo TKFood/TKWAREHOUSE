@@ -25,7 +25,7 @@ using FastReport;
 using FastReport.Data;
 using TKITDLL;
 
-
+ 
 namespace TKWAREHOUSE
 {
     public partial class FrmINVCheck : Form
