@@ -1032,6 +1032,8 @@ namespace TKWAREHOUSE
                                     ,業務
                                     ,(庫存量*(SELECT MB065/MB064 FROM [TK].dbo.INVMB WHERE MB001=品號))AS 庫存金額
                                     ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
+                                    ,有效日期
+
                                     FROM (
                                     SELECT   
                                     LA001 AS '品號' ,INVMB.MB002 AS '品名',INVMB.MB003 AS '規格',LA016 AS '批號'
