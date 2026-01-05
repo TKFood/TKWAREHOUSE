@@ -1368,7 +1368,7 @@ namespace TKWAREHOUSE
                                         '{0}' AS ID,
                                         TB.TB003,
                                         TB.TB012,
-                                       '********************' AS TE010,
+                                        TE0.TE010,
                                         ISNULL(SUM(LA.LA011*LA.LA005*-1),0) AS SUMTE005,
                                         0 AS ATE005
                                     FROM [TK].dbo.MOCTB TB
@@ -1398,7 +1398,7 @@ namespace TKWAREHOUSE
 	                                    OR TB.TB003 LIKE '3110100102%' 
 	                                    OR TB.TB003 LIKE '41004070020001%')
                                     AND TE0.TE010 IS NOT NULL
-                                    GROUP BY TB.TB003, TB.TB012
+                                    GROUP BY TB.TB003, TB.TB012,TE0.TE010
                                     ORDER BY TB.TB003, TB.TB012;
                                     ", ID);
 
