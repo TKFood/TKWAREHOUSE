@@ -86,7 +86,7 @@ namespace TKWAREHOUSE
                                         ,TH036 AS '有效日期'
 
                                         FROM [TK].dbo.PURTH
-                                        WHERE TH002='{0}'
+                                        WHERE TH002 LIKE '%{0}%'
                                         ORDER BY TH001,TH002,TH003
 
                                         ", TH002);
@@ -141,6 +141,11 @@ namespace TKWAREHOUSE
                 }
             }
         }
+
+        //PURTH(R/W) 進貨單單身檔
+        //INVME(R/W) 料件批號資料頭身
+        //INVMF(R/W) 料件批號資料單身
+        //INVLA(R/W) 異動明細資料檔
         public void UPDATE_PURTH_INVLA_INVME(
             string TH001
             , string TH002
