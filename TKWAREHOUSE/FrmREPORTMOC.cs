@@ -82,7 +82,7 @@ namespace TKWAREHOUSE
 
         public void SETFASTREPORT()
         { 
-            string SQL;
+            string SQL;  
             string SQL1;
             report1 = new Report();
             report1.Load(@"REPORT\製令領用量.frx");
