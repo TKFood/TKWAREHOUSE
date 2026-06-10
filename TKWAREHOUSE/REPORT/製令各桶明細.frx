@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="06/09/2026 15:57:13" ReportInfo.Modified="06/10/2026 14:30:13" ReportInfo.CreatorVersion="2017.4.1.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWw8LOuvl911KSJodj/opSOWg==">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="  SELECT &#13;&#10;  [TA001] AS '製令單別'&#13;&#10;  ,[TA002] AS '製令單號'&#13;&#10;  ,[CANNO] AS '桶號'&#13;&#10;  ,[MD003] AS '品號'&#13;&#10;  ,[MB002] AS '品名'&#13;&#10;  ,[MB004] AS '單位'&#13;&#10;  ,[NUMS] AS '數量'&#13;&#10;  ,[ALLCANS] AS '總桶數'&#13;&#10;  FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS]">
+        <Column Name="製令單別" DataType="System.String"/>
+        <Column Name="製令單號" DataType="System.String"/>
+        <Column Name="桶號" DataType="System.Int32"/>
+        <Column Name="品號" DataType="System.String"/>
+        <Column Name="品名" DataType="System.String"/>
+        <Column Name="單位" DataType="System.String"/>
+        <Column Name="數量" DataType="System.Decimal"/>
+        <Column Name="總桶數" DataType="System.Decimal"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="80" PaperHeight="60" LeftMargin="5" TopMargin="0" RightMargin="0" BottomMargin="0">
+    <DataBand Name="Data1" Width="283.5" Height="226.8" DataSource="Table">
+      <TextObject Name="Text1" Width="236.25" Height="37.8" Text="[Table.製令單別]-[Table.製令單號]-[Table.桶號]" VertAlign="Center"/>
+      <TextObject Name="Text2" Left="18.9" Top="56.7" Width="236.25" Height="122.85" Border.Lines="All" Text="[Table.品名]&#13;&#10;[Table.數量] [Table.單位]" VertAlign="Center" Font="SimSun, 16pt"/>
+    </DataBand>
+  </ReportPage>
+</Report>
