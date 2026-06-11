@@ -86,9 +86,9 @@ namespace TKWAREHOUSE
             StringBuilder sb = new StringBuilder();
             sb.Append(@" 
                         SELECT 
-                        線別,製令單別,製令單號,開單日期,產品品號,產品品名,預計產量,單位
+                        線別,製令單別,製令單號,開單日期,產品品號,產品品名,預計產量,單位,總桶數
                         FROM (
-	                        SELECT CMSMD.MD002 AS '線別',TA001 AS '製令單別',TA002 AS '製令單號',TA003 AS '開單日期',TA006 AS '產品品號',TA034 AS '產品品名',TA015 AS '預計產量',TA007 AS '單位'
+	                        SELECT CMSMD.MD002 AS '線別',TA001 AS '製令單別',TA002 AS '製令單號',TA003 AS '開單日期',TA006 AS '產品品號',TA034 AS '產品品名',TA015 AS '預計產量',TA007 AS '單位',ROUND(TA015/MC004,3) AS '總桶數'
 	                        FROM [TK].dbo.MOCTA,[TK].dbo.BOMMC,[TK].dbo.CMSMD
 	                        WHERE 1=1
 	                        AND TA006=MC001
@@ -821,6 +821,110 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void PRINT_MERGE(string TA001, string TA002, float BUCKETS, string LINK_TA001TA002, string LINK_TA006, string LINK_TA034, string MAINMB001)
+        {
+            if (BUCKETS <= 0) return;
+
+            // 1. 處理報表中間資料 (帶入製令單別與單號)
+            ProcessReportData(TA001.Trim(), TA002.Trim(), BUCKETS);
+
+            // 2. 加載報表與設置資料源
+            SETFASTREPORT();
+        }
+
+        private void ProcessReportData(string TA001, string TA002, float buckets)
+        {
+            int totalCounts = (int)Math.Ceiling(buckets);
+            bool isInteger = (buckets % 1 == 0);
+
+            // 防止傳入空參數時不小心清空或洗掉非預期的資料
+            if (string.IsNullOrEmpty(TA001) || string.IsNullOrEmpty(TA002)) return;
+
+            StringBuilder batchSql = new StringBuilder();
+            SqlCommand cmd = new SqlCommand();
+
+            // 1. 先清除舊報表資料 (【核心修正】: 務必加上 WHERE 條件，否則會清空全表！)
+            batchSql.AppendLine("DELETE [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS] WHERE [TA001] = @ParamTA001 AND [TA002] = @ParamTA002;");
+
+            // 2. 準備動態組裝多個安全選取的資料集
+            List<string> selectStatements = new List<string>();
+
+            for (int i = 1; i <= totalCounts; i++)
+            {
+                string multiplierParam = $"@Multiplier_{i}";
+                decimal multiplierValue = 1.0m;
+
+                // 判斷是否為最後一桶且有小數
+                if (!isInteger && i == totalCounts)
+                {
+                    multiplierValue = Convert.ToDecimal(buckets - (totalCounts - 1));
+                }
+
+                // 將每桶的乘數作為參數加入 SqlCommand
+                cmd.Parameters.AddWithValue(multiplierParam, multiplierValue);
+
+                // 【核心修正點】：補上 C.MB004 後方與 CONVERT 後方的「逗號」
+                selectStatements.Add($@"
+            SELECT @ParamTA001, @ParamTA002, {i}, B.MD003, C.MB002, C.MB004, 
+                   CONVERT(DECIMAL(16,3), (B.MD006 / B.MD007) * {multiplierParam}), @ALLCANS
+            FROM [TK].dbo.MOCTA A
+            INNER JOIN [TK].dbo.BOMMD B ON A.TA006 = B.MD001
+            INNER JOIN [TK].dbo.INVMB C ON B.MD003 = C.MB001
+            WHERE A.TA001 = @ParamTA001 
+              AND A.TA002 = @ParamTA002 ");
+            }
+
+            // 3. 串接整段 SQL 語法
+            if (selectStatements.Count > 0)
+            {
+                batchSql.AppendLine("INSERT INTO [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS] ([TA001],[TA002],[CANNO],[MD003],[MB002],[MB004],[NUMS],[ALLCANS])");
+                batchSql.AppendLine(string.Join("\n UNION ALL \n", selectStatements));
+            }
+
+            // 4. 綁定核心的製令單別、單號與總桶數參數
+            cmd.Parameters.AddWithValue("@ParamTA001", TA001.Trim());
+            cmd.Parameters.AddWithValue("@ParamTA002", TA002.Trim());
+            cmd.Parameters.AddWithValue("@ALLCANS", buckets);
+
+            // 5. 執行資料庫交易
+            ExecuteSqlTransaction(batchSql.ToString(), cmd);
+        }
+
+        private void ExecuteSqlTransaction(string sqlCommandText, SqlCommand cmd)
+        {
+            var builder = GetDecryptedConnBuilder();
+            using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        cmd.Connection = conn;
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = sqlCommandText;
+                        cmd.CommandTimeout = 90;
+
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("報表暫存資料寫入失敗: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        private SqlConnectionStringBuilder GetDecryptedConnBuilder()
+        {
+            Class1 TKID = new Class1();
+            var sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+            return sqlsb;
+        }
         #endregion
 
         #region BUTTON
@@ -921,15 +1025,15 @@ namespace TKWAREHOUSE
                     {
                         CHECKED = "Y";
 
-                        TA001 = dr.Cells["製令"].Value.ToString();
-                        TA002 = dr.Cells["單號"].Value.ToString();
+                        TA001 = dr.Cells["製令單別"].Value.ToString();
+                        TA002 = dr.Cells["製令單號"].Value.ToString();
                         LINK_TA001TA002 = LINK_TA001TA002 + TA001 + TA002 + "*";
-                        LINK_TA006 = LINK_TA034 + dr.Cells["品號"].Value.ToString() + "*";
-                        LINK_TA034 = LINK_TA034 + dr.Cells["品名"].Value.ToString() + "*";
-                        BUCKETS = BUCKETS + float.Parse(dr.Cells["桶數"].Value.ToString());
+                        LINK_TA006 = LINK_TA034 + dr.Cells["產品品號"].Value.ToString() + "*";
+                        LINK_TA034 = LINK_TA034 + dr.Cells["產品品名"].Value.ToString() + "*";
+                        BUCKETS = BUCKETS + float.Parse(dr.Cells["總桶數"].Value.ToString());
                         BUCKETS = (float)Math.Round(BUCKETS, 3);
 
-                        MAINMB001 = dr.Cells["品號"].Value.ToString();
+                        MAINMB001 = dr.Cells["產品品號"].Value.ToString();
                     }
                 }
                 catch (Exception ex)
@@ -943,7 +1047,7 @@ namespace TKWAREHOUSE
                 if (DT == null || DT.Rows.Count == 0)
                 {
                     //MessageBox.Show("成功！", "成功");
-                    //SETREPORT2(TA001, TA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001);
+                    PRINT_MERGE(TA001, TA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001);
                 }
                 else
                 {
