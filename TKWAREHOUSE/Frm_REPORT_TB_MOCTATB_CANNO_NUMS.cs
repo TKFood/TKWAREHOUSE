@@ -623,6 +623,36 @@ namespace TKWAREHOUSE
             }
             return MB002;
         }
+
+        public string GetNewMergeNo()
+        {
+            string newMergeNo = "";
+            Class1 TKID = new Class1();
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+
+            string sql = @"
+                            DECLARE @Today VARCHAR(8) = CONVERT(VARCHAR(8), GETDATE(), 112);
+                            SELECT @Today + RIGHT('000' + CAST(ISNULL(MAX(RIGHT(MERGENO, 3)), 0) + 1 AS VARCHAR), 3) AS NewNo
+                            FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_MERGE] WITH (UPDLOCK, HOLDLOCK)
+                            WHERE MERGENO LIKE @Today + '%';
+                        ";
+
+            using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        newMergeNo = result.ToString();
+                    }
+                }
+            }
+            return newMergeNo;
+        }
         #endregion
 
         #region BUTTON
@@ -677,7 +707,8 @@ namespace TKWAREHOUSE
 
         private void button6_Click(object sender, EventArgs e)
         {
-
+            string currentNo = GetNewMergeNo();
+            MessageBox.Show(currentNo);
         }
 
         #endregion
