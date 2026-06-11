@@ -865,13 +865,17 @@ namespace TKWAREHOUSE
 
                 // 【核心修正點】：補上 C.MB004 後方與 CONVERT 後方的「逗號」
                 selectStatements.Add($@"
-            SELECT @ParamTA001, @ParamTA002, {i}, B.MD003, C.MB002, C.MB004, 
-                   CONVERT(DECIMAL(16,3), (B.MD006 / B.MD007) * {multiplierParam}), @ALLCANS
-            FROM [TK].dbo.MOCTA A
-            INNER JOIN [TK].dbo.BOMMD B ON A.TA006 = B.MD001
-            INNER JOIN [TK].dbo.INVMB C ON B.MD003 = C.MB001
-            WHERE A.TA001 = @ParamTA001 
-              AND A.TA002 = @ParamTA002 ");
+                                    SELECT @ParamTA001, @ParamTA002, {i}, B.MD003, C.MB002, C.MB004, 
+                                           CONVERT(DECIMAL(16,3), (B.MD006 / B.MD007) * {multiplierParam}), @ALLCANS
+                                    FROM [TK].dbo.MOCTA A
+                                    INNER JOIN [TK].dbo.BOMMD B ON A.TA006 = B.MD001
+                                    INNER JOIN [TK].dbo.INVMB C ON B.MD003 = C.MB001
+                                    WHERE 1=1
+                                    AND B.MD003 LIKE '1%' AND B.MD003 NOT LIKE '30100002%'
+                                    AND B.MD003 NOT IN (SELECT [MB001] FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_NOUSED])
+                                    AND A.TA001 = @ParamTA001 
+                                    AND A.TA002 = @ParamTA002 
+                                    ");
             }
 
             // 3. 串接整段 SQL 語法
@@ -979,95 +983,95 @@ namespace TKWAREHOUSE
 
         private void button6_Click(object sender, EventArgs e)
         {
-            string currentNo = GetNewMergeNo();
             int COUNTS = 0;
             List<string> MD001 = new List<string>();
-            DataTable DT = null;
-            string MESS = "";
 
-            string CHECKED = "N";
-            string TA001 = "";
-            string TA002 = "";
+            // 儲存勾選列的暫存結構，避免重複讀取 UI
+            var selectedRows = new List<DataGridViewRow>();
+
             string LINK_TA001TA002 = "";
             string LINK_TA006 = "";
             string LINK_TA034 = "";
-            string TEMP = "";
             float BUCKETS = 0;
-            //MessageBox.Show(currentNo);
 
-            ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
+            string lastTA001 = "";
+            string lastTA002 = "";
 
-            //
+            // 1. 【優化：合併唯一個迴圈】收集所有勾選的資料
             foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
-                try
+                if (dr.IsNewRow) continue;
+
+                // 確保 CheckBox 有被勾選
+                bool isChecked = Convert.ToBoolean(dr.Cells[0].Value);
+                if (isChecked)
                 {
-                    if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
+                    COUNTS++;
+                    selectedRows.Add(dr);
+
+                    // 收集品號供 CHECK_BOMMD 檢查
+                    string prodNo = dr.Cells["產品品號"].Value?.ToString().Trim() ?? "";
+                    if (!string.IsNullOrEmpty(prodNo))
                     {
-                        COUNTS = COUNTS + 1;
-                        MD001.Add(dr.Cells[5].Value.ToString());
+                        MD001.Add(prodNo);
                     }
-                }
-                catch (Exception ex)
-                {
-                    //MessageBox.Show(ex.Message);
+
+                    // 串接合併資訊
+                    lastTA001 = dr.Cells["製令單別"].Value?.ToString().Trim() ?? "";
+                    lastTA002 = dr.Cells["製令單號"].Value?.ToString().Trim() ?? "";
+
+                    LINK_TA001TA002 += lastTA001 + lastTA002 + "*";
+                    LINK_TA006 += prodNo + "*"; // 【修正】原本錯寫成 LINK_TA034
+                    LINK_TA034 += dr.Cells["產品品名"].Value?.ToString().Trim() + "*";
+
+                    BUCKETS += Convert.ToSingle(dr.Cells["總桶數"].Value ?? 0);
                 }
             }
 
-            //CHECK  原料需單身品號元件一致、組成用量一致
-            DT = CHECK_BOMMD(COUNTS, MD001);
-
-            foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+            // 防呆：如果根本沒勾選，直接結束
+            if (COUNTS == 0)
             {
-                try
-                {
-                    if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
-                    {
-                        CHECKED = "Y";
-
-                        TA001 = dr.Cells["製令單別"].Value.ToString();
-                        TA002 = dr.Cells["製令單號"].Value.ToString();
-                        LINK_TA001TA002 = LINK_TA001TA002 + TA001 + TA002 + "*";
-                        LINK_TA006 = LINK_TA034 + dr.Cells["產品品號"].Value.ToString() + "*";
-                        LINK_TA034 = LINK_TA034 + dr.Cells["產品品名"].Value.ToString() + "*";
-                        BUCKETS = BUCKETS + float.Parse(dr.Cells["總桶數"].Value.ToString());
-                        BUCKETS = (float)Math.Round(BUCKETS, 3);
-
-                        MAINMB001 = dr.Cells["產品品號"].Value.ToString();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //MessageBox.Show(ex.Message);
-                }
+                MessageBox.Show("請至少勾選一筆資料！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // 如果原本 N 的邏輯需要跑：SETREPORT(textBox1.Text.Trim(), textBox2.Text.Trim(), textBox3.Text.Trim(), MAINMB001);
+                return;
             }
 
-            if (CHECKED.Equals("Y"))
+            // 四捨五入總桶數
+            BUCKETS = (float)Math.Round(BUCKETS, 3);
+
+            // 記錄最後一筆的品號供後續使用 (對應您原本的 MAINMB001)
+            if (MD001.Count > 0)
             {
-                if (DT == null || DT.Rows.Count == 0)
-                {
-                    //MessageBox.Show("成功！", "成功");
-                    PRINT_MERGE(TA001, TA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001);
-                }
-                else
-                {
-                    MESS = "原料需單身品號元件不一致 或 組成用量不一致，不能合併\n";
-                    foreach (DataRow ROW in DT.Rows)
-                    {
-                        // 每一行都是一個 DataRow                       
-                        MESS = MESS + "品號:" + ROW["MD003"].ToString();
-                        MESS = MESS + "用量:" + ROW["MD006"].ToString();
-                        MESS = MESS + "底數:" + ROW["MD007"].ToString();
-
-                        MESS = MESS + "\n";
-                    }
-                    MessageBox.Show(MESS.ToString());
-                }
-
+                MAINMB001 = MD001.Last();
             }
-            else if (CHECKED.Equals("N"))
+
+            // 2. CHECK：檢查原料單身品號與用量是否一致
+            DataTable DT = CHECK_BOMMD(COUNTS, MD001);
+
+            // 3. 判斷檢查結果
+            if (DT == null || DT.Rows.Count == 0)
             {
-                //SETREPORT(textBox1.Text.Trim(), textBox2.Text.Trim(), textBox3.Text.Trim(), MAINMB001);
+                // 【核心修正】：檢查完全通過了，才去資料庫取號並寫入 Merge 表
+                string currentNo = GetNewMergeNo();
+
+                // 執行批次存檔
+                ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
+
+                // 執行列印或預覽
+                PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001);
+            }
+            else
+            {
+                // 檢查失敗，顯示不一致的原料明細
+                StringBuilder sbError = new StringBuilder();
+                sbError.AppendLine("原料需單身品號元件不一致 或 組成用量不一致，不能合併：");
+
+                foreach (DataRow row in DT.Rows)
+                {
+                    sbError.AppendLine($"品號: {row["MD003"]} | 用量: {row["MD006"]} | 底數: {row["MD007"]}");
+                }
+
+                MessageBox.Show(sbError.ToString(), "核心BOM檢查失敗", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
