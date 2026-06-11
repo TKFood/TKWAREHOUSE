@@ -447,6 +447,52 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
         }
 
+        public void SERACH_TB_MOCTATB_CANNO_NUMS_NOUSED()
+        {
+            Class1 TKID = new Class1();//用new 建立類別實體
+            // 1.取得原始的連線字串
+            string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+
+            // 2. 使用 SqlConnectionStringBuilder 來解析與修改
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+
+            // 3. 將內含的帳密解密後重新指派
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+
+            // 4. 用最後組合好的連線字串建立 SqlConnection
+            SqlConnection connection = new SqlConnection(builder.ConnectionString);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(@" 
+                        SELECT 
+                        [MB001] AS '品號'
+                        ,[MB002] AS '品名'
+                        FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_NOUSED]
+
+                ");
+            SqlCommand command = new SqlCommand(sb.ToString(), connection);
+            command.CommandType = CommandType.Text;
+            //command.Parameters.AddWithValue("@SDATE", SDATE);
+            DataTable dt = new DataTable();
+            try
+            {
+                connection.Open();
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                dataGridView3.DataSource = dt;
+
+                dataGridView3.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -469,6 +515,10 @@ namespace TKWAREHOUSE
             {
                 MessageBox.Show("沒有選製令");
             }
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SERACH_TB_MOCTATB_CANNO_NUMS_NOUSED();
         }
         #endregion
 
