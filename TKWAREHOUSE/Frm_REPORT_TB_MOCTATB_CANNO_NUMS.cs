@@ -821,18 +821,18 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void PRINT_MERGE(string TA001, string TA002, float BUCKETS, string LINK_TA001TA002, string LINK_TA006, string LINK_TA034, string MAINMB001)
+        public void PRINT_MERGE(string TA001, string TA002, float BUCKETS, string LINK_TA001TA002, string LINK_TA006, string LINK_TA034, string MAINMB001,string currentNo)
         {
             if (BUCKETS <= 0) return;
 
             // 1. 處理報表中間資料 (帶入製令單別與單號)
-            ProcessReportData(TA001.Trim(), TA002.Trim(), BUCKETS);
+            ProcessReportData(TA001.Trim(), TA002.Trim(), BUCKETS, currentNo);
 
             // 2. 加載報表與設置資料源
             SETFASTREPORT();
         }
 
-        private void ProcessReportData(string TA001, string TA002, float buckets)
+        private void ProcessReportData(string TA001, string TA002, float buckets, string currentNo)
         {
             int totalCounts = (int)Math.Ceiling(buckets);
             bool isInteger = (buckets % 1 == 0);
@@ -844,7 +844,7 @@ namespace TKWAREHOUSE
             SqlCommand cmd = new SqlCommand();
 
             // 1. 先清除舊報表資料 (【核心修正】: 務必加上 WHERE 條件，否則會清空全表！)
-            batchSql.AppendLine("DELETE [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS] WHERE [TA001] = @ParamTA001 AND [TA002] = @ParamTA002;");
+            batchSql.AppendLine("DELETE [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS] ");
 
             // 2. 準備動態組裝多個安全選取的資料集
             List<string> selectStatements = new List<string>();
@@ -865,7 +865,7 @@ namespace TKWAREHOUSE
 
                 // 【核心修正點】：補上 C.MB004 後方與 CONVERT 後方的「逗號」
                 selectStatements.Add($@"
-                                    SELECT @ParamTA001, @ParamTA002, {i}, B.MD003, C.MB002, C.MB004, 
+                                    SELECT @ParamTA001, @currentNo, {i}, B.MD003, C.MB002, C.MB004, 
                                            CONVERT(DECIMAL(16,3), (B.MD006 / B.MD007) * {multiplierParam}), @ALLCANS
                                     FROM [TK].dbo.MOCTA A
                                     INNER JOIN [TK].dbo.BOMMD B ON A.TA006 = B.MD001
@@ -889,6 +889,7 @@ namespace TKWAREHOUSE
             cmd.Parameters.AddWithValue("@ParamTA001", TA001.Trim());
             cmd.Parameters.AddWithValue("@ParamTA002", TA002.Trim());
             cmd.Parameters.AddWithValue("@ALLCANS", buckets);
+            cmd.Parameters.AddWithValue("@currentNo", "合併" + currentNo);
 
             // 5. 執行資料庫交易
             ExecuteSqlTransaction(batchSql.ToString(), cmd);
@@ -1058,7 +1059,7 @@ namespace TKWAREHOUSE
                 ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
 
                 // 執行列印或預覽
-                PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001);
+                PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
             }
             else
             {
