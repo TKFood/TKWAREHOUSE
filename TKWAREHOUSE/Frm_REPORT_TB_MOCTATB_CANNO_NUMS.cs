@@ -37,6 +37,8 @@ namespace TKWAREHOUSE
 
         string TA001 = null;
         string TA002 = null;
+        //找出生產說明用的品號
+        string MAINMB001 = "";
 
         public Frm_REPORT_TB_MOCTATB_CANNO_NUMS()
         {
@@ -738,7 +740,7 @@ namespace TKWAREHOUSE
                         cmd.ExecuteNonQuery();
                         tran.Commit();
                     }
-                    MessageBox.Show("批次存檔完成！", "成功");
+                    //MessageBox.Show("批次存檔完成！", "成功");
 
                     // 重新整理 UI 或者是清除勾選
                     SetupDataGridView();
@@ -747,6 +749,75 @@ namespace TKWAREHOUSE
                 {
                     MessageBox.Show("存檔失敗：" + ex.Message);
                 }
+            }
+        }
+
+        public DataTable CHECK_BOMMD(int COUNTS, List<string> MD001)
+        {
+            // 安全防護：若沒有傳入任何品號，直接回傳空表
+            if (MD001 == null || MD001.Count == 0 || COUNTS < 1)
+            {
+                return new DataTable();
+            }
+
+            DataTable dt = new DataTable();
+            StringBuilder SQL = new StringBuilder();
+            int SETCOUNT = 1;
+
+            try
+            {
+                Class1 TKID = new Class1();
+                string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+                builder.UserID = TKID.Decryption(builder.UserID);
+                builder.Password = TKID.Decryption(builder.Password);
+
+                // 1. 開始動態組裝 SQL
+                SQL.Append(@" SELECT MD003, MD006, MD007, COUNT(MD003) AS COUNTS 
+                      FROM ( ");
+
+                foreach (string MD001STR in MD001)
+                {
+                    if (SETCOUNT > 1)
+                    {
+                        SQL.Append(" UNION ALL ");
+                    }
+
+                    // 【修正點】將原本分散在 if/else 外的括號與語法整理乾淨
+                    SQL.AppendFormat(@" SELECT MD001, MD003, MD006, MD007
+                                FROM [TK].dbo.BOMMD
+                                WHERE MD003 LIKE '1%' AND MD001 = '{0}' ", MD001STR.Trim());
+
+                    SETCOUNT++;
+                }
+
+                // 結束子查詢，並加上您的排除與過濾條件
+                SQL.AppendFormat(@" ) AS CombinedData
+                            WHERE MD003 NOT IN (SELECT [MD003] FROM [TKMOC].[dbo].[REPORTMOCBOMNOSET])
+                            GROUP BY MD003, MD006, MD007
+                            HAVING COUNT(MD003) < {0} ", COUNTS);
+
+                // 2. 建立連線與透過 Adapter 填充 DataTable
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SQL.ToString(), connection))
+                    {
+                        cmd.CommandTimeout = 60;
+
+                        // 使用 SqlDataAdapter 才能將資料庫查詢到的多筆資料整張倒進 DataTable
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            connection.Open();
+                            da.Fill(dt); // 填充資料
+                            return dt;   // 成功回傳含有資料的 DataTable
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 建議此處可記錄 log：Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                return null;
             }
         }
 
@@ -805,9 +876,96 @@ namespace TKWAREHOUSE
         private void button6_Click(object sender, EventArgs e)
         {
             string currentNo = GetNewMergeNo();
+            int COUNTS = 0;
+            List<string> MD001 = new List<string>();
+            DataTable DT = null;
+            string MESS = "";
+
+            string CHECKED = "N";
+            string TA001 = "";
+            string TA002 = "";
+            string LINK_TA001TA002 = "";
+            string LINK_TA006 = "";
+            string LINK_TA034 = "";
+            string TEMP = "";
+            float BUCKETS = 0;
             //MessageBox.Show(currentNo);
 
             ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
+
+            //
+            foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+            {
+                try
+                {
+                    if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
+                    {
+                        COUNTS = COUNTS + 1;
+                        MD001.Add(dr.Cells[5].Value.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //MessageBox.Show(ex.Message);
+                }
+            }
+
+            //CHECK  原料需單身品號元件一致、組成用量一致
+            DT = CHECK_BOMMD(COUNTS, MD001);
+
+            foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+            {
+                try
+                {
+                    if (dr.Cells[0].Value != null && (bool)dr.Cells[0].Value)
+                    {
+                        CHECKED = "Y";
+
+                        TA001 = dr.Cells["製令"].Value.ToString();
+                        TA002 = dr.Cells["單號"].Value.ToString();
+                        LINK_TA001TA002 = LINK_TA001TA002 + TA001 + TA002 + "*";
+                        LINK_TA006 = LINK_TA034 + dr.Cells["品號"].Value.ToString() + "*";
+                        LINK_TA034 = LINK_TA034 + dr.Cells["品名"].Value.ToString() + "*";
+                        BUCKETS = BUCKETS + float.Parse(dr.Cells["桶數"].Value.ToString());
+                        BUCKETS = (float)Math.Round(BUCKETS, 3);
+
+                        MAINMB001 = dr.Cells["品號"].Value.ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //MessageBox.Show(ex.Message);
+                }
+            }
+
+            if (CHECKED.Equals("Y"))
+            {
+                if (DT == null || DT.Rows.Count == 0)
+                {
+                    //MessageBox.Show("成功！", "成功");
+                    //SETREPORT2(TA001, TA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001);
+                }
+                else
+                {
+                    MESS = "原料需單身品號元件不一致 或 組成用量不一致，不能合併\n";
+                    foreach (DataRow ROW in DT.Rows)
+                    {
+                        // 每一行都是一個 DataRow                       
+                        MESS = MESS + "品號:" + ROW["MD003"].ToString();
+                        MESS = MESS + "用量:" + ROW["MD006"].ToString();
+                        MESS = MESS + "底數:" + ROW["MD007"].ToString();
+
+                        MESS = MESS + "\n";
+                    }
+                    MessageBox.Show(MESS.ToString());
+                }
+
+            }
+            else if (CHECKED.Equals("N"))
+            {
+                //SETREPORT(textBox1.Text.Trim(), textBox2.Text.Trim(), textBox3.Text.Trim(), MAINMB001);
+            }
+
         }
 
         #endregion
