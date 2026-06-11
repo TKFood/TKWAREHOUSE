@@ -105,14 +105,19 @@ namespace TKWAREHOUSE
         {
             string 製令單別 = null;
             string 製令單號 = null;
+            textBox1.Text = null;
+            textBox2.Text = null;
 
-            if(dataGridView1.CurrentRow != null)
+            if (dataGridView1.CurrentRow != null)
             {
                 製令單別 = dataGridView1.CurrentRow.Cells["製令單別"].Value.ToString();
                 製令單號 = dataGridView1.CurrentRow.Cells["製令單號"].Value.ToString();
 
                 TA001 = dataGridView1.CurrentRow.Cells["製令單別"].Value.ToString();
                 TA002 = dataGridView1.CurrentRow.Cells["製令單號"].Value.ToString();
+                textBox1.Text = TA001;
+                textBox2.Text = TA002;
+
                 SEARCH_DETAILS(製令單別, 製令單號);
             }
         }
@@ -151,8 +156,7 @@ namespace TKWAREHOUSE
 	                        WHERE TA001=TB001 AND TA002=TB002
 	                        AND TA006=MC001
 	                        AND TA021=CMSMD.MD001
-	                        AND CMSMD.MD002  IN (SELECT [MD002]  FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_CMSMD]) 
-	                        AND TA003>='20260610' AND TA003<='20260610'
+	                        AND CMSMD.MD002  IN (SELECT [MD002]  FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_CMSMD]) 	                       
                         ) AS TEMP
                         LEFT JOIN  [TK].dbo.BOMMD ON 產品品號=MD001 AND 材料品號=MD003
                         WHERE  MD003 LIKE '1%'
@@ -230,7 +234,7 @@ namespace TKWAREHOUSE
 	                        AND TA006=MC001
 	                        AND TA021=CMSMD.MD001
 	                        AND CMSMD.MD002  IN (SELECT [MD002]  FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_CMSMD]) 
-	                        AND TA003>='20260610' AND TA003<='20260610'
+	                       
                         ) AS TEMP
                         LEFT JOIN  [TK].dbo.BOMMD ON 產品品號=MD001 AND 材料品號=MD003
                         WHERE  MD003 LIKE '1%'
@@ -454,7 +458,10 @@ namespace TKWAREHOUSE
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if(!string.IsNullOrEmpty(TA001)&& !string.IsNullOrEmpty(TA002))
+            TA001 = textBox1.Text;
+            TA002 = textBox2.Text;
+
+            if (!string.IsNullOrEmpty(TA001)&& !string.IsNullOrEmpty(TA002))
             {
                 PRINTS(TA001, TA002);
             }
