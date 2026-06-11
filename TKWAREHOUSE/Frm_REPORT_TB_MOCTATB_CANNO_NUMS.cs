@@ -441,6 +441,7 @@ namespace TKWAREHOUSE
                                 ,[NUMS] AS '數量'
                                 ,[ALLCANS] AS '總桶數'
                                 FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS]
+                                ORDER BY [TA001],[MD003] ,[CANNO]
                                  ");
 
 
@@ -493,6 +494,135 @@ namespace TKWAREHOUSE
                 connection.Close();
             }
         }
+        private void dataGridView3_SelectionChanged(object sender, EventArgs e)
+        {
+            if(dataGridView3.CurrentRow != null)
+            {
+                string MB001 = dataGridView3.CurrentRow.Cells["品號"].Value.ToString();
+                string MB002 = dataGridView3.CurrentRow.Cells["品名"].Value.ToString();
+               
+                textBox3.Text = MB001;
+                textBox4.Text = MB002;
+            }
+        }
+
+        public void ADD_TB_MOCTATB_CANNO_NUMS_NOUSED(string MB001,string MB002)
+        {
+            Class1 TKID = new Class1();
+            string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+            StringBuilder ADD_SQL = new StringBuilder();
+            ADD_SQL.AppendLine($@"
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_NOUSED] 
+                                    ([MB001],[MB002])
+                                    VALUES (@MB001,@MB002);
+                                ");
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(ADD_SQL.ToString(), connection))
+                {
+                    cmd.Parameters.AddWithValue("@MB001", MB001);
+                    cmd.Parameters.AddWithValue("@MB002", MB002);
+                    cmd.CommandTimeout = 60;
+                    connection.Open();
+                    using (SqlTransaction tran = connection.BeginTransaction())
+                    {
+                        cmd.Transaction = tran;
+                        try
+                        {
+                            cmd.ExecuteNonQuery();
+                            tran.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            tran.Rollback();
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void DELETE_TB_MOCTATB_CANNO_NUMS_NOUSED(string MB001)
+        {            
+            Class1 TKID = new Class1();
+            string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+            StringBuilder DELETE_SQL = new StringBuilder();
+            DELETE_SQL.AppendLine($@"
+                                    DELETE FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_NOUSED] 
+                                    WHERE MB001 = @MB001;
+                                ");
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(DELETE_SQL.ToString(), connection))
+                {
+                    cmd.Parameters.AddWithValue("@MB001", MB001);
+                    cmd.CommandTimeout = 60;
+                    connection.Open();
+                    using (SqlTransaction tran = connection.BeginTransaction())
+                    {
+                        cmd.Transaction = tran;
+                        try
+                        {
+                            cmd.ExecuteNonQuery();
+                            tran.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            tran.Rollback();
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            textBox4.Text = null;
+            string MB001=textBox3.Text.Trim();
+            if (!string.IsNullOrEmpty(MB001))
+            {
+                textBox4.Text = FIND_MB002(MB001);
+            }
+        }
+
+        public string FIND_MB002(string MB001)
+        {
+            string MB002 = null;
+            Class1 TKID = new Class1();
+            string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                string query = "SELECT MB002 FROM [TK].dbo.INVMB WHERE MB001 = @MB001";
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@MB001", MB001);
+                    try
+                    {
+                        connection.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null)
+                        {
+                            MB002 = result.ToString();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+            return MB002;
+        }
         #endregion
 
         #region BUTTON
@@ -520,6 +650,36 @@ namespace TKWAREHOUSE
         {
             SERACH_TB_MOCTATB_CANNO_NUMS_NOUSED();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string MB001 = textBox3.Text.Trim();
+
+            DialogResult dialogResult = MessageBox.Show($"確定要刪除 品號 {MB001} 嗎？", "確認", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                DELETE_TB_MOCTATB_CANNO_NUMS_NOUSED(MB001);
+                SERACH_TB_MOCTATB_CANNO_NUMS_NOUSED(); // 刷新列表
+
+                MessageBox.Show("完成");
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string MB001 = textBox3.Text.Trim();
+            string MB002 = textBox4.Text.Trim();
+
+            ADD_TB_MOCTATB_CANNO_NUMS_NOUSED(MB001, MB002);
+            SERACH_TB_MOCTATB_CANNO_NUMS_NOUSED(); // 刷新列表
+            MessageBox.Show("完成");
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
 

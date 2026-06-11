@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -62,6 +62,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -160,13 +162,14 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.button2, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.textBox2, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.textBox2, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.button2, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.button6, 1, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -183,7 +186,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(103, 83);
+            this.button1.Location = new System.Drawing.Point(103, 43);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(114, 34);
             this.button1.TabIndex = 3;
@@ -195,7 +198,7 @@
             // 
             this.dateTimePicker1.CustomFormat = "yyyy/MM/dd";
             this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker1.Location = new System.Drawing.Point(103, 43);
+            this.dateTimePicker1.Location = new System.Drawing.Point(103, 3);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(114, 27);
             this.dateTimePicker1.TabIndex = 6;
@@ -204,7 +207,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 52);
+            this.label3.Location = new System.Drawing.Point(3, 12);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(94, 16);
             this.label3.TabIndex = 2;
@@ -212,11 +215,11 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(103, 203);
+            this.button2.Location = new System.Drawing.Point(103, 163);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(114, 34);
             this.button2.TabIndex = 7;
-            this.button2.Text = "列印";
+            this.button2.Text = "單筆列印";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -224,8 +227,8 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle23.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle19.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle19;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
@@ -285,8 +288,8 @@
             // 
             this.dataGridView2.AllowUserToAddRows = false;
             this.dataGridView2.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle24.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle20.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle20;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView2.Location = new System.Drawing.Point(3, 3);
@@ -312,16 +315,16 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 132);
+            this.label1.Location = new System.Drawing.Point(3, 92);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(94, 16);
             this.label1.TabIndex = 8;
-            this.label1.Text = "製令";
+            this.label1.Text = "單筆製令";
             // 
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(3, 166);
+            this.textBox1.Location = new System.Drawing.Point(3, 126);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(94, 27);
             this.textBox1.TabIndex = 9;
@@ -329,7 +332,7 @@
             // textBox2
             // 
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(103, 166);
+            this.textBox2.Location = new System.Drawing.Point(103, 126);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(134, 27);
             this.textBox2.TabIndex = 10;
@@ -409,14 +412,15 @@
             this.tableLayoutPanel3.BackColor = System.Drawing.Color.LightGreen;
             this.tableLayoutPanel3.ColumnCount = 4;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 84F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 156F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 96F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel3.Controls.Add(this.textBox4, 1, 2);
             this.tableLayoutPanel3.Controls.Add(this.textBox3, 1, 1);
-            this.tableLayoutPanel3.Controls.Add(this.button4, 2, 1);
             this.tableLayoutPanel3.Controls.Add(this.label5, 0, 2);
             this.tableLayoutPanel3.Controls.Add(this.label4, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.button4, 2, 1);
+            this.tableLayoutPanel3.Controls.Add(this.button5, 2, 2);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -433,35 +437,37 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(243, 43);
+            this.button4.Location = new System.Drawing.Point(267, 43);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(114, 34);
+            this.button4.Size = new System.Drawing.Size(90, 34);
             this.button4.TabIndex = 3;
-            this.button4.Text = "查詢";
+            this.button4.Text = "刪除";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // textBox3
             // 
             this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox3.Location = new System.Drawing.Point(87, 46);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(150, 27);
+            this.textBox3.Size = new System.Drawing.Size(174, 27);
             this.textBox3.TabIndex = 10;
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // textBox4
             // 
             this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox4.Location = new System.Drawing.Point(87, 86);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(150, 27);
+            this.textBox4.Size = new System.Drawing.Size(174, 27);
             this.textBox4.TabIndex = 11;
             // 
             // dataGridView3
             // 
             this.dataGridView3.AllowUserToAddRows = false;
             this.dataGridView3.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle22.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle21.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle21;
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView3.Location = new System.Drawing.Point(0, 0);
@@ -470,6 +476,7 @@
             this.dataGridView3.RowTemplate.Height = 24;
             this.dataGridView3.Size = new System.Drawing.Size(680, 601);
             this.dataGridView3.TabIndex = 4;
+            this.dataGridView3.SelectionChanged += new System.EventHandler(this.dataGridView3_SelectionChanged);
             // 
             // label2
             // 
@@ -500,6 +507,26 @@
             this.label5.Size = new System.Drawing.Size(78, 16);
             this.label5.TabIndex = 13;
             this.label5.Text = "品名";
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(267, 83);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(90, 34);
+            this.button5.TabIndex = 14;
+            this.button5.Text = "新增";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(103, 203);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(114, 34);
+            this.button6.TabIndex = 11;
+            this.button6.Text = "批次列印";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // Frm_REPORT_TB_MOCTATB_CANNO_NUMS
             // 
@@ -580,5 +607,7 @@
         private System.Windows.Forms.DataGridView dataGridView3;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
     }
 }
