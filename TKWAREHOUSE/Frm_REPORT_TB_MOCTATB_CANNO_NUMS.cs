@@ -44,11 +44,27 @@ namespace TKWAREHOUSE
         }
         private void Frm_REPORT_TB_MOCTATB_CANNO_NUMS_Load(object sender, EventArgs e)
         {
-
+            SetupDataGridView();
         }
         #region FUNCTION
-        
-            
+
+        private void SetupDataGridView()
+        {
+            // 1. 建立一個 CheckBox 欄位
+            DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
+            checkColumn.Name = "SelectCheck";
+            checkColumn.HeaderText = "選取";
+            checkColumn.Width = 50;
+            checkColumn.ReadOnly = false; // 確保使用者可以勾選
+            checkColumn.TrueValue = true;
+            checkColumn.FalseValue = false;
+
+            // 2. 將勾選欄插入到 DataGridView 的最前面 (索引 0)
+            if (!dataGridView1.Columns.Contains("SelectCheck"))
+            {
+                dataGridView1.Columns.Insert(0, checkColumn);
+            }
+        }
         public void SEARCH(string SDATE)
         {
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -653,6 +669,87 @@ namespace TKWAREHOUSE
             }
             return newMergeNo;
         }
+
+        public void ADD_TB_MOCTATB_CANNO_NUMS_MERGE(string currentNo)
+        {
+            StringBuilder ADD_SQL = new StringBuilder();
+            // 收集所有被勾選的列
+            List<DataGridViewRow> selectedRows = new List<DataGridViewRow>();
+
+            // 這裡修正為您畫面實際對應的 dataGridView1
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (!row.IsNewRow && Convert.ToBoolean(row.Cells["SelectCheck"].Value) == true)
+                {
+                    selectedRows.Add(row);
+                }
+            }
+
+            if (selectedRows.Count == 0)
+            {
+                MessageBox.Show("請先勾選要合併的製令單！", "提示");
+                return;
+            }
+
+            SqlCommand cmd = new SqlCommand();
+
+            // 【核心修正點 1】: 共用的編號是固定不變的，在迴圈外「只加入一次」即可！
+            cmd.Parameters.AddWithValue("@NewMergeNo", currentNo);
+
+            int paramIndex = 0;
+            foreach (DataGridViewRow row in selectedRows)
+            {
+                string ta001 = row.Cells["製令單別"].Value?.ToString().Trim() ?? "";
+                string ta002 = row.Cells["製令單號"].Value?.ToString().Trim() ?? "";
+
+                // 參數化命名避免衝突
+                string pTA001 = "@TA001_" + paramIndex;
+                string pTA002 = "@TA002_" + paramIndex;
+
+                ADD_SQL.AppendLine($@"
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_MERGE] ([MERGENO], [TA001], [TA002])
+                                    VALUES (@NewMergeNo, {pTA001}, {pTA002});
+                                ");
+
+                // 【核心修正點 2】: 迴圈內只加入每筆資料各自專屬的單別、單號參數
+                cmd.Parameters.AddWithValue(pTA001, ta001);
+                cmd.Parameters.AddWithValue(pTA002, ta002);
+
+                paramIndex++;
+            }
+
+            // 取得解密連線字串並執行
+            Class1 TKID = new Class1();
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+
+            using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
+            {
+                cmd.Connection = conn;
+                cmd.CommandText = ADD_SQL.ToString();
+
+                try
+                {
+                    conn.Open();
+                    using (SqlTransaction tran = conn.BeginTransaction())
+                    {
+                        cmd.Transaction = tran;
+                        cmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                    MessageBox.Show("批次存檔完成！", "成功");
+
+                    // 重新整理 UI 或者是清除勾選
+                    SetupDataGridView();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("存檔失敗：" + ex.Message);
+                }
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -708,7 +805,9 @@ namespace TKWAREHOUSE
         private void button6_Click(object sender, EventArgs e)
         {
             string currentNo = GetNewMergeNo();
-            MessageBox.Show(currentNo);
+            //MessageBox.Show(currentNo);
+
+            ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
         }
 
         #endregion
