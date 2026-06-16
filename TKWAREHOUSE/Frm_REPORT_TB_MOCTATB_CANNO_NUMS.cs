@@ -207,13 +207,13 @@ namespace TKWAREHOUSE
 
         public void PRINTS(string TA001,string TA002)
         {
-            DataTable DT = FIND_DETAILS(TA001, TA002);
-            if(DT!=null && DT.Rows.Count > 0)
-            {
-                ADD_TB_MOCTATB_CANNO_NUMS(DT);
+            //DataTable DT = FIND_DETAILS(TA001, TA002);
+            //if(DT!=null && DT.Rows.Count > 0)
+            //{
+            //    ADD_TB_MOCTATB_CANNO_NUMS(DT);
 
-                SETFASTREPORT();
-            }
+            //    SETFASTREPORT();
+            //}
         }
 
         public DataTable FIND_DETAILS(string TA001, string TA002)
@@ -408,7 +408,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void SETFASTREPORT()
+        public void SETFASTREPORT(string TA001, string TA002, string currentNo)
         {
             string SQL;
             string SQL1;
@@ -432,7 +432,7 @@ namespace TKWAREHOUSE
             report1.Dictionary.Connections[0].ConnectionString = connection.ConnectionString;
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
-            SQL = SETFASETSQL();
+            SQL = SETFASETSQL(TA001, TA002, currentNo);
            
             Table.SelectCommand = SQL;
           
@@ -441,7 +441,7 @@ namespace TKWAREHOUSE
 
         }
 
-        public string SETFASETSQL()
+        public string SETFASETSQL(string TA001, string TA002, string currentNo)
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
@@ -459,8 +459,10 @@ namespace TKWAREHOUSE
                                 ,[NUMS] AS '數量'
                                 ,[ALLCANS] AS '總桶數'
                                 FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS]
+                                WHERE 1=1
+                                AND ((TA001='{0}' AND TA002='{1}') OR (TA002='{2}'))
                                 ORDER BY [TA001],[MD003] ,[CANNO]
-                                 ");
+                                 ", TA001,TA002, currentNo);
 
 
             return FASTSQL.ToString();
@@ -652,9 +654,9 @@ namespace TKWAREHOUSE
 
             string sql = @"
                             DECLARE @Today VARCHAR(8) = CONVERT(VARCHAR(8), GETDATE(), 112);
-                            SELECT @Today + RIGHT('000' + CAST(ISNULL(MAX(RIGHT(MERGENO, 3)), 0) + 1 AS VARCHAR), 3) AS NewNo
+                            SELECT '合併-'+@Today + RIGHT('000' + CAST(ISNULL(MAX(RIGHT(MERGENO, 3)), 0) + 1 AS VARCHAR), 3) AS NewNo
                             FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_MERGE] WITH (UPDLOCK, HOLDLOCK)
-                            WHERE MERGENO LIKE @Today + '%';
+                            WHERE MERGENO LIKE '合併-'+@Today + '%';
                         ";
 
             using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
@@ -829,7 +831,7 @@ namespace TKWAREHOUSE
             ProcessReportData(TA001.Trim(), TA002.Trim(), BUCKETS, currentNo);
 
             // 2. 加載報表與設置資料源
-            SETFASTREPORT();
+            SETFASTREPORT(TA001.Trim(), TA002.Trim(), currentNo);
         }
 
         private void ProcessReportData(string TA001, string TA002, float buckets, string currentNo)
@@ -844,7 +846,7 @@ namespace TKWAREHOUSE
             SqlCommand cmd = new SqlCommand();
 
             // 1. 先清除舊報表資料 (【核心修正】: 務必加上 WHERE 條件，否則會清空全表！)
-            batchSql.AppendLine("DELETE [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS] ");
+            batchSql.AppendLine("DELETE [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS] WHERE TA001=@ParamTA001 AND TA002=@ParamTA002");
 
             // 2. 準備動態組裝多個安全選取的資料集
             List<string> selectStatements = new List<string>();
@@ -889,7 +891,7 @@ namespace TKWAREHOUSE
             cmd.Parameters.AddWithValue("@ParamTA001", TA001.Trim());
             cmd.Parameters.AddWithValue("@ParamTA002", TA002.Trim());
             cmd.Parameters.AddWithValue("@ALLCANS", buckets);
-            cmd.Parameters.AddWithValue("@currentNo", "合併" + currentNo);
+            cmd.Parameters.AddWithValue("@currentNo",  currentNo);
 
             // 5. 執行資料庫交易
             ExecuteSqlTransaction(batchSql.ToString(), cmd);
