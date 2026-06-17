@@ -767,149 +767,196 @@ namespace TKWAREHOUSE
             {
 
                 FASTSQL.AppendFormat(@"  
-                                        SELECT 
-                                        品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
-                                        ,CASE WHEN ISNULL(生產日期,'')<>'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END AS '生產日期'
-                                        ,CASE WHEN ISNULL(在倉日期,'')<>'' THEN 在倉日期 ELSE DATEDIFF(DAY,CASE WHEN ISNULL(生產日期,'')<>'' THEN 生產日期 ELSE CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) END,'{0}') END AS '在倉日期'
-                                        ,有效天數
-                                        ,狀態
-                                        ,CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END AS 'DAYS'
-                                        ,CONVERT(nvarchar,DATEADD(day,-1*(CASE WHEN MB198='1' THEN 1*MB023 WHEN  MB198='2' THEN 30*MB023  ELSE 0 END),CONVERT(datetime,批號)),112) AS '外購品的生產日'
-                                        ,庫別
-                                        ,(
-                                        SELECT  (Key1+'-'+Key2+': '+CONVERT(NVARCHAR,Key3)+' '+M_MF002)+ CHAR(10)
-                                        FROM ( 
-                                        SELECT DISTINCT '1' As Type, TG001 As Key1, TG002 As Key2 ,(TH008+TH024) AS Key3
-                                        ,(CASE WHEN (COPTG.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..COPTG AS COPTG
-                                        Left Join TK..COPTH AS COPTH ON TH001=TG001 AND TH002=TG002
-                                        Left Join TK..ADMMF As A On A.MF001=COPTG.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=COPTG.MODIFIER
-                                        Where TH004=品號 And TH017=批號
-                                        AND TH007='20028' AND TG023='N'
-                                        UNION ALL 
-                                        SELECT DISTINCT (CASE WHEN (MQ003 = '11') THEN '2' ELSE '3' END) As Type 
-                                        ,TA001 As Key1, TA002 As Key2  ,(TB007) AS Key3
-                                        ,(CASE WHEN (INVTA.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..INVTA AS INVTA
-                                        LEFT JOIN TK..INVTB AS INVTB ON TB001=TA001 AND TB002=TA002
-                                        LEFT JOIN TK..CMSMQ AS CMSMQ ON MQ001=TA001
-                                        Left Join TK..ADMMF As A On A.MF001=INVTA.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=INVTA.MODIFIER
-                                        WHERE TB004=品號 AND TB014=批號
-                                        AND TB012='20028' AND TA006='N' AND MQ010=-1 
-                                        UNION ALL 
-                                        SELECT DISTINCT '4' As Type 
-                                        ,TF001 As Key1, TF002 As Key2 ,(TG009) AS Key3
-                                        ,(CASE WHEN (INVTF.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..INVTF AS INVTF
-                                        LEFT JOIN TK..INVTG AS INVTG ON TG001=TF001 AND TG002=TF002
-                                        Left Join TK..ADMMF As A On A.MF001=INVTF.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=INVTF.MODIFIER
-                                        WHERE TG004=品號 AND TG017=批號 
-                                        AND TG007='20028' AND TF020='N' 
-                                        UNION ALL 
-                                        SELECT DISTINCT '5' As Type 
-                                        ,TH001 As Key1, TH002 As Key2 ,(TI009) AS Key3
-                                        ,(CASE WHEN (INVTH.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..INVTH AS INVTH
-                                        LEFT JOIN TK..INVTI AS INVTI ON TI001=TH001 AND TI002=TH002
-                                        Left Join TK..ADMMF As A On A.MF001=INVTH.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=INVTH.MODIFIER
-                                        WHERE TI004=品號 AND TI017=批號 
-                                        AND TI007='20028' AND TH020='N' 
-                                        UNION ALL 
-                                        SELECT DISTINCT '6' As Type 
-                                        ,TA001 As Key1, TA002 As Key2 ,(TB009+TB011) AS Key3
-                                        ,(CASE WHEN (EPSTA.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..EPSTA AS EPSTA
-                                        LEFT JOIN TK..EPSTB AS EPSTB ON TB001=TA001 AND TB002=TA002
-                                        Left Join TK..ADMMF As A On A.MF001=EPSTA.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=EPSTA.MODIFIER
-                                        WHERE TB007=品號 AND TB019=批號 
-                                        AND TB018='20028' AND TA034<>'V' 
-                                        AND TB021+TB022+TB023='''' AND TB042+TB043+TB044='' 
-                                        UNION ALL 
-                                        SELECT DISTINCT '7' As Type 
-                                        ,TD001 As Key1, TD002 As Key2 ,(TE008) AS Key3
-                                        ,(CASE WHEN (BOMTD.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..BOMTD AS BOMTD
-                                        LEFT JOIN TK..BOMTE AS BOMTE ON TE001=TD001 AND TE002=TD002
-                                        Left Join TK..ADMMF As A On A.MF001=BOMTD.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=BOMTD.MODIFIER
-                                        WHERE TE004=品號 AND TE013=批號
-                                        AND TE007='20028' AND TD012='N' 
-                                        UNION ALL 
-                                        SELECT DISTINCT '8' As Type 
-                                        ,TF001 As Key1, TF002 As Key2 ,(TF007) AS Key3
-                                        ,(CASE WHEN (BOMTF.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..BOMTF AS BOMTF
-                                        Left Join TK..ADMMF As A On A.MF001=BOMTF.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=BOMTF.MODIFIER
-                                        WHERE TF004=品號 AND TF015=批號 
-                                        AND TF008='20028' AND TF010='N' 
-                                        UNION ALL 
-                                        SELECT DISTINCT '9' As Type 
-                                        ,TC001 As Key1, TC002 As Key2 ,(TE005) AS Key3
-                                        ,(CASE WHEN (MOCTC.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM TK..MOCTC AS MOCTC
-                                        LEFT JOIN TK..MOCTE AS MOCTE ON TE001=TC001 AND TE002=TC002
-                                        Left Join TK..ADMMF As A On A.MF001=MOCTC.CREATOR
-                                        Left Join TK..ADMMF As B On B.MF001=MOCTC.MODIFIER
-                                        LEFT JOIN TK..CMSMQ AS CMSMQ ON MQ001=TC001
-                                        WHERE TE004=品號 AND TE010=批號
-                                        AND TE008='20028' AND TC009='N' 
-                                        AND MQ010=-1 
-                                        UNION ALL 
-                                        SELECT DISTINCT 'A' As Type 
-                                        ,TJ001 As Key1, TJ002 As Key2 ,SUM(TK007) AS Key3
-                                        ,(CASE WHEN (INVTJ.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
-                                        FROM [TK].dbo.INVTJ As INVTJ
-                                        LEFT JOIN [TK].dbo.INVTK AS INVTK ON TK001=TJ001 AND TK002=TJ002
-                                        Left Join [TK].dbo.ADMMF As A On A.MF001=INVTJ.CREATOR
-                                        Left Join [TK].dbo.ADMMF As B On B.MF001=INVTJ.MODIFIER
-                                        WHERE TK004=品號 AND TK018=批號
-                                        AND TK017='20028' AND TJ010='N'  
-                                        GROUP BY TJ001, TJ002, INVTJ.MODIFIER,A.MF002,B.MF002
-                                        HAVING (SUM(ISNULL(TK007,0)) < 0) 
-                                        ) AS MoidA 
-                                        FOR XML PATH('') 
-                                        ) AS NOS
+                                        -- 1. 設定基準日變數與基礎轉型，釋放運算效能
+                                            DECLARE @BaseDate DATETIME = '{0}';
+                                            DECLARE @BaseDateStr NVARCHAR(8) = '{1}';
 
-                                        FROM (
-	                                        SELECT 品號,品名,規格,批號,庫存量,單位,效期內的訂單需求量,效期內的訂單差異量,總訂單需求量,業務
-	                                        ,生產日期
-	                                        ,DATEDIFF(DAY,生產日期,'{0}') AS '在倉日期'
-	                                        ,DATEDIFF(DAY,'{0}',有效日期)  AS '有效天數'
-	                                        ,(CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>90 THEN '在倉超過90天' ELSE (CASE WHEN DATEDIFF(DAY,生產日期,'{0}')>30 THEN '在倉超過30天' ELSE '' END) END ) AS '狀態'
-	                                        ,LA009 AS '庫別'
-	                                        FROM ( 
+                                            WITH 
+                                            -- 2. 提前彙整訂單總需求量
+                                            Order_Total_Demand AS (
+                                                SELECT TD004 AS ItemNo, ISNULL(SUM(NUM), 0) AS TotalDemand
+                                                FROM [TK].dbo.VCOPTDINVMD WITH(NOLOCK)
+                                                WHERE TD013 >= @BaseDateStr
+                                                GROUP BY TD004
+                                            ),
+                                            -- 3. 基礎庫存資料與基礎欄位加總 (消除內層的子查詢)
+                                            Base_Inventory AS (
+                                                SELECT  
+                                                    LA.LA001 AS [品號],
+                                                    MB.MB002 AS [品名],
+                                                    MB.MB003 AS [規格],
+                                                    LA.LA016 AS [批號],
+                                                    CAST(SUM(LA.LA005 * LA.LA011) AS INT) AS [庫存量],
+                                                    MB.MB004 AS [單位],
+                                                    MB.MB023,
+                                                    MB.MB198,
+                                                    LA.LA009 AS [庫別],
+                                                    ROUND(MB.MB023 / 3.0, 0) AS [MonthOffset],
+                                                    -- 提前帶出製令/業務鏈需要的末端製令單號
+                                                    (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WITH(NOLOCK) WHERE TG004 = LA.LA001 AND TG017 = LA.LA016) AS MoctggKey
+                                                FROM [TK].dbo.INVLA AS LA WITH (NOLOCK)  
+                                                LEFT JOIN [TK].dbo.INVMB AS MB WITH (NOLOCK) ON MB.MB001 = LA.LA001   
+                                                WHERE LA.LA009 = '20028'   
+                                                GROUP BY LA.LA001, LA.LA009, MB.MB002, MB.MB003, LA.LA016, MB.MB023, MB.MB198, MB.MB004  
+                                                HAVING SUM(LA.LA005 * LA.LA011) <> 0 
+                                            ),
+                                            -- 4. 串接生產/有效日期與業務名稱 (收斂巢狀 Loop)
+                                            Inventory_With_Dates AS (
+                                                SELECT 
+                                                    I.*,
+                                                    ISNULL(ME.ME032, '') AS [原始生產日期],
+                                                    ME.ME009 AS [原始有效日期],
+                                                    -- 計算動態生產日期
+                                                    CASE 
+                                                        WHEN ISNULL(ME.ME032, '') <> '' THEN ME.ME032 
+                                                        ELSE CONVERT(NVARCHAR(8), DATEADD(DAY, -1 * (CASE WHEN I.MB198 = '1' THEN 1 * I.MB023 WHEN I.MB198 = '2' THEN 30 * I.MB023 ELSE 0 END), CONVERT(DATETIME, I.[批號])), 112) 
+                                                    END AS [修正生產日期],
+                                                    -- 業務人員名稱
+                                                    (SELECT TOP 1 C.TC006 + ' ' + V.MV002 
+                                                     FROM [TK].dbo.MOCTA AS A WITH(NOLOCK)
+                                                     INNER JOIN [TK].dbo.COPTC AS C WITH(NOLOCK) ON C.TC001 = A.TA026 AND C.TC002 = A.TA027
+                                                     INNER JOIN [TK].dbo.CMSMV AS V WITH(NOLOCK) ON C.TC006 = V.MV001
+                                                     WHERE A.TA001 + A.TA002 = I.MoctggKey) AS [業務]
+                                                FROM Base_Inventory AS I
+                                                LEFT JOIN [TK].dbo.INVME AS ME WITH(NOLOCK) ON ME.ME001 = I.[品號] AND ME.ME002 = I.[批號]
+                                            )
 
-		                                        SELECT   LA001 AS '品號' ,MB002 AS '品名',MB003 AS '規格',LA016 AS '批號'
-		                                        ,CAST(SUM(LA005*LA011) AS INT) AS '庫存量',MB004 AS '單位'
-		                                        ,CAST(((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112))) AS INT) AS '效期內的訂單需求量'     
-		                                        ,CAST((CAST(SUM(LA005*LA011) AS INT)-(SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}' AND  TD013<=CONVERT(nvarchar,DATEADD (MONTH,-1*ROUND(MB023/3,0),CAST(LA016 AS datetime)),112)))  AS INT) AS '效期內的訂單差異量' 
-		                                        ,CAST((SELECT ISNULL(SUM(NUM),0) FROM [TK].dbo.VCOPTDINVMD WHERE TD004=LA001 AND TD013>='{0}') AS INT) AS '總訂單需求量' 
-		                                        ,(SELECT TOP 1 TC006+' '+MV002 FROM [TK].dbo.COPTC,[TK].dbo.CMSMV WHERE TC006=MV001 AND  TC001+TC002 IN (SELECT TOP 1 TA026+TA027 FROM [TK].dbo.MOCTA WHERE TA001+TA002 IN (SELECT TOP 1 TG014+TG015 FROM [TK].dbo.MOCTG WHERE TG004=LA001 AND TG017=LA016))) AS '業務'
-		                                        ,(SELECT TOP 1 ME032
-		                                        FROM [TK].dbo.INVME
-		                                        WHERE ME001=LA001 AND ME002=LA016) AS '生產日期'
-		                                        ,(SELECT TOP 1 ME009
-		                                        FROM [TK].dbo.INVME
-		                                        WHERE ME001=LA001 AND ME002=LA016) AS '有效日期'
-		                                        ,ISDATE(LA016) AS LA016
-		                                        ,LA009
-		                                        FROM [TK].dbo.INVLA WITH (NOLOCK)  
-		                                        LEFT JOIN  [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001   
-		                                        WHERE  (LA009='20028')   
-		                                        AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
-		                                        GROUP BY  LA001,LA009,MB002,MB003,LA016,MB023,MB198,MB004    
-		                                        HAVING SUM(LA005*LA011)<>0 
-	                                        ) AS TEMP
-                                        ) AS TEMP2
-                                        LEFT JOIN [TK].dbo.INVMB ON MB001=品號
-                                        ORDER BY 品號,批號      
-                                        ", DateTime.Now.ToString("yyyyMMdd"));
+                                            -----------------------------------------------------------------------------------
+                                            -- 主查詢開始 (引入大表需求量與動態 FOR XML 單據串接)
+                                            -----------------------------------------------------------------------------------
+                                            SELECT 
+                                                D.[品號], D.[品名], D.[規格], D.[批號], D.[庫存量], D.[單位],
+                                                CONVERT(INT,V_Demand.EffDemand) AS [效期內的訂單需求量],
+                                                CONVERT(INT,(D.[庫存量] - ISNULL(V_Demand.EffDemand, 0))) AS [效期內的訂單差異量],
+                                                CONVERT(INT,ISNULL(T_Demand.TotalDemand, 0)) AS [總訂單需求量],
+                                                D.[業務],
+                                                D.[修正生產日期] AS [生產日期],
+    
+                                                -- 在倉日期計算
+                                                CASE 
+                                                    WHEN ISNULL(D.[原始生產日期], '') <> '' THEN DATEDIFF(DAY, D.[原始生產日期], @BaseDate) 
+                                                    ELSE DATEDIFF(DAY, D.[修正生產日期], @BaseDate) 
+                                                END AS [在倉日期],
+    
+                                                DATEDIFF(DAY, @BaseDate, D.[原始有效日期]) AS [有效天數],
+    
+                                                -- 狀態分流
+                                                CASE 
+                                                    WHEN DATEDIFF(DAY, CASE WHEN ISNULL(D.[原始生產日期], '') <> '' THEN D.[原始生產日期] ELSE D.[修正生產日期] END, @BaseDate) > 90 THEN '在倉超過90天' 
+                                                    WHEN DATEDIFF(DAY, CASE WHEN ISNULL(D.[原始生產日期], '') <> '' THEN D.[原始生產日期] ELSE D.[修正生產日期] END, @BaseDate) > 30 THEN '在倉超過30天' 
+                                                    ELSE '' 
+                                                END AS [狀態],
+    
+                                                CASE WHEN D.MB198 = '1' THEN 1 * D.MB023 WHEN D.MB198 = '2' THEN 30 * D.MB023 ELSE 0 END AS 'DAYS',
+                                                CONVERT(NVARCHAR(8), DATEADD(DAY, -1 * (CASE WHEN D.MB198 = '1' THEN 1 * D.MB023 WHEN D.MB198 = '2' THEN 30 * D.MB023 ELSE 0 END), CONVERT(DATETIME, D.[批號])), 112) AS '外購品的生產日',
+                                                D.[庫別],
+                                                NOS.NOS AS [NOS]
+
+                                            FROM Inventory_With_Dates AS D
+                                            -- 關聯總需求量
+                                            LEFT JOIN Order_Total_Demand AS T_Demand ON T_Demand.ItemNo = D.[品號]
+                                            -- 關聯效期內需求量 (動態計算日期區間，減少對大表的掃描)
+                                            CROSS APPLY (
+                                                SELECT ISNULL(SUM(NUM), 0) AS EffDemand
+                                                FROM [TK].dbo.VCOPTDINVMD WITH(NOLOCK)
+                                                WHERE TD004 = D.[品號] 
+                                                  AND TD013 >= @BaseDateStr 
+                                                  AND TD013 <= CONVERT(NVARCHAR(8), DATEADD(MONTH, -1 * D.MonthOffset, CAST(D.[批號] AS DATETIME)), 112)
+                                            ) AS V_Demand
+
+                                            -- 延遲加載：最後才為每一列庫存生成 10 表 UNION 的單據號碼 (大幅釋放系統 memory 與 I/O)
+                                            CROSS APPLY (
+                                                SELECT (
+                                                    SELECT Key1 + '-' + Key2 + ': ' + CONVERT(NVARCHAR(50), Key3) + ' ' + M_MF002 + CHAR(10)
+                                                    FROM ( 
+                                                        SELECT DISTINCT '1' As Type, TG001 As Key1, TG002 As Key2, (TH008 + TH024) AS Key3, (CASE WHEN (COPTG.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..COPTG AS COPTG WITH(NOLOCK)
+                                                        INNER JOIN TK..COPTH AS COPTH WITH(NOLOCK) ON TH001 = TG001 AND TH002 = TG002
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = COPTG.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = COPTG.MODIFIER
+                                                        WHERE TH004 = D.[品號] And TH017 = D.[批號] AND TH007 = '20028' AND TG023 = 'N'
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT (CASE WHEN (MQ003 = '11') THEN '2' ELSE '3' END) As Type, TA001 As Key1, TA002 As Key2, (TB007) AS Key3, (CASE WHEN (INVTA.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..INVTA AS INVTA WITH(NOLOCK)
+                                                        INNER JOIN TK..INVTB AS INVTB WITH(NOLOCK) ON TB001 = TA001 AND TB002 = TA002
+                                                        LEFT JOIN TK..CMSMQ AS CMSMQ WITH(NOLOCK) ON MQ001 = TA001
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = INVTA.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = INVTA.MODIFIER
+                                                        WHERE TB004 = D.[品號] AND TB014 = D.[批號] AND TB012 = '20028' AND TA006 = 'N' AND MQ010 = -1 
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT '4' As Type, TF001 As Key1, TF002 As Key2, (TG009) AS Key3, (CASE WHEN (INVTF.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..INVTF AS INVTF WITH(NOLOCK)
+                                                        INNER JOIN TK..INVTG AS INVTG WITH(NOLOCK) ON TG001 = TF001 AND TG002 = TF002
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = INVTF.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = INVTF.MODIFIER
+                                                        WHERE TG004 = D.[品號] AND TG017 = D.[批號] AND TG007 = '20028' AND TF020 = 'N' 
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT '5' As Type, TH001 As Key1, TH002 As Key2, (TI009) AS Key3, (CASE WHEN (INVTH.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..INVTH AS INVTH WITH(NOLOCK)
+                                                        INNER JOIN TK..INVTI AS INVTI WITH(NOLOCK) ON TI001 = TH001 AND TI002 = TH002
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = INVTH.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = INVTH.MODIFIER
+                                                        WHERE TI004 = D.[品號] AND TI017 = D.[批號] AND TI007 = '20028' AND TH020 = 'N' 
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT '6' As Type, TA001 As Key1, TA002 As Key2, (TB009 + TB011) AS Key3, (CASE WHEN (EPSTA.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..EPSTA AS EPSTA WITH(NOLOCK)
+                                                        INNER JOIN TK..EPSTB AS EPSTB WITH(NOLOCK) ON TB001 = TA001 AND TB002 = TA002
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = EPSTA.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = EPSTA.MODIFIER
+                                                        WHERE TB007 = D.[品號] AND TB019 = D.[批號] AND TB018 = '20028' AND TA034 <> 'V' AND TB021 + TB022 + TB023 = '' AND TB042 + TB043 + TB044 = '' 
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT '7' As Type, TD001 As Key1, TD002 As Key2, (TE008) AS Key3, (CASE WHEN (BOMTD.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..BOMTD AS BOMTD WITH(NOLOCK)
+                                                        INNER JOIN TK..BOMTE AS BOMTE WITH(NOLOCK) ON TE001 = TD001 AND TE002 = TD002
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = BOMTD.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = BOMTD.MODIFIER
+                                                        WHERE TE004 = D.[品號] AND TE013 = D.[批號] AND TE007 = '20028' AND TD012 = 'N' 
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT '8' As Type, TF001 As Key1, TF002 As Key2, (TF007) AS Key3, (CASE WHEN (BOMTF.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..BOMTF AS BOMTF WITH(NOLOCK)
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = BOMTF.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = BOMTF.MODIFIER
+                                                        WHERE TF004 = D.[品號] AND TF015 = D.[批號] AND TF008 = '20028' AND TF010 = 'N' 
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT '9' As Type, TC001 As Key1, TC002 As Key2, (TE005) AS Key3, (CASE WHEN (MOCTC.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM TK..MOCTC AS MOCTC WITH(NOLOCK)
+                                                        INNER JOIN TK..MOCTE AS MOCTE WITH(NOLOCK) ON TE001 = TC001 AND TE002 = TC002
+                                                        LEFT JOIN TK..ADMMF As A WITH(NOLOCK) On A.MF001 = MOCTC.CREATOR
+                                                        LEFT JOIN TK..ADMMF As B WITH(NOLOCK) On B.MF001 = MOCTC.MODIFIER
+                                                        LEFT JOIN TK..CMSMQ AS CMSMQ WITH(NOLOCK) ON MQ001 = TC001
+                                                        WHERE TE004 = D.[品號] AND TE010 = D.[批號] AND TE008 = '20028' AND TC009 = 'N' AND MQ010 = -1 
+            
+                                                        UNION ALL 
+            
+                                                        SELECT DISTINCT 'A' As Type, TJ001 As Key1, TJ002 As Key2, SUM(TK007) AS Key3, (CASE WHEN (INVTJ.MODIFIER <> '') THEN B.MF002 ELSE A.MF002 END) As M_MF002 
+                                                        FROM [TK].dbo.INVTJ As INVTJ WITH(NOLOCK)
+                                                        INNER JOIN [TK].dbo.INVTK AS INVTK WITH(NOLOCK) ON TK001 = TJ001 AND TK002 = TJ002
+                                                        LEFT JOIN [TK].dbo.ADMMF As A WITH(NOLOCK) On A.MF001 = INVTJ.CREATOR
+                                                        LEFT JOIN [TK].dbo.ADMMF As B WITH(NOLOCK) On B.MF001 = INVTJ.MODIFIER
+                                                        WHERE TK004 = D.[品號] AND TK018 = D.[批號] AND TK017 = '20028' AND TJ010 = 'N'  
+                                                        GROUP BY TJ001, TJ002, INVTJ.MODIFIER, A.MF002, B.MF002
+                                                        HAVING (SUM(ISNULL(TK007, 0)) < 0) 
+                                                    ) AS MoidA 
+                                                    FOR XML PATH('')
+                                                ) AS NOS
+                                            ) AS NOS
+
+                                            ORDER BY D.[品號], D.[批號]; 
+                                        ", DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyyMMdd"));
             }
             else if (KINDS.Equals("21001"))
             {                
