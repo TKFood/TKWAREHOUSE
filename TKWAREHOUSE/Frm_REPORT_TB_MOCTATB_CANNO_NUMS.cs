@@ -619,6 +619,67 @@ namespace TKWAREHOUSE
             return FASTSQL.ToString();
         }
 
+
+        public void SETFASTREPORT_OTHERS(string TA001, string TA002, string currentNo)
+        {
+            string SQL;
+            string SQL1;
+            report1 = new Report();
+            report1.Load(@"REPORT\製令各桶明細.frx");
+
+            Class1 TKID = new Class1();//用new 建立類別實體
+            // 1.取得原始的連線字串
+            string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+
+            // 2. 使用 SqlConnectionStringBuilder 來解析與修改
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+
+            // 3. 將內含的帳密解密後重新指派
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+
+            // 4. 用最後組合好的連線字串建立 SqlConnection
+            SqlConnection connection = new SqlConnection(builder.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = connection.ConnectionString;
+
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+            SQL = SETFASETSQL_OTHERS(TA001, TA002, currentNo);
+
+            Table.SelectCommand = SQL;
+
+            report1.Preview = previewControl2;
+            report1.Show();
+
+        }
+
+        public string SETFASETSQL_OTHERS(string TA001, string TA002, string currentNo)
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+            StringBuilder STRQUERY = new StringBuilder();
+            StringBuilder STRQUERYNOTIN = new StringBuilder();
+
+
+            FASTSQL.AppendFormat(@"    
+                                SELECT 
+                                [TA001] AS '製令單別'
+                                ,[TA002] AS '製令單號'
+                                ,[CANNO] AS '桶號'
+                                ,[MD003] AS '品號'
+                                ,[MB002] AS '品名'
+                                ,[MB004] AS '單位'
+                                ,[NUMS] AS '數量'
+                                ,[ALLCANS] AS '總桶數'
+                                FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_OTHERS]
+                                WHERE 1=1
+                                AND ((TA001='{0}' AND TA002='{1}') OR (TA002='{2}'))
+                                ORDER BY [TA001],[MD003] ,[CANNO]
+                                 ", TA001, TA002, currentNo);
+
+
+            return FASTSQL.ToString();
+        }
+
         public void SERACH_TB_MOCTATB_CANNO_NUMS_NOUSED()
         {
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -905,6 +966,86 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void ADD_TB_MOCTATB_CANNO_NUMS_MERGE_OTHERS(string currentNo)
+        {
+            StringBuilder ADD_SQL = new StringBuilder();
+            // 收集所有被勾選的列
+            List<DataGridViewRow> selectedRows = new List<DataGridViewRow>();
+
+            // 這裡修正為您畫面實際對應的 dataGridView1
+            foreach (DataGridViewRow row in dataGridView4.Rows)
+            {
+                if (!row.IsNewRow && Convert.ToBoolean(row.Cells["SelectCheck"].Value) == true)
+                {
+                    selectedRows.Add(row);
+                }
+            }
+
+            if (selectedRows.Count == 0)
+            {
+                MessageBox.Show("請先勾選要合併的製令單！", "提示");
+                return;
+            }
+
+            SqlCommand cmd = new SqlCommand();
+
+            // 【核心修正點 1】: 共用的編號是固定不變的，在迴圈外「只加入一次」即可！
+            cmd.Parameters.AddWithValue("@NewMergeNo", currentNo);
+
+            int paramIndex = 0;
+            foreach (DataGridViewRow row in selectedRows)
+            {
+                string ta001 = row.Cells["製令單別"].Value?.ToString().Trim() ?? "";
+                string ta002 = row.Cells["製令單號"].Value?.ToString().Trim() ?? "";
+
+                // 參數化命名避免衝突
+                string pTA001 = "@TA001_" + paramIndex;
+                string pTA002 = "@TA002_" + paramIndex;
+
+                ADD_SQL.AppendLine($@"
+                                    INSERT INTO [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_MERGE] ([MERGENO], [TA001], [TA002])
+                                    VALUES (@NewMergeNo, {pTA001}, {pTA002});
+                                ");
+
+                // 【核心修正點 2】: 迴圈內只加入每筆資料各自專屬的單別、單號參數
+                cmd.Parameters.AddWithValue(pTA001, ta001);
+                cmd.Parameters.AddWithValue(pTA002, ta002);
+
+                paramIndex++;
+            }
+
+            // 取得解密連線字串並執行
+            Class1 TKID = new Class1();
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+
+            using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
+            {
+                cmd.Connection = conn;
+                cmd.CommandText = ADD_SQL.ToString();
+
+                try
+                {
+                    conn.Open();
+                    using (SqlTransaction tran = conn.BeginTransaction())
+                    {
+                        cmd.Transaction = tran;
+                        cmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                    //MessageBox.Show("批次存檔完成！", "成功");
+
+                    // 重新整理 UI 或者是清除勾選
+                    SetupDataGridView();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("存檔失敗：" + ex.Message);
+                }
+            }
+        }
+
         public DataTable CHECK_BOMMD(int COUNTS, List<string> MD001)
         {
             // 安全防護：若沒有傳入任何品號，直接回傳空表
@@ -1043,6 +1184,64 @@ namespace TKWAREHOUSE
             cmd.Parameters.AddWithValue("@ParamTA002", TA002.Trim());
             cmd.Parameters.AddWithValue("@ALLCANS", buckets);
             cmd.Parameters.AddWithValue("@currentNo",  currentNo);
+
+            // 5. 執行資料庫交易
+            ExecuteSqlTransaction(batchSql.ToString(), cmd);
+        }
+
+        public void PRINT_MERGE_OTHERS(string TA001, string TA002, float BUCKETS, string LINK_TA001TA002, string LINK_TA006, string LINK_TA034, string MAINMB001, string currentNo)
+        {
+            if (BUCKETS <= 0) return;
+
+            // 1. 處理報表中間資料 (帶入製令單別與單號)
+            ProcessReportData_OTHERS(TA001.Trim(), TA002.Trim(), BUCKETS, currentNo);
+
+            // 2. 加載報表與設置資料源
+            SETFASTREPORT_OTHERS(TA001.Trim(), TA002.Trim(), currentNo);
+        }
+
+        private void ProcessReportData_OTHERS(string TA001, string TA002, float buckets, string currentNo)
+        {
+            // 防止傳入空參數時不小心清空或洗掉非預期的資料
+            if (string.IsNullOrEmpty(TA001) || string.IsNullOrEmpty(TA002)) return;
+
+            StringBuilder batchSql = new StringBuilder();
+            SqlCommand cmd = new SqlCommand();
+
+            // 1. 先清除舊報表資料 (安全防護：務必加上 WHERE 條件)
+            batchSql.AppendLine("DELETE [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_OTHERS] WHERE TA001=@ParamTA001 AND TA002=@ParamTA002;");
+
+            // 2. 📌 核心修正：移除錯誤的 {i}，補上漏掉的逗號，欄位精準對齊 8 個
+            // 這裡我們預設 CANNO (桶號) 固定填 1，或者改填您的合併單號，端看您的資料表設計
+            batchSql.AppendLine(@"
+                                INSERT INTO [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_OTHERS] 
+                                    ([TA001], [TA002], [CANNO], [MD003], [MB002], [MB004], [NUMS], [ALLCANS])
+                                SELECT 
+                                    A.TA001, 
+                                    A.TA002, 
+                                    1, -- 原本 {i} 的位置，因無迴圈，改給預設值 1 (或依您邏輯調整)
+                                    B.MD003, 
+                                    C.MB002, 
+                                    C.MB004, 
+                                    CONVERT(DECIMAL(16,3), (B.MD006 / B.MD007) * @buckets), -- 這裡修正了後方的逗號
+                                    @ALLCANS
+                                FROM [TK].dbo.MOCTA A
+                                INNER JOIN [TK].dbo.BOMMD B ON A.TA006 = B.MD001
+                                INNER JOIN [TK].dbo.INVMB C ON B.MD003 = C.MB001
+                                WHERE B.MD003 LIKE '1%' 
+                                  AND B.MD003 NOT LIKE '30100002%'
+                                  AND B.MD003 NOT IN (SELECT [MB001] FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_NOUSED])
+                                  AND A.TA001 = @ParamTA001 
+                                  AND A.TA002 = @ParamTA002;
+                            ");
+
+            // 4. 綁定核心參數 (C# 5.0 相容)
+            cmd.Parameters.AddWithValue("@ParamTA001", TA001.Trim());
+            cmd.Parameters.AddWithValue("@ParamTA002", TA002.Trim());
+            cmd.Parameters.AddWithValue("@ALLCANS", buckets);
+            cmd.Parameters.AddWithValue("@buckets", buckets);
+            // 如果 SQL 裡目前沒用到 @currentNo 怕噴警告，也可以留著備用
+            cmd.Parameters.AddWithValue("@currentNo", currentNo.Trim());
 
             // 5. 執行資料庫交易
             ExecuteSqlTransaction(batchSql.ToString(), cmd);
@@ -1310,10 +1509,10 @@ namespace TKWAREHOUSE
                 string currentNo = GetNewMergeNo();
 
                 // 執行批次存檔
-                ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
+                ADD_TB_MOCTATB_CANNO_NUMS_MERGE_OTHERS(currentNo);
 
                 // 執行列印或預覽
-                //PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+                PRINT_MERGE_OTHERS(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
             }
             else
             {
