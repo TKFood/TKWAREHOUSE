@@ -1,28 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using FastReport;
+using FastReport.Data;
+using MathNet.Numerics;
 using NPOI;
 using NPOI.HPSF;
 using NPOI.HSSF;
-using NPOI.HSSF.UserModel;
-using NPOI.POIFS;
-using NPOI.Util;
-using NPOI.HSSF.Util;
 using NPOI.HSSF.Extractor;
-using System.IO;
-using System.Data.SqlClient;
+using NPOI.HSSF.UserModel;
+using NPOI.HSSF.Util;
+using NPOI.POIFS;
 using NPOI.SS.UserModel;
-using System.Configuration;
+using NPOI.Util;
 using NPOI.XSSF.UserModel;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
-using FastReport;
-using FastReport.Data;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using TKITDLL;
 
 
@@ -211,6 +212,20 @@ namespace TKWAREHOUSE
                 connection.Close();
             }
         }
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            string 製令單別 = null;
+            string 製令單號 = null;            
+
+            if (dataGridView4.CurrentRow != null)
+            {
+                製令單別 = dataGridView4.CurrentRow.Cells["製令單別"].Value.ToString();
+                製令單號 = dataGridView4.CurrentRow.Cells["製令單號"].Value.ToString();
+
+                SEARCH_DETAILS_DG5(製令單別, 製令單號);
+            }
+        }
+
         public void SEARCH_DETAILS(string 製令單別,string 製令單號)
         {
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -245,7 +260,7 @@ namespace TKWAREHOUSE
 	                        WHERE TA001=TB001 AND TA002=TB002
 	                        AND TA006=MC001
 	                        AND TA021=CMSMD.MD001
-	                        AND CMSMD.MD002  IN (SELECT [MD002]  FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_CMSMD]) 	                       
+	                        
                         ) AS TEMP
                         LEFT JOIN  [TK].dbo.BOMMD ON 產品品號=MD001 AND 材料品號=MD003
                         WHERE  MD003 LIKE '1%'
@@ -275,6 +290,71 @@ namespace TKWAREHOUSE
                 connection.Close();
             }
         }
+
+        public void SEARCH_DETAILS_DG5(string 製令單別, string 製令單號)
+        {
+            Class1 TKID = new Class1();//用new 建立類別實體
+            // 1.取得原始的連線字串
+            string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+
+            // 2. 使用 SqlConnectionStringBuilder 來解析與修改
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+
+            // 3. 將內含的帳密解密後重新指派
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+
+            // 4. 用最後組合好的連線字串建立 SqlConnection
+            SqlConnection connection = new SqlConnection(builder.ConnectionString);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(@"                       
+                        SELECT 
+                        線別,製令單別,製令單號,開單日期,產品品號,產品品名,預計產量,單位1,材料品號,材料品名,單位2,需領用量,總桶數,整桶數,最後桶數,整桶用量,最後桶用量,標準用量
+                        ,ISNULL(BOMMD.MD004,'') AS '材料單位',ISNULL(BOMMD.MD006,0) AS '組成用量',ISNULL(BOMMD.MD007,0) AS '底數',ISNULL(BOMMD.MD008,0) AS '損耗率%'
+                        ,CASE WHEN ISNULL(BOMMD.MD006,0)>0 THEN ISNULL(BOMMD.MD006,0)/ISNULL(BOMMD.MD007,0)*(1+ISNULL(BOMMD.MD008,0)) ELSE 0 END AS 'BOM用量'
+                        ,標準批量
+                        FROM (
+	                        SELECT CMSMD.MD002 AS '線別',TA001 AS '製令單別',TA002 AS '製令單號',TA003 AS '開單日期',TA006 AS '產品品號',TA034 AS '產品品名',TA015 AS '預計產量',TA007 AS '單位1',TB003 AS '材料品號',TB012 AS '材料品名',TB007 AS '單位2',TB004 AS '需領用量',MC004 AS '標準批量',ROUND(TA015/MC004,3) AS '總桶數'
+	                        ,(CASE WHEN TA015>0 AND MC004>0 THEN  FLOOR(ROUND(TA015/MC004,3)) ELSE 0 END) AS '整桶數'
+	                        ,(CASE WHEN TA015>0 AND MC004>0 THEN (ROUND(TA015/MC004,3)-FLOOR(ROUND(TA015/MC004,3)))   ELSE 0 END) AS '最後桶數'
+	                        ,(CASE WHEN TA015>0 AND MC004>0 THEN (CASE WHEN FLOOR(ROUND(TA015/MC004,3)) = ROUND(TA015/MC004,3) THEN ROUND(TB004/ROUND(TA015/MC004,3),3) ELSE CASE WHEN (ROUND(TA015/MC004,3)-1)>0 THEN ROUND(TB004/ROUND(TA015/MC004,3),3) ELSE 0 END  END )  ELSE 0 END)  AS '整桶用量'
+	                        ,(CASE WHEN TA015>0 AND MC004>0 THEN (TB004-(ROUND(TB004/ROUND(TA015/MC004,3),3)*(CASE WHEN FLOOR(ROUND(TA015/MC004,3)) = ROUND(TA015/MC004,3) THEN ROUND(TA015/MC004,3) ELSE CASE WHEN (ROUND(TA015/MC004,3)-1)>0 THEN FLOOR(ROUND(TA015/MC004,3)) ELSE 0 END  END)))  ELSE 0 END)   AS '最後桶用量'
+	                        ,(CASE WHEN TA015>0 AND MC004>0 THEN ROUND(TB004/ROUND(TA015/MC004,3),3) ELSE 0 END )  AS '標準用量'
+	                        FROM [TK].dbo.MOCTA,[TK].dbo.MOCTB,[TK].dbo.BOMMC,[TK].dbo.CMSMD
+	                        WHERE TA001=TB001 AND TA002=TB002
+	                        AND TA006=MC001
+	                        AND TA021=CMSMD.MD001	                         	                       
+                        ) AS TEMP
+                        LEFT JOIN  [TK].dbo.BOMMD ON 產品品號=MD001 AND 材料品號=MD003
+                        WHERE  MD003 LIKE '1%'
+                        AND MD003 NOT LIKE '30100002%'
+                        AND MD003 NOT IN ( SELECT [MB001]  FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_NOUSED] )
+                        AND 製令單別=@製令單別 AND 製令單號=@製令單號
+                        ORDER BY 線別,製令單別,製令單號  
+                        ");
+            SqlCommand command = new SqlCommand(sb.ToString(), connection);
+            command.CommandType = CommandType.Text;
+            command.Parameters.AddWithValue("@製令單別", 製令單別);
+            command.Parameters.AddWithValue("@製令單號", 製令單號);
+            DataTable dt = new DataTable();
+            try
+            {
+                connection.Open();
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                dataGridView5.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
 
         public void PRINTS(string TA001,string TA002)
         {
@@ -1158,10 +1238,100 @@ namespace TKWAREHOUSE
 
         private void button9_Click(object sender, EventArgs e)
         {
+            int COUNTS = 0;
+            List<string> MD001 = new List<string>();
 
+            // 儲存勾選列的暫存結構，避免重複讀取 UI
+            var selectedRows = new List<DataGridViewRow>();
+
+            string LINK_TA001TA002 = "";
+            string LINK_TA006 = "";
+            string LINK_TA034 = "";
+            float BUCKETS = 0;
+
+            string lastTA001 = "";
+            string lastTA002 = "";
+
+            // 1. 【優化：合併唯一個迴圈】收集所有勾選的資料
+            foreach (DataGridViewRow dr in this.dataGridView4.Rows)
+            {
+                if (dr.IsNewRow) continue;
+
+                // 確保 CheckBox 有被勾選
+                bool isChecked = Convert.ToBoolean(dr.Cells[0].Value);
+                if (isChecked)
+                {
+                    COUNTS++;
+                    selectedRows.Add(dr);
+
+                    // 收集品號供 CHECK_BOMMD 檢查
+                    string prodNo = dr.Cells["產品品號"].Value?.ToString().Trim() ?? "";
+                    if (!string.IsNullOrEmpty(prodNo))
+                    {
+                        MD001.Add(prodNo);
+                    }
+
+                    // 串接合併資訊
+                    lastTA001 = dr.Cells["製令單別"].Value?.ToString().Trim() ?? "";
+                    lastTA002 = dr.Cells["製令單號"].Value?.ToString().Trim() ?? "";
+
+                    LINK_TA001TA002 += lastTA001 + lastTA002 + "*";
+                    LINK_TA006 += prodNo + "*"; // 【修正】原本錯寫成 LINK_TA034
+                    LINK_TA034 += dr.Cells["產品品名"].Value?.ToString().Trim() + "*";
+
+                    BUCKETS += Convert.ToSingle(dr.Cells["總桶數"].Value ?? 0);
+                }
+            }
+
+            // 防呆：如果根本沒勾選，直接結束
+            if (COUNTS == 0)
+            {
+                MessageBox.Show("請至少勾選一筆資料！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // 如果原本 N 的邏輯需要跑：SETREPORT(textBox1.Text.Trim(), textBox2.Text.Trim(), textBox3.Text.Trim(), MAINMB001);
+                return;
+            }
+
+            // 四捨五入總桶數
+            BUCKETS = (float)Math.Round(BUCKETS, 3);
+
+            // 記錄最後一筆的品號供後續使用 (對應您原本的 MAINMB001)
+            if (MD001.Count > 0)
+            {
+                MAINMB001 = MD001.Last();
+            }
+
+            // 2. CHECK：檢查原料單身品號與用量是否一致
+            DataTable DT = CHECK_BOMMD(COUNTS, MD001);
+
+            // 3. 判斷檢查結果
+            if (DT == null || DT.Rows.Count == 0)
+            {
+                // 【核心修正】：檢查完全通過了，才去資料庫取號並寫入 Merge 表
+                string currentNo = GetNewMergeNo();
+
+                // 執行批次存檔
+                ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
+
+                // 執行列印或預覽
+                //PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+            }
+            else
+            {
+                // 檢查失敗，顯示不一致的原料明細
+                StringBuilder sbError = new StringBuilder();
+                sbError.AppendLine("原料需單身品號元件不一致 或 組成用量不一致，不能合併：");
+
+                foreach (DataRow row in DT.Rows)
+                {
+                    sbError.AppendLine($"品號: {row["MD003"]} | 用量: {row["MD006"]} | 底數: {row["MD007"]}");
+                }
+
+                MessageBox.Show(sbError.ToString(), "核心BOM檢查失敗", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
         #endregion
 
-
+      
     }
 }
