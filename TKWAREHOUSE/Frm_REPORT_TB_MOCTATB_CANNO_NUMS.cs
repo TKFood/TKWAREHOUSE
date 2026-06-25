@@ -47,6 +47,7 @@ namespace TKWAREHOUSE
         private void Frm_REPORT_TB_MOCTATB_CANNO_NUMS_Load(object sender, EventArgs e)
         {
             SetupDataGridView();
+            SetupDataGridView4();
         }
         #region FUNCTION
 
@@ -65,6 +66,24 @@ namespace TKWAREHOUSE
             if (!dataGridView1.Columns.Contains("SelectCheck"))
             {
                 dataGridView1.Columns.Insert(0, checkColumn);
+            }
+        }
+
+        private void SetupDataGridView4()
+        {
+            // 1. 建立一個 CheckBox 欄位
+            DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
+            checkColumn.Name = "SelectCheck";
+            checkColumn.HeaderText = "選取";
+            checkColumn.Width = 50;
+            checkColumn.ReadOnly = false; // 確保使用者可以勾選
+            checkColumn.TrueValue = true;
+            checkColumn.FalseValue = false;
+
+            // 2. 將勾選欄插入到 DataGridView 的最前面 (索引 0)
+            if (!dataGridView4.Columns.Contains("SelectCheck"))
+            {
+                dataGridView4.Columns.Insert(0, checkColumn);
             }
         }
         public void SEARCH(string SDATE)
@@ -140,6 +159,58 @@ namespace TKWAREHOUSE
             }
         }
 
+        public void SEARCH_DG4(string SDATE)
+        {
+            Class1 TKID = new Class1();//用new 建立類別實體
+            // 1.取得原始的連線字串
+            string originalConnString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+
+            // 2. 使用 SqlConnectionStringBuilder 來解析與修改
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(originalConnString);
+
+            // 3. 將內含的帳密解密後重新指派
+            builder.UserID = TKID.Decryption(builder.UserID);
+            builder.Password = TKID.Decryption(builder.Password);
+
+            // 4. 用最後組合好的連線字串建立 SqlConnection
+            SqlConnection connection = new SqlConnection(builder.ConnectionString);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(@" 
+                        SELECT 
+                        線別,製令單別,製令單號,開單日期,產品品號,產品品名,預計產量,單位,總桶數
+                        FROM (
+	                        SELECT CMSMD.MD002 AS '線別',TA001 AS '製令單別',TA002 AS '製令單號',TA003 AS '開單日期',TA006 AS '產品品號',TA034 AS '產品品名',TA015 AS '預計產量',TA007 AS '單位',ROUND(TA015/MC004,3) AS '總桶數'
+	                        FROM [TK].dbo.MOCTA,[TK].dbo.BOMMC,[TK].dbo.CMSMD
+	                        WHERE 1=1
+	                        AND TA006=MC001
+	                        AND TA021=CMSMD.MD001
+	                        AND CMSMD.MD002  IN (SELECT [MD002]  FROM [TKWAREHOUSE].[dbo].[TB_MOCTATB_CANNO_NUMS_CMSMD_OTHERS]) 
+	                        AND TA003=@SDATE
+                        ) AS TEMP
+                        ORDER BY 線別,製令單別,製令單號  
+
+                ");
+            SqlCommand command = new SqlCommand(sb.ToString(), connection);
+            command.CommandType = CommandType.Text;
+            command.Parameters.AddWithValue("@SDATE", SDATE);
+            DataTable dt = new DataTable();
+            try
+            {
+                connection.Open();
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                dataGridView4.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
         public void SEARCH_DETAILS(string 製令單別,string 製令單號)
         {
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -1081,7 +1152,8 @@ namespace TKWAREHOUSE
 
         private void button7_Click(object sender, EventArgs e)
         {
-
+            string SDATE = dateTimePicker2.Value.ToString("yyyyMMdd");
+            SEARCH_DG4(SDATE);
         }
 
         private void button9_Click(object sender, EventArgs e)
