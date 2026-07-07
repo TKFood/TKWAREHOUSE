@@ -56,11 +56,44 @@ namespace TKWAREHOUSE
         {
             InitializeComponent();
 
+        }
+        private void FrmCALENDERPUR_Load(object sender, EventArgs e)
+        {
+            comboboxload_1();
             SETCALENDAR();
             SETDATE();
         }
-
         #region FUNCTION
+        public void comboboxload_1()
+        {
+
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            String Sequel = "SELECT [KEYS] FROM [TKWAREHOUSE].[dbo].[TBPARAS] WHERE KINDS='FrmCALENDERPUR' ORDER BY ID";
+            SqlDataAdapter da = new SqlDataAdapter(Sequel, sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("KEYS", typeof(string));           
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "KEYS";
+            comboBox1.DisplayMember = "KEYS";
+            sqlConn.Close();
+
+            comboBox1.SelectedValue = "全部";
+
+        }
 
         public void SETDATE()
         {
@@ -176,7 +209,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void SETFASTREPORT()
+        public void SETFASTREPORT(string KINDS)
         {
 
             string SQL;
@@ -200,7 +233,7 @@ namespace TKWAREHOUSE
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
 
-            SQL = SETFASETSQL();
+            SQL = SETFASETSQL(KINDS);
            
             Table.SelectCommand = SQL;
 
@@ -209,12 +242,27 @@ namespace TKWAREHOUSE
 
         }
 
-        public string SETFASETSQL()
+        public string SETFASETSQL(string KINDS)
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
 
-            if(string.IsNullOrEmpty(textBox1.Text))
+            if(KINDS.Equals("原料"))
+            {
+                STRQUERY.AppendFormat(@" AND TD004 LIKE '1%' ");
+            }
+            else if (KINDS.Equals("物料"))
+            {
+                STRQUERY.AppendFormat(@" AND TD004 LIKE '2%' ");
+            }
+            else
+            {
+                STRQUERY.AppendFormat(@"  ");
+            }
+
+
+
+            if (string.IsNullOrEmpty(textBox1.Text))
             {
   
                 FASTSQL.AppendFormat(@"  
@@ -229,8 +277,10 @@ namespace TKWAREHOUSE
                                     AND MA001=TC004
                                     AND TD012>='{0}' AND TD012<='{1}'
                                     AND TD018='Y'
+                                    {2}
                                     ORDER BY TD012,MA002,TD004,TD001,TD002,TD003"
                                     , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd")
+                                    , STRQUERY.ToString()
                                     );
                                         
             }
@@ -249,10 +299,14 @@ namespace TKWAREHOUSE
                                     AND MA001 = TC004
                                     AND TD012>='{0}' AND TD012<='{1}'
                                     AND TD018 = 'Y'
-                                    AND(TD005 LIKE '%{2}%' OR TD004 LIKE '%{2}%')
+                                    AND (TD005 LIKE '%{2}%' OR TD004 LIKE '%{2}%')
+                                    {3}
                                     ORDER BY TD012,MA002,TD004,TD001,TD002,TD003
                                     "
-                                     , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text.Trim());
+                                     , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text.Trim()
+                                     , STRQUERY.ToString()
+                                     );
+
                     
             }
             FASTSQL.AppendFormat(@"   ");
@@ -683,7 +737,8 @@ namespace TKWAREHOUSE
 
         private void button3_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT();
+            string KINDS = comboBox1.Text.ToString();
+            SETFASTREPORT(KINDS);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -695,8 +750,9 @@ namespace TKWAREHOUSE
             MessageBox.Show("OK");
         }
 
+
         #endregion
 
-
+       
     }
 }
