@@ -209,7 +209,7 @@ namespace TKWAREHOUSE
             }
         }
 
-        public void SETFASTREPORT(string KINDS)
+        public void SETFASTREPORT(string KINDS,string MB001,string TC004)
         {
 
             string SQL;
@@ -233,7 +233,7 @@ namespace TKWAREHOUSE
 
             TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
 
-            SQL = SETFASETSQL(KINDS);
+            SQL = SETFASETSQL(KINDS, MB001, TC004);
            
             Table.SelectCommand = SQL;
 
@@ -242,12 +242,17 @@ namespace TKWAREHOUSE
 
         }
 
-        public string SETFASETSQL(string KINDS)
+        public string SETFASETSQL(string KINDS, string MB001, string TC004)
         {
             StringBuilder FASTSQL = new StringBuilder();
             StringBuilder STRQUERY = new StringBuilder();
+            StringBuilder STRQUERY1 = new StringBuilder();
+            StringBuilder STRQUERY2 = new StringBuilder();
+            string SDATE = dateTimePicker2.Value.ToString("yyyyMMdd");
+            string EDATE = dateTimePicker3.Value.ToString("yyyyMMdd");
 
-            if(KINDS.Equals("原料"))
+
+            if (KINDS.Equals("原料"))
             {
                 STRQUERY.AppendFormat(@" AND TD004 LIKE '1%' ");
             }
@@ -260,14 +265,27 @@ namespace TKWAREHOUSE
                 STRQUERY.AppendFormat(@"  ");
             }
 
-
-
-            if (string.IsNullOrEmpty(textBox1.Text))
+            if (!string.IsNullOrEmpty(MB001))
             {
-  
-                FASTSQL.AppendFormat(@"  
+                STRQUERY1.AppendFormat(@" AND (TD004 LIKE '%{0}%'  OR TD005 LIKE '%{0}%')", MB001);
+            }
+            else
+            {
+                STRQUERY1.AppendFormat(@"  ");
+            }
+
+            if (!string.IsNullOrEmpty(TC004))
+            {
+                STRQUERY2.AppendFormat(@" AND ( TC004 LIKE '%{0}%' OR  MA002 LIKE '%{0}%')  ", TC004);
+            }
+            else
+            {
+                STRQUERY2.AppendFormat(@"  ");
+            }
+
+            FASTSQL.AppendFormat(@"  
                                     SELECT 
-                                    TD012 AS '預交日',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014 
+                                    TD012 AS '預交日',TC004 As '廠商代號',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014 
                                     ,(SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') AS COMMENT1
                                     ,(CASE WHEN ISNULL(TD014,'')<>'' THEN TD014 ELSE (SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') END )AS '備註'
                                     ,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'
@@ -278,39 +296,15 @@ namespace TKWAREHOUSE
                                     AND TD012>='{0}' AND TD012<='{1}'
                                     AND TD018='Y'
                                     {2}
+                                      {3}
+                                      {4}
                                     ORDER BY TD012,MA002,TD004,TD001,TD002,TD003"
-                                    , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd")
-                                    , STRQUERY.ToString()
-                                    );
-                                        
-            }
-            else
-            {
-
-                FASTSQL.AppendFormat(@"  
-                                    SELECT 
-                                    TD012 AS '預交日',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014
-                                    , (SELECT TOP 1 TD014 FROM[TK].dbo.PURTD A WHERE A.TD001 = PURTD.TD001 AND A.TD002 = PURTD.TD002 AND A.TD003 = '0001') AS COMMENT
-                                    ,(CASE WHEN ISNULL(TD014,'')<> '' THEN TD014 ELSE(SELECT TOP 1 TD014 FROM[TK].dbo.PURTD A WHERE A.TD001 = PURTD.TD001 AND A.TD002 = PURTD.TD002 AND A.TD003 = '0001') END )AS '備註'
-                                    ,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'
-                                    ,TD026 AS '請購單別',TD027 AS '請購單號',TD028 AS '請購序號'
-                                    FROM[TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA 
-                                    WHERE TC001 = TD001 AND TC002 = TD002
-                                    AND MA001 = TC004
-                                    AND TD012>='{0}' AND TD012<='{1}'
-                                    AND TD018 = 'Y'
-                                    AND (TD005 LIKE '%{2}%' OR TD004 LIKE '%{2}%')
-                                    {3}
-                                    ORDER BY TD012,MA002,TD004,TD001,TD002,TD003
-                                    "
-                                     , dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text.Trim()
-                                     , STRQUERY.ToString()
-                                     );
-
-                    
-            }
-            FASTSQL.AppendFormat(@"   ");
-            FASTSQL.AppendFormat(@"  ");
+                                , SDATE, EDATE
+                                , STRQUERY.ToString()
+                                 , STRQUERY1.ToString()
+                                  , STRQUERY2.ToString()
+                                );
+        
 
             return FASTSQL.ToString();
         }
@@ -739,7 +733,9 @@ namespace TKWAREHOUSE
         private void button3_Click(object sender, EventArgs e)
         {
             string KINDS = comboBox1.Text.ToString();
-            SETFASTREPORT(KINDS);
+            string MB001 = textBox1.Text.Trim();
+            string TC004 = textBox2.Text.Trim();
+            SETFASTREPORT(KINDS, MB001, TC004);
         }
 
         private void button4_Click(object sender, EventArgs e)

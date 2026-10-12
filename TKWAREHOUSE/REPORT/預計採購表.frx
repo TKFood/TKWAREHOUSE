@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="08/22/2018 14:11:05" ReportInfo.Modified="02/26/2020 09:54:11" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/22/2018 14:11:05" ReportInfo.Modified="10/12/2026 11:52:29" ReportInfo.CreatorVersion="2017.4.1.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNa3HSodxC0gQvtKxpMAAXlN5eQJ42Ef2bAL2nnzdZTuPn9XcAGTSdUUzaJomhLNfpIXcV4T7RRlJD3gBW66jXpvPrdieVxW0VJreQIDzIQcRr9IB7DK2fqpksj2TNHSe4">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT TD012 AS '預交日',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014 &#13;&#10;,(SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') AS COMMENT1&#13;&#10;,(CASE WHEN ISNULL(TD014,'')&lt;&gt;'' THEN TD014 ELSE (SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') END )AS '備註'&#13;&#10;,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'&#13;&#10;,TD026 AS '請購單別',TD027 AS '請購單號',TD028 AS '請購序號'&#13;&#10;FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA &#13;&#10;WHERE TC001=TD001 AND TC002=TD002&#13;&#10;AND MA001=TC004&#13;&#10;AND TD012&gt;='20200226' AND TD012&lt;='2020031'&#13;&#10;AND TD018='Y'&#13;&#10;ORDER BY TD012,TD001,TD002,TD003&#13;&#10;">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNa3HSodxC0gQvtKxpMAAXlN5eQJ42Ef2bAL2nnzdZTuPn9XcAGTSdUUzaJomhLNfpIXcV4T7RRlJD3gBW66jXpvPrdieVxW0VJreQIDzIQcTXG4zgphtCRDp+yrsRbgBf">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT TD012 AS '預交日',TC004 As '廠商代號',MA002 AS '廠商',TD004 AS '品號', TD005 AS '品名',TD006 AS '規格',TD008 AS '採購量',TD015 AS '已交量',TD009 AS '單位',TD012 AS '預交日',TD014 &#13;&#10;,(SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') AS COMMENT1&#13;&#10;,(CASE WHEN ISNULL(TD014,'')&lt;&gt;'' THEN TD014 ELSE (SELECT TOP 1 TD014 FROM [TK].dbo.PURTD A WHERE A.TD001=PURTD.TD001 AND A.TD002=PURTD.TD002 AND A.TD003='0001') END )AS '備註'&#13;&#10;,TD001 AS '採購單別',TD002 AS '採購單號',TD003 AS '採購序號'&#13;&#10;,TD026 AS '請購單別',TD027 AS '請購單號',TD028 AS '請購序號'&#13;&#10;FROM [TK].dbo.PURTC,[TK].dbo.PURTD,[TK].dbo.PURMA &#13;&#10;WHERE TC001=TD001 AND TC002=TD002&#13;&#10;AND MA001=TC004&#13;&#10;AND TD012&gt;='20200226' AND TD012&lt;='2020031'&#13;&#10;AND TD018='Y'&#13;&#10;ORDER BY TD012,TD001,TD002,TD003&#13;&#10;">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
         <Column Name="規格" DataType="System.String"/>
@@ -21,14 +21,15 @@
         <Column Name="請購單別" DataType="System.String"/>
         <Column Name="請購單號" DataType="System.String"/>
         <Column Name="請購序號" DataType="System.String"/>
+        <Column Name="廠商代號" DataType="System.String"/>
       </TableDataSource>
     </MsSqlDataConnection>
   </Dictionary>
-  <ReportPage Name="Page1" Landscape="true" PaperWidth="560" PaperHeight="1000">
-    <ReportTitleBand Name="ReportTitle1" Width="2041.2" Height="18.9">
-      <TextObject Name="Text1" Width="2022.3" Height="18.9" Text="預計採購表" HorzAlign="Center" VertAlign="Center"/>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="700" PaperHeight="1200">
+    <ReportTitleBand Name="ReportTitle1" Width="2570.4" Height="18.9">
+      <TextObject Name="Text1" Width="2164.05" Height="18.9" Text="預計採購表" HorzAlign="Center" VertAlign="Center"/>
     </ReportTitleBand>
-    <ColumnHeaderBand Name="ColumnHeader1" Top="22.75" Width="2041.2" Height="18.9">
+    <ColumnHeaderBand Name="ColumnHeader1" Top="23.11" Width="2570.4" Height="18.9">
       <TextObject Name="Text5" Width="66.15" Height="18.9" Border.Lines="All" Text="預交日" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text7" Left="170.1" Width="113.4" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text9" Left="283.5" Width="330.75" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
@@ -44,8 +45,9 @@
       <TextObject Name="Text29" Left="1474.2" Width="94.5" Height="18.9" Border.Lines="All" Text="請購單號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text31" Left="1568.7" Width="75.6" Height="18.9" Border.Lines="All" Text="請購序號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text3" Left="1644.3" Width="368.55" Height="18.9" Border.Lines="All" Text="備註" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text33" Left="2012.85" Width="151.2" Height="18.9" Border.Lines="All" Text="廠商代號" HorzAlign="Center" VertAlign="Center"/>
     </ColumnHeaderBand>
-    <DataBand Name="Data1" Top="45.49" Width="2041.2" Height="18.9" CanGrow="true" DataSource="Table">
+    <DataBand Name="Data1" Top="46.22" Width="2570.4" Height="18.9" CanGrow="true" DataSource="Table">
       <TextObject Name="Text4" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.預交日]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text6" Left="170.1" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" VertAlign="Center"/>
       <TextObject Name="Text8" Left="283.5" Width="330.75" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
@@ -61,6 +63,7 @@
       <TextObject Name="Text28" Left="1474.2" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.請購單號]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text30" Left="1568.7" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.請購序號]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text2" Left="1644.3" Width="368.55" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.備註]" VertAlign="Center"/>
+      <TextObject Name="Text32" Left="2012.85" Width="151.2" Height="18.9" Border.Lines="All" Text="[Table.廠商代號]" HorzAlign="Center" VertAlign="Center"/>
     </DataBand>
   </ReportPage>
 </Report>
