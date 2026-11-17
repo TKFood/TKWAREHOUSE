@@ -1404,14 +1404,24 @@ namespace TKWAREHOUSE
             // 3. 判斷檢查結果
             if (DT == null || DT.Rows.Count == 0)
             {
-                // 【核心修正】：檢查完全通過了，才去資料庫取號並寫入 Merge 表
-                string currentNo = GetNewMergeNo();
+                if (COUNTS == 1)
+                {
+                    // 只勾選 1 筆：不合併、不取合併單號、不寫 Merge 表，直接帶出原製令單別、單號
+                    // currentNo 傳空字串，避免報表查詢的 OR TA002=currentNo 誤抓到其他單別的同單號資料
+                    ProcessReportData(lastTA001, lastTA002, BUCKETS, lastTA002);
+                    SETFASTREPORT(lastTA001, lastTA002, "");
+                }
+                else
+                {
+                    // 【核心修正】：檢查完全通過了，才去資料庫取號並寫入 Merge 表
+                    string currentNo = GetNewMergeNo();
 
-                // 執行批次存檔
-                ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
+                    // 執行批次存檔
+                    ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
 
-                // 執行列印或預覽
-                PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+                    // 執行列印或預覽
+                    PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+                }
             }
             else
             {
@@ -1505,14 +1515,24 @@ namespace TKWAREHOUSE
             // 3. 判斷檢查結果
             if (DT == null || DT.Rows.Count == 0)
             {
-                // 【核心修正】：檢查完全通過了，才去資料庫取號並寫入 Merge 表
-                string currentNo = GetNewMergeNo();
+                if (COUNTS == 1)
+                {
+                    // 只勾選 1 筆：不合併、不取合併單號、不寫 Merge 表，直接帶出原製令單別、單號
+                    // currentNo 傳空字串，避免報表查詢的 OR TA002=currentNo 誤抓到其他單別的同單號資料
+                    ProcessReportData_OTHERS(lastTA001, lastTA002, BUCKETS, lastTA002);
+                    SETFASTREPORT_OTHERS(lastTA001, lastTA002, "");
+                }
+                else
+                {
+                    // 【核心修正】：檢查完全通過了，才去資料庫取號並寫入 Merge 表
+                    string currentNo = GetNewMergeNo();
 
-                // 執行批次存檔
-                ADD_TB_MOCTATB_CANNO_NUMS_MERGE_OTHERS(currentNo);
+                    // 執行批次存檔
+                    ADD_TB_MOCTATB_CANNO_NUMS_MERGE_OTHERS(currentNo);
 
-                // 執行列印或預覽
-                PRINT_MERGE_OTHERS(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+                    // 執行列印或預覽
+                    PRINT_MERGE_OTHERS(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+                }
             }
             else
             {
