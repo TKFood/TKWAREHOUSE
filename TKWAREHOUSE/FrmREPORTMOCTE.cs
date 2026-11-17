@@ -159,14 +159,14 @@ namespace TKWAREHOUSE
             sqlConn.Close();
 
 
-
+              
         }
 
         public void SETFASTREPORT()
         {
-            try
-            {
-                string SQL;
+            try 
+            { 
+                string SQL; 
                 report1 = new Report();
                 report1.Load(@"REPORT\合併領料.frx");
 
@@ -272,7 +272,7 @@ namespace TKWAREHOUSE
                                     T.TE004,
                                     MB.MB002,
                                     T.TE011,
-                                    T.TE012,
+                                    T.TE012, 
                                     T.TE010,
                                     -- 修正：將 '庫存量' 的表達式加入 GROUP BY
                                     ISNULL(INV.庫存量, 0)
