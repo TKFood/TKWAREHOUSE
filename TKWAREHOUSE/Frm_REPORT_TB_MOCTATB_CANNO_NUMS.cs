@@ -7,7 +7,7 @@ using NPOI.HSSF;
 using NPOI.HSSF.Extractor;
 using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
-using NPOI.POIFS;
+using NPOI.POIFS; 
 using NPOI.SS.UserModel;
 using NPOI.Util;
 using NPOI.XSSF.UserModel;
@@ -1123,7 +1123,8 @@ namespace TKWAREHOUSE
             ProcessReportData(TA001.Trim(), TA002.Trim(), BUCKETS, currentNo);
 
             // 2. 加載報表與設置資料源
-            SETFASTREPORT(TA001.Trim(), TA002.Trim(), currentNo);
+            // 暫存資料已改存第 1 筆的製令單別、單號，不再用合併單號查詢
+            SETFASTREPORT(TA001.Trim(), TA002.Trim(), "");
         }
 
         private void ProcessReportData(string TA001, string TA002, float buckets, string currentNo)
@@ -1159,7 +1160,7 @@ namespace TKWAREHOUSE
 
                 // 【核心修正點】：補上 C.MB004 後方與 CONVERT 後方的「逗號」
                 selectStatements.Add($@"
-                                    SELECT @ParamTA001, @currentNo, {i}, B.MD003, C.MB002, C.MB004, 
+                                    SELECT @ParamTA001, @ParamTA002, {i}, B.MD003, C.MB002, C.MB004, 
                                            CONVERT(DECIMAL(16,3), (B.MD006 / B.MD007) * {multiplierParam}), @ALLCANS
                                     FROM [TK].dbo.MOCTA A
                                     INNER JOIN [TK].dbo.BOMMD B ON A.TA006 = B.MD001
@@ -1197,7 +1198,8 @@ namespace TKWAREHOUSE
             ProcessReportData_OTHERS(TA001.Trim(), TA002.Trim(), BUCKETS, currentNo);
 
             // 2. 加載報表與設置資料源
-            SETFASTREPORT_OTHERS(TA001.Trim(), TA002.Trim(), currentNo);
+            // 暫存資料存的是第 1 筆的製令單別、單號，不再用合併單號查詢
+            SETFASTREPORT_OTHERS(TA001.Trim(), TA002.Trim(), "");
         }
 
         private void ProcessReportData_OTHERS(string TA001, string TA002, float buckets, string currentNo)
@@ -1350,6 +1352,10 @@ namespace TKWAREHOUSE
             string lastTA001 = "";
             string lastTA002 = "";
 
+            // 合併時，報表的製令單別、單號帶第 1 筆勾選的資料
+            string firstTA001 = "";
+            string firstTA002 = "";
+
             // 1. 【優化：合併唯一個迴圈】收集所有勾選的資料
             foreach (DataGridViewRow dr in this.dataGridView1.Rows)
             {
@@ -1372,6 +1378,12 @@ namespace TKWAREHOUSE
                     // 串接合併資訊
                     lastTA001 = dr.Cells["製令單別"].Value?.ToString().Trim() ?? "";
                     lastTA002 = dr.Cells["製令單號"].Value?.ToString().Trim() ?? "";
+
+                    if (string.IsNullOrEmpty(firstTA001) && string.IsNullOrEmpty(firstTA002))
+                    {
+                        firstTA001 = lastTA001;
+                        firstTA002 = lastTA002;
+                    }
 
                     LINK_TA001TA002 += lastTA001 + lastTA002 + "*";
                     LINK_TA006 += prodNo + "*"; // 【修正】原本錯寫成 LINK_TA034
@@ -1420,7 +1432,7 @@ namespace TKWAREHOUSE
                     ADD_TB_MOCTATB_CANNO_NUMS_MERGE(currentNo);
 
                     // 執行列印或預覽
-                    PRINT_MERGE(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+                    PRINT_MERGE(firstTA001, firstTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
                 }
             }
             else
@@ -1461,6 +1473,10 @@ namespace TKWAREHOUSE
             string lastTA001 = "";
             string lastTA002 = "";
 
+            // 合併時，報表的製令單別、單號帶第 1 筆勾選的資料
+            string firstTA001 = "";
+            string firstTA002 = "";
+
             // 1. 【優化：合併唯一個迴圈】收集所有勾選的資料
             foreach (DataGridViewRow dr in this.dataGridView4.Rows)
             {
@@ -1483,6 +1499,12 @@ namespace TKWAREHOUSE
                     // 串接合併資訊
                     lastTA001 = dr.Cells["製令單別"].Value?.ToString().Trim() ?? "";
                     lastTA002 = dr.Cells["製令單號"].Value?.ToString().Trim() ?? "";
+
+                    if (string.IsNullOrEmpty(firstTA001) && string.IsNullOrEmpty(firstTA002))
+                    {
+                        firstTA001 = lastTA001;
+                        firstTA002 = lastTA002;
+                    }
 
                     LINK_TA001TA002 += lastTA001 + lastTA002 + "*";
                     LINK_TA006 += prodNo + "*"; // 【修正】原本錯寫成 LINK_TA034
@@ -1531,7 +1553,7 @@ namespace TKWAREHOUSE
                     ADD_TB_MOCTATB_CANNO_NUMS_MERGE_OTHERS(currentNo);
 
                     // 執行列印或預覽
-                    PRINT_MERGE_OTHERS(lastTA001, lastTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
+                    PRINT_MERGE_OTHERS(firstTA001, firstTA002, BUCKETS, LINK_TA001TA002, LINK_TA006, LINK_TA034, MAINMB001, currentNo);
                 }
             }
             else
