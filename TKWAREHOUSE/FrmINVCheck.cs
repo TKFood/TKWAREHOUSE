@@ -201,7 +201,7 @@ namespace TKWAREHOUSE
 
         /// <summary>
         /// 檢查指定庫別有庫存的批號(LA016)，前 8 碼是否為 yyyyMMdd 有效日期
-        /// (第 9 碼之後不檢查，例：20261118、20261118A、20261118- 都算正常)。
+        /// (第 9 碼之後不檢查，例：20261118、20261118A、20261118- 都算正常；空白批號也不警告)。
         /// 有錯誤時列出錯誤的品號/批號給使用者，並詢問是否仍要產生報表。
         /// 回傳 true = 繼續產生報表；false = 中止。
         /// </summary>
@@ -213,6 +213,8 @@ namespace TKWAREHOUSE
                             FROM [TK].dbo.INVLA WITH (NOLOCK)
                             LEFT JOIN [TK].dbo.INVMB WITH (NOLOCK) ON MB001=LA001
                             WHERE LA009=@LA009
+                            -- 空白批號不檢查
+                            AND LTRIM(RTRIM(ISNULL(LA016,'')))<>''
                             -- 合格批號：前 8 碼為 yyyyMMdd 有效日期
                             AND NOT (
                                     LEN(LTRIM(ISNULL(LA016,'')))>=8
